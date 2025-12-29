@@ -14,6 +14,7 @@ O objetivo principal do **Aureus** é ser um portfólio das minhas habilidades c
 Visando mostrar todas as minhas habilidades, vou tentar utilizar tudo o que já aprendi de tecnologia e que for pertinente para o projeto. Algumas implementações, como Kubernetes, podem soar como over engineering, mas estarão implementadas no futuro meramente para exemplificar minhas habilidades, e não como necessidade arquitetural.
 
 ### 🎯 Objetivo
+
 Construir um portfólio de suma autoria, aplicando boas práticas como:
 - **Design First:** Modelagem de dados e wireframes antes do código.
 - **API First:** Contratos definidos (Swagger/OpenAPI) e testáveis.
@@ -44,16 +45,16 @@ O projeto **Aureus** adota uma estratégia **Multi-Repo** para separar responsab
 | Disponível | Módulo | Stack Tecnológica | Repositório (Hiperlink) |
 | :--- | :--- | :--- | :--- |
 | 🟢 | **Docs (Este)** | Markdown, Mermaid, Postman | *Você está aqui* |
-| 🔴 | **Backend API** | Java 21, Spring Boot 4, JPA | [![GitHub](https://img.shields.io/badge/GitHub-🚧_(Em_breve)-black?style=for-the-badge&logo=github)](https://github.com/gPagio/projeto-aureus-docs)  |
+| 🔴 | **Backend API** | Java 21, Spring Boot 4 | [![GitHub](https://img.shields.io/badge/GitHub-🚧_(Em_breve)-black?style=for-the-badge&logo=github)](https://github.com/gPagio/projeto-aureus-docs)  |
 | 🔴 | **Frontend Web** | Vite, React 19, TailwindCSS | [![GitHub](https://img.shields.io/badge/GitHub-🚧_(Em_breve)-black?style=for-the-badge&logo=github)](https://github.com/gPagio/projeto-aureus-docs) |
 
 ---
 
 ## 🚦 Status e Roadmap: Acompanhamento do Projeto
 
-O status de cada módulo comunica a situação geral dos mesmos. O objetivo é basicamente informar de forma rápida como está o desenvolvimento de cada módulo com uma simples badge de status com determinada legenda e cor.
+O status de cada módulo comunica a situação geral dos mesmos. O objetivo é basicamente informar de forma rápida como está o desenvolvimento de cada módulo com uma simples badge de status no início do **README** principal de cada módulo, com determinada legenda e cor.
 
-Já nos projetos do **GitHub Projects** estão todas as tarefas de cada módulo de forma detalhada. Assim como o status, cada módulo tem seu projeto no **GitHub Projects**, aninhando todas as etapas de desenvolvimento.
+Já nos projetos do **GitHub Projects** estão todas as tarefas de cada módulo de forma detalhada. Assim como o status, cada módulo tem seu projeto no **GitHub Projects**, aninhando todas as etapas de desenvolvimento em seus respectivos estados atuais.
 
 ### 🏷️ Badges de Status: Legendas e Cores
 
@@ -69,10 +70,15 @@ Para facilitar a visualização do status de cada módulo do projeto **Aureus**,
 > [!CAUTION]
 > Esta convenção de cores aplica-se exclusivamente às badges de status do projeto. Outras badges do repositório podem não seguir esta mesma paleta.
 
-### 🖼️ Board de Tarefas
-O acompanhamento detalhado das tarefas, especificações e progresso da documentação é gerenciado através do **GitHub Projects**. Para ver o que está sendo trabalhado em tempo real, acesse o quadro abaixo:
+### 🖼️ Board de Tarefas: O Roadmap
 
-[![Acessar Board de Documentação](https://img.shields.io/badge/Ver_Roadmap_no_Board-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/users/gPagio/projects/2)
+O roadmap do projeto, que permite realizar o acompanhamento detalhado das tarefas, especificações e progresso de cada módulo do projeto é gerenciado através do **GitHub Projects**.
+
+Cada módulo terá seu projeto no **GitHub Projects** para acompanhamento e gerenciamento próprio e uma badge no **README** principal que leva ao projeto.
+
+Para acessar o quadro do **GitHub Projects** e ver o que está sendo trabalhado em tempo real em cada módulo do projeto **Aureus**, clique em badges semelhantes a badge abaixo.
+
+[![Acessar Board de Documentação](https://img.shields.io/badge/Roadmap_Board_GitHub_Projects-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/users/gPagio/projects/2)
 
 ---
 
