@@ -32,7 +32,7 @@ Este repositório atua como o **Hub Central** do projeto, adotando um conceito c
 | :--- | :--- | :--- | :--- |
 | 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/gPagio/projeto-aureus-docs) | **Gestão do Projeto** | Plano de execução, requisitos. |
 | 🟢 | **[📂 /database](./database)** | **Modelagem de Dados** | O DER (Diagrama Entidade-Relacionamento). |
-| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/gPagio/projeto-aureus-docs) | **Especificação Backend** | Diagramas de Classe (Domínio Java), Swagger e fluxos. |
+| 🟢 | **[📂 /api](./api)** | **Especificação Backend** | Diagramas de Classe (Domínio Java), Swagger e fluxos. |
 | 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/gPagio/projeto-aureus-docs) | **Coleções Postman** | Coleções do Postman que mostram o comportamento da aplicação por meio de seus endpoints. |
 | 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/gPagio/projeto-aureus-docs) | **Design Frontend** | Wireframes, Guias de Estilo e protótipos de tela. |
 
