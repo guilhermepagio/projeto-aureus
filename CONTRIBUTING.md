@@ -1,10 +1,25 @@
-# 📜 Guia de Convenção de Commits
+# 📜 Guia de Contribuição
 
-Este projeto segue a convenção do **Angular (Conventional Commits)**. O objetivo é manter um histórico de alterações legível, facilitar a automação de releases e simplificar a identificação de mudanças.
+Este guia contém as regras para contribuição com o projeto, mantendo o projeto simples de acompanhar para os visitantes.
 
 ---
 
-## 🏷️ Tipos de Commit
+# 🔀 Nomenclatura de Branches
+
+Utilize o padrão abaixo para identificar de forma clara o que cada branche está implementando.
+
+Prefixo | Uso | Exemplo
+-- | -- | --
+arch/ | Arquitetura, Banco de Dados, Estrutura | arch/10-diagrama-classes
+design/ | Wireframes, UI, Estilos | design/12-tela-login
+docs/ | Planejamento, Textos Gerais | docs/05-readme-inicial
+fix/ | Correções de erros | fix/15-typo-erd
+
+---
+
+# 🏷️ Tipos de Commit
+
+Este projeto segue a convenção do **Angular (Conventional Commits)**. O objetivo é manter um histórico de alterações legível, facilitar a automação de releases e simplificar a identificação de mudanças.
 
 Utilize os prefixos abaixo para categorizar suas alterações:
 
