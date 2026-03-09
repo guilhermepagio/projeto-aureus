@@ -30,11 +30,11 @@ Este repositório atua como o **Hub Central** do projeto, adotando um conceito c
 
 | Disponível | Componente (Hiperlink) | Descrição | O que você vai encontrar |
 | :--- | :--- | :--- | :--- |
-| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/gPagio/projeto-aureus-docs) | **Gestão do Projeto** | Plano de execução, requisitos. |
+| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus-docs) | **Gestão do Projeto** | Plano de execução, requisitos. |
 | 🟢 | **[📂 /database](./database)** | **Modelagem de Dados** | O DER (Diagrama Entidade-Relacionamento). |
 | 🟢 | **[📂 /api](./api)** | **Especificação Backend** | Diagramas de Classe (Domínio Java), Swagger e fluxos. |
-| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/gPagio/projeto-aureus-docs) | **Coleções Postman** | Coleções do Postman que mostram o comportamento da aplicação por meio de seus endpoints. |
-| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/gPagio/projeto-aureus-docs) | **Design Frontend** | Wireframes, Guias de Estilo e protótipos de tela. |
+| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus-docs) | **Coleções Postman** | Coleções do Postman que mostram o comportamento da aplicação por meio de seus endpoints. |
+| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus-docs) | **Design Frontend** | Wireframes, Guias de Estilo e protótipos de tela. |
 
 ---
 
@@ -45,8 +45,8 @@ O projeto **Aureus** adota uma estratégia **Multi-Repo** para separar responsab
 | Disponível | Módulo | Stack Tecnológica | Repositório (Hiperlink) |
 | :--- | :--- | :--- | :--- |
 | 🟢 | **Docs (Este)** | Markdown, Mermaid, Postman | *Você está aqui* |
-| 🔴 | **Backend API** | Java 21, Spring Boot 4 | [![GitHub](https://img.shields.io/badge/GitHub-🚧_(Em_breve)-black?style=for-the-badge&logo=github)](https://github.com/gPagio/projeto-aureus-docs)  |
-| 🔴 | **Frontend Web** | Vite, React 19, TailwindCSS | [![GitHub](https://img.shields.io/badge/GitHub-🚧_(Em_breve)-black?style=for-the-badge&logo=github)](https://github.com/gPagio/projeto-aureus-docs) |
+| 🔴 | **Backend API** | Java 21, Spring Boot 4 | [![GitHub](https://img.shields.io/badge/GitHub-🚧_(Em_breve)-black?style=for-the-badge&logo=github)](https://github.com/guilhermepagio/projeto-aureus-docs)  |
+| 🔴 | **Frontend Web** | Vite, React 19, TailwindCSS | [![GitHub](https://img.shields.io/badge/GitHub-🚧_(Em_breve)-black?style=for-the-badge&logo=github)](https://github.com/guilhermepagio/projeto-aureus-docs) |
 
 ---
 
@@ -78,7 +78,7 @@ Cada módulo terá seu projeto no **GitHub Projects** para acompanhamento e gere
 
 Para acessar o quadro do **GitHub Projects** e ver o que está sendo trabalhado em tempo real em cada módulo do projeto **Aureus**, clique em badges semelhantes a badge abaixo.
 
-[![Acessar Board de Documentação](https://img.shields.io/badge/Roadmap_Board_GitHub_Projects-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/users/gPagio/projects/2)
+[![Acessar Board de Documentação](https://img.shields.io/badge/Roadmap_Board_GitHub_Projects-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/users/guilhermepagio/projects/2)
 
 ---
 
