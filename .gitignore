@@ -1,0 +1,7 @@
+# ─────────────────────────────────────────────────────────────────
+# BMad Method — framework reinstalável (equivalente a node_modules)
+# ─────────────────────────────────────────────────────────────────
+_bmad/
+.agents/
+
+# _bmad-output/ é versionado (artefatos do projeto)
