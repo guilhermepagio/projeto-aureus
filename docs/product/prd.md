@@ -32,7 +32,7 @@ O nome remete ao *aureus*, moeda de ouro da Roma Antiga, simbolizando valor e es
 
 ### 2.2 Não-Usuários (V1)
 
-- Múltiplos usuários simultâneos — a V1 é Single-Owner, sem autenticação.
+- Múltiplos usuários com perfis, permissões ou compartilhamento de dados — a V1 autentica contas individuais, mas permanece sem colaboração entre usuários.
 - Contadores ou profissionais de finanças que precisam de relatórios fiscais ou contábeis formais.
 - Usuários que necessitam de integração bancária automática (Open Banking).
 
@@ -129,6 +129,24 @@ O nome remete ao *aureus*, moeda de ouro da Roma Antiga, simbolizando valor e es
 >
 > **Resolution:** Decisão financeira tomada com confiança e visibilidade clara do impacto futuro.
 
+**UJ-6. Guilherme entra no Aureus usando sua conta Google.**
+
+> **Persona + contexto:** Guilherme acessa o Aureus pelo navegador e quer proteger seus dados financeiros sem criar e manter uma senha adicional.
+>
+> **Entry state:** Usuário não autenticado.
+>
+> **Path:**
+> 1. Abre a tela de entrada e seleciona “Entrar com Google”.
+> 2. É redirecionado ao Google para autenticação e consentimento, quando aplicável.
+> 3. Após o retorno bem-sucedido, o Aureus identifica ou cria a conta local associada ao identificador estável do Google e abre o painel.
+> 4. Ao acessar novamente, uma sessão autenticada permite consultar e alterar somente os dados financeiros vinculados à sua própria conta.
+>
+> **Climax:** Guilherme acessa seus dados sem cadastrar senha no Aureus.
+>
+> **Resolution:** A sessão é encerrada pelo comando “Sair” e o usuário volta à tela de entrada.
+>
+> **Edge cases:** O sistema não cria uma conta quando o consentimento é negado ou a resposta do provedor é inválida; erros de autenticação não revelam dados de outras contas.
+
 ## 3. Glossário
 
 - **Conta** — Origem ou destino do dinheiro. Representa uma fonte financeira concreta do Usuário (ex: Conta Corrente, Cartão de Crédito A). Toda Movimentação é vinculada a exatamente uma Conta.
@@ -142,7 +160,10 @@ O nome remete ao *aureus*, moeda de ouro da Roma Antiga, simbolizando valor e es
 - **Painel de Consolidação** — Grade financeira de 24 meses que consolida todas as Movimentações em cinco blocos analíticos, permitindo projeção de saldo futuro.
 - **Sobra do Mês** — Diferença entre o total de Receitas e o total de Despesas de um mês específico.
 - **Sobra Retroativa Acumulada** — Soma cumulativa das Sobras do Mês, iniciando em zero no primeiro mês da grade selecionada. Fórmula: `Retroativa[mês] = Sobra[mês] + Retroativa[mês − 1]`, onde `Retroativa[primeiro mês] = Sobra[primeiro mês]`.
-- **Usuário** — Pessoa que opera o sistema. Na V1, existe um único Usuário (Single-Owner) sem autenticação.
+- **Usuário** — Pessoa que opera o sistema. Na V1, cada Usuário possui uma conta autenticada e só acessa suas próprias Movimentações, Contas e Categorias.
+- **Provedor de Identidade** — Serviço externo que autentica o Usuário e fornece as afirmações de identidade autorizadas pelo fluxo OIDC. Na V1, o provedor é o Google.
+- **Identidade Externa** — Vínculo entre um Usuário local e o identificador estável emitido pelo Provedor de Identidade. O e-mail exibido pelo provedor não é o identificador técnico do vínculo.
+- **Sessão** — Estado autenticado mantido pelo Aureus após o login, com expiração e encerramento explícito.
 
 ## 4. Features
 
@@ -450,11 +471,53 @@ O Usuário pode informar Nº Parcelas = 1 em qualquer Movimentação Variável.
 - Última Parcela calculada é igual à Primeira Parcela.
 - No Painel de Consolidação, o valor aparece em um único mês.
 
+### 4.11 Autenticação e Isolamento de Dados
+
+**Descrição:** O Aureus autentica Usuários por meio do Google usando OAuth 2.0 com OpenID Connect. A autenticação é requisito para acessar as funcionalidades financeiras; cada registro financeiro pertence a um Usuário e não pode ser consultado ou alterado por outro.
+
+#### FR-34: Entrar com Google
+
+O Usuário pode iniciar autenticação selecionando “Entrar com Google”. O sistema usa um fluxo de autorização adequado a aplicações web no servidor e somente considera o login concluído após validar a resposta do Provedor de Identidade.
+
+**Consequências (testáveis):**
+- Usuário não autenticado é direcionado à tela de entrada ao tentar acessar uma área protegida.
+- O sistema solicita somente os escopos de identidade necessários ao login na V1 (`openid`, `profile` e `email`).
+- O sistema não coleta nem armazena a senha do Google.
+- Consentimento negado, código inválido, resposta expirada ou falha de validação produzem erro controlado, sem criar sessão autenticada.
+
+#### FR-35: Criar ou reconhecer conta local
+
+Após um login Google válido, o sistema cria a conta local na primeira entrada ou reconhece a conta existente pela Identidade Externa estável do provedor.
+
+**Consequências (testáveis):**
+- O mesmo Usuário Google não gera contas locais duplicadas em novos logins.
+- O vínculo técnico não depende de o e-mail poder ser alterado.
+- O perfil local mantém, no mínimo, o identificador do provedor, e-mail e nome/imagem atuais quando fornecidos, além de datas de criação e última atualização.
+
+#### FR-36: Isolar dados por Usuário
+
+O sistema associa Contas, Categorias, Despesas e Receitas a um Usuário autenticado e aplica esse vínculo em toda leitura, criação, edição e exclusão.
+
+**Consequências (testáveis):**
+- Uma requisição autenticada só retorna dados do Usuário da sessão.
+- IDs pertencentes a outro Usuário não permitem leitura, edição ou exclusão e não revelam se o registro existe.
+- O Painel de Consolidação usa exclusivamente as Movimentações do Usuário autenticado.
+
+#### FR-37: Encerrar sessão
+
+O Usuário pode selecionar “Sair” para invalidar a sessão local e retornar à tela de entrada.
+
+**Consequências (testáveis):**
+- Após sair, endpoints e telas protegidos exigem nova autenticação.
+- A aplicação não exibe novamente dados financeiros em cache após o encerramento.
+- O encerramento local não é tratado como revogação global da conta Google.
+
+
 ## 5. Não-Objetivos (Explícito)
 
 - O Aureus **não é** um aplicativo bancário e **não** se integra com bancos ou sistemas financeiros externos.
 - O Aureus **não** rastreia histórico de alterações de valores fixos — é forward-looking por design.
-- O Aureus **não** possui autenticação ou autorização na V1 — é Single-Owner local.
+- O Aureus **não** oferece login por senha, múltiplos provedores, recuperação de senha própria ou colaboração entre usuários na V1.
 - O Aureus **não** categoriza automaticamente Movimentações — a classificação é decisão manual do Usuário.
 - O Aureus **não** possui subcategorias na V1 — Categorias são flat/macro.
 - O Aureus **não** gera relatórios exportáveis (PDF, Excel) na V1.
@@ -476,11 +539,13 @@ O Usuário pode informar Nº Parcelas = 1 em qualquer Movimentação Variável.
 - Painel de Consolidação com grade de 24 meses e 5 blocos analíticos.
 - Seleção do mês inicial (manual ou botão "Mês Atual").
 - Sobra Retroativa Acumulada com soma cumulativa.
+- Autenticação por Google via OAuth 2.0/OpenID Connect e sessão protegida.
+- Isolamento de todos os dados financeiros por Usuário autenticado.
 - Execução local (backend via código-fonte, PostgreSQL via Docker).
 
 ### 6.2 Fora do Escopo para MVP
 
-- **Autenticação e multi-usuário** — deferido para V2. A infraestrutura de dados (tabela `usuarios`) já existe no ERD. Ver `addendum.md` do Brief.
+- **Autorização avançada** (perfis, papéis e compartilhamento entre usuários) — deferida para versão futura.
 - **Dark Mode e temas visuais** — deferido para V2. Ver `addendum.md` do Brief.
 - **Subcategorias** — deferido para versão futura. Categorias V1 são macro/flat. Ver `addendum.md` do PRD.
 - **Deploy em nuvem** — deferido para fases avançadas de portfólio.
@@ -495,18 +560,19 @@ O Usuário pode informar Nº Parcelas = 1 em qualquer Movimentação Variável.
 Dado que a V1 é um projeto de portfólio/estudo pessoal com um único Usuário (o próprio desenvolvedor), as métricas são pragmáticas:
 
 **Primária**
-- **SM-1:** Adoção pessoal — Guilherme utiliza o Aureus como ferramenta principal de controle financeiro por pelo menos 3 meses consecutivos, substituindo a planilha. Valida FR-9 a FR-30.
+- **SM-1:** Adoção pessoal — Guilherme utiliza o Aureus como ferramenta principal de controle financeiro por pelo menos 3 meses consecutivos, substituindo a planilha. Valida FR-9 a FR-37.
 
 **Secundárias**
-- **SM-2:** Completude funcional — todas as 4 abas de registro e o Painel de Consolidação estão operacionais e corretos matematicamente. Valida FR-1 a FR-31.
+- **SM-2:** Completude funcional — login Google, isolamento de dados, todas as 4 abas de registro e o Painel de Consolidação estão operacionais e corretos matematicamente. Valida FR-1 a FR-37.
 - **SM-3:** Fidelidade ao controle existente — os resultados do Painel de Consolidação reproduzem com exatidão os mesmos números que a planilha produziria para o mesmo conjunto de dados. Valida FR-26 a FR-30.
 
 **Contra-métricas (não otimizar)**
 - **SM-C1:** Complexidade de interface — a adição de funcionalidades não deve aumentar o número de cliques para registrar uma Movimentação além do estritamente necessário. Contrabalança SM-1.
+- **SM-C2:** Dependência externa — a indisponibilidade do Google não deve corromper ou expor dados; login novo pode ficar indisponível, mas sessões e dados existentes devem falhar de forma segura.
 
 ## 8. Questões em Aberto
 
-Todas as questões foram resolvidas durante a Discovery e incorporadas aos FRs correspondentes. Nenhuma questão pendente.
+As decisões de produto estão fechadas para o MVP. A arquitetura deve detalhar os valores de expiração/renovação de sessão, estratégia de armazenamento de sessão e política de exclusão/desvinculação da conta Google antes da implementação.
 
 ## 9. Índice de Assumptions
 
@@ -520,3 +586,5 @@ Todas as assumptions foram confirmadas ou corrigidas pelo Usuário e convertidas
 | §4.7 FR-27 — Contas sem Despesas omitidas do Painel | ❌ Corrigida → Contas sem Despesas **geram linhas zeradas**. |
 | §4.7 FR-29 — Exibir 0% quando total de Despesas é zero | ✅ Confirmada. |
 | §4.8 FR-31 — Mensagem com link para cadastro de dependências | ✅ Confirmada. |
+| Autenticação Google no MVP | ✅ Confirmada pelo pedido de atualização; OAuth 2.0/OIDC e isolamento por Usuário entram na V1. |
+| Login por senha próprio | ❌ Fora do escopo; não haverá armazenamento de senhas na V1. |
