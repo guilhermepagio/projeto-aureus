@@ -1,0 +1,60 @@
+Table categorias {
+  id uuid pk
+  usuario_id uuid [not null, ref: > usuarios.id]
+  criado_em timestamptz [not null]
+  atualizado_em timestamptz [not null]
+  descricao varchar [not null]
+  observacoes varchar
+}
+
+Table contas {
+  id uuid pk
+  usuario_id uuid [not null, ref: > usuarios.id]
+  criado_em timestamptz [not null]
+  atualizado_em timestamptz [not null]
+  descricao varchar [not null]
+  observacoes varchar
+}
+
+Table usuarios {
+  id uuid pk
+  criado_em timestamptz [not null]
+  atualizado_em timestamptz [not null]
+  email varchar [unique, not null]
+  nome varchar [not null]
+  senha varchar [not null]
+}
+
+Table despesas {
+  id uuid pk
+  usuario_id uuid [not null, ref: > usuarios.id]
+  conta_id uuid [not null, ref: > contas.id]
+  categoria_id uuid [not null, ref: > categorias.id]
+  criado_em timestamptz [not null]
+  atualizado_em timestamptz [not null]
+  descricao varchar [not null]
+  tipo_despesa varchar [not null, Note: 'FIXA, VARIÁVEL']
+  local_compra varchar
+  data_compra date
+  valor_parcela numeric [not null]
+  quantidade_parcelas int
+  data_primeira_parcela date [not null]
+  data_ultima_parcela date
+  observacoes varchar
+}
+
+Table receitas {
+  id uuid pk
+  usuario_id uuid [not null, ref: > usuarios.id]
+  conta_id uuid [not null, ref: > contas.id]
+  categoria_id uuid [not null, ref: > categorias.id]
+  criado_em timestamptz [not null]
+  atualizado_em timestamptz [not null]
+  descricao varchar [not null]
+  tipo_receita varchar [not null, Note: 'FIXA, VARIÁVEL']
+  valor_parcela numeric [not null]
+  quantidade_parcelas int
+  data_primeira_parcela date [not null]
+  data_ultima_parcela date
+  observacoes varchar
+}

@@ -1,3 +1,9 @@
+# API e domínio (legado)
+
+> A versão canônica para leitura humana está em
+> [docs/technical/domain-model](../docs/technical/domain-model/README.md). Esta
+> pasta é preservada como histórico; o contrato OpenAPI ainda não existe.
+
 ```mermaid
 classDiagram
 

@@ -1,4 +1,8 @@
-# Database Docs
+# Database Docs (legado)
+
+> A versão canônica para leitura humana está em
+> [docs/technical/data-model](../docs/technical/data-model/README.md). Esta
+> pasta é preservada para rastreabilidade durante a migração.
 
 ## Links do Modelo
 [![Ver Código](https://img.shields.io/badge/Source-Código_DBML-blueviolet?style=for-the-badge)](./aureus-database-erd.txt)
