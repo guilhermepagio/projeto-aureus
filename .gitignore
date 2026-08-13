@@ -4,5 +4,7 @@
 _bmad/
 .agent/
 .agents/
+.claude/
+.github/
 
 # _bmad-output/ é versionado (artefatos do projeto)
