@@ -1,7 +1,6 @@
-# Documentação do Aureus
+# 📚 Documentação do Aureus
 
-Esta é a biblioteca curada para leitura humana. O fluxo recomendado é entender
-primeiro o produto e depois a solução técnica.
+Esta é a biblioteca curada para leitura humana. O fluxo recomendado é entender primeiro o produto e depois a solução técnica.
 
 | Área | Estado | Conteúdo |
 | --- | --- | --- |
@@ -10,5 +9,4 @@ primeiro o produto e depois a solução técnica.
 | [UX](ux/README.md) | Planejado | Wireframes e especificações futuras. |
 | [Decisões](decisions/README.md) | Disponível | Decisões que alteram escopo ou coerência. |
 
-`_bmad-output/` mantém a trilha histórica do BMad e não substitui esta
-biblioteca pública.
+`_bmad-output/` mantém a trilha histórica do BMad e não substitui esta biblioteca pública.

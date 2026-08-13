@@ -30,9 +30,11 @@ desenvolvido como portfólio por um único desenvolvedor e sem fins comerciais n
 momento. A qualidade visual vem de clareza, nomes estáveis e status honestos —
 nunca de ornamentação ou aparência corporativa artificial.
 
-Use Markdown e GFM nativos. Não introduza logo, ilustrações, paleta, badges ou
-biblioteca de componentes próprios nesta fase. Este documento e `EXPERIENCE.md`
-prevalecem sobre futuros mockups em caso de conflito.
+Use Markdown e GFM nativos. Emojis podem ser usados com parcimônia em títulos
+como sinalização semântica e personalidade do portfólio; o texto do título deve
+continuar claro sem depender do emoji. Não introduza logo, ilustrações, paleta,
+badges ou biblioteca de componentes próprios nesta fase. Este documento e
+`EXPERIENCE.md` prevalecem sobre futuros mockups em caso de conflito.
 
 ## Cores
 
@@ -81,6 +83,6 @@ quando relevantes. Mostre somente o que existe e conduza o visitante pela
 jornada produto → técnico.
 
 **Não faça:** prometa API, wireframes, interface, autenticação ou deploy antes
-de existirem; replique conteúdo canônico; use imagens para transportar
-informação textual; nem simule maturidade comercial com métricas, badges ou
+de existirem; replique conteúdo canônico; use imagens ou emojis para transportar
+informação essencial; nem simule maturidade comercial com métricas, badges ou
 processos que um único mantenedor não executa.

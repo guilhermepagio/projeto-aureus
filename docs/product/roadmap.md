@@ -1,7 +1,6 @@
 # Roadmap
 
-O projeto é mantido por um único desenvolvedor; o roadmap prioriza clareza e
-entregas sustentáveis.
+O projeto é mantido por um único desenvolvedor; o roadmap prioriza clareza e entregas sustentáveis.
 
 1. **Concluído:** Brief e PRD da V1.
 2. **Atual:** reorganização documental e preparação AI-first.

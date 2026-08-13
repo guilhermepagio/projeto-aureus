@@ -11,7 +11,7 @@ updated: 2026-08-13
 
 Este PRD especifica os requisitos funcionais e não-funcionais da V1 do **Aureus**, uma plataforma web de gestão de finanças pessoais. O documento serve como contrato entre as fases de planejamento e implementação dentro da abordagem **Spec-Driven Development (SDD)** adotada no projeto, sendo a fonte única da verdade para arquitetura, UX, backend e frontend.
 
-O PRD foi construído sobre o Product Brief (`brief.md`), o Addendum do Brief (`addendum.md`), o ERD em DBML (`database/aureus-database-erd.txt`) e o Diagrama de Classes do domínio Java (`api/README.md`). Os termos utilizados seguem o Glossário (§3) de forma estrita.
+O PRD foi construído sobre o Product Brief (`brief.md`), o Addendum do Brief (`addendum.md`), o ERD em DBML (`../technical/data-model/aureus-erd.dbml`) e o Diagrama de Classes do domínio (`../technical/domain-model/class-diagram.md`). Os termos utilizados seguem o Glossário (§3) de forma estrita.
 
 ## 1. Visão
 

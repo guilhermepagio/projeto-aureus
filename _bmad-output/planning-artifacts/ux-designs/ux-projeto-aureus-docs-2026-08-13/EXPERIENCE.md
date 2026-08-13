@@ -6,8 +6,8 @@ sources:
   - ../../../prds/prd-projeto-aureus-docs-2026-08-02/prd.md
   - ../../../../../README.md
   - ../../../../../CONTRIBUTING.md
-  - ../../../../../database/README.md
-  - ../../../../../api/README.md
+  - ../../../../../docs/technical/data-model/README.md
+  - ../../../../../docs/technical/domain-model/README.md
 updated: 2026-08-13
 ---
 
@@ -15,17 +15,9 @@ updated: 2026-08-13
 
 ## Foundation
 
-Este contrato cobre a experiência de documentação do repositório GitHub do
-Aureus, não a interface do futuro sistema financeiro. O Aureus é um projeto de
-portfólio pessoal, sem fins comerciais no momento, mantido por um único
-desenvolvedor. A documentação deve provar organização e pensamento de produto
-sem criar uma carga operacional desproporcional.
+Este contrato cobre a experiência de documentação do repositório GitHub do Aureus, não a interface do futuro sistema financeiro. O Aureus é um projeto de portfólio pessoal, sem fins comerciais no momento, mantido por um único desenvolvedor. A documentação deve evidenciar organização e pensamento de produto sem criar uma carga operacional desproporcional.
 
-**Form factor:** GitHub web e mobile, lido em Markdown/GFM. **Sistema de UI:**
-GitHub nativo. [DESIGN.md](DESIGN.md) é a referência visual; aplicar o tema, a
-tipografia e o espaçamento nativos do GitHub. Não há wireframes
-nesta etapa: eles pertencem à futura UX do produto e não bloqueiam a organização
-do repositório.
+**Form factor:** GitHub web e mobile, lido em Markdown/GFM. **Sistema de UI:** GitHub nativo. [DESIGN.md](DESIGN.md) é a referência visual; aplicar o tema, a tipografia e o espaçamento nativos do GitHub. Não há wireframes nesta etapa: eles pertencem à futura UX do produto e não bloqueiam a organização do repositório.
 
 ## Information Architecture
 
