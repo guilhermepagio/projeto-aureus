@@ -1,44 +1,39 @@
 # 🏛️ Aureus
 
-> Sistema simples e poderoso para controle de finanças pessoais.
+![Status](https://img.shields.io/badge/Status-Em_Andamento-yellow?style=for-the-badge) 
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-![Status: planejamento](https://img.shields.io/badge/status-planejamento-yellow) ![Licença MIT](https://img.shields.io/badge/licença-MIT-green)
+---
 
-## 💰 O que é
+# 📄 Sobre o Projeto
 
-O Aureus é um projeto pessoal de portfólio que transforma uma forma real de controlar finanças em uma aplicação com regras claras, projeção de 24 meses e suporte a receitas, despesas e parcelamentos.
+**Aureus** é uma plataforma Fullstack para gestão de finanças pessoais. O nome remete à moeda de ouro da Roma Antiga, simbolizando valor e estabilidade.
 
-O projeto não tem fins comerciais no momento e é desenvolvido e mantido por um único desenvolvedor. A prioridade é demonstrar pensamento de produto, organização documental e engenharia cuidadosa em uma escala sustentável.
+# 🎯 Objetivo
 
-## 🚦 Estado atual
+O objetivo principal do **Aureus** é ser um portfólio das minhas habilidades como desenvolvedor. Para este projeto, escolhi o tema finanças pessoais por ser um assunto que tenho certa experiência e sei o que dá certo ou errado, tendo em vista que já faço um controle fino das minhas finanças por conta própria. Isso me permitiu ter regras de negócio reais para o projeto, em vez de criar cenários hipotéticos e criar implementações aleatórias.
 
-O planejamento da V1 está concluído. A implementação ainda não começou: UX, arquitetura, backend e frontend permanecem planejados. Este repositório é a fonte documental do projeto.
+# 🤖 Desenvolvimento AI First
 
-## 🧭 Entenda o produto
+Este projeto atualmente está sendo construído sob o paradigma **AI First**, fazendo uso intenso da arquitetura de agentes [**`BMAD`**](https://github.com/bmad-code-org/bmad-method). 
 
-Comece pelo [PRD da V1](docs/product/prd.md) para entender o problema, o comportamento esperado e os limites do produto.
+O planejamento, refinamento de requisitos, arquitetura técnica e UX foram orquestrados lado a lado com a Inteligência Artificial. Isso significa que a documentação, fluxos e contratos gerados contam com a IA atuando como uma parceira ativa durante todo o ciclo de vida e planejamento do projeto.
 
-Consulte também o [Brief](docs/product/brief.md) e o [roadmap](docs/product/roadmap.md).
+A trilha completa do trabalho dos agentes fica registrada no repositório na pasta [**`_bmad-output`**](./_bmad-output/).
 
-## 🏗️ Entenda a solução técnica
+# 🖼️ Board de Tarefas
 
-Depois do PRD, siga para a [visão técnica](docs/technical/README.md). Ela reúne o modelo de dados e o diagrama de classes, sempre com fonte editável, resumo textual e status explícito.
+O quadro do projeto, que permite realizar o acompanhamento detalhado das tarefas, especificações e progresso de cada módulo do projeto é gerenciado através do **GitHub Projects**.
 
-## 🗂️ Organização
+[![Acessar Board de Documentação](https://img.shields.io/badge/Board_GitHub_Projects-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/users/guilhermepagio/projects/2)
 
-```text
-README.md                 entrada do projeto
-CONTRIBUTING.md           manutenção e contribuições
-docs/                     documentação canônica para leitura humana
-_bmad-output/             histórico e artefatos de trabalho do BMad
-```
+# 📚 Índice
 
-`docs/` é a fonte canônica pública. `_bmad-output/` preserva a rastreabilidade do BMad; nada é apagado durante a migração.
+Abaixo está a organização da estrutura do projeto. Por aqui é possível navegar e conheçer cada parte do **Aureus**.
 
-## 🤝 Contribuição
-
-Leia o [guia de contribuição](CONTRIBUTING.md). O fluxo é leve e prioriza decisões rastreáveis, fontes únicas e mudanças que um único mantenedor consiga revisar.
-
-## 📄 Licença
-
-Este projeto é distribuído sob a [licença MIT](LICENSE).
+| Disponível | Componente (Hiperlink) | Descrição | O que você vai encontrar |
+| :--- | :--- | :--- | :--- |
+| 🟢 | **[📂 /docs](./docs)** | **Documentação** | A documentação do projeto. |
+| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus-docs) | **Backend** | O código fonte da API Rest do projeto. |
+| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus-docs) | **Coleções Postman** | Coleções do Postman. |
+| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus-docs) | **Frontend** | Código fonte do frontend do projeto. |
