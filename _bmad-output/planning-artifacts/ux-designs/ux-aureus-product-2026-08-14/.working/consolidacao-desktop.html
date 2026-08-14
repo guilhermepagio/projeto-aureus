@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aureus — Consolidação (Desktop)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0D7377;
+    --teal-light: #E8F4F4;
+    --teal-hover: #0A5F62;
+    --amber: #D4A843;
+    --amber-light: #FDF6E8;
+    --bg: #FAFAFA;
+    --bg-card: #FFFFFF;
+    --text: #1A1A2E;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --border: #E5E7EB;
+    --border-light: #F3F4F6;
+    --positive: #16A34A;
+    --positive-bg: #F0FDF4;
+    --negative: #DC2626;
+    --negative-bg: #FEF2F2;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+    --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--amber);
+    border-radius: 50%;
+  }
+
+  /* ── NAV BAR (flutuante, centralizada, arredondada) ── */
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border-radius: 999px;
+    padding: 4px;
+    gap: 2px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+  }
+
+  .nav-tab {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border: none;
+    background: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+    letter-spacing: -0.1px;
+  }
+
+  .nav-tab:hover {
+    color: var(--text);
+    background: var(--bg-card);
+  }
+
+  .nav-tab.active {
+    background: var(--teal);
+    color: white;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ── HEADER RIGHT ── */
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    color: var(--text-secondary);
+  }
+
+  .icon-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: var(--teal-light);
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* ── PAGE CONTENT ── */
+  .page {
+    padding: 24px 32px;
+    max-width: 100%;
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .month-selector {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 4px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .month-nav-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all var(--transition);
+  }
+
+  .month-nav-btn:hover {
+    background: var(--teal-light);
+    color: var(--teal);
+  }
+
+  .month-display {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 8px;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  .btn-hoje {
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--amber);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: -0.1px;
+  }
+
+  .btn-hoje:hover {
+    background: #C09538;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+  }
+
+  /* ── GRID CONTAINER ── */
+  .grid-container {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .grid-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+
+  .grid-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .grid-scroll::-webkit-scrollbar-track {
+    background: var(--border-light);
+  }
+
+  .grid-scroll::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 3px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1400px;
+  }
+
+  /* ── BLOCK HEADER ── */
+  .block-header td {
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .block-header.receitas td {
+    background: #F0FDF4;
+    color: var(--positive);
+  }
+
+  .block-header.despesas td {
+    background: #FEF2F2;
+    color: var(--negative);
+  }
+
+  .block-header.categorias td {
+    background: var(--amber-light);
+    color: #92740D;
+  }
+
+  .block-header.resumo td {
+    background: var(--teal-light);
+    color: var(--teal);
+  }
+
+  /* ── MONTH HEADER ── */
+  .month-header th {
+    padding: 12px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: right;
+    border-bottom: 2px solid var(--border);
+    background: var(--bg-card);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .month-header th:first-child {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    z-index: 20;
+    background: var(--bg-card);
+    min-width: 180px;
+  }
+
+  .month-header th.current {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+  }
+
+  /* ── DATA ROWS ── */
+  .data-row td {
+    padding: 8px 14px;
+    font-size: 13px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-light);
+    font-variant-numeric: tabular-nums;
+    transition: background var(--transition);
+  }
+
+  .data-row:hover td {
+    background: var(--bg);
+  }
+
+  .data-row td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: var(--text);
+    position: sticky;
+    left: 0;
+    background: var(--bg-card);
+    z-index: 5;
+    min-width: 180px;
+    border-right: 1px solid var(--border-light);
+  }
+
+  .data-row:hover td:first-child {
+    background: var(--bg);
+  }
+
+  .data-row td.current-col {
+    background: rgba(13, 115, 119, 0.03);
+  }
+
+  /* ── VALUE CLASSES ── */
+  .val { color: var(--text-secondary); }
+  .val-pos { color: var(--positive); font-weight: 500; }
+  .val-neg { color: var(--negative); font-weight: 500; }
+  .val-zero { color: var(--text-muted); }
+
+  /* ── SUMMARY ROW ── */
+  .summary-row td {
+    font-weight: 600;
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+
+  .summary-row.total-gasto td {
+    border-top: 1px solid var(--border);
+  }
+
+  .summary-row.sobra-retro td {
+    border-top: 2px solid var(--teal);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  /* ── BLOCK SEPARATOR ── */
+  .block-sep td {
+    height: 8px;
+    background: var(--bg);
+    border: none;
+    padding: 0;
+  }
+
+  /* ── ANNOTATIONS ── */
+  .annotation {
+    display: inline-block;
+    margin-top: 32px;
+    padding: 12px 16px;
+    background: var(--teal-light);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+    font-size: 12px;
+    color: var(--teal);
+    line-height: 1.5;
+  }
+
+  .annotation strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="logo">
+    Aureus<span class="dot"></span>
+  </div>
+
+  <nav class="nav-bar">
+    <button class="nav-tab active">Consolidação</button>
+    <button class="nav-tab">Despesas Variáveis</button>
+    <button class="nav-tab">Despesas Fixas</button>
+    <button class="nav-tab">Receitas Fixas</button>
+    <button class="nav-tab">Receitas Variáveis</button>
+  </nav>
+
+  <div class="header-right">
+    <button class="icon-btn" title="Configurações">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="avatar">G</div>
+  </div>
+</header>
+
+<!-- ── PAGE ── -->
+<main class="page">
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <h1 class="page-title">Consolidação</h1>
+
+      <div class="month-selector">
+        <button class="month-nav-btn">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="month-display">Ago 2026</span>
+        <button class="month-nav-btn">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <button class="btn-hoje">Mês Atual</button>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid-container">
+    <div class="grid-scroll">
+      <table>
+
+        <!-- Month Headers -->
+        <thead>
+          <tr class="month-header">
+            <th></th>
+            <th class="current">Ago 2026</th>
+            <th>Set 2026</th>
+            <th>Out 2026</th>
+            <th>Nov 2026</th>
+            <th>Dez 2026</th>
+            <th>Jan 2027</th>
+            <th>Fev 2027</th>
+            <th>Mar 2027</th>
+            <th>Abr 2027</th>
+            <th>Mai 2027</th>
+            <th>Jun 2027</th>
+            <th>Jul 2027</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- ═══ BLOCO 1: RECEITAS ═══ -->
+          <tr class="block-header receitas">
+            <td colspan="13">Receitas por Conta</td>
+          </tr>
+          <tr class="data-row">
+            <td>Conta Corrente</td>
+            <td class="val current-col">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+            <td class="val">8.500,00</td>
+          </tr>
+          <tr class="data-row">
+            <td>Cartão A</td>
+            <td class="val-zero current-col">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+          </tr>
+
+          <tr class="block-sep"><td colspan="13"></td></tr>
+
+          <!-- ═══ BLOCO 2: DESPESAS ═══ -->
+          <tr class="block-header despesas">
+            <td colspan="13">Despesas por Conta</td>
+          </tr>
+          <tr class="data-row">
+            <td>Conta Corrente</td>
+            <td class="val current-col">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+            <td class="val">1.200,00</td>
+          </tr>
+          <tr class="data-row">
+            <td>Cartão A</td>
+            <td class="val current-col">2.340,00</td>
+            <td class="val">2.216,00</td>
+            <td class="val">1.892,00</td>
+            <td class="val">1.768,00</td>
+            <td class="val">1.520,00</td>
+            <td class="val">1.396,00</td>
+            <td class="val">1.148,00</td>
+            <td class="val">1.024,00</td>
+            <td class="val">900,00</td>
+            <td class="val">900,00</td>
+            <td class="val">900,00</td>
+            <td class="val">900,00</td>
+          </tr>
+          <tr class="data-row">
+            <td>Cartão B</td>
+            <td class="val current-col">680,00</td>
+            <td class="val">680,00</td>
+            <td class="val">556,00</td>
+            <td class="val">432,00</td>
+            <td class="val">308,00</td>
+            <td class="val">184,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+          </tr>
+
+          <tr class="block-sep"><td colspan="13"></td></tr>
+
+          <!-- ═══ BLOCO 3: CATEGORIAS R$ ═══ -->
+          <tr class="block-header categorias">
+            <td colspan="13">Categorias (R$)</td>
+          </tr>
+          <tr class="data-row">
+            <td>Essencial</td>
+            <td class="val current-col">2.850,00</td>
+            <td class="val">2.850,00</td>
+            <td class="val">2.726,00</td>
+            <td class="val">2.602,00</td>
+            <td class="val">2.478,00</td>
+            <td class="val">2.354,00</td>
+            <td class="val">2.100,00</td>
+            <td class="val">2.100,00</td>
+            <td class="val">2.100,00</td>
+            <td class="val">2.100,00</td>
+            <td class="val">2.100,00</td>
+            <td class="val">2.100,00</td>
+          </tr>
+          <tr class="data-row">
+            <td>Não Essencial</td>
+            <td class="val current-col">870,00</td>
+            <td class="val">746,00</td>
+            <td class="val">622,00</td>
+            <td class="val">498,00</td>
+            <td class="val">350,00</td>
+            <td class="val">226,00</td>
+            <td class="val">48,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+          </tr>
+          <tr class="data-row">
+            <td>Lazer</td>
+            <td class="val current-col">500,00</td>
+            <td class="val">500,00</td>
+            <td class="val">300,00</td>
+            <td class="val">300,00</td>
+            <td class="val">200,00</td>
+            <td class="val">200,00</td>
+            <td class="val">200,00</td>
+            <td class="val">124,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+            <td class="val-zero">0,00</td>
+          </tr>
+
+          <tr class="block-sep"><td colspan="13"></td></tr>
+
+          <!-- ═══ BLOCO 4: CATEGORIAS % ═══ -->
+          <tr class="block-header categorias">
+            <td colspan="13">Categorias (%)</td>
+          </tr>
+          <tr class="data-row">
+            <td>Essencial</td>
+            <td class="val current-col">67,6%</td>
+            <td class="val">69,6%</td>
+            <td class="val">74,7%</td>
+            <td class="val">76,5%</td>
+            <td class="val">81,8%</td>
+            <td class="val">84,7%</td>
+            <td class="val">89,4%</td>
+            <td class="val">94,4%</td>
+            <td class="val">100,0%</td>
+            <td class="val">100,0%</td>
+            <td class="val">100,0%</td>
+            <td class="val">100,0%</td>
+          </tr>
+          <tr class="data-row">
+            <td>Não Essencial</td>
+            <td class="val current-col">20,6%</td>
+            <td class="val">18,2%</td>
+            <td class="val">17,0%</td>
+            <td class="val">14,7%</td>
+            <td class="val">11,6%</td>
+            <td class="val">8,1%</td>
+            <td class="val">2,0%</td>
+            <td class="val-zero">0,0%</td>
+            <td class="val-zero">0,0%</td>
+            <td class="val-zero">0,0%</td>
+            <td class="val-zero">0,0%</td>
+            <td class="val-zero">0,0%</td>
+          </tr>
+          <tr class="data-row">
+            <td>Lazer</td>
+            <td class="val current-col">11,9%</td>
+            <td class="val">12,2%</td>
+            <td class="val">8,2%</td>
+            <td class="val">8,8%</td>
+            <td class="val">6,6%</td>
+            <td class="val">7,2%</td>
+            <td class="val">8,5%</td>
+            <td class="val">5,6%</td>
+            <td class="val-zero">0,0%</td>
+            <td class="val-zero">0,0%</td>
+            <td class="val-zero">0,0%</td>
+            <td class="val-zero">0,0%</td>
+          </tr>
+
+          <tr class="block-sep"><td colspan="13"></td></tr>
+
+          <!-- ═══ BLOCO 5: RESUMO GERAL ═══ -->
+          <tr class="block-header resumo">
+            <td colspan="13">Resumo Geral</td>
+          </tr>
+          <tr class="data-row summary-row total-gasto">
+            <td>Total Gasto no Mês</td>
+            <td class="val current-col">4.220,00</td>
+            <td class="val">4.096,00</td>
+            <td class="val">3.648,00</td>
+            <td class="val">3.400,00</td>
+            <td class="val">3.028,00</td>
+            <td class="val">2.780,00</td>
+            <td class="val">2.348,00</td>
+            <td class="val">2.224,00</td>
+            <td class="val">2.100,00</td>
+            <td class="val">2.100,00</td>
+            <td class="val">2.100,00</td>
+            <td class="val">2.100,00</td>
+          </tr>
+          <tr class="data-row summary-row">
+            <td>Sobra do Mês</td>
+            <td class="val-pos current-col">4.280,00</td>
+            <td class="val-pos">4.404,00</td>
+            <td class="val-pos">4.852,00</td>
+            <td class="val-pos">5.100,00</td>
+            <td class="val-pos">5.472,00</td>
+            <td class="val-pos">5.720,00</td>
+            <td class="val-pos">6.152,00</td>
+            <td class="val-pos">6.276,00</td>
+            <td class="val-pos">6.400,00</td>
+            <td class="val-pos">6.400,00</td>
+            <td class="val-pos">6.400,00</td>
+            <td class="val-pos">6.400,00</td>
+          </tr>
+          <tr class="data-row summary-row sobra-retro">
+            <td>Sobra Retroativa Acum.</td>
+            <td class="val-pos current-col">4.280,00</td>
+            <td class="val-pos">8.684,00</td>
+            <td class="val-pos">13.536,00</td>
+            <td class="val-pos">18.636,00</td>
+            <td class="val-pos">24.108,00</td>
+            <td class="val-pos">29.828,00</td>
+            <td class="val-pos">35.980,00</td>
+            <td class="val-pos">42.256,00</td>
+            <td class="val-pos">48.656,00</td>
+            <td class="val-pos">55.056,00</td>
+            <td class="val-pos">61.456,00</td>
+            <td class="val-pos">67.856,00</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <strong>Wireframe — Consolidação Desktop</strong>
+    Dados fictícios. 12 de 24 meses visíveis; scroll horizontal revela o restante.
+    Coluna do mês atual destacada. Primeira coluna (rótulos) fixa durante scroll.
+  </div>
+
+</main>
+
+</body>
+</html>
