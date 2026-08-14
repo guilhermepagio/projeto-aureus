@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aureus — UX Validation Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FAFAFA; color: #1A1A2E; line-height: 1.6; padding: 40px; max-width: 800px; margin: 0 auto; }
+  h1 { color: #0D7377; border-bottom: 2px solid #E8F4F4; padding-bottom: 10px; }
+  h2 { color: #1A1A2E; margin-top: 30px; }
+  .card { background: #fff; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-right: 8px; }
+  .badge.critical { background: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; }
+  .badge.high { background: #FFF7ED; color: #EA580C; border: 1px solid #FDBA74; }
+  .badge.medium { background: #FEFCE8; color: #CA8A04; border: 1px solid #FDE047; }
+  .badge.low { background: #F3F4F6; color: #4B5563; border: 1px solid #D1D5DB; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<h1>Validation Report — Aureus UX</h1>
+<p><strong>DESIGN.md:</strong> <code>DESIGN.md</code><br>
+<strong>EXPERIENCE.md:</strong> <code>EXPERIENCE.md</code></p>
+
+<div class="card">
+  <h2>Veredito Geral</h2>
+  <p>Os contratos de UX estabelecem uma fundação limpa, robusta e muito bem alinhada com os requisitos da V1. Os revisores notaram excelente disciplina em cortar itens fora do escopo (ex: Dark Mode, i18n). No entanto, há lacunas críticas em <strong>Acessibilidade (navegação por teclado/leitor de tela)</strong> e na <strong>Documentação de Componentes visuais</strong> (Modais, Estados de Carregamento e Fluxo de Login) que precisam ser cobertas antes do hand-off final para desenvolvimento.</p>
+</div>
+
+<h2>Findings (Achados)</h2>
+
+<div class="card">
+  <h3>Crítico (4)</h3>
+  <ul>
+    <li><span class="badge critical">Rubric</span> <strong>Referências Visuais Faltantes:</strong> Os documentos DESIGN.md e EXPERIENCE.md não possuem links para os arquivos `.html` de wireframe que geramos.<br><em>Correção: Adicionar links para os HTMLs nas seções pertinentes.</em></li>
+    <li><span class="badge critical">Rubric</span> <strong>Componentes sem especificações visuais:</strong> Modal/Bottom Sheet, Empty State e Filter Toggle foram citados no comportamento, mas faltam no DESIGN.md.<br><em>Correção: Adicionar os specs na tabela de componentes.</em></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>Alto (2)</h3>
+  <ul>
+    <li><span class="badge high">Acessibilidade</span> <strong>Navegação por Teclado:</strong> Falta especificar o "focus trap" (travar o foco) dentro dos Modais/Bottom Sheets.<br><em>Correção: Adicionar regra em EXPERIENCE.md > Accessibility Floor.</em></li>
+    <li><span class="badge high">Acessibilidade</span> <strong>Leitores de Tela (Grid):</strong> A tabela de consolidação de 24 meses é super complexa. Falta orientação técnica de ARIA para leitura semântica.<br><em>Correção: Adicionar diretriz de ARIA Labels.</em></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>Médio (6)</h3>
+  <ul>
+    <li><span class="badge medium">Estrutura</span> <strong>Fluxo de Login (FR-34, FR-35):</strong> O PRD exige Autenticação via Google e Local, mas não há menção a isso nos fluxos.<br><em>Correção: Adicionar "Flow: Login" no EXPERIENCE.md.</em></li>
+    <li><span class="badge medium">Estrutura</span> <strong>Nomes dos Blocos de Consolidação:</strong> O DESIGN.md resume a "Receitas, Despesas, etc", mas o PRD exige nomes exatos: "Receitas por Conta", "Despesas por Conta", "Categorias (R$)" e "Categorias (%)".<br><em>Correção: Refinar a redação no DESIGN.md.</em></li>
+    <li><span class="badge medium">Rubric</span> <strong>Loading States:</strong> Não definimos como a tela fica enquanto os dados carregam.<br><em>Correção: Definir o Cold-Load State (spinners vs skeletons).</em></li>
+    <li><span class="badge medium">Rubric</span> <strong>Grid Empty State:</strong> Como a tela de Consolidação fica no dia 1, sem nenhuma conta cadastrada?<br><em>Correção: Descrever o empty state para a aba Consolidação.</em></li>
+    <li><span class="badge medium">Rubric</span> <strong>Failure Paths Faltantes:</strong> Faltam caminhos de falha nos fluxos 1 e 3.<br><em>Correção: Adicionar caminhos de falha (ex: timeout de rede).</em></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>Baixo (4)</h3>
+  <ul>
+    <li><span class="badge low">Estrutura</span> <strong>Seletor Rápido de Mês Inicial (FR-25):</strong> Além do swipe/setas, falta dizer se há como "pular" direto para 12 meses atrás sem apertar a seta 12 vezes.<br><em>Correção: Especificar se a Label do mês é clicável para abrir um modal de seleção.</em></li>
+    <li><span class="badge low">Estrutura</span> <strong>Bloqueio Rígido (FR-31):</strong> Impedir cadastro sem dependências deve ser listado explicitamente nas regras de erro.<br><em>Correção: Citar em Error States.</em></li>
+    <li><span class="badge low">Rubric</span> <strong>Protagonistas Genéricos:</strong> Os Key Flows usam "User" em vez de personas específicas.<br><em>Correção: Ajustar a semântica.</em></li>
+  </ul>
+</div>
+
+</body>
+</html>

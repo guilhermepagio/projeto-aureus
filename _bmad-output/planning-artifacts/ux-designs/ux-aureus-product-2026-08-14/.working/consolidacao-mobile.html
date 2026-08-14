@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Aureus — Consolidação (Mobile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0D7377;
+    --teal-light: #E8F4F4;
+    --amber: #D4A843;
+    --amber-light: #FDF6E8;
+    --bg: #FAFAFA;
+    --bg-card: #FFFFFF;
+    --text: #1A1A2E;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --border: #E5E7EB;
+    --border-light: #F3F4F6;
+    --positive: #16A34A;
+    --positive-bg: #F0FDF4;
+    --negative: #DC2626;
+    --negative-bg: #FEF2F2;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-up: 0 -4px 6px -1px rgba(0,0,0,0.05);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    /* Mobile-first constraints for the preview */
+    max-width: 414px;
+    margin: 0 auto;
+    min-height: 100vh;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    position: relative;
+    padding-bottom: 80px; /* Space for bottom nav */
+    background-color: var(--bg);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--bg-card);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .logo .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--amber);
+    border-radius: 50%;
+  }
+
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    padding: 16px 20px;
+    background: var(--bg);
+  }
+  
+  .page-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .month-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .month-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+  }
+
+  .month-name {
+    font-weight: 700;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .month-badge {
+    font-size: 10px;
+    color: var(--amber);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  /* ── SWIPE CONTAINER ── */
+  .swipe-container {
+    padding: 0 20px 20px 20px;
+  }
+
+  /* ── DATA BLOCKS ── */
+  .block {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .block-header {
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .block.receitas .block-header { background: var(--positive-bg); color: var(--positive); }
+  .block.despesas .block-header { background: var(--negative-bg); color: var(--negative); }
+  .block.categorias .block-header { background: var(--amber-light); color: #92740D; }
+  .block.resumo .block-header { background: var(--teal-light); color: var(--teal); }
+
+  .data-list {
+    list-style: none;
+  }
+
+  .data-item {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+  }
+  
+  .data-item:last-child {
+    border-bottom: none;
+  }
+
+  .item-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .item-val {
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .val-zero { color: var(--text-muted); }
+  .val-pos { color: var(--positive); font-weight: 600; }
+  .val-neg { color: var(--negative); font-weight: 600; }
+
+  /* ── RESUMO ESPECIAL ── */
+  .block.resumo .data-item {
+    padding: 16px;
+  }
+  
+  .block.resumo .item-name {
+    font-weight: 600;
+  }
+
+  .block.resumo .data-item:last-child {
+    background: var(--teal-light);
+    border-top: 2px solid var(--teal);
+  }
+
+  .block.resumo .data-item:last-child .item-name,
+  .block.resumo .data-item:last-child .item-val {
+    color: var(--teal);
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 414px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 20px 0; /* Extra padding for home indicator on iOS */
+    box-shadow: var(--shadow-up);
+    z-index: 100;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+    text-decoration: none;
+    flex: 1;
+  }
+
+  .nav-item.active {
+    color: var(--teal);
+  }
+
+  .nav-icon {
+    width: 24px;
+    height: 24px;
+    background: currentColor; /* Placeholder for icon */
+    border-radius: 4px;
+    opacity: 0.2;
+  }
+  
+  .nav-item.active .nav-icon {
+    opacity: 1;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.1;
+  }
+  
+  .annotation {
+    padding: 16px 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">Aureus<span class="dot"></span></div>
+  <button class="icon-btn">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+
+<main>
+  <div class="toolbar">
+    <h1 class="page-title">Consolidação</h1>
+    <div class="month-control">
+      <button class="month-btn">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="month-name">
+        Agosto 2026
+        <span class="month-badge">Mês Atual</span>
+      </div>
+      <button class="month-btn">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="swipe-container">
+    
+    <!-- Bloco 1: Receitas -->
+    <div class="block receitas">
+      <div class="block-header">
+        <span>Receitas</span>
+        <span>R$ 8.500,00</span>
+      </div>
+      <ul class="data-list">
+        <li class="data-item">
+          <span class="item-name">Conta Corrente</span>
+          <span class="item-val">8.500,00</span>
+        </li>
+        <li class="data-item">
+          <span class="item-name">Cartão A</span>
+          <span class="item-val val-zero">0,00</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bloco 2: Despesas -->
+    <div class="block despesas">
+      <div class="block-header">
+        <span>Despesas</span>
+        <span>R$ 4.220,00</span>
+      </div>
+      <ul class="data-list">
+        <li class="data-item">
+          <span class="item-name">Cartão A</span>
+          <span class="item-val">2.340,00</span>
+        </li>
+        <li class="data-item">
+          <span class="item-name">Conta Corrente</span>
+          <span class="item-val">1.200,00</span>
+        </li>
+        <li class="data-item">
+          <span class="item-name">Cartão B</span>
+          <span class="item-val">680,00</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bloco 3: Categorias R$ -->
+    <div class="block categorias">
+      <div class="block-header">
+        <span>Categorias (R$)</span>
+      </div>
+      <ul class="data-list">
+        <li class="data-item">
+          <span class="item-name">Essencial</span>
+          <span class="item-val">2.850,00</span>
+        </li>
+        <li class="data-item">
+          <span class="item-name">Não Essencial</span>
+          <span class="item-val">870,00</span>
+        </li>
+        <li class="data-item">
+          <span class="item-name">Lazer</span>
+          <span class="item-val">500,00</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Bloco 4: Categorias % -->
+    <div class="block categorias">
+      <div class="block-header">
+        <span>Categorias (%)</span>
+      </div>
+      <ul class="data-list">
+        <li class="data-item">
+          <span class="item-name">Essencial</span>
+          <span class="item-val">67,6%</span>
+        </li>
+        <li class="data-item">
+          <span class="item-name">Não Essencial</span>
+          <span class="item-val">20,6%</span>
+        </li>
+        <li class="data-item">
+          <span class="item-name">Lazer</span>
+          <span class="item-val">11,9%</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bloco 5: Resumo -->
+    <div class="block resumo">
+      <div class="block-header">
+        <span>Resumo Geral</span>
+      </div>
+      <ul class="data-list">
+        <li class="data-item">
+          <span class="item-name">Total Gasto</span>
+          <span class="item-val">4.220,00</span>
+        </li>
+        <li class="data-item">
+          <span class="item-name">Sobra do Mês</span>
+          <span class="item-val val-pos">+4.280,00</span>
+        </li>
+        <li class="data-item">
+          <span class="item-name">Acumulado</span>
+          <span class="item-val val-pos">+4.280,00</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+  
+  <div class="annotation">
+    ← Deslize para navegar entre os meses →
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <a href="#" class="nav-item active">
+    <div class="nav-icon"></div>
+    <span class="nav-label">Painel</span>
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-icon"></div>
+    <span class="nav-label">Desp.<br>Var.</span>
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-icon"></div>
+    <span class="nav-label">Desp.<br>Fixas</span>
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-icon"></div>
+    <span class="nav-label">Rec.<br>Fixas</span>
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-icon"></div>
+    <span class="nav-label">Rec.<br>Var.</span>
+  </a>
+</nav>
+
+</body>
+</html>
