@@ -6,5 +6,6 @@ _bmad/
 .agents/
 .claude/
 .github/
+.opencode/
 
 # _bmad-output/ é versionado (artefatos do projeto)
