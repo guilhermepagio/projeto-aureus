@@ -16,8 +16,8 @@ Entenda por que o Aureus existe e o que a V1 precisa resolver.
 
 Esta seção explica como o produto será estruturado depois que o PRD definiu o porquê e o quê.
 
-- **[Modelo de dados](technical/data-model/aureus-erd.dbml)** (Em revisão) — ERD, fonte DBML e premissas. Veja também o diagrama [PNG](technical/data-model/aureus-erd.png). O modelo ainda contém tabelas que divergem da V1 (como `usuarios`), o que será resolvido em uma decisão arquitetural.
-- **[Modelo de domínio](technical/domain-model/class-diagram.md)** (Em revisão) — Diagrama de classes e fonte Mermaid.
+- **[Modelo de dados](technical/data-model/aureus-erd.dbml)** — ERD, fonte DBML e premissas. Veja também o diagrama [PNG](technical/data-model/aureus-erd.png).
+- **[Modelo de domínio](technical/domain-model/class-diagram.md)** — Diagrama de classes e fonte Mermaid.
   
 *A arquitetura final ainda será produzida. Por isso, ERD e domínio são referências de trabalho, não contratos finais.*
 
@@ -39,7 +39,7 @@ Abaixo estão as referências de mockups e especificações para a V1, definindo
 
 Registre decisões que alterem escopo, entendimento ou coerência entre produto e técnica na pasta `decisions/`, usando o formato `YYYY-MM-DD-slug.md`. Cada decisão deve conter: contexto, decisão, impacto, status e links para as fontes afetadas.
 
-- [Autenticação na V1](decisions/2026-08-13-autenticacao-v1.md) — decisão pendente sobre a divergência entre PRD e modelos técnicos.
+- [Autenticação na V1](decisions/2026-08-13-autenticacao-v1.md) — adota OAuth 2.0 (Google), substituindo a senha local e isolando dados por usuário.
 
 ---
 *Nota: A pasta `_bmad-output/` na raiz mantém a trilha histórica de geração dos agentes e não substitui esta biblioteca pública consolidada.*
