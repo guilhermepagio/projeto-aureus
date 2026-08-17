@@ -16,3 +16,21 @@
 - source_spec: `none`
   summary: Resolve structural discrepancy for TipoMovimento
   evidence: DBML stores fixed/variable directly on transactions, while class diagram abstracts it via ContextoFinanceiro.
+- source_spec: none
+  summary: Story 1.2 - Autenticação via Google (OAuth 2.0) e Tratamento de Erros
+  evidence: Separado do Epic 1 completo para manter o foco na criação do esqueleto visual primeiro.
+- source_spec: none
+  summary: Story 1.3 - Proteção de Sessão e Isolamento de Dados
+  evidence: Separado do Epic 1 completo para manter o foco na criação do esqueleto visual primeiro.
+- source_spec: none
+  summary: Story 1.4 - Encerrar Sessão (Logout) e Limpeza de Estado
+  evidence: Separado do Epic 1 completo para manter o foco na criação do esqueleto visual primeiro.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md`
+  summary: Add Navigation icons
+  evidence: The UX design requires a bottom navigation bar with 5 icons, but the current implementation lacks icons.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md`
+  summary: Add semantic states colors to CSS tokens
+  evidence: Essential color tokens such as text colors, secondary backgrounds, and semantic states (success/error) are missing.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md`
+  summary: Add automated tests for client-side routing
+  evidence: Unverified navigation link paths and client-side routing paths without component integration tests.
