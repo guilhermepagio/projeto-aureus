@@ -20,9 +20,12 @@ Table usuarios {
   id uuid pk
   criado_em timestamptz [not null]
   atualizado_em timestamptz [not null]
+  ultimo_acesso timestamptz
   email varchar [unique, not null]
   nome varchar [not null]
-  senha varchar [not null]
+  imagem_url varchar
+  provider_issuer varchar [not null]
+  provider_subject varchar [unique, not null]
 }
 
 Table despesas {

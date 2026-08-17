@@ -1,18 +1,19 @@
 ---
 title: Modelo de domínio Java
-status: em revisão
+status: final
 ---
 
 # Diagrama de classes
 
-Este é um rascunho de domínio. `Conta`, `Categoria`, `Despesa` e `Receita` compõem o contexto financeiro; `Parcelamento` representa a distribuição mensal. `Usuario` permanece no desenho por compatibilidade histórica, mas autenticação está fora da V1 conforme o PRD.
+Este modelo de domínio representa o contexto financeiro da V1, incluindo a autenticação com OAuth 2.0 (Google). `Conta`, `Categoria`, `Despesa` e `Receita` compõem o contexto financeiro; `Parcelamento` representa a distribuição mensal. Os dados são isolados por `Usuario`, que armazena a identidade do provedor.
 
 ```mermaid
 classDiagram
+class Usuario { +UUID id +String email +String nome +String imagemUrl +String providerIssuer +String providerSubject +LocalDateTime ultimoAcesso }
 class Conta { +UUID id +String descricao +String observacoes }
 class Categoria { +UUID id +String descricao +String observacoes }
 class TipoMovimento { <<enumeration>> FIXO VARIAVEL }
-class ContextoFinanceiro { +Conta conta +Categoria categoria +TipoMovimento tipoMovimento }
+class ContextoFinanceiro { +Usuario usuario +Conta conta +Categoria categoria +TipoMovimento tipoMovimento }
 class Parcelamento { +BigDecimal valorParcela +Integer quantidadeParcelas +LocalDate dataPrimeiraParcela +LocalDate dataUltimaParcela }
 class Despesa { +UUID id +ContextoFinanceiro contexto +Parcelamento parcelamento +String descricao }
 class Receita { +UUID id +ContextoFinanceiro contexto +Parcelamento parcelamento +String descricao }
