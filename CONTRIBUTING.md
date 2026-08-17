@@ -6,38 +6,26 @@ O Aureus é um projeto de portfólio pessoal, sem fins comerciais no momento, de
 
 - `docs/` contém os documentos canônicos para leitura humana.
 - `_bmad-output/` preserva histórico e artefatos de trabalho do BMad.
-- Uma mudança de requisito começa em `docs/product/prd.md`.
-- Uma mudança técnica atualiza o documento técnico correspondente e, quando alterar entendimento ou escopo, registra uma decisão em `docs/decisions/YYYY-MM-DD-slug.md`.
-- Diagramas devem manter sua fonte editável e um resumo textual acessível.
 
 ## Fluxo de mudança
 
-1. Explique o motivo e o impacto da mudança.
-2. Atualize a fonte canônica em `docs/`.
-3. Atualize índices, links, status e artefatos derivados.
-4. Preserve o histórico do BMad; não crie cópias canônicas concorrentes.
-5. Revise a sequência `README → PRD → técnico` antes de publicar.
-
-Contribuições externas são bem-vindas quando respeitam esse fluxo. Como o projeto tem um único mantenedor, não há SLA, equipe de revisão ou promessa de integração automática.
+Como o projeto tem um único mantenedor, não há SLA, equipe de revisão ou promessa de integração automática.
 
 ## Branches e commits
 
-Use nomes curtos e descritivos, por exemplo `docs/readme-inicial`, `arch/modelo-dominio` ou `fix/typo-erd`.
+O projeto não utiliza *Issues* do GitHub para o acompanhamento do backlog. Todas as tarefas derivam diretamente do PRD (Product Requirements Document).
 
-Adote Conventional Commits:
+Portanto, as branches seguem a nomenclatura: `<tipo-alteracao>/<escopo>-<descricao-curta>`.
 
-```text
-docs: reorganiza biblioteca documental
-fix: corrige relação no modelo de dados
-chore: atualiza configuração do BMad
-```
+Para facilitar, adote a tabela abaixo tanto para o prefixo da branch quanto para o seu respectivo *Conventional Commit*:
+
+| Prefixo | Uso | Exemplo de Branch | Exemplo de Commit |
+| :--- | :--- | :--- | :--- |
+| **`feat`** | Nova funcionalidade ou requisito do PRD. | `feat/auth-adiciona-jwt` | `feat: adiciona validacao jwt no login` |
+| **`fix`** | Correção de bug ou falha. | `fix/ui-alinhamento-botoes` | `fix: corrige desalinhamento do botao na home` |
+| **`docs`** | Alterações exclusivas de documentação. | `docs/prd-atualiza-requisitos` | `docs: atualiza arquitetura no prd` |
+| **`refactor`** | Mudança estrutural sem alterar comportamento. | `refactor/api-limpeza-controlador` | `refactor: extrai validacao para servico` |
+| **`test`** | Criação ou ajuste de testes automatizados. | `test/auth-cobertura-login` | `test: garante cobertura de falha no login` |
+| **`chore`** | Atualizações de ferramentas, BMad ou configs. | `chore/bmad-atualiza-skill` | `chore: atualiza dependencias do projeto` |
 
 Use verbos no presente, descrição em minúsculas e uma primeira linha de até 72 caracteres.
-
-## Checklist
-
-- [ ] A fonte canônica em `docs/` foi atualizada.
-- [ ] Links relativos funcionam.
-- [ ] Status está escrito por extenso.
-- [ ] Diagramas têm fonte editável e explicação textual.
-- [ ] O README ainda conduz do produto ao técnico.
