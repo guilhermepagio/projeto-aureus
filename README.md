@@ -21,12 +21,6 @@ O planejamento, refinamento de requisitos, arquitetura técnica e UX foram orque
 
 A trilha completa do trabalho dos agentes fica registrada no repositório na pasta [**`_bmad-output`**](./_bmad-output/).
 
-## 🖼️ Board de Tarefas
-
-O quadro do projeto, que permite realizar o acompanhamento detalhado das tarefas, especificações e progresso de cada módulo do projeto é gerenciado através do **GitHub Projects**.
-
-[![Acessar Board de Documentação](https://img.shields.io/badge/Board_GitHub_Projects-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/users/guilhermepagio/projects/2)
-
 ## 📚 Índice
 
 Abaixo está a organização da estrutura do projeto. Por aqui é possível navegar e conheçer cada parte do **Aureus**.
