@@ -11,7 +11,7 @@ inputDocuments:
 
 ## Overview
 
-This document provides the complete epic and story breakdown for Aureus, decomposing the requirements from the PRD, UX Design if it exists, and Architecture requirements into implementable stories.
+Este documento apresenta a decomposição completa de requisitos do PRD, UX Design e Arquitetura do Aureus em Épicos e Histórias de Usuário implementáveis, refinado com base em revisões adversariais, tratamento de casos de borda e critérios de integridade técnica.
 
 ## Requirements Inventory
 
@@ -68,8 +68,8 @@ NFR4: Respostas rápidas e assíncronas do frontend para o backend, sem full-pag
 - [AD-2] O Backend deve ser estruturado em Monolito Modular (Modular Monolith).
 - [AD-3] Todas as alterações de schema do banco devem usar Flyway (ex: V1__init.sql).
 - [AD-4] O Frontend deve gerenciar o estado global, como Mês Selecionado, com Zustand.
-- [AD-5] O Frontend deve utilizar React Query (TanStack Query) com Axios/Fetch para consultas de dados.
-- [AD-6] O Token JWT deve ser armazenado exclusivamente em um HttpOnly Cookie seguro gerado pelo Backend.
+- [AD-5] O Frontend deve utilizar React Query (TanStack Query) com Axios/Fetch para consultas de dados e invalidação de cache automática nas mutações.
+- [AD-6] O Token JWT deve ser armazenado exclusivamente em um HttpOnly Cookie seguro gerado pelo Backend com `SameSite=Lax`.
 
 ### UX Design Requirements
 
@@ -136,237 +136,252 @@ FR30: Epic 4 - Bloco Resumo Geral
 
 ## Epic List
 
-### Epic 1: Autenticação e Navegação Segura (Auth & Shell)
-Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados. Além disso, fornece o "esqueleto" visual (shell e barra de navegação) para suportar as próximas funcionalidades.
-**FRs covered:** FR32, FR34, FR35, FR36, FR37
+* **Epic 1: Autenticação e Navegação Segura (Auth & Shell)** — Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados por usuário, fornecendo a casca visual e navegação principal (Pill Nav Desktop e Bottom Nav Mobile).
+* **Epic 2: Configuração Financeira Básica (Contas e Categorias)** — Permitir que o usuário configure suas origens financeiras e categorias macro com integridade referencial protegida contra exclusões acidentais.
+* **Epic 3: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas, arredondamento de centavos e sincronização de filtros.
+* **Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
 
-### Epic 2: Configuração Financeira Básica (Contas e Categorias)
-Permitir que o usuário configure suas origens de dinheiro e suas categorias macro, preparando o sistema para que as movimentações possam ser cadastradas.
-**FRs covered:** FR1, FR2, FR3, FR4, FR5, FR6, FR7, FR8, FR31
-
-### Epic 3: Lançamentos Financeiros (Despesas e Receitas)
-Permitir que o usuário registre, edite, visualize e exclua todos os tipos de entrada e saída financeira, visualizando cálculos de parcelamento em tempo real.
-**FRs covered:** FR9, FR10, FR11, FR12, FR13, FR14, FR15, FR16, FR17, FR18, FR19, FR20, FR21, FR22, FR23, FR24, FR33
-
-### Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)
-Dar ao usuário o poder de visualizar o impacto de suas decisões financeiras 24 meses no futuro, através de uma matriz consolidada com totais, categorias e sobras acumuladas.
-**FRs covered:** FR25, FR26, FR27, FR28, FR29, FR30
+---
 
 ## Epic 1: Autenticação e Navegação Segura (Auth & Shell)
 
-Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados. Além disso, fornece o "esqueleto" visual (shell e barra de navegação) para suportar as próximas funcionalidades.
+Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados por usuário. Fornece a casca visual unificada (shell e barra de navegação) com os tokens de design do sistema.
 
 ### Story 1.1: Esqueleto Visual e Barra de Navegação
 
 As a Usuário,
 I want visualizar a aplicação com o tema visual correto e acessar a barra de navegação principal,
-So that eu possa me familiarizar com a interface e me preparar para acessar as funcionalidades financeiras.
+So that eu possa me familiarizar com a interface e navegar facilmente entre as 5 áreas funcionais do sistema.
 
 **Acceptance Criteria:**
 
-**Given** que o usuário acessa o sistema pelo Desktop ou Mobile
+**Given** que o usuário acessa o sistema via Desktop ou Mobile
 **When** a interface básica é renderizada
-**Then** os tokens de cores, tipografia e bordas arredondadas devem estar aplicados
-**And** no Desktop deve haver uma "Pill Navigation" superior, e no Mobile um "Bottom Navigation" com 5 abas em ordem fixa
+**Then** os tokens de cores (Deep Teal, Warm Amber), tipografia (Plus Jakarta Sans, tabular-nums) e bordas arredondadas devem estar aplicados
+**And** no Desktop deve haver uma "Pill Navigation" superior, e no Mobile um "Bottom Navigation" com 5 abas em ordem fixa (Consolidação, Despesas Variáveis, Despesas Fixas, Receitas Variáveis, Receitas Fixas)
 
-### Story 1.2: Autenticação via Google (OAuth 2.0)
+### Story 1.2: Autenticação via Google (OAuth 2.0) e Tratamento de Erros
 
 As a Usuário não autenticado,
 I want entrar com minha conta do Google,
-So that eu possa acessar o Aureus sem precisar criar uma nova senha, garantindo a criação ou vínculo da minha conta local.
+So that eu possa acessar o Aureus com segurança e sem senha manual, criando ou vinculando minha conta local.
 
 **Acceptance Criteria:**
 
-**Given** que o usuário não está autenticado e está na tela de entrada
+**Given** que o usuário não está autenticado e está na tela de login
 **When** ele clica em "Entrar com Google" e autoriza o acesso
-**Then** o sistema valida a identidade externa
-**And** cria uma conta local (se for o primeiro acesso) ou reconhece a conta existente
+**Then** o sistema valida o token OpenID Connect emitido pelo Google
+**And** cria uma conta local (se for o primeiro acesso) ou reconhece a conta existente via subject ID externo
 **And** redireciona o usuário para a aba "Consolidação" de forma autenticada
+**Given** que o usuário cancela a autorização no Google ou ocorre erro de comunicação
+**When** o callback OAuth falha
+**Then** uma notificação Toast de erro amigável é exibida e o usuário permanece na tela de login de forma segura
 
 ### Story 1.3: Proteção de Sessão e Isolamento de Dados
 
-As a Usuário logado,
+As a Usuário autenticado,
 I want que minhas requisições sejam feitas sob uma sessão segura e isolada,
-So that nenhum outro usuário do sistema possa ler ou alterar minhas informações.
+So that nenhum outro usuário do sistema possa visualizar ou modificar meus dados.
 
 **Acceptance Criteria:**
 
-**Given** um usuário recém autenticado com sucesso
-**When** o backend emite as credenciais
-**Then** a sessão deve ser mantida via Cookie HttpOnly
-**And** todas as chamadas futuras de API devem filtrar dados obrigatoriamente pela coluna `usuario_id`
+**Given** um usuário autenticado com sucesso
+**When** o backend emite o token JWT de sessão
+**Then** o token deve ser armazenado exclusivamente em um Cookie seguro com flags `HttpOnly`, `SameSite=Lax` e `Secure` (em ambiente de produção)
+**And** todas as consultas e comandos no backend devem filtrar e validar obrigatoriamente a posse do registro pela chave estrangeira `usuario_id`
 
-### Story 1.4: Encerrar Sessão (Logout)
+### Story 1.4: Encerrar Sessão (Logout) e Limpeza de Estado
 
-As a Usuário logado,
+As a Usuário autenticado,
 I want ter a opção de encerrar minha sessão,
 So that eu possa proteger meus dados ao deixar o dispositivo.
 
 **Acceptance Criteria:**
 
 **Given** que o usuário está autenticado
-**When** ele aciona o comando "Sair"
-**Then** o Cookie HttpOnly é invalidado e o estado autenticado local é limpo
-**And** o usuário é redirecionado para a tela de login inicial
+**When** ele aciona o comando "Sair" na interface
+**Then** o backend invalida o Cookie de sessão e o frontend limpa todos os dados em cache (Zustand e React Query)
+**And** o usuário é redirecionado para a tela de login inicial sem retenção de estado anterior
+
+---
 
 ## Epic 2: Configuração Financeira Básica (Contas e Categorias)
 
-Permitir que o usuário configure suas origens de dinheiro e suas categorias macro, preparando o sistema para que as movimentações possam ser cadastradas.
+Permitir que o usuário configure suas origens de dinheiro e suas categorias macro, preparando o sistema para que as movimentações possam ser cadastradas com integridade referencial.
 
-### Story 2.1: Gestão de Contas (CRUD)
+### Story 2.1: Gestão de Contas (CRUD) com Proteção de Vínculo
 
 As a Usuário,
 I want criar, visualizar, editar e excluir minhas Contas financeiras,
-So that eu possa cadastrar locais de origem ou destino (ex: Conta Corrente, Cartão de Crédito) para minhas movimentações.
+So that eu possa cadastrar locais de origem ou destino (ex: Conta Corrente, Carteira, Cartão) para minhas movimentações.
 
 **Acceptance Criteria:**
 
 **Given** que o usuário está autenticado
 **When** ele acessa o gerenciamento de Contas e preenche Descrição (obrigatório) e Observações (opcional)
-**Then** ele deve ser capaz de criar a Conta e visualizá-la na listagem
-**And** ele pode editar esses campos posteriormente
-**And** pode excluir a Conta, exceto se o backend retornar erro informando que ela já possui Movimentações vinculadas (neste caso, a exclusão é bloqueada)
+**Then** ele cria a Conta e a visualiza na listagem ordenada
+**And** ele pode editar a Descrição e Observações posteriormente
+**Given** que o usuário solicita a exclusão de uma Conta
+**When** a Conta possui movimentações ativas vinculadas
+**Then** o backend rejeita a exclusão via regra `ON DELETE RESTRICT` e retorna a contagem de movimentações associadas
+**And** o frontend exibe um modal explicativo informando a quantidade de lançamentos vinculados e bloqueando a remoção até que eles sejam realocados ou excluídos
 
-### Story 2.2: Gestão de Categorias (CRUD)
+### Story 2.2: Gestão de Categorias (CRUD) com Proteção de Vínculo
 
 As a Usuário,
 I want criar, visualizar, editar e excluir Categorias financeiras,
-So that eu tenha como classificar minhas entradas e saídas de forma organizada.
+So that eu possa classificar minhas receitas e despesas de forma organizada.
 
 **Acceptance Criteria:**
 
 **Given** que o usuário está autenticado
 **When** ele acessa o gerenciamento de Categorias e preenche Descrição e Observações
-**Then** ele pode criar e visualizar a listagem de Categorias
-**And** pode atualizar os dados
-**And** a exclusão só será permitida se não existirem movimentações associadas a essa Categoria
+**Then** ele cria e visualiza a listagem de Categorias
+**And** pode atualizar os dados a qualquer momento
+**Given** uma Categoria vinculada a lançamentos financeiros
+**When** o usuário tenta excluí-la
+**Then** a exclusão é bloqueada com mensagem explícita e contagem de itens que utilizam a categoria
 
-### Story 2.3: Restrição de Cadastro sem Dependências
+### Story 2.3: Restrição Granular de Cadastro sem Dependências
 
 As a Usuário com conta recém-criada,
-I want ser instruído a criar minhas Contas e Categorias antes de fazer lançamentos financeiros,
-So that eu não me depare com formulários vazios de seleção e erros no momento de salvar.
+I want ser orientado sobre quais dependências (Contas ou Categorias) preciso cadastrar antes de fazer lançamentos,
+So that eu não enfrente formulários com seletores vazios ou erros de validação.
 
 **Acceptance Criteria:**
 
-**Given** que o usuário não possui nenhuma Conta ou Nenhuma Categoria cadastrada
-**When** ele abre o Modal ou Bottom Sheet para adicionar qualquer Movimentação
-**Then** o formulário deve impedir o cadastro e os selects devem mostrar que não há opções
-**And** uma mensagem amigável de "Empty State" deve orientá-lo a cadastrar as dependências primeiro, com um link direto para a tela de gerenciamento
+**Given** que o usuário abre o formulário de cadastro de Movimentação
+**When** não há Contas cadastradas (mas existem Categorias)
+**Then** o seletor de Contas exibe estado vazio e um botão/link com CTA direto para "Criar Conta"
+**When** não há Categorias cadastradas (mas existem Contas)
+**Then** o seletor de Categorias exibe estado vazio e um botão/link com CTA direto para "Criar Categoria"
+**When** não há nem Contas nem Categorias
+**Then** o formulário exibe um Empty State orientando a criação inicial de ambas as dependências
+
+---
 
 ## Epic 3: Lançamentos Financeiros (Despesas e Receitas)
 
-Permitir que o usuário registre, edite, visualize e exclua todos os tipos de entrada e saída financeira, visualizando cálculos de parcelamento em tempo real.
+Permitir que o usuário registre, edite, visualize e exclua todos os tipos de entrada e saída financeira, com pré-visualização de cálculos, distribuição precisa de centavos e sincronização de filtros.
 
-### Story 3.1: Lançamentos Fixos (Despesas e Receitas)
+### Story 3.1: Lançamentos Fixos (Despesas e Receitas) com Vigência
 
 As a Usuário,
 I want registrar receitas e despesas fixas recorrentes,
-So that eu cadastre valores que se repetem todo mês sem me preocupar com data de término.
+So that valores mensais contínuos sejam projetados automaticamente ao longo de toda a grade.
 
 **Acceptance Criteria:**
 
-**Given** que existem Contas e Categorias criadas
-**When** o usuário preenche e salva o formulário Modal/Bottom Sheet de itens Fixos
-**Then** os dados são listados na aba correspondente
-**And** ao editar um valor, a atualização substitui o dado anterior no banco
-**And** ele pode excluir o registro caso a despesa/receita deixe de existir permanentemente
+**Given** que existem Contas e Categorias cadastradas
+**When** o usuário preenche e salva o formulário Modal/Bottom Sheet de itens Fixos informando Valor, Descrição, Conta, Categoria e Data de Início
+**Then** o registro é salvo com sua competência inicial e projetado nos meses subsequentes
+**And** ao editar o valor de um item fixo, a alteração define o novo valor projetado a partir da data de vigência editada
+**And** o usuário pode excluir o registro fixo permanentemente com confirmação via modal
 
-### Story 3.2: Lançamentos Variáveis e Parcelados (Despesas e Receitas)
+### Story 3.2: Lançamentos Variáveis e Parcelados com Arredondamento de Centavos
 
 As a Usuário,
-I want registrar compras e entradas parceladas,
-So that o sistema saiba que aquele valor afeta apenas um intervalo específico de meses.
+I want registrar compras e entradas parceladas com cálculo em tempo real e distribuição exata de centavos,
+So that o sistema projete com exatidão as parcelas sem divergências de arredondamento.
 
 **Acceptance Criteria:**
 
-**Given** que o usuário está no formulário Modal/Bottom Sheet de itens Variáveis
-**When** ele preenche os campos numéricos e de data
-**Then** ele é obrigado a informar Valor Parcela, Nº Parcelas e Primeira Parcela
-**And** os campos calculados (Valor Total e Última Parcela) são gerados em tempo real na interface (Calculation Preview)
-**And** o item é salvo na base de dados com esses metadados para projeção futura
+**Given** que o usuário preenche o formulário de itens Variáveis
+**When** ele informa Valor Total, Nº de Parcelas (>= 1) e Primeira Parcela (mês/ano)
+**Then** o componente Calculation Preview calcula e exibe em tempo real o Valor da Parcela e a Última Parcela no formato `YearMonth`
+**And** quando a divisão do Valor Total pelo Nº de Parcelas gerar centavos fracionados, o resíduo é alocado na primeira parcela para que a soma das parcelas seja rigorosamente igual ao Valor Total
+**And** parcelamentos com duração superior a 24 meses são persistidos integralmente e projetados na grade de acordo com a janela de meses visualizada
 
 ### Story 3.3: Lançamentos Variáveis à Vista (Parcela Única)
 
 As a Usuário,
-I want informar compras ou entradas pontuais que não foram parceladas,
-So that a movimentação incida de forma isolada em um único mês da minha matriz.
+I want informar compras ou entradas pontuais não parceladas,
+So that a movimentação incida de forma isolada em um único mês da minha grade.
 
 **Acceptance Criteria:**
 
-**Given** que estou preenchendo o formulário de itens Variáveis
-**When** eu defino o Nº Parcelas como "1"
-**Then** o sistema entende e valida a entrada como compra à vista
-**And** o Valor Total reflete instantaneamente o Valor Parcela, e a Última Parcela fica igual à Primeira
-**And** o registro é processado e salvo com sucesso
+**Given** que o usuário está no formulário de itens Variáveis
+**When** ele define o Nº Parcelas como "1"
+**Then** o sistema valida a entrada como compra à vista
+**And** o Valor Total reflete instantaneamente o Valor Parcela, e a Última Parcela é preenchida com o mesmo mês da Primeira Parcela
+**And** o registro é salvo afetando exclusivamente o mês selecionado
 
-### Story 3.4: Sincronização de Visão Mensal e Filtro Global (Listas)
+### Story 3.4: Sincronização de Visão Mensal, Invalidação de Cache e Filtro Global
 
 As a Usuário,
-I want que minhas abas de listagem mostrem apenas o que afeta o mês selecionado atualmente ou, opcionalmente, todo o histórico,
-So that a tela fique limpa e eu encontre rapidamente as transações relevantes.
+I want que minhas listagens mostrem os itens do mês ativo com atualização imediata após mutações,
+So that meus dados estejam sempre sincronizados entre as abas sem recarregamento de página.
 
 **Acceptance Criteria:**
 
-**Given** que a lista de Movimentações (Despesas ou Receitas Variáveis) está sendo exibida
-**When** o mês X está ativo no estado global de navegação
-**Then** a lista exibe nativamente apenas as movimentações cujas parcelas cobrem aquele mês X
-**And** o usuário pode clicar no "Filtro Global / Ver Todos" para desativar a sincronização do mês e listar o histórico completo
+**Given** que o usuário visualiza a lista de Despesas ou Receitas
+**When** o mês X está ativo no estado global (Zustand)
+**Then** a lista exibe apenas as movimentações vigentes no mês X
+**And** se não houver registros no mês X, um componente `EmptyState` contextualizado é renderizado
+**When** o usuário clica no toggle "Filtro Global / Ver Todos", a restrição de mês é desligada e todas as transações são listadas
+**Given** que uma movimentação é criada, editada ou excluída
+**When** a mutação conclui com sucesso
+**Then** as queries do React Query para a listagem e para o painel de Consolidação são invalidadas automaticamente, refletindo as alterações em tempo real
+
+---
 
 ## Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)
 
-Dar ao usuário o poder de visualizar o impacto de suas decisões financeiras 24 meses no futuro, através de uma matriz consolidada com totais, categorias e sobras acumuladas.
+Dar ao usuário o poder de visualizar o impacto de suas decisões financeiras 24 meses no futuro, através de uma matriz consolidada com totais, categorias, sobras acumuladas e navegação responsiva.
 
-### Story 4.1: Seleção de Mês e Estrutura do Data Grid
+### Story 4.1: Seleção de Mês, Navegação Temporal e Grid com Suporte a Gestos Mobile
 
 As a Usuário,
-I want selecionar um mês inicial e ver a estrutura base de uma grade de 24 colunas,
-So that eu possa navegar no tempo com facilidade através do scroll horizontal sem perder o contexto.
+I want selecionar um mês inicial e navegar em uma grade de 24 colunas com suporte a scroll e gestos mobile,
+So that eu possa visualizar o horizonte financeiro com fluidez no Desktop e Mobile.
 
 **Acceptance Criteria:**
 
-**Given** que acesso a aba "Consolidação"
-**When** a tela carrega ou eu escolho um mês no calendário global (Month Picker)
-**Then** o sistema renderiza horizontalmente 24 colunas de meses a partir do selecionado
-**And** a primeira coluna lateral (que contém os nomes das Contas/Categorias) deve ficar fixa ("sticky") enquanto eu realizo o scroll horizontal
+**Given** que o usuário acessa a aba "Consolidação"
+**When** a tela carrega ou o usuário seleciona um mês no Month Picker (limitado operacionalmente entre -5 anos e +5 anos)
+**Then** a matriz renderiza horizontalmente 24 colunas de meses a partir do mês escolhido
+**And** a primeira coluna lateral com os nomes de Contas e Categorias permanece fixa (`sticky`) durante a rolagem horizontal
+**And** no Mobile, o usuário pode realizar gestos de Swipe horizontal para avançar ou recuar o mês de foco da visualização
 
 ### Story 4.2: Bloco de Consolidação por Conta (Receitas e Despesas)
 
 As a Usuário,
-I want visualizar sub-tabelas que agrupam meus ganhos e gastos por Conta,
-So that eu saiba exatamente o saldo movimentado em cada origem de dinheiro mês a mês.
+I want visualizar blocos consolidados que agrupam meus ganhos e gastos por Conta,
+So that eu conheça o fluxo mensal de cada uma das minhas contas cadastradas.
 
 **Acceptance Criteria:**
 
-**Given** a estrutura da Matriz de 24 meses carregada
-**When** os dados financeiros são inseridos no Data Grid
-**Then** o sistema exibe o "Bloco Receitas", somando variáveis e fixas por mês para cada Conta existente
-**And** exibe o "Bloco Despesas", repetindo a mesma lógica para as saídas
-**And** se uma conta não tiver movimentações num determinado mês, a célula exibe o valor zerado (Empty State)
+**Given** a grade de 24 meses carregada
+**When** os dados financeiros são processados
+**Then** o "Bloco Receitas por Conta" exibe a soma de receitas fixas e variáveis mês a mês para cada Conta
+**And** o "Bloco Despesas por Conta" exibe a soma de despesas fixas e variáveis mês a mês para cada Conta
+**And** células de meses sem movimentação para determinada Conta exibem o valor `R$ 0,00`
 
-### Story 4.3: Bloco Analítico de Categorias (Valores e Percentuais)
+### Story 4.3: Bloco Analítico de Categorias (Valores e Percentuais com Proteção Zero)
 
 As a Usuário,
-I want visualizar as Despesas somadas por Categoria e sua representação percentual,
-So that eu tenha uma visão imediata de quais macro-áreas estão consumindo minha renda.
+I want visualizar as despesas somadas por Categoria e sua representação percentual em relação ao total gasto,
+So that eu identifique quais áreas concentram a maior fatia do meu orçamento.
 
 **Acceptance Criteria:**
 
-**Given** o carregamento da Matriz de 24 meses
-**When** a seção de Categorias for renderizada
-**Then** o "Bloco Categorias (R$)" deve calcular a soma de todos os gastos por categoria em cada mês
-**And** o "Bloco Categorias (%)" deve exibir a proporção matemática `(Gasto da Categoria / Gasto Total do Mês) * 100`
-**And** se o mês não possuir nenhum gasto, o percentual de todas as categorias deve apresentar "0%" para evitar erros de divisão
+**Given** a renderização da seção de Categorias na Consolidação
+**When** os cálculos por categoria são efetuados para cada mês
+**Then** o "Bloco Categorias (R$)" exibe o valor total gasto por categoria
+**And** o "Bloco Categorias (%)" calcula e exibe a proporção percentual `(Gasto da Categoria / Gasto Total do Mês) * 100`
+**And** se o Total Gasto do mês for igual a R$ 0,00, todas as categorias exibem `0%`, prevenindo divisão por zero (`NaN`)
 
-### Story 4.4: Bloco de Resumo Geral e Sobra Acumulada
+### Story 4.4: Bloco de Resumo Geral com Sobra Histórica Acumulada
 
 As a Usuário,
-I want visualizar a "Sobra" de cada mês e o saldo retroativo sendo propagado para o futuro,
-So that eu saiba com exatidão se minhas finanças estão evoluindo de forma sustentável ou se vou entrar no negativo lá na frente.
+I want visualizar a sobra líquida mensal e a sobra retroativa acumulada desde o histórico pré-grade,
+So that eu saiba a real evolução patrimonial e a sustentabilidade das minhas finanças ao longo dos 24 meses.
 
 **Acceptance Criteria:**
 
-**Given** todos os blocos anteriores calculados e visíveis
-**When** a matriz de Consolidação renderiza a linha final
-**Then** deve existir uma linha "Total Gasto" (somatória de todas as despesas) e uma linha "Sobra do Mês" (Receitas - Despesas daquele mês isolado)
-**And** deve existir uma linha "Sobra Retroativa Acumulada", cujo valor no mês `n` é a `Sobra do Mês n` somada à `Sobra Retroativa Acumulada do Mês n-1`
+**Given** todos os blocos anteriores calculados
+**When** as linhas de resumo da Consolidação são renderizadas
+**Then** a linha "Total Gasto" exibe a somatória de todas as despesas do mês
+**And** a linha "Sobra do Mês" exibe a diferença `Receitas do Mês - Despesas do Mês`
+**And** o backend calcula e envia o saldo acumulado histórico anterior ao primeiro mês da grade
+**And** a linha "Sobra Retroativa Acumulada" computa no primeiro mês `Saldo Histórico Pré-Grade + Sobra do Mês 1` e, para os meses subsequentes `n`, `Sobra Retroativa Mês n = Sobra Retroativa Mês n-1 + Sobra do Mês n`
