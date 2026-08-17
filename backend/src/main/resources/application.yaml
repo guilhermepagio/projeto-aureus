@@ -1,3 +1,28 @@
 spring:
   application:
     name: backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/aureus
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:fake-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:fake-client-secret}
+            scope:
+              - openid
+              - profile
+              - email
+
+jwt:
+  secret: ${JWT_SECRET:8f8a8473822a4d70b33b006a6b82b9937b8b4abcf35e408dbb0a1d4a04791e84}
+  expiration: 86400000
