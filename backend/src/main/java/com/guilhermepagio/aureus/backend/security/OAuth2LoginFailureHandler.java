@@ -14,6 +14,6 @@ public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHan
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        getRedirectStrategy().sendRedirect(request, response, "/login?error=true");
+        getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173/login?error=true");
     }
 }

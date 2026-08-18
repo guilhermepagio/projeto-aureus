@@ -45,6 +45,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         cookie.setMaxAge(86400); // 24h
         response.addCookie(cookie);
 
-        getRedirectStrategy().sendRedirect(request, response, "/");
+        getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173/");
     }
 }
