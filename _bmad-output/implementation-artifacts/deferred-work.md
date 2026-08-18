@@ -99,3 +99,38 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md`
   summary: Missing verification for Hibernate tenant resolution.
   evidence: There are no tests verifying that `CurrentTenantIdentifierResolverImpl` correctly returns the value from `TenantContext`.
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
+  summary: Loss of Spring Context in Tenant Resolver
+  evidence: application.yaml changed tenant_identifier_resolver to a fully qualified class name, bypassing Spring context.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
+  summary: Security Vulnerability via URL Token Transmission
+  evidence: OAuth2LoginSuccessHandler removed Cookie import, potentially exposing JWT.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
+  summary: Missing JWT Validation Error Handling
+  evidence: JwtUtil removed JwtException catch, potentially leading to 500s instead of 401s.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
+  summary: Unrecoverable Profile Image Error State
+  evidence: Header.tsx uses setImgError(true) but does not reset it if the profileImage prop changes.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
+  summary: Hardcoded Avatar Fallback
+  evidence: Header.tsx renders a hardcoded "U" instead of a dynamic initial.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
+  summary: Non-Semantic DOM Structure
+  evidence: Header.tsx includes an empty div for header-left just to satisfy CSS grid.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
+  summary: Tenant identifier resolver configuration lacks verification
+  evidence: No tests exist to assert tenant context is actively resolved and applied.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
+  summary: Profile image referrer policy is unverified
+  evidence: No component tests check that the img tag receives the referrerPolicy attribute.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
+  summary: Application navigation layout composition is unverified
+  evidence: No tests exist to verify that Navigation is properly rendered within Header.

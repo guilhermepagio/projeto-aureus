@@ -1,0 +1,204 @@
+diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/repository/UsuarioRepository.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/repository/UsuarioRepository.java
+index 3a3cf51..46cb0d8 100644
+--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/repository/UsuarioRepository.java
++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/repository/UsuarioRepository.java
+@@ -1,12 +1,11 @@
+ package com.guilhermepagio.aureus.backend.repository;
+ 
+-import com.guilhermepagio.aureus.backend.domain.Usuario;
++import java.util.Optional;
++
+ import org.springframework.data.jpa.repository.JpaRepository;
+-import org.springframework.stereotype.Repository;
+ 
+-import java.util.Optional;
++import com.guilhermepagio.aureus.backend.domain.Usuario;
+ 
+-@Repository
+ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+     Optional<Usuario> findByGoogleSubjectId(String googleSubjectId);
+ }
+diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtUtil.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtUtil.java
+index 223543d..5dc639a 100644
+--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtUtil.java
++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtUtil.java
+@@ -1,13 +1,14 @@
+ package com.guilhermepagio.aureus.backend.security;
+ 
+-import io.jsonwebtoken.JwtException;
+-import io.jsonwebtoken.Jwts;
+-import io.jsonwebtoken.security.Keys;
++import java.util.Date;
++
++import javax.crypto.SecretKey;
++
+ import org.springframework.beans.factory.annotation.Value;
+ import org.springframework.stereotype.Component;
+ 
+-import javax.crypto.SecretKey;
+-import java.util.Date;
++import io.jsonwebtoken.Jwts;
++import io.jsonwebtoken.security.Keys;
+ 
+ @Component
+ public class JwtUtil {
+diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
+index c0e05b1..086724f 100644
+--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
+@@ -1,18 +1,19 @@
+ package com.guilhermepagio.aureus.backend.security;
+ 
++import java.io.IOException;
++
++import org.springframework.security.core.Authentication;
++import org.springframework.security.oauth2.core.user.OAuth2User;
++import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
++import org.springframework.stereotype.Component;
++
+ import com.guilhermepagio.aureus.backend.domain.Usuario;
+ import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
++
+ import jakarta.servlet.ServletException;
+-import jakarta.servlet.http.Cookie;
+ import jakarta.servlet.http.HttpServletRequest;
+ import jakarta.servlet.http.HttpServletResponse;
+ import lombok.RequiredArgsConstructor;
+-import org.springframework.security.core.Authentication;
+-import org.springframework.security.oauth2.core.user.OAuth2User;
+-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+-import org.springframework.stereotype.Component;
+-
+-import java.io.IOException;
+ 
+ @Component
+ @RequiredArgsConstructor
+diff --git a/backend/src/main/resources/application.yaml b/backend/src/main/resources/application.yaml
+index 646fc8e..88335dc 100644
+--- a/backend/src/main/resources/application.yaml
++++ b/backend/src/main/resources/application.yaml
+@@ -11,7 +11,7 @@ spring:
+     properties:
+       hibernate:
+         dialect: org.hibernate.dialect.PostgreSQLDialect
+-        tenant_identifier_resolver: currentTenantIdentifierResolverImpl
++        tenant_identifier_resolver: com.guilhermepagio.aureus.backend.security.CurrentTenantIdentifierResolverImpl
+   security:
+     oauth2:
+       client:
+diff --git a/frontend/src/App.tsx b/frontend/src/App.tsx
+index 2a177a9..79bf8b1 100644
+--- a/frontend/src/App.tsx
++++ b/frontend/src/App.tsx
+@@ -21,8 +21,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+   
+   return (
+     <>
+-      <Header />
+-      <Navigation />
++      <Header>
++        <Navigation />
++      </Header>
+       <main style={{ paddingBottom: '80px' }}>
+         {children}
+       </main>
+diff --git a/frontend/src/components/Header/Header.css b/frontend/src/components/Header/Header.css
+index b492a7d..9219feb 100644
+--- a/frontend/src/components/Header/Header.css
++++ b/frontend/src/components/Header/Header.css
+@@ -1,6 +1,6 @@
+ .app-header {
+-  display: flex;
+-  justify-content: space-between;
++  display: grid;
++  grid-template-columns: 1fr auto 1fr;
+   align-items: center;
+   padding: 1rem;
+   background-color: var(--color-background-primary, #ffffff);
+@@ -9,12 +9,20 @@
+   z-index: 100;
+ }
+ 
+-.header-spacer {
+-  flex: 1;
++.header-left {
++  display: flex;
++  justify-content: flex-start;
+ }
+ 
+-.header-profile {
++.header-center {
++  display: flex;
++  justify-content: center;
++}
++
++.header-right {
+   position: relative;
++  display: flex;
++  justify-content: flex-end;
+ }
+ 
+ .profile-button {
+diff --git a/frontend/src/components/Header/Header.tsx b/frontend/src/components/Header/Header.tsx
+index 01b3eaa..506443a 100644
+--- a/frontend/src/components/Header/Header.tsx
++++ b/frontend/src/components/Header/Header.tsx
+@@ -5,7 +5,11 @@ import { useAuthStore } from '../../store/authStore';
+ import toast from 'react-hot-toast';
+ import './Header.css';
+ 
+-const Header: React.FC = () => {
++interface HeaderProps {
++  children?: React.ReactNode;
++}
++
++const Header: React.FC<HeaderProps> = ({ children }) => {
+   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+   const [isLoggingOut, setIsLoggingOut] = useState(false);
+   const [imgError, setImgError] = useState(false);
+@@ -55,8 +59,15 @@ const Header: React.FC = () => {
+ 
+   return (
+     <header className="app-header">
+-      <div className="header-spacer"></div>
+-      <div className="header-profile" ref={dropdownRef}>
++      <div className="header-left"></div>
++      
++      {children && (
++        <div className="header-center">
++          {children}
++        </div>
++      )}
++
++      <div className="header-right" ref={dropdownRef}>
+         <button 
+           className="profile-button" 
+           onClick={toggleDropdown}
+@@ -65,7 +76,13 @@ const Header: React.FC = () => {
+           aria-label="Menu do usuário"
+         >
+           {profileImage && !imgError ? (
+-            <img src={profileImage} alt="" className="profile-image" onError={() => setImgError(true)} />
++            <img 
++              src={profileImage} 
++              alt="" 
++              className="profile-image" 
++              referrerPolicy="no-referrer" 
++              onError={() => setImgError(true)} 
++            />
+           ) : (
+             <div className="profile-placeholder">U</div>
+           )}
+diff --git a/frontend/src/components/Navigation/Navigation.css b/frontend/src/components/Navigation/Navigation.css
+index f973aa3..a74a784 100644
+--- a/frontend/src/components/Navigation/Navigation.css
++++ b/frontend/src/components/Navigation/Navigation.css
+@@ -64,7 +64,7 @@
+     width: auto;
+     background-color: transparent;
+     box-shadow: none;
+-    padding: 24px;
++    padding: 0;
+     display: flex;
+     justify-content: center;
+   }

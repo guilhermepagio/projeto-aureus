@@ -21,9 +21,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   return (
     <>
-      <Header />
-      <Navigation />
-      <main style={{ paddingBottom: '80px' }}>
+      <Header>
+        <Navigation />
+      </Header>
+      <main className="main-content">
         {children}
       </main>
     </>

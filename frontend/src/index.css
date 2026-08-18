@@ -46,3 +46,14 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
+
+/* Mobile Only: padding for fixed bottom navigation */
+.main-content {
+  padding-bottom: 80px;
+}
+
+@media (min-width: 769px) {
+  .main-content {
+    padding-bottom: 0;
+  }
+}

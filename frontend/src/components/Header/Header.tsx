@@ -5,7 +5,11 @@ import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
 import './Header.css';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  children?: React.ReactNode;
+}
+
+const Header: React.FC<HeaderProps> = ({ children }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -55,8 +59,13 @@ const Header: React.FC = () => {
 
   return (
     <header className="app-header">
-      <div className="header-spacer"></div>
-      <div className="header-profile" ref={dropdownRef}>
+      <div className="header-left"></div>
+      
+      <div className="header-center">
+        {children}
+      </div>
+
+      <div className="header-right" ref={dropdownRef}>
         <button 
           className="profile-button" 
           onClick={toggleDropdown}
@@ -65,7 +74,13 @@ const Header: React.FC = () => {
           aria-label="Menu do usuário"
         >
           {profileImage && !imgError ? (
-            <img src={profileImage} alt="" className="profile-image" onError={() => setImgError(true)} />
+            <img 
+              src={profileImage} 
+              alt="" 
+              className="profile-image" 
+              referrerPolicy="no-referrer" 
+              onError={() => setImgError(true)} 
+            />
           ) : (
             <div className="profile-placeholder">U</div>
           )}
