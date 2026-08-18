@@ -49,3 +49,32 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-4-encerrar-sessao.md`
   summary: Configure secure attribute for session cookie based on environment
   evidence: AuthController hardcodes secure(false) for the AUREUS_SESSION cookie, which must be enabled dynamically for production.
+
+## Deferred from: code review of spec-1-1-esqueleto-visual-barra-navegacao.md (2026-08-18)
+- Interface de carregamento (Loading) não estlizada [frontend/src/App.tsx]
+- Redirecionamento de login não preserva o estado de rota prévia (`location.state`) [frontend/src/App.tsx:47]
+- Rotas hardcoded ao invés de usar constantes centralizadas [frontend/src/App.tsx]
+- Ausência de Error Boundary genérico para falhas do React [frontend/src/App.tsx]
+- Ausência de testes end-to-end e componentes para o Auth Fetch e Logout
+- Ausência de verificação contra bypass de rota protegida
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md`
+  summary: Missing verification for Google profile picture extraction
+  evidence: No assertion checks that the picture attribute from OAuth2User is correctly mapped and saved to the user entity.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md`
+  summary: Missing verification for profile picture inclusion in /me response
+  evidence: No test covers this endpoint or its consumption in the frontend.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md`
+  summary: Missing verification for Header logout and profile UI
+  evidence: No frontend test checks that Header displays the user profile image or that logout triggers the flow.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md`
+  summary: Unnecessary Database Writes on Login
+  evidence: OAuth2LoginSuccessHandler saves the user entity unconditionally on every login.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md`
+  summary: Inefficient Profile Fetching
+  evidence: AuthController.me() queries the database on every check.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md`
+  summary: Direct Repository Access in AuthController
+  evidence: Bypasses the service layer.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md`
+  summary: Missing Strongly Typed DTO in AuthController
+  evidence: /api/auth/me endpoint returns a loosely typed Map<String, Object>.

@@ -74,3 +74,18 @@ O esqueleto visual constitui a base responsiva da interface (Desktop e Mobile) s
 
 - Layout responsivo Mobile-first e Pill para Desktop.
   [`Navigation.css:1`](../../frontend/src/components/Navigation/Navigation.css#L1)
+
+### Review Findings
+- [ ] [Review][Patch] O botão "Sair" na Navigation bar quebra a restrição de "5 ícones" — Remover da nav e colocar em um header superior provisório (desktop/mobile) para posterior refinamento de UX.
+- [ ] [Review][Patch] Tratamento do AbortError e falha de rede desloga usuário indesejadamente [frontend/src/App.tsx:181]
+- [ ] [Review][Patch] Falta de ícones na Navigation bar [frontend/src/components/Navigation/Navigation.tsx:32]
+- [ ] [Review][Patch] Extração frágil do token CSRF via `split('=')[1]` [frontend/src/components/Navigation/Navigation.tsx:13]
+- [ ] [Review][Patch] Hover state "grudento" em dispositivos móveis [frontend/src/components/Navigation/Navigation.css:39]
+- [ ] [Review][Patch] Falta de reset básico para margens de tipografia [frontend/src/index.css]
+- [ ] [Review][Patch] Faltam as tags `lang="pt-BR"` e `<meta name="description">` [frontend/index.html]
+- [x] [Review][Defer] Interface de carregamento (Loading) não estlizada [frontend/src/App.tsx] — deferred, pre-existing
+- [x] [Review][Defer] Redirecionamento de login não preserva o estado de rota prévia (`location.state`) [frontend/src/App.tsx:47] — deferred, pre-existing
+- [x] [Review][Defer] Rotas hardcoded ao invés de usar constantes centralizadas [frontend/src/App.tsx] — deferred, pre-existing
+- [x] [Review][Defer] Ausência de Error Boundary genérico para falhas do React [frontend/src/App.tsx] — deferred, pre-existing
+- [x] [Review][Defer] Ausência de testes end-to-end e componentes para o Auth Fetch e Logout — deferred, pre-existing
+- [x] [Review][Defer] Ausência de verificação contra bypass de rota protegida — deferred, pre-existing

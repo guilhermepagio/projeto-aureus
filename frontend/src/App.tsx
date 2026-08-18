@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import Header from './components/Header/Header';
 import Navigation from './components/Navigation/Navigation';
 import Login from './components/Login/Login';
 import { useAuthStore } from './store/authStore';
@@ -20,6 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   return (
     <>
+      <Header />
       <Navigation />
       <main style={{ paddingBottom: '80px' }}>
         {children}
@@ -43,10 +45,10 @@ function App() {
         throw new Error('Não autorizado');
       })
       .then(data => {
-        setAuth(true, data.subjectId);
+        setAuth(true, data.subjectId, data.fotoPerfil);
       })
       .catch(() => {
-        setAuth(false, null);
+        setAuth(false, null, null);
       })
       .finally(() => {
         clearTimeout(timeoutId);

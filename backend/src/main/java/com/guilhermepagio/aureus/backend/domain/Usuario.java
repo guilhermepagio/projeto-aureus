@@ -20,4 +20,6 @@ public class Usuario {
 
     private String email;
     private String nome;
+    @Column(length = 1024)
+    private String fotoPerfil;
 }

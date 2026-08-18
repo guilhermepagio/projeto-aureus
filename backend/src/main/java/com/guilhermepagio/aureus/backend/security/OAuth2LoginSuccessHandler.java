@@ -27,15 +27,19 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         String googleSubjectId = oAuth2User.getAttribute("sub");
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
+        String picture = oAuth2User.getAttribute("picture");
 
         Usuario usuario = usuarioRepository.findByGoogleSubjectId(googleSubjectId)
                 .orElseGet(() -> {
                     Usuario newUser = new Usuario();
                     newUser.setGoogleSubjectId(googleSubjectId);
-                    newUser.setEmail(email);
-                    newUser.setNome(name);
-                    return usuarioRepository.save(newUser);
+                    return newUser;
                 });
+        
+        usuario.setEmail(email);
+        usuario.setNome(name);
+        usuario.setFotoPerfil(picture);
+        usuarioRepository.save(usuario);
 
         String token = jwtUtil.generateToken(usuario.getGoogleSubjectId());
 

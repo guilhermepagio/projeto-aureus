@@ -1,5 +1,8 @@
 package com.guilhermepagio.aureus.backend.controller;
 
+import com.guilhermepagio.aureus.backend.domain.Usuario;
+import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -9,18 +12,31 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
+
+    private final UsuarioRepository usuarioRepository;
 
     @GetMapping("/me")
     public ResponseEntity<?> me(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
             return ResponseEntity.status(401).build();
         }
-        return ResponseEntity.ok(Map.of("subjectId", authentication.getPrincipal()));
+        
+        String subjectId = String.valueOf(authentication.getPrincipal());
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByGoogleSubjectId(subjectId);
+        
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("subjectId", subjectId);
+        usuarioOpt.ifPresent(usuario -> responseBody.put("fotoPerfil", usuario.getFotoPerfil()));
+        
+        return ResponseEntity.ok(responseBody);
     }
 
     @PostMapping("/logout")
