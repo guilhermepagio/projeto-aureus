@@ -134,3 +134,38 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-correcao-navbar-e-logout.md`
   summary: Application navigation layout composition is unverified
   evidence: No tests exist to verify that Navigation is properly rendered within Header.
+- source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
+  summary: OAuth2LoginSuccessHandler Cookie import removed
+  evidence: Bypassing standard cookie manipulation or HTTP-only setup for JWTs raises transmission security concerns.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
+  summary: OAuth2LoginSuccessHandler missing audit logging
+  evidence: Successful authentications do not update a last_login timestamp or record audit events.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
+  summary: OAuth2LoginSuccessHandler missing error handling
+  evidence: Missing logic for when OAuth2 providers return incomplete profiles without required claims.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
+  summary: UsuarioRepository missing @Repository annotation
+  evidence: Removal of this annotation disables automatic persistence exception translation.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
+  summary: UsuarioRepository missing google_subject_id index
+  evidence: findByGoogleSubjectId is on the critical login path, but there's no DB migration creating an index for it.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
+  summary: JwtUtil JwtException import removed
+  evidence: Suggests explicit handling of token validation errors like expiration or malformed signatures was removed.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
+  summary: Tenant isolation missing tests
+  evidence: multitenancy setup in application.yaml lacks test verification for cross-tenant data isolation.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
+  summary: application.yaml OAuth2 hardcoded secrets risk
+  evidence: security.oauth2.client block does not clearly use placeholder variables for secrets.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
+  summary: Header CSS hardcoded z-index
+  evidence: z-index: 100 used without a centralized scale, risking overlaps with other components.
