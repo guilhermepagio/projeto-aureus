@@ -9,7 +9,10 @@ public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentif
     @Override
     public String resolveCurrentTenantIdentifier() {
         String tenantId = TenantContext.getTenantId();
-        return tenantId != null ? tenantId : "__NO_TENANT__";
+        if (tenantId == null || tenantId.trim().isEmpty()) {
+            return "public";
+        }
+        return tenantId;
     }
 
     @Override

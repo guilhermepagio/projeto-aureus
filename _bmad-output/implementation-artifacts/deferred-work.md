@@ -169,3 +169,17 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-header-transparente-flutuante.md`
   summary: Header CSS hardcoded z-index
   evidence: z-index: 100 used without a centralized scale, risking overlaps with other components.
+
+## Deferred from: code review of spec-1-1-esqueleto-visual-barra-navegacao.md (2026-08-18)
+- Entire React application unmounts on route rendering error [frontend/src/App.tsx:68]
+
+## Deferred from: code review of spec-1-2-autenticacao-via-google-oauth-2-0-e-tratamento-de-erros.md (2026-08-18)
+- Missing Backend Logout Endpoint (belongs to Story 1.4)
+- Incomplete CSRF Setup on Frontend
+- Missing automated tests for auth flows
+- Missing frontend interception of 401 errors during API access
+- Concurrent OAuth logins for same new user could cause DataIntegrityViolationException
+
+## Deferred from: code review of spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md (2026-08-18)
+- Missing Automated Tests
+- Lack of Asynchronous Thread Context Propagation

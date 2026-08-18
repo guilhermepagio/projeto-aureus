@@ -135,3 +135,17 @@ O `JWT` precisa usar uma secret estrita. O Cookie deve ter nome consistente, ex:
 
 - Proxy de requisições de `/api` para o backend para contornar problemas de CORS.
   [`vite.config.ts:8`](../../frontend/vite.config.ts#L8)
+
+
+### Review Findings
+- [x] [Review][Patch] Filter Chain Blocked on Expired Token: JwtAuthenticationFilter returns 401 instead of delegating [backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java]
+- [x] [Review][Patch] Hardcoded Post-Login Redirect URL: redirects to localhost:5173 [backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java]
+- [x] [Review][Patch] Desynchronized Cookie and JWT Expirations: maxAge hardcoded [backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java]
+- [x] [Review][Patch] Missing Secure Flag for Authentication Cookie [backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java]
+- [x] [Review][Patch] Suboptimal JWT Secret Key Parsing [backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtUtil.java]
+- [x] [Review][Patch] Valid session wiped locally on transient errors [frontend/src/App.tsx:561-567]
+- [x] [Review][Defer] Missing Backend Logout Endpoint — deferred, pre-existing (belongs to Story 1.4)
+- [x] [Review][Defer] Incomplete CSRF Setup on Frontend — deferred, pre-existing (to be handled later)
+- [x] [Review][Defer] Missing automated tests for auth flows — deferred, pre-existing
+- [x] [Review][Defer] Missing frontend interception of 401 errors during API access — deferred, pre-existing
+- [x] [Review][Defer] Concurrent OAuth logins for same new user could cause DataIntegrityViolationException — deferred, pre-existing

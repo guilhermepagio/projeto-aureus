@@ -1,18 +1,20 @@
 package com.guilhermepagio.aureus.backend.security;
 
-import com.guilhermepagio.aureus.backend.domain.Usuario;
-import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import com.guilhermepagio.aureus.backend.domain.Usuario;
+import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +22,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
     private final UsuarioRepository usuarioRepository;
     private final JwtUtil jwtUtil;
+
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -45,12 +50,13 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         org.springframework.http.ResponseCookie cookie = org.springframework.http.ResponseCookie.from("AUREUS_SESSION", token)
                 .httpOnly(true)
+                .secure(request.isSecure())
                 .sameSite("Lax")
                 .path("/")
-                .maxAge(86400)
+                .maxAge(jwtUtil.getExpiration() / 1000)
                 .build();
         response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookie.toString());
 
-        getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173/");
+        getRedirectStrategy().sendRedirect(request, response, frontendUrl);
     }
 }

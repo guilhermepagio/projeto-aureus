@@ -76,16 +76,14 @@ O esqueleto visual constitui a base responsiva da interface (Desktop e Mobile) s
   [`Navigation.css:1`](../../frontend/src/components/Navigation/Navigation.css#L1)
 
 ### Review Findings
-- [ ] [Review][Patch] O botão "Sair" na Navigation bar quebra a restrição de "5 ícones" — Remover da nav e colocar em um header superior provisório (desktop/mobile) para posterior refinamento de UX.
-- [ ] [Review][Patch] Tratamento do AbortError e falha de rede desloga usuário indesejadamente [frontend/src/App.tsx:181]
-- [ ] [Review][Patch] Falta de ícones na Navigation bar [frontend/src/components/Navigation/Navigation.tsx:32]
-- [ ] [Review][Patch] Extração frágil do token CSRF via `split('=')[1]` [frontend/src/components/Navigation/Navigation.tsx:13]
-- [ ] [Review][Patch] Hover state "grudento" em dispositivos móveis [frontend/src/components/Navigation/Navigation.css:39]
-- [ ] [Review][Patch] Falta de reset básico para margens de tipografia [frontend/src/index.css]
-- [ ] [Review][Patch] Faltam as tags `lang="pt-BR"` e `<meta name="description">` [frontend/index.html]
-- [x] [Review][Defer] Interface de carregamento (Loading) não estlizada [frontend/src/App.tsx] — deferred, pre-existing
-- [x] [Review][Defer] Redirecionamento de login não preserva o estado de rota prévia (`location.state`) [frontend/src/App.tsx:47] — deferred, pre-existing
-- [x] [Review][Defer] Rotas hardcoded ao invés de usar constantes centralizadas [frontend/src/App.tsx] — deferred, pre-existing
-- [x] [Review][Defer] Ausência de Error Boundary genérico para falhas do React [frontend/src/App.tsx] — deferred, pre-existing
-- [x] [Review][Defer] Ausência de testes end-to-end e componentes para o Auth Fetch e Logout — deferred, pre-existing
-- [x] [Review][Defer] Ausência de verificação contra bypass de rota protegida — deferred, pre-existing
+- [x] [Review][Patch] Missing icons in Navigation component [frontend/src/components/Navigation/Navigation.tsx]
+- [x] [Review][Patch] Missing lang attribute and meta description in index.html [frontend/index.html]
+- [x] [Review][Patch] Incorrect order of navigation tabs [frontend/src/components/Navigation/Navigation.tsx:24-31]
+- [x] [Review][Patch] Missing explicit keyboard :focus or :focus-visible styles [frontend/src/components/Navigation/Navigation.css]
+- [x] [Review][Patch] Missing top-level placement of BrowserRouter [frontend/src/App.tsx:66]
+- [x] [Review][Patch] Missing localized aria-label for navigation [frontend/src/components/Navigation/Navigation.tsx:6]
+- [x] [Review][Patch] Root NavLink remains active on all other routes [frontend/src/components/Navigation/Navigation.tsx:9]
+- [x] [Review][Patch] Client-side routing and navigation are unverified [frontend/src/App.tsx]
+- [x] [Review][Patch] Missing typography margin resets [frontend/src/index.css]
+- [x] [Review][Patch] Mobile hover state issue remains unresolved [frontend/src/components/Navigation/Navigation.css]
+- [x] [Review][Defer] Entire React application unmounts on route rendering error [frontend/src/App.tsx:68] — deferred, pre-existing

@@ -11,7 +11,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        tenant_identifier_resolver: currentTenantIdentifierResolverImpl
+        "[tenant_identifier_resolver]": com.guilhermepagio.aureus.backend.security.CurrentTenantIdentifierResolverImpl
   security:
     oauth2:
       client:
@@ -27,3 +27,7 @@ spring:
 jwt:
   secret: ${JWT_SECRET:8f8a8473822a4d70b33b006a6b82b9937b8b4abcf35e408dbb0a1d4a04791e84}
   expiration: 86400000
+
+app:
+  frontend:
+    url: ${FRONTEND_URL:http://localhost:5173}

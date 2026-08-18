@@ -39,8 +39,10 @@
   transition: color 0.2s ease;
 }
 
-.nav-link:hover {
-  color: var(--color-primary-light);
+@media (hover: hover) {
+  .nav-link:hover {
+    color: var(--color-primary-light);
+  }
 }
 
 .nav-link.active {
@@ -90,13 +92,34 @@
     transition: all 0.2s ease;
   }
 
-  .nav-link:hover {
-    background-color: var(--bg-main);
-    color: var(--text-main);
+  @media (hover: hover) {
+    .nav-link:hover {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+    }
   }
 
   .nav-link.active {
     background-color: var(--color-primary);
     color: white;
+  }
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.nav-icon {
+  margin-bottom: 4px;
+}
+
+@media (min-width: 769px) {
+  .nav-link {
+    flex-direction: row;
+  }
+  .nav-icon {
+    margin-bottom: 0;
+    margin-right: 8px;
   }
 }

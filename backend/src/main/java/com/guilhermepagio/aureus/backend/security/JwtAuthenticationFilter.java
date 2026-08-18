@@ -37,21 +37,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                     TenantContext.setTenantId(subjectId);
                 } catch (Exception e) {
-                    SecurityContextHolder.clearContext();
-                    TenantContext.clear();
-                    
                     org.springframework.http.ResponseCookie clearCookie = org.springframework.http.ResponseCookie.from("AUREUS_SESSION", "")
                             .maxAge(0).path("/").build();
                     response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, clearCookie.toString());
-                    
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
                 }
             }
             
             filterChain.doFilter(request, response);
         } finally {
             TenantContext.clear();
+            SecurityContextHolder.clearContext();
         }
     }
 }

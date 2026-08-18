@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT Secret"
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "JWT Expiration in ms"
+    },
+    {
+      "name": "app.frontend.url",
+      "type": "java.lang.String",
+      "description": "Frontend URL"
+    }
+  ]
+}

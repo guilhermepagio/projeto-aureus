@@ -86,3 +86,11 @@ context: ['_bmad-output/implementation-artifacts/epic-1-context.md']
 
 - Emite novo cookie com proteção `SameSite=Lax` após um login bem-sucedido.
   [`OAuth2LoginSuccessHandler.java:84`](../../backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java#L84)
+
+### Review Findings
+- [x] [Review][Decision] Dangerous "DEFAULT" Tenant Fallback — `CurrentTenantIdentifierResolverImpl` returns "DEFAULT" when context is null. This could inadvertently allow unauthenticated queries to read/write data in a shared space. Should this throw an exception instead, or is it required for application startup / non-tenant entities?
+- [x] [Review][Patch] Security Context Leak Risk in JwtAuthenticationFilter [backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java]
+- [x] [Review][Patch] Missing Column Constraints on @TenantId [backend/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java]
+- [x] [Review][Patch] Redundant TenantContext.clear() [backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java]
+- [x] [Review][Defer] Missing Automated Tests [] — deferred, pre-existing
+- [x] [Review][Defer] Lack of Asynchronous Thread Context Propagation [] — deferred, pre-existing

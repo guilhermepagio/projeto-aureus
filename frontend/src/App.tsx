@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Header from './components/Header/Header';
 import Navigation from './components/Navigation/Navigation';
@@ -21,6 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   return (
     <>
+      
       <Header>
         <Navigation />
       </Header>
@@ -48,8 +49,10 @@ function App() {
       .then(data => {
         setAuth(true, data.subjectId, data.fotoPerfil);
       })
-      .catch(() => {
-        setAuth(false, null, null);
+      .catch((err) => {
+        if (err.message === 'Não autorizado') {
+          setAuth(false, null, null);
+        }
       })
       .finally(() => {
         clearTimeout(timeoutId);
@@ -63,7 +66,7 @@ function App() {
   }, [setAuth, setLoading]);
 
   return (
-    <BrowserRouter>
+    <>
       <Toaster position="top-right" />
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -76,7 +79,7 @@ function App() {
         
         <Route path="*" element={<ProtectedRoute><div style={{ padding: '24px' }}><h2>404 - Página não encontrada</h2></div></ProtectedRoute>} />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 
