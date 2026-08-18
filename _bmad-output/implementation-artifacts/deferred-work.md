@@ -34,3 +34,18 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md`
   summary: Add automated tests for client-side routing
   evidence: Unverified navigation link paths and client-side routing paths without component integration tests.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-encerrar-sessao.md`
+  summary: Fix permissive authorization fallback and protect Actuator endpoints
+  evidence: SecurityConfig currently uses `.anyRequest().permitAll()`, which inadvertently exposes unmatched endpoints, including Spring Boot Actuator, without authentication.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-encerrar-sessao.md`
+  summary: Implement backend unit tests for AuthController
+  evidence: Review caught that the logout endpoint lacks test coverage.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-encerrar-sessao.md`
+  summary: Implement frontend unit tests for Navigation component
+  evidence: Review caught that the handleLogout logic in the frontend lacks test coverage.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-encerrar-sessao.md`
+  summary: Configure global defaults for React QueryClient
+  evidence: The QueryClient in main.tsx uses out-of-the-box settings, missing optimized defaults like staleTime and refetchOnWindowFocus.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-4-encerrar-sessao.md`
+  summary: Configure secure attribute for session cookie based on environment
+  evidence: AuthController hardcodes secure(false) for the AUREUS_SESSION cookie, which must be enabled dynamically for production.

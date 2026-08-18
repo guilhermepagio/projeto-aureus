@@ -48,6 +48,15 @@
   font-weight: 700;
 }
 
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  width: 100%;
+  text-align: left;
+}
+
 /* Desktop: Pill Navigation */
 @media (min-width: 769px) {
   .navigation {
