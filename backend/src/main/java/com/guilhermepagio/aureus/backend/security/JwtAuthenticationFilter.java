@@ -25,22 +25,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         
-        Cookie cookie = WebUtils.getCookie(request, "AUREUS_SESSION");
-        if (cookie != null) {
-            String token = cookie.getValue();
-            try {
-                jwtUtil.validateToken(token);
-                String subjectId = jwtUtil.getSubject(token);
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        subjectId, null, Collections.emptyList());
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            } catch (Exception e) {
-                SecurityContextHolder.clearContext();
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+        try {
+            Cookie cookie = WebUtils.getCookie(request, "AUREUS_SESSION");
+            if (cookie != null) {
+                String token = cookie.getValue();
+                try {
+                    jwtUtil.validateToken(token);
+                    String subjectId = jwtUtil.getSubject(token);
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                            subjectId, null, Collections.emptyList());
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    TenantContext.setTenantId(subjectId);
+                } catch (Exception e) {
+                    SecurityContextHolder.clearContext();
+                    TenantContext.clear();
+                    
+                    org.springframework.http.ResponseCookie clearCookie = org.springframework.http.ResponseCookie.from("AUREUS_SESSION", "")
+                            .maxAge(0).path("/").build();
+                    response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, clearCookie.toString());
+                    
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
             }
+            
+            filterChain.doFilter(request, response);
+        } finally {
+            TenantContext.clear();
         }
-        
-        filterChain.doFilter(request, response);
     }
 }

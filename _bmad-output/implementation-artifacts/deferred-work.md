@@ -78,3 +78,24 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md`
   summary: Missing Strongly Typed DTO in AuthController
   evidence: /api/auth/me endpoint returns a loosely typed Map<String, Object>.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md`
+  summary: Hardcoded frontend redirect URI in OAuth2LoginSuccessHandler.
+  evidence: The URL `http://localhost:5173/` is hardcoded instead of being loaded from application properties.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md`
+  summary: Overly broad exception catching in JwtAuthenticationFilter.
+  evidence: The filter catches generic `Exception` instead of specific JWT exceptions, potentially hiding system errors.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md`
+  summary: Empty Response Body on 401 Unauthorized in JwtAuthenticationFilter.
+  evidence: The filter sets status 401 but writes no JSON body, making frontend error handling harder.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md`
+  summary: Potential Token and Cookie Expiration Mismatch.
+  evidence: The `AUREUS_SESSION` cookie uses a hardcoded 86400 maxAge which might drift from the JWT expiration property.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md`
+  summary: Missing verification for Tenant context population.
+  evidence: There are no unit or integration tests verifying that `JwtAuthenticationFilter` populates and clears the `TenantContext`.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md`
+  summary: Missing verification for Session cookie SameSite security attribute.
+  evidence: There are no tests verifying that `OAuth2LoginSuccessHandler` emits a cookie with `SameSite=Lax`.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md`
+  summary: Missing verification for Hibernate tenant resolution.
+  evidence: There are no tests verifying that `CurrentTenantIdentifierResolverImpl` correctly returns the value from `TenantContext`.

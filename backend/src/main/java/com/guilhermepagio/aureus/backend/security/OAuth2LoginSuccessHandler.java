@@ -43,11 +43,13 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         String token = jwtUtil.generateToken(usuario.getGoogleSubjectId());
 
-        Cookie cookie = new Cookie("AUREUS_SESSION", token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(86400); // 24h
-        response.addCookie(cookie);
+        org.springframework.http.ResponseCookie cookie = org.springframework.http.ResponseCookie.from("AUREUS_SESSION", token)
+                .httpOnly(true)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(86400)
+                .build();
+        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookie.toString());
 
         getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173/");
     }

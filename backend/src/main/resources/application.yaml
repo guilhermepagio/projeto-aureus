@@ -11,6 +11,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        tenant_identifier_resolver: currentTenantIdentifierResolverImpl
   security:
     oauth2:
       client:
