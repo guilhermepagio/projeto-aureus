@@ -49,10 +49,8 @@ function App() {
       .then(data => {
         setAuth(true, data.subjectId, data.fotoPerfil);
       })
-      .catch((err) => {
-        if (err.message === 'Não autorizado') {
-          setAuth(false, null, null);
-        }
+      .catch((_err) => {
+        setAuth(false, null, null);
       })
       .finally(() => {
         clearTimeout(timeoutId);

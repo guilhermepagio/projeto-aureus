@@ -88,3 +88,16 @@ context: ['_bmad-output/implementation-artifacts/epic-1-context.md']
 
 - Injeção do `<Toaster />` global no React Hot Toast.
   [`App.tsx:64`](../../frontend/src/App.tsx#L64)
+
+### Review Findings
+- [x] [Review][Patch] Exposição de Endpoints do Actuator — Dependência actuator inserida mas `SecurityConfig.java` expõe todos os endpoints não mapeados.
+- [x] [Review][Patch] Decodificação Incompatível do JWT Secret — `JwtUtil.java` usa Base64 decode mas o secret default no `application.yaml` é Hexadecimal.
+- [x] [Review][Patch] Atributo Secure inconsistente no Cookie de Logout — `AuthController.java` tem `.secure(false)` fixo, invalidando em HTTPS.
+- [x] [Review][Patch] Atributos omitidos na limpeza de Cookie JWT inválido — Falta `.sameSite("Lax")` e `.secure(true)` no `JwtAuthenticationFilter.java` ao resetar cookie.
+- [x] [Review][Patch] Chave YAML inválida para Hibernate — `[tenant_identifier_resolver]` deveria ser `tenant_identifier_resolver` no `application.yaml`.
+- [x] [Review][Patch] Falha no teste do App.test.tsx — Faltam o `QueryClientProvider` e métodos mockados do `useAuthStore` (profileImage, logout).
+- [x] [Review][Patch] Estado de erro não tratado no catch do App.tsx — Erros de rede não limpam o estado da loja caso seja diferente de 'Não autorizado'.
+- [x] [Review][Defer] Vazamento de contexto no TenantContext — Usando ThreadLocal padrão. — deferred, pre-existing
+- [x] [Review][Defer] Omissão de acessibilidade no dropdown do Header (Esc) — Falta listener para a tecla Escape. — deferred, pre-existing
+- [x] [Review][Defer] Preenchimento extra no mobile para rodapé — O .main-content tem padding inferior de 80px herdado da antiga navegação. — deferred, pre-existing
+- [x] [Review][Defer] Ausência de testes de integração e endpoints backend — verification-gap acusou falta de testes para controllers e filtros criados. — deferred, pre-existing

@@ -183,3 +183,9 @@
 ## Deferred from: code review of spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md (2026-08-18)
 - Missing Automated Tests
 - Lack of Asynchronous Thread Context Propagation
+
+## Deferred from: code review of spec-1-4-encerrar-sessao.md (2026-08-18)
+- Vazamento de contexto no TenantContext: Usando ThreadLocal padrão.
+- Omissão de acessibilidade no dropdown do Header (Esc): Falta listener para a tecla Escape.
+- Preenchimento extra no mobile para rodapé: O .main-content tem padding inferior de 80px herdado da antiga navegação.
+- Ausência de testes de integração e endpoints backend: verification-gap acusou falta de testes para controllers e filtros criados.

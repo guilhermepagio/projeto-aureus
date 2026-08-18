@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 
 // Mock matchMedia
@@ -23,22 +24,32 @@ vi.mock('./store/authStore', () => ({
   useAuthStore: () => ({
     isAuthenticated: true,
     isLoading: false,
+    profileImage: null,
     setAuth: vi.fn(),
-    setLoading: vi.fn()
+    setLoading: vi.fn(),
+    logout: vi.fn()
   })
 }));
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
+
 describe('App Routing', () => {
   it('renders navigation and navigates correctly', async () => {
-    // App now expects BrowserRouter to be outside, so we test with MemoryRouter wrapping App,
-    // Wait, App currently DOES NOT have BrowserRouter anymore because I moved it to main.tsx!
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/']}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>
     );
     
     // Check if initial route renders correctly
-    expect(screen.getByText('Conteúdo da Consolidação')).toBeDefined();
+    expect(screen.getByText('Consolidação')).toBeDefined();
   });
 });

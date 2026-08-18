@@ -38,7 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     TenantContext.setTenantId(subjectId);
                 } catch (Exception e) {
                     org.springframework.http.ResponseCookie clearCookie = org.springframework.http.ResponseCookie.from("AUREUS_SESSION", "")
-                            .maxAge(0).path("/").build();
+                            .maxAge(0)
+                            .path("/")
+                            .httpOnly(true)
+                            .secure(request.isSecure())
+                            .sameSite("Lax")
+                            .build();
                     response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, clearCookie.toString());
                 }
             }

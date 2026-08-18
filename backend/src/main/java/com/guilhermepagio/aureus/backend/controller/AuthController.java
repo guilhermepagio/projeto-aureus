@@ -3,6 +3,7 @@ package com.guilhermepagio.aureus.backend.controller;
 import com.guilhermepagio.aureus.backend.domain.Usuario;
 import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +41,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
         ResponseCookie cookie = ResponseCookie.from("AUREUS_SESSION", "")
                 .httpOnly(true)
-                .secure(false) // Not enforcing secure blindly unless specified, let's keep it simpler or inherit. Or better: remove secure unless https
+                .secure(request.isSecure())
                 .path("/")
                 .maxAge(0)
                 .sameSite("Lax")
