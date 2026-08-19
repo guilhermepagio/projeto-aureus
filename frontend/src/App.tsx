@@ -1,122 +1,84 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import Header from './components/Header/Header';
+import Navigation from './components/Navigation/Navigation';
+import Login from './components/Login/Login';
+import { useAuthStore } from './store/authStore';
+import { useEffect } from 'react';
+
+// Placeholders for routes
+const Consolidacao = () => <div style={{ padding: '24px' }}><h2>Consolidação</h2><p>Conteúdo da Consolidação</p></div>;
+const DespesasVariaveis = () => <div style={{ padding: '24px' }}><h2>Despesas Variáveis</h2><p>Conteúdo de Despesas Variáveis</p></div>;
+const DespesasFixas = () => <div style={{ padding: '24px' }}><h2>Despesas Fixas</h2><p>Conteúdo de Despesas Fixas</p></div>;
+const ReceitasVariaveis = () => <div style={{ padding: '24px' }}><h2>Receitas Variáveis</h2><p>Conteúdo de Receitas Variáveis</p></div>;
+const ReceitasFixas = () => <div style={{ padding: '24px' }}><h2>Receitas Fixas</h2><p>Conteúdo de Receitas Fixas</p></div>;
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isLoading } = useAuthStore();
+  
+  if (isLoading) return <div>Carregando...</div>;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  
+  return (
+    <>
+      
+      <Header>
+        <Navigation />
+      </Header>
+      <main className="main-content">
+        {children}
+      </main>
+    </>
+  );
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { setAuth, setLoading } = useAuthStore();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    fetch('/api/auth/me', { signal: controller.signal })
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error('Não autorizado');
+      })
+      .then(data => {
+        setAuth(true, data.subjectId, data.fotoPerfil);
+      })
+      .catch((_err) => {
+        setAuth(false, null, null);
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
+        setLoading(false);
+      });
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [setAuth, setLoading]);
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <Toaster position="top-right" />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        
+        <Route path="/" element={<ProtectedRoute><Consolidacao /></ProtectedRoute>} />
+        <Route path="/despesas-variaveis" element={<ProtectedRoute><DespesasVariaveis /></ProtectedRoute>} />
+        <Route path="/despesas-fixas" element={<ProtectedRoute><DespesasFixas /></ProtectedRoute>} />
+        <Route path="/receitas-variaveis" element={<ProtectedRoute><ReceitasVariaveis /></ProtectedRoute>} />
+        <Route path="/receitas-fixas" element={<ProtectedRoute><ReceitasFixas /></ProtectedRoute>} />
+        
+        <Route path="*" element={<ProtectedRoute><div style={{ padding: '24px' }}><h2>404 - Página não encontrada</h2></div></ProtectedRoute>} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,0 +1,216 @@
+diff --git a/_bmad-output/implementation-artifacts/sprint-status.yaml b/_bmad-output/implementation-artifacts/sprint-status.yaml
+index 0295588..039a99c 100644
+--- a/_bmad-output/implementation-artifacts/sprint-status.yaml
++++ b/_bmad-output/implementation-artifacts/sprint-status.yaml
+@@ -29,7 +29,7 @@
+ # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+ # - Retrospective appends its action items to action_items; the status view surfaces open ones
+ generated: 08-17-2026 18:28
+-last_updated: 08-18-2026 08:33
++last_updated: 08-18-2026 13:54
+ project: projeto-aureus
+ project_key: NOKEY
+ tracking_system: file-system
+@@ -38,7 +38,7 @@ development_status:
+   epic-1: in-progress
+   1-1-esqueleto-visual-e-barra-de-navegação: review
+   1-2-autenticação-via-google-oauth-2-0-e-tratamento-de-erros: review
+-  1-3-proteção-de-sessão-e-isolamento-de-dados: backlog
++  1-3-proteção-de-sessão-e-isolamento-de-dados: review
+   1-4-encerrar-sessão-logout-e-limpeza-de-estado: review
+   epic-1-retrospective: optional
+ 
+diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java
+index cc8e945..14b2a46 100644
+--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java
++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java
+@@ -25,22 +25,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
+     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+             throws ServletException, IOException {
+         
+-        Cookie cookie = WebUtils.getCookie(request, "AUREUS_SESSION");
+-        if (cookie != null) {
+-            String token = cookie.getValue();
+-            try {
+-                jwtUtil.validateToken(token);
+-                String subjectId = jwtUtil.getSubject(token);
+-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+-                        subjectId, null, Collections.emptyList());
+-                SecurityContextHolder.getContext().setAuthentication(auth);
+-            } catch (Exception e) {
+-                SecurityContextHolder.clearContext();
+-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+-                return;
++        try {
++            Cookie cookie = WebUtils.getCookie(request, "AUREUS_SESSION");
++            if (cookie != null) {
++                String token = cookie.getValue();
++                try {
++                    jwtUtil.validateToken(token);
++                    String subjectId = jwtUtil.getSubject(token);
++                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
++                            subjectId, null, Collections.emptyList());
++                    SecurityContextHolder.getContext().setAuthentication(auth);
++                    TenantContext.setTenantId(subjectId);
++                } catch (Exception e) {
++                    SecurityContextHolder.clearContext();
++                    TenantContext.clear();
++                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
++                    return;
++                }
+             }
++            
++            filterChain.doFilter(request, response);
++        } finally {
++            TenantContext.clear();
+         }
+-        
+-        filterChain.doFilter(request, response);
+     }
+ }
+diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
+index 0947082..c0e05b1 100644
+--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
+@@ -43,11 +43,13 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
+ 
+         String token = jwtUtil.generateToken(usuario.getGoogleSubjectId());
+ 
+-        Cookie cookie = new Cookie("AUREUS_SESSION", token);
+-        cookie.setHttpOnly(true);
+-        cookie.setPath("/");
+-        cookie.setMaxAge(86400); // 24h
+-        response.addCookie(cookie);
++        org.springframework.http.ResponseCookie cookie = org.springframework.http.ResponseCookie.from("AUREUS_SESSION", token)
++                .httpOnly(true)
++                .sameSite("Lax")
++                .path("/")
++                .maxAge(86400)
++                .build();
++        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookie.toString());
+ 
+         getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173/");
+     }
+--- /dev/null
++++ _bmad-output/implementation-artifacts/diff-1-3.patch
+--- /dev/null
++++ _bmad-output/implementation-artifacts/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md
+---
+title: 'Story 1.3: Proteção de Sessão e Isolamento de Dados'
+type: 'feature'
+created: '2026-08-18'
+status: 'in-review'
+baseline_commit: '3c12734dc41dc70232b37879e381b15dd4eba315'
+review_loop_iteration: 0
+context: ['_bmad-output/implementation-artifacts/epic-1-context.md']
+---
+
+<frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
+
+## Intent
+
+**Problem:** O sistema necessita de garantia estrutural para que nenhum usuário acesse registros financeiros alheios. Adicionalmente, o cookie da sessão do JWT requer proteção SameSite para prevenir ataques CSRF com maior robustez.
+
+**Approach:** Aperfeiçoar o cookie `AUREUS_SESSION` para utilizar a API `ResponseCookie` do Spring, configurando `SameSite=Lax`. Implementar suporte nativo ao isolamento de dados multilocatário (logical multi-tenancy) provido pelo Hibernate 6, usando `@TenantId` numa entidade base, associado a um contexto de thread alimentado pelo filtro JWT.
+
+## Boundaries & Constraints
+
+**Always:**
+- Utilizar a anotação `@TenantId` do Hibernate em uma classe `@MappedSuperclass` (ex: `TenantAwareEntity`) para garantir isolamento por tenant no nível do banco.
+- Abastecer o contexto de tenant a partir do filtro JWT (`JwtAuthenticationFilter`), garantindo que o ID de escopo venha estritamente de um token válido.
+- Refatorar a emissão do cookie para usar `org.springframework.http.ResponseCookie` de forma a habilitar a flag `SameSite`.
+
+**Ask First:**
+- Utilizar bibliotecas de terceiros para gerenciar o Multi-Tenancy em vez da solução nativa do Hibernate 6.
+
+**Never:**
+- Permitir bypass do filtro `@TenantId` a não ser em consultas administrativas (que não existem no escopo atual).
+- Aceitar identificadores de usuário (usuario_id) como parâmetro via URL ou Body para definir o escopo da operação.
+
+## I/O & Edge-Case Matrix
+
+| Scenario | Input / State | Expected Output / Behavior | Error Handling |
+|----------|--------------|---------------------------|----------------|
+| Injeção do Tenant | JWT válido trafegado no Cookie | Filtro JWT popula o escopo do Hibernate com o ID do usuário local | N/A |
+| Requisição não autenticada | Sem JWT válido | Rejeição no Spring Security antes de acessar persistência | 401 Unauthorized |
+
+</frozen-after-approval>
+
+## Code Map
+
+- `backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java` -- Onde o JWT é emitido; requer uso de `ResponseCookie`.
+- `backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java` -- Onde o JWT é validado; aqui o ID do usuário (Tenant ID) deve ser fixado num contexto thread-local.
+
+## Tasks & Acceptance
+
+**Execution:**
+- [x] `backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java` -- Refatorar a adição de cookie para utilizar o cabeçalho `Set-Cookie` construído com `ResponseCookie.from("AUREUS_SESSION").httpOnly(true).sameSite("Lax").path("/").maxAge(86400).build()`.
+- [x] `backend/src/main/java/com/guilhermepagio/aureus/backend/security/TenantContext.java` -- Criar classe com `ThreadLocal<String>` para armazenar e expor globalmente o ID (ou Google Subject ID) do usuário logado na thread corrente.
+- [x] `backend/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java` -- Criar componente Spring implementando `CurrentTenantIdentifierResolver` (do org.hibernate.context.spi) retornando o valor do `TenantContext` ou um tenant default se nulo.
+- [x] `backend/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java` -- Modificar para chamar `TenantContext.setTenantId(googleSubjectId)` logo após a validação bem-sucedida, e usar um bloco `finally` ao fim de `doFilterInternal` para invocar `TenantContext.clear()`.
+- [x] `backend/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java` -- Criar `@MappedSuperclass` com o campo `String tenantId` (ou `usuarioId`) anotado com `@org.hibernate.annotations.TenantId`.
+
+**Acceptance Criteria:**
+- Given a necessidade de segurança do Cookie, when inspecionamos a resposta de login, then o cabeçalho `Set-Cookie` apresenta `HttpOnly` e `SameSite=Lax`.
+- Given o processamento de uma requisição autenticada, when um token válido é fornecido, then o filtro de segurança define corretamente o `TenantContext` durante o tempo de vida do request e o Hibernate consegue resolver o identificador dinamicamente via `CurrentTenantIdentifierResolver`.
+--- /dev/null
++++ backend/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java
+package com.guilhermepagio.aureus.backend.domain;
+
+import jakarta.persistence.MappedSuperclass;
+import org.hibernate.annotations.TenantId;
+
+@MappedSuperclass
+public abstract class TenantAwareEntity {
+
+    @TenantId
+    private String usuarioId;
+
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+}
+--- /dev/null
++++ backend/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java
+package com.guilhermepagio.aureus.backend.security;
+
+import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentifierResolver<String> {
+
+    @Override
+    public String resolveCurrentTenantIdentifier() {
+        String tenantId = TenantContext.getTenantId();
+        return tenantId != null ? tenantId : "DEFAULT";
+    }
+
+    @Override
+    public boolean validateExistingCurrentSessions() {
+        return true;
+    }
+}
+--- /dev/null
++++ backend/src/main/java/com/guilhermepagio/aureus/backend/security/TenantContext.java
+package com.guilhermepagio.aureus.backend.security;
+
+public class TenantContext {
+    private static final ThreadLocal<String> CURRENT_TENANT = new ThreadLocal<>();
+
+    public static String getTenantId() {
+        return CURRENT_TENANT.get();
+    }
+
+    public static void setTenantId(String tenantId) {
+        CURRENT_TENANT.set(tenantId);
+    }
+
+    public static void clear() {
+        CURRENT_TENANT.remove();
+    }
+}

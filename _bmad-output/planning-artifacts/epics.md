@@ -193,13 +193,17 @@ So that nenhum outro usuário do sistema possa visualizar ou modificar meus dado
 ### Story 1.4: Encerrar Sessão (Logout) e Limpeza de Estado
 
 As a Usuário autenticado,
-I want ter a opção de encerrar minha sessão,
-So that eu possa proteger meus dados ao deixar o dispositivo.
+I want ter a opção de encerrar minha sessão através de um menu de perfil,
+So that eu possa proteger meus dados ao deixar o dispositivo sem que o botão de sair ocupe espaço na navegação principal.
 
 **Acceptance Criteria:**
 
-**Given** que o usuário está autenticado
-**When** ele aciona o comando "Sair" na interface
+**Given** que o usuário está autenticado na interface principal
+**When** ele visualiza o canto superior direito da tela (no Header mobile ou no Desktop)
+**Then** deve ser exibida a sua foto de perfil recebida através da conta do Google
+**When** o usuário clica na sua foto de perfil
+**Then** um menu dropdown (ou Bottom Sheet no Mobile) é aberto exibindo a opção de "Sair"
+**Given** que o usuário clica em "Sair"
 **Then** o backend invalida o Cookie de sessão e o frontend limpa todos os dados em cache (Zustand e React Query)
 **And** o usuário é redirecionado para a tela de login inicial sem retenção de estado anterior
 

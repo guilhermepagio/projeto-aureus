@@ -1,0 +1,782 @@
+diff --git a/_bmad-output/implementation-artifacts/deferred-work.md b/_bmad-output/implementation-artifacts/deferred-work.md
+index ef5d422..74077ea 100644
+--- a/_bmad-output/implementation-artifacts/deferred-work.md
++++ b/_bmad-output/implementation-artifacts/deferred-work.md
+@@ -49,3 +49,11 @@
+ - source_spec: `_bmad-output/implementation-artifacts/spec-1-4-encerrar-sessao.md`
+   summary: Configure secure attribute for session cookie based on environment
+   evidence: AuthController hardcodes secure(false) for the AUREUS_SESSION cookie, which must be enabled dynamically for production.
++
++## Deferred from: code review of spec-1-1-esqueleto-visual-barra-navegacao.md (2026-08-18)
++- Interface de carregamento (Loading) não estlizada [frontend/src/App.tsx]
++- Redirecionamento de login não preserva o estado de rota prévia (`location.state`) [frontend/src/App.tsx:47]
++- Rotas hardcoded ao invés de usar constantes centralizadas [frontend/src/App.tsx]
++- Ausência de Error Boundary genérico para falhas do React [frontend/src/App.tsx]
++- Ausência de testes end-to-end e componentes para o Auth Fetch e Logout
++- Ausência de verificação contra bypass de rota protegida
+diff --git a/_bmad-output/implementation-artifacts/diff-clean-1-4-correcao.patch b/_bmad-output/implementation-artifacts/diff-clean-1-4-correcao.patch
+new file mode 100644
+index 0000000..0b916ff
+--- /dev/null
++++ b/_bmad-output/implementation-artifacts/diff-clean-1-4-correcao.patch
+@@ -0,0 +1,254 @@
++diff --git a/_bmad-output/implementation-artifacts/deferred-work.md b/_bmad-output/implementation-artifacts/deferred-work.md
++index ef5d422..74077ea 100644
++--- a/_bmad-output/implementation-artifacts/deferred-work.md
+++++ b/_bmad-output/implementation-artifacts/deferred-work.md
++@@ -49,3 +49,11 @@
++ - source_spec: `_bmad-output/implementation-artifacts/spec-1-4-encerrar-sessao.md`
++   summary: Configure secure attribute for session cookie based on environment
++   evidence: AuthController hardcodes secure(false) for the AUREUS_SESSION cookie, which must be enabled dynamically for production.
+++
+++## Deferred from: code review of spec-1-1-esqueleto-visual-barra-navegacao.md (2026-08-18)
+++- Interface de carregamento (Loading) não estlizada [frontend/src/App.tsx]
+++- Redirecionamento de login não preserva o estado de rota prévia (`location.state`) [frontend/src/App.tsx:47]
+++- Rotas hardcoded ao invés de usar constantes centralizadas [frontend/src/App.tsx]
+++- Ausência de Error Boundary genérico para falhas do React [frontend/src/App.tsx]
+++- Ausência de testes end-to-end e componentes para o Auth Fetch e Logout
+++- Ausência de verificação contra bypass de rota protegida
++diff --git a/_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md b/_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md
++index fbd2719..bf04604 100644
++--- a/_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md
+++++ b/_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md
++@@ -74,3 +74,18 @@ O esqueleto visual constitui a base responsiva da interface (Desktop e Mobile) s
++ 
++ - Layout responsivo Mobile-first e Pill para Desktop.
++   [`Navigation.css:1`](../../frontend/src/components/Navigation/Navigation.css#L1)
+++
+++### Review Findings
+++- [ ] [Review][Patch] O botão "Sair" na Navigation bar quebra a restrição de "5 ícones" — Remover da nav e colocar em um header superior provisório (desktop/mobile) para posterior refinamento de UX.
+++- [ ] [Review][Patch] Tratamento do AbortError e falha de rede desloga usuário indesejadamente [frontend/src/App.tsx:181]
+++- [ ] [Review][Patch] Falta de ícones na Navigation bar [frontend/src/components/Navigation/Navigation.tsx:32]
+++- [ ] [Review][Patch] Extração frágil do token CSRF via `split('=')[1]` [frontend/src/components/Navigation/Navigation.tsx:13]
+++- [ ] [Review][Patch] Hover state "grudento" em dispositivos móveis [frontend/src/components/Navigation/Navigation.css:39]
+++- [ ] [Review][Patch] Falta de reset básico para margens de tipografia [frontend/src/index.css]
+++- [ ] [Review][Patch] Faltam as tags `lang="pt-BR"` e `<meta name="description">` [frontend/index.html]
+++- [x] [Review][Defer] Interface de carregamento (Loading) não estlizada [frontend/src/App.tsx] — deferred, pre-existing
+++- [x] [Review][Defer] Redirecionamento de login não preserva o estado de rota prévia (`location.state`) [frontend/src/App.tsx:47] — deferred, pre-existing
+++- [x] [Review][Defer] Rotas hardcoded ao invés de usar constantes centralizadas [frontend/src/App.tsx] — deferred, pre-existing
+++- [x] [Review][Defer] Ausência de Error Boundary genérico para falhas do React [frontend/src/App.tsx] — deferred, pre-existing
+++- [x] [Review][Defer] Ausência de testes end-to-end e componentes para o Auth Fetch e Logout — deferred, pre-existing
+++- [x] [Review][Defer] Ausência de verificação contra bypass de rota protegida — deferred, pre-existing
++diff --git a/_bmad-output/planning-artifacts/epics.md b/_bmad-output/planning-artifacts/epics.md
++index 14d2f03..1927f08 100644
++--- a/_bmad-output/planning-artifacts/epics.md
+++++ b/_bmad-output/planning-artifacts/epics.md
++@@ -193,13 +193,17 @@ So that nenhum outro usuário do sistema possa visualizar ou modificar meus dado
++ ### Story 1.4: Encerrar Sessão (Logout) e Limpeza de Estado
++ 
++ As a Usuário autenticado,
++-I want ter a opção de encerrar minha sessão,
++-So that eu possa proteger meus dados ao deixar o dispositivo.
+++I want ter a opção de encerrar minha sessão através de um menu de perfil,
+++So that eu possa proteger meus dados ao deixar o dispositivo sem que o botão de sair ocupe espaço na navegação principal.
++ 
++ **Acceptance Criteria:**
++ 
++-**Given** que o usuário está autenticado
++-**When** ele aciona o comando "Sair" na interface
+++**Given** que o usuário está autenticado na interface principal
+++**When** ele visualiza o canto superior direito da tela (no Header mobile ou no Desktop)
+++**Then** deve ser exibida a sua foto de perfil recebida através da conta do Google
+++**When** o usuário clica na sua foto de perfil
+++**Then** um menu dropdown (ou Bottom Sheet no Mobile) é aberto exibindo a opção de "Sair"
+++**Given** que o usuário clica em "Sair"
++ **Then** o backend invalida o Cookie de sessão e o frontend limpa todos os dados em cache (Zustand e React Query)
++ **And** o usuário é redirecionado para a tela de login inicial sem retenção de estado anterior
++ 
++diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java
++index c32995a..e7dc154 100644
++--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java
+++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java
++@@ -1,5 +1,8 @@
++ package com.guilhermepagio.aureus.backend.controller;
++ 
+++import com.guilhermepagio.aureus.backend.domain.Usuario;
+++import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
+++import lombok.RequiredArgsConstructor;
++ import org.springframework.http.HttpHeaders;
++ import org.springframework.http.ResponseCookie;
++ import org.springframework.http.ResponseEntity;
++@@ -9,18 +12,31 @@ import org.springframework.web.bind.annotation.PostMapping;
++ import org.springframework.web.bind.annotation.RequestMapping;
++ import org.springframework.web.bind.annotation.RestController;
++ 
+++import java.util.HashMap;
++ import java.util.Map;
+++import java.util.Optional;
++ 
++ @RestController
++ @RequestMapping("/api/auth")
+++@RequiredArgsConstructor
++ public class AuthController {
++ 
+++    private final UsuarioRepository usuarioRepository;
+++
++     @GetMapping("/me")
++     public ResponseEntity<?> me(Authentication authentication) {
++         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
++             return ResponseEntity.status(401).build();
++         }
++-        return ResponseEntity.ok(Map.of("subjectId", authentication.getPrincipal()));
+++        
+++        String subjectId = (String) authentication.getPrincipal();
+++        Optional<Usuario> usuarioOpt = usuarioRepository.findByGoogleSubjectId(subjectId);
+++        
+++        Map<String, Object> responseBody = new HashMap<>();
+++        responseBody.put("subjectId", subjectId);
+++        usuarioOpt.ifPresent(usuario -> responseBody.put("fotoPerfil", usuario.getFotoPerfil()));
+++        
+++        return ResponseEntity.ok(responseBody);
++     }
++ 
++     @PostMapping("/logout")
++diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java
++index 8dc2c3b..62ea9d5 100644
++--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java
+++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java
++@@ -20,4 +20,5 @@ public class Usuario {
++ 
++     private String email;
++     private String nome;
+++    private String fotoPerfil;
++ }
++diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
++index b933a57..0947082 100644
++--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
+++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
++@@ -27,15 +27,19 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
++         String googleSubjectId = oAuth2User.getAttribute("sub");
++         String email = oAuth2User.getAttribute("email");
++         String name = oAuth2User.getAttribute("name");
+++        String picture = oAuth2User.getAttribute("picture");
++ 
++         Usuario usuario = usuarioRepository.findByGoogleSubjectId(googleSubjectId)
++                 .orElseGet(() -> {
++                     Usuario newUser = new Usuario();
++                     newUser.setGoogleSubjectId(googleSubjectId);
++-                    newUser.setEmail(email);
++-                    newUser.setNome(name);
++-                    return usuarioRepository.save(newUser);
+++                    return newUser;
++                 });
+++        
+++        usuario.setEmail(email);
+++        usuario.setNome(name);
+++        usuario.setFotoPerfil(picture);
+++        usuarioRepository.save(usuario);
++ 
++         String token = jwtUtil.generateToken(usuario.getGoogleSubjectId());
++ 
++diff --git a/frontend/src/App.tsx b/frontend/src/App.tsx
++index 65b0860..2a177a9 100644
++--- a/frontend/src/App.tsx
+++++ b/frontend/src/App.tsx
++@@ -1,5 +1,6 @@
++ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
++ import { Toaster } from 'react-hot-toast';
+++import Header from './components/Header/Header';
++ import Navigation from './components/Navigation/Navigation';
++ import Login from './components/Login/Login';
++ import { useAuthStore } from './store/authStore';
++@@ -20,6 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
++   
++   return (
++     <>
+++      <Header />
++       <Navigation />
++       <main style={{ paddingBottom: '80px' }}>
++         {children}
++@@ -43,10 +45,10 @@ function App() {
++         throw new Error('Não autorizado');
++       })
++       .then(data => {
++-        setAuth(true, data.subjectId);
+++        setAuth(true, data.subjectId, data.fotoPerfil);
++       })
++       .catch(() => {
++-        setAuth(false, null);
+++        setAuth(false, null, null);
++       })
++       .finally(() => {
++         clearTimeout(timeoutId);
++diff --git a/frontend/src/components/Navigation/Navigation.tsx b/frontend/src/components/Navigation/Navigation.tsx
++index 0802dd8..ab2f68b 100644
++--- a/frontend/src/components/Navigation/Navigation.tsx
+++++ b/frontend/src/components/Navigation/Navigation.tsx
++@@ -1,31 +1,7 @@
++-import { NavLink, useNavigate } from 'react-router-dom';
++-import { useQueryClient } from '@tanstack/react-query';
++-import { useAuthStore } from '../../store/authStore';
++-import toast from 'react-hot-toast';
+++import { NavLink } from 'react-router-dom';
++ import './Navigation.css';
++ 
++ const Navigation: React.FC = () => {
++-  const navigate = useNavigate();
++-  const queryClient = useQueryClient();
++-  const { logout } = useAuthStore();
++-
++-  const handleLogout = async () => {
++-    const csrfToken = document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1];
++-    
++-    try {
++-      const response = await fetch('/api/auth/logout', { 
++-        method: 'POST',
++-        headers: csrfToken ? { 'X-XSRF-TOKEN': csrfToken } : undefined
++-      });
++-      if (!response.ok) throw new Error('Logout failed');
++-    } catch (error) {
++-      toast.error('Sessão encerrada localmente. (Erro de rede)');
++-    } finally {
++-      queryClient.clear();
++-      logout();
++-      navigate('/login');
++-    }
++-  };
++   return (
++     <nav className="navigation" aria-label="Main Navigation">
++       <ul className="nav-list">
++@@ -54,11 +30,6 @@ const Navigation: React.FC = () => {
++             Receitas Fixas
++           </NavLink>
++         </li>
++-        <li className="nav-item">
++-          <button onClick={handleLogout} className="nav-link logout-button">
++-            Sair
++-          </button>
++-        </li>
++       </ul>
++     </nav>
++   );
++diff --git a/frontend/src/store/authStore.ts b/frontend/src/store/authStore.ts
++index 8d575a4..b2ee33c 100644
++--- a/frontend/src/store/authStore.ts
+++++ b/frontend/src/store/authStore.ts
++@@ -4,7 +4,8 @@ interface AuthState {
++   isAuthenticated: boolean;
++   isLoading: boolean;
++   subjectId: string | null;
++-  setAuth: (isAuthenticated: boolean, subjectId: string | null) => void;
+++  profileImage: string | null;
+++  setAuth: (isAuthenticated: boolean, subjectId: string | null, profileImage?: string | null) => void;
++   setLoading: (isLoading: boolean) => void;
++   logout: () => void;
++ }
++@@ -13,7 +14,8 @@ export const useAuthStore = create<AuthState>((set) => ({
++   isAuthenticated: false,
++   isLoading: true,
++   subjectId: null,
++-  setAuth: (isAuthenticated, subjectId) => set({ isAuthenticated, subjectId, isLoading: false }),
+++  profileImage: null,
+++  setAuth: (isAuthenticated, subjectId, profileImage = null) => set({ isAuthenticated, subjectId, profileImage, isLoading: false }),
++   setLoading: (isLoading) => set({ isLoading }),
++-  logout: () => set({ isAuthenticated: false, subjectId: null, isLoading: false })
+++  logout: () => set({ isAuthenticated: false, subjectId: null, profileImage: null, isLoading: false })
++ }));
+diff --git a/_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md b/_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md
+index fbd2719..bf04604 100644
+--- a/_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md
++++ b/_bmad-output/implementation-artifacts/spec-1-1-esqueleto-visual-barra-navegacao.md
+@@ -74,3 +74,18 @@ O esqueleto visual constitui a base responsiva da interface (Desktop e Mobile) s
+ 
+ - Layout responsivo Mobile-first e Pill para Desktop.
+   [`Navigation.css:1`](../../frontend/src/components/Navigation/Navigation.css#L1)
++
++### Review Findings
++- [ ] [Review][Patch] O botão "Sair" na Navigation bar quebra a restrição de "5 ícones" — Remover da nav e colocar em um header superior provisório (desktop/mobile) para posterior refinamento de UX.
++- [ ] [Review][Patch] Tratamento do AbortError e falha de rede desloga usuário indesejadamente [frontend/src/App.tsx:181]
++- [ ] [Review][Patch] Falta de ícones na Navigation bar [frontend/src/components/Navigation/Navigation.tsx:32]
++- [ ] [Review][Patch] Extração frágil do token CSRF via `split('=')[1]` [frontend/src/components/Navigation/Navigation.tsx:13]
++- [ ] [Review][Patch] Hover state "grudento" em dispositivos móveis [frontend/src/components/Navigation/Navigation.css:39]
++- [ ] [Review][Patch] Falta de reset básico para margens de tipografia [frontend/src/index.css]
++- [ ] [Review][Patch] Faltam as tags `lang="pt-BR"` e `<meta name="description">` [frontend/index.html]
++- [x] [Review][Defer] Interface de carregamento (Loading) não estlizada [frontend/src/App.tsx] — deferred, pre-existing
++- [x] [Review][Defer] Redirecionamento de login não preserva o estado de rota prévia (`location.state`) [frontend/src/App.tsx:47] — deferred, pre-existing
++- [x] [Review][Defer] Rotas hardcoded ao invés de usar constantes centralizadas [frontend/src/App.tsx] — deferred, pre-existing
++- [x] [Review][Defer] Ausência de Error Boundary genérico para falhas do React [frontend/src/App.tsx] — deferred, pre-existing
++- [x] [Review][Defer] Ausência de testes end-to-end e componentes para o Auth Fetch e Logout — deferred, pre-existing
++- [x] [Review][Defer] Ausência de verificação contra bypass de rota protegida — deferred, pre-existing
+diff --git a/_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md b/_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md
+new file mode 100644
+index 0000000..bd3f4b0
+--- /dev/null
++++ b/_bmad-output/implementation-artifacts/spec-1-4-correcao-botao-sair.md
+@@ -0,0 +1,77 @@
++---
++title: 'Story 1.4: Correção do Botão Sair (UX e Header)'
++type: 'bugfix'
++created: '2026-08-18'
++status: 'in-review'
++baseline_commit: 'c976877eee7d719bfa12eefdf213609fd326b3c7'
++review_loop_iteration: 0
++context: ['_bmad-output/implementation-artifacts/epic-1-context.md']
++---
++
++<frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
++
++## Intent
++
++**Problem:** O botão de 'Sair' estava localizado na navegação principal (Pill Navigation / Bottom Nav), o que causava sujeira visual e fugia dos padrões convencionais onde opções de conta ficam vinculadas ao perfil do usuário.
++
++**Approach:** Remover o botão 'Sair' da `Navigation`. Criar um componente `Header` no topo da tela que exibirá a foto de perfil recebida do Google (canto superior direito). Ao clicar na foto, um menu (Dropdown/Bottom Sheet) exibirá a opção "Sair", acionando o fluxo de logout já existente. A foto de perfil precisará ser salva no backend e exposta pelo endpoint `/api/auth/me`.
++
++## Boundaries & Constraints
++
++**Always:**
++- Manter o comportamento técnico de limpeza de sessão local (Zustand e React Query) e backend idênticos ao que já foi implementado.
++- Extrair a foto de perfil (claim `picture`) no login OAuth2 e disponibilizá-la no payload do `/api/auth/me`.
++- Garantir que o `Header` se adapte tanto ao layout desktop quanto mobile.
++
++**Ask First:**
++- Modificar o roteamento ou a estrutura principal do `App.tsx` além da adição do `<Header />`.
++
++**Never:**
++- Alterar as cores ou a tipografia padrão já definidos para o Épico 1 sem consultar o guia de estilos visual.
++- Quebrar os testes existentes.
++
++## I/O & Edge-Case Matrix
++
++| Scenario | Input / State | Expected Output / Behavior | Error Handling |
++|----------|--------------|---------------------------|----------------|
++| Exibição do Header | Usuário autenticado com foto de perfil válida do Google | Header exibe a foto do perfil no canto superior direito | Foto de fallback / Initials caso URL seja vazia/inválida |
++| Logout via Dropdown | Usuário clica na foto e depois em "Sair" | Sessão encerrada e redirecionamento para `/login` (fluxo atual) | Mesmo fallback local do `Navigation` atual |
++
++</frozen-after-approval>
++
++## Code Map
++
++- `backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java` -- Entidade precisa de novo atributo `fotoPerfil`
++- `backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java` -- Capturar claim `picture` do `OAuth2User` e salvar no `Usuario`
++- `backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java` -- O endpoint `/me` precisa retornar a `fotoPerfil` a partir do `Usuario` do banco ou cache, ou então o ID para buscar (mas o Auth só retorna `subjectId` hoje. Precisa buscar no repositório)
++- `frontend/src/store/authStore.ts` -- Estado de autenticação precisa de `profileImage` string (além do `subjectId`)
++- `frontend/src/App.tsx` -- Receber o `profileImage` do fetch no `/me` e atualizar a `authStore`. Adicionar `<Header />` dentro das rotas protegidas, removendo a importação caso necessário do Sair.
++- `frontend/src/components/Navigation/Navigation.tsx` -- Remover lógica de logout e UI do botão Sair
++- `frontend/src/components/Header/Header.tsx` (novo) -- Implementar UI do perfil, dropdown e lógica do botão Sair.
++
++## Tasks & Acceptance
++
++**Execution:**
++- [ ] `backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java` -- Adicionar campo `fotoPerfil` (String) na entidade. -- Rationale: armazenar a URL da foto do Google.
++- [ ] `backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java` -- Extrair `picture` do Google e salvar em `Usuario`. -- Rationale: a foto será capturada a cada login.
++- [ ] `backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java` -- Injetar `UsuarioRepository` (se necessário) para retornar `{ "subjectId": "...", "fotoPerfil": "..." }` no endpoint `/me`. -- Rationale: o frontend precisa exibir a foto.
++- [ ] `frontend/src/store/authStore.ts` -- Adicionar `profileImage` ao estado e método `setAuth`. -- Rationale: disponibilizar foto para o Header.
++- [ ] `frontend/src/components/Navigation/Navigation.tsx` -- Remover lógica de logout e o botão. -- Rationale: o botão mudou de lugar.
++- [ ] `frontend/src/components/Header/Header.tsx` -- Criar componente exibindo foto do perfil no canto superior direito. Ao clicar, mostrar menu dropdown com botão "Sair". O botão executa fetch `/api/auth/logout`, limpa cache e Zustand. -- Rationale: nova localização do logout.
++- [ ] `frontend/src/App.tsx` -- Atualizar fetch do `/me` para passar `profileImage` para `setAuth`. Incluir componente `<Header />` acima do `main` dentro do `ProtectedRoute`. -- Rationale: Header precisa ser visível nas rotas protegidas.
++
++**Acceptance Criteria:**
++- Given que o usuário está autenticado na interface principal
++- When ele visualiza o canto superior direito da tela (no Header mobile ou no Desktop)
++- Then deve ser exibida a sua foto de perfil recebida através da conta do Google
++- When o usuário clica na sua foto de perfil
++- Then um menu dropdown (ou Bottom Sheet no Mobile) é aberto exibindo a opção de "Sair"
++- Given que o usuário clica em "Sair"
++- Then o backend invalida o Cookie de sessão e o frontend limpa todos os dados em cache (Zustand e React Query)
++- And o usuário é redirecionado para a tela de login inicial sem retenção de estado anterior
++
++## Verification
++
++**Commands:**
++- `cd backend && ./mvnw test` -- expected: O contexto do Spring Boot sobe e os testes passam.
++- `cd frontend && npm run build` -- expected: Compilação TypeScript do Vite conclui sem erros no novo layout.
+diff --git a/_bmad-output/planning-artifacts/epics.md b/_bmad-output/planning-artifacts/epics.md
+index 14d2f03..1927f08 100644
+--- a/_bmad-output/planning-artifacts/epics.md
++++ b/_bmad-output/planning-artifacts/epics.md
+@@ -193,13 +193,17 @@ So that nenhum outro usuário do sistema possa visualizar ou modificar meus dado
+ ### Story 1.4: Encerrar Sessão (Logout) e Limpeza de Estado
+ 
+ As a Usuário autenticado,
+-I want ter a opção de encerrar minha sessão,
+-So that eu possa proteger meus dados ao deixar o dispositivo.
++I want ter a opção de encerrar minha sessão através de um menu de perfil,
++So that eu possa proteger meus dados ao deixar o dispositivo sem que o botão de sair ocupe espaço na navegação principal.
+ 
+ **Acceptance Criteria:**
+ 
+-**Given** que o usuário está autenticado
+-**When** ele aciona o comando "Sair" na interface
++**Given** que o usuário está autenticado na interface principal
++**When** ele visualiza o canto superior direito da tela (no Header mobile ou no Desktop)
++**Then** deve ser exibida a sua foto de perfil recebida através da conta do Google
++**When** o usuário clica na sua foto de perfil
++**Then** um menu dropdown (ou Bottom Sheet no Mobile) é aberto exibindo a opção de "Sair"
++**Given** que o usuário clica em "Sair"
+ **Then** o backend invalida o Cookie de sessão e o frontend limpa todos os dados em cache (Zustand e React Query)
+ **And** o usuário é redirecionado para a tela de login inicial sem retenção de estado anterior
+ 
+diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java
+index c32995a..e7dc154 100644
+--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java
++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java
+@@ -1,5 +1,8 @@
+ package com.guilhermepagio.aureus.backend.controller;
+ 
++import com.guilhermepagio.aureus.backend.domain.Usuario;
++import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
++import lombok.RequiredArgsConstructor;
+ import org.springframework.http.HttpHeaders;
+ import org.springframework.http.ResponseCookie;
+ import org.springframework.http.ResponseEntity;
+@@ -9,18 +12,31 @@ import org.springframework.web.bind.annotation.PostMapping;
+ import org.springframework.web.bind.annotation.RequestMapping;
+ import org.springframework.web.bind.annotation.RestController;
+ 
++import java.util.HashMap;
+ import java.util.Map;
++import java.util.Optional;
+ 
+ @RestController
+ @RequestMapping("/api/auth")
++@RequiredArgsConstructor
+ public class AuthController {
+ 
++    private final UsuarioRepository usuarioRepository;
++
+     @GetMapping("/me")
+     public ResponseEntity<?> me(Authentication authentication) {
+         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+             return ResponseEntity.status(401).build();
+         }
+-        return ResponseEntity.ok(Map.of("subjectId", authentication.getPrincipal()));
++        
++        String subjectId = (String) authentication.getPrincipal();
++        Optional<Usuario> usuarioOpt = usuarioRepository.findByGoogleSubjectId(subjectId);
++        
++        Map<String, Object> responseBody = new HashMap<>();
++        responseBody.put("subjectId", subjectId);
++        usuarioOpt.ifPresent(usuario -> responseBody.put("fotoPerfil", usuario.getFotoPerfil()));
++        
++        return ResponseEntity.ok(responseBody);
+     }
+ 
+     @PostMapping("/logout")
+diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java
+index 8dc2c3b..62ea9d5 100644
+--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java
++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java
+@@ -20,4 +20,5 @@ public class Usuario {
+ 
+     private String email;
+     private String nome;
++    private String fotoPerfil;
+ }
+diff --git a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
+index b933a57..0947082 100644
+--- a/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
++++ b/backend/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java
+@@ -27,15 +27,19 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
+         String googleSubjectId = oAuth2User.getAttribute("sub");
+         String email = oAuth2User.getAttribute("email");
+         String name = oAuth2User.getAttribute("name");
++        String picture = oAuth2User.getAttribute("picture");
+ 
+         Usuario usuario = usuarioRepository.findByGoogleSubjectId(googleSubjectId)
+                 .orElseGet(() -> {
+                     Usuario newUser = new Usuario();
+                     newUser.setGoogleSubjectId(googleSubjectId);
+-                    newUser.setEmail(email);
+-                    newUser.setNome(name);
+-                    return usuarioRepository.save(newUser);
++                    return newUser;
+                 });
++        
++        usuario.setEmail(email);
++        usuario.setNome(name);
++        usuario.setFotoPerfil(picture);
++        usuarioRepository.save(usuario);
+ 
+         String token = jwtUtil.generateToken(usuario.getGoogleSubjectId());
+ 
+diff --git a/frontend/src/App.tsx b/frontend/src/App.tsx
+index 65b0860..2a177a9 100644
+--- a/frontend/src/App.tsx
++++ b/frontend/src/App.tsx
+@@ -1,5 +1,6 @@
+ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+ import { Toaster } from 'react-hot-toast';
++import Header from './components/Header/Header';
+ import Navigation from './components/Navigation/Navigation';
+ import Login from './components/Login/Login';
+ import { useAuthStore } from './store/authStore';
+@@ -20,6 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+   
+   return (
+     <>
++      <Header />
+       <Navigation />
+       <main style={{ paddingBottom: '80px' }}>
+         {children}
+@@ -43,10 +45,10 @@ function App() {
+         throw new Error('Não autorizado');
+       })
+       .then(data => {
+-        setAuth(true, data.subjectId);
++        setAuth(true, data.subjectId, data.fotoPerfil);
+       })
+       .catch(() => {
+-        setAuth(false, null);
++        setAuth(false, null, null);
+       })
+       .finally(() => {
+         clearTimeout(timeoutId);
+diff --git a/frontend/src/components/Header/Header.css b/frontend/src/components/Header/Header.css
+new file mode 100644
+index 0000000..b492a7d
+--- /dev/null
++++ b/frontend/src/components/Header/Header.css
+@@ -0,0 +1,93 @@
++.app-header {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  padding: 1rem;
++  background-color: var(--color-background-primary, #ffffff);
++  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
++  position: relative;
++  z-index: 100;
++}
++
++.header-spacer {
++  flex: 1;
++}
++
++.header-profile {
++  position: relative;
++}
++
++.profile-button {
++  background: none;
++  border: none;
++  padding: 0;
++  cursor: pointer;
++  border-radius: 50%;
++  width: 40px;
++  height: 40px;
++  overflow: hidden;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
++  transition: transform 0.2s ease, box-shadow 0.2s ease;
++}
++
++.profile-button:hover {
++  transform: scale(1.05);
++  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
++}
++
++.profile-image {
++  width: 100%;
++  height: 100%;
++  object-fit: cover;
++}
++
++.profile-placeholder {
++  width: 100%;
++  height: 100%;
++  background-color: var(--color-brand-primary, #005f73);
++  color: white;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  font-weight: bold;
++  font-size: 1.2rem;
++}
++
++.profile-dropdown {
++  position: absolute;
++  top: 50px;
++  right: 0;
++  background-color: white;
++  border-radius: 8px;
++  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
++  min-width: 150px;
++  overflow: hidden;
++  z-index: 101;
++  border: 1px solid rgba(0,0,0,0.05);
++}
++
++.dropdown-item {
++  display: block;
++  width: 100%;
++  padding: 12px 16px;
++  text-align: left;
++  background: none;
++  border: none;
++  cursor: pointer;
++  font-family: inherit;
++  font-size: 1rem;
++  color: #333;
++  transition: background-color 0.2s ease;
++}
++
++.dropdown-item:hover {
++  background-color: #f5f5f5;
++}
++
++.dropdown-item.logout-button {
++  color: #d32f2f;
++  font-weight: 500;
++}
+diff --git a/frontend/src/components/Header/Header.tsx b/frontend/src/components/Header/Header.tsx
+new file mode 100644
+index 0000000..e37dc41
+--- /dev/null
++++ b/frontend/src/components/Header/Header.tsx
+@@ -0,0 +1,80 @@
++import React, { useState, useRef, useEffect } from 'react';
++import { useNavigate } from 'react-router-dom';
++import { useQueryClient } from '@tanstack/react-query';
++import { useAuthStore } from '../../store/authStore';
++import toast from 'react-hot-toast';
++import './Header.css';
++
++const Header: React.FC = () => {
++  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
++  const dropdownRef = useRef<HTMLDivElement>(null);
++  
++  const navigate = useNavigate();
++  const queryClient = useQueryClient();
++  const { profileImage, logout } = useAuthStore();
++
++  const handleLogout = async () => {
++    const csrfToken = document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1];
++    
++    try {
++      const response = await fetch('/api/auth/logout', { 
++        method: 'POST',
++        headers: csrfToken ? { 'X-XSRF-TOKEN': csrfToken } : undefined
++      });
++      if (!response.ok) throw new Error('Logout failed');
++    } catch (error) {
++      toast.error('Sessão encerrada localmente. (Erro de rede)');
++    } finally {
++      queryClient.clear();
++      logout();
++      navigate('/login');
++    }
++  };
++
++  const toggleDropdown = () => {
++    setIsDropdownOpen(prev => !prev);
++  };
++
++  useEffect(() => {
++    const handleClickOutside = (event: MouseEvent) => {
++      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
++        setIsDropdownOpen(false);
++      }
++    };
++    
++    document.addEventListener('mousedown', handleClickOutside);
++    return () => {
++      document.removeEventListener('mousedown', handleClickOutside);
++    };
++  }, []);
++
++  return (
++    <header className="app-header">
++      <div className="header-spacer"></div>
++      <div className="header-profile" ref={dropdownRef}>
++        <button 
++          className="profile-button" 
++          onClick={toggleDropdown}
++          aria-expanded={isDropdownOpen}
++          aria-label="Menu do usuário"
++        >
++          {profileImage ? (
++            <img src={profileImage} alt="Perfil do usuário" className="profile-image" />
++          ) : (
++            <div className="profile-placeholder">U</div>
++          )}
++        </button>
++        
++        {isDropdownOpen && (
++          <div className="profile-dropdown">
++            <button className="dropdown-item logout-button" onClick={handleLogout}>
++              Sair
++            </button>
++          </div>
++        )}
++      </div>
++    </header>
++  );
++};
++
++export default Header;
+diff --git a/frontend/src/components/Navigation/Navigation.tsx b/frontend/src/components/Navigation/Navigation.tsx
+index 0802dd8..ab2f68b 100644
+--- a/frontend/src/components/Navigation/Navigation.tsx
++++ b/frontend/src/components/Navigation/Navigation.tsx
+@@ -1,31 +1,7 @@
+-import { NavLink, useNavigate } from 'react-router-dom';
+-import { useQueryClient } from '@tanstack/react-query';
+-import { useAuthStore } from '../../store/authStore';
+-import toast from 'react-hot-toast';
++import { NavLink } from 'react-router-dom';
+ import './Navigation.css';
+ 
+ const Navigation: React.FC = () => {
+-  const navigate = useNavigate();
+-  const queryClient = useQueryClient();
+-  const { logout } = useAuthStore();
+-
+-  const handleLogout = async () => {
+-    const csrfToken = document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1];
+-    
+-    try {
+-      const response = await fetch('/api/auth/logout', { 
+-        method: 'POST',
+-        headers: csrfToken ? { 'X-XSRF-TOKEN': csrfToken } : undefined
+-      });
+-      if (!response.ok) throw new Error('Logout failed');
+-    } catch (error) {
+-      toast.error('Sessão encerrada localmente. (Erro de rede)');
+-    } finally {
+-      queryClient.clear();
+-      logout();
+-      navigate('/login');
+-    }
+-  };
+   return (
+     <nav className="navigation" aria-label="Main Navigation">
+       <ul className="nav-list">
+@@ -54,11 +30,6 @@ const Navigation: React.FC = () => {
+             Receitas Fixas
+           </NavLink>
+         </li>
+-        <li className="nav-item">
+-          <button onClick={handleLogout} className="nav-link logout-button">
+-            Sair
+-          </button>
+-        </li>
+       </ul>
+     </nav>
+   );
+diff --git a/frontend/src/store/authStore.ts b/frontend/src/store/authStore.ts
+index 8d575a4..b2ee33c 100644
+--- a/frontend/src/store/authStore.ts
++++ b/frontend/src/store/authStore.ts
+@@ -4,7 +4,8 @@ interface AuthState {
+   isAuthenticated: boolean;
+   isLoading: boolean;
+   subjectId: string | null;
+-  setAuth: (isAuthenticated: boolean, subjectId: string | null) => void;
++  profileImage: string | null;
++  setAuth: (isAuthenticated: boolean, subjectId: string | null, profileImage?: string | null) => void;
+   setLoading: (isLoading: boolean) => void;
+   logout: () => void;
+ }
+@@ -13,7 +14,8 @@ export const useAuthStore = create<AuthState>((set) => ({
+   isAuthenticated: false,
+   isLoading: true,
+   subjectId: null,
+-  setAuth: (isAuthenticated, subjectId) => set({ isAuthenticated, subjectId, isLoading: false }),
++  profileImage: null,
++  setAuth: (isAuthenticated, subjectId, profileImage = null) => set({ isAuthenticated, subjectId, profileImage, isLoading: false }),
+   setLoading: (isLoading) => set({ isLoading }),
+-  logout: () => set({ isAuthenticated: false, subjectId: null, isLoading: false })
++  logout: () => set({ isAuthenticated: false, subjectId: null, profileImage: null, isLoading: false })
+ }));
