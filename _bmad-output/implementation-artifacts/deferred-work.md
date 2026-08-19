@@ -189,3 +189,15 @@
 - Omissão de acessibilidade no dropdown do Header (Esc): Falta listener para a tecla Escape.
 - Preenchimento extra no mobile para rodapé: O .main-content tem padding inferior de 80px herdado da antiga navegação.
 - Ausência de testes de integração e endpoints backend: verification-gap acusou falta de testes para controllers e filtros criados.
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-uso-tailwind.md`
+  summary: Adicionar testes de navegação para certificar que rotas não-raiz renderizam o conteúdo esperado.
+  evidence: Surfaced by verification-gap review; App.test.tsx apenas verifica a rota /.
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-uso-tailwind.md`
+  summary: Adicionar teste automatizado E2E ou de artefatos para verificar se os estilos do Tailwind são processados e aplicados com sucesso na build.
+  evidence: Surfaced by verification-gap review; O projeto atual não valida o CSS final processado.
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-uso-tailwind.md`
+  summary: Corrigir a11y: adicionar aria-live e role="status" ao estado de carregamento e aria-controls ao botão de perfil.
+  evidence: Surfaced by blind-hunter review.
+- source_spec: `_bmad-output/implementation-artifacts/spec-correcao-uso-tailwind.md`
+  summary: Utilizar a inicial do usuário logado no avatar padrão em vez de 'U' fixo.
+  evidence: Surfaced by blind-hunter review.

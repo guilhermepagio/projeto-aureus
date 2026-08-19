@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
-import './Header.css';
 
 interface HeaderProps {
   children?: React.ReactNode;
@@ -58,16 +57,16 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
   }, []);
 
   return (
-    <header className="app-header">
-      <div className="header-left"></div>
+    <header className="grid grid-cols-[1fr_auto_1fr] items-center p-4 bg-transparent relative z-[100] pointer-events-none">
+      <div className="flex justify-start pointer-events-auto"></div>
       
-      <div className="header-center">
+      <div className="flex justify-center pointer-events-auto">
         {children}
       </div>
 
-      <div className="header-right" ref={dropdownRef}>
+      <div className="relative flex justify-end pointer-events-auto" ref={dropdownRef}>
         <button 
-          className="profile-button" 
+          className="bg-transparent border-none p-0 cursor-pointer rounded-full w-10 h-10 overflow-hidden flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.1)] transition-transform transition-shadow duration-200 ease-out hover:scale-105 hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none" 
           onClick={toggleDropdown}
           aria-expanded={isDropdownOpen}
           aria-haspopup="menu"
@@ -77,18 +76,18 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
             <img 
               src={profileImage} 
               alt="" 
-              className="profile-image" 
+              className="w-full h-full object-cover" 
               referrerPolicy="no-referrer" 
               onError={() => setImgError(true)} 
             />
           ) : (
-            <div className="profile-placeholder">U</div>
+            <div className="w-full h-full bg-primary text-white flex items-center justify-center font-bold text-xl">U</div>
           )}
         </button>
         
         {isDropdownOpen && (
-          <div className="profile-dropdown" role="menu">
-            <button className="dropdown-item logout-button" onClick={handleLogout} role="menuitem" disabled={isLoggingOut}>
+          <div className="absolute top-[50px] right-0 bg-surface rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] min-w-[150px] overflow-hidden z-[101] border border-[rgba(0,0,0,0.05)]" role="menu">
+            <button className="block w-full py-3 px-4 text-left bg-transparent border-none cursor-pointer font-inherit text-base text-[#d32f2f] font-medium transition-colors duration-200 ease-out hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleLogout} role="menuitem" disabled={isLoggingOut}>
               {isLoggingOut ? 'Saindo...' : 'Sair'}
             </button>
           </div>
