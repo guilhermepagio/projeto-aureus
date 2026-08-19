@@ -1,5 +1,5 @@
 ---
-stepsCompleted: ["step-01-validate-prerequisites", "step-02-design-epics", "step-03-create-stories"]
+stepsCompleted: ["step-01-validate-prerequisites", "step-02-design-epics", "step-03-create-stories", "step-04-final-validation"]
 inputDocuments:
   - "prds/prd-projeto-aureus-docs-2026-08-02/prd.md"
   - "architecture/architecture-projeto-aureus-docs-2026-08-14/ARCHITECTURE-SPINE.md"
@@ -99,47 +99,48 @@ FR36: Epic 1 - Isolar dados por Usuário
 FR37: Epic 1 - Encerrar sessão
 FR32: Epic 1 - Barra de Navegação no topo com 5 abas
 
-FR1: Epic 2 - Criar Conta
-FR2: Epic 2 - Visualizar Contas
-FR3: Epic 2 - Editar Conta
-FR4: Epic 2 - Excluir Conta
-FR5: Epic 2 - Criar Categoria
-FR6: Epic 2 - Visualizar Categorias
-FR7: Epic 2 - Editar Categoria
-FR8: Epic 2 - Excluir Categoria
-FR31: Epic 2 - Impedir cadastro se faltam dependências
+FR1: Epic 3 - Criar Conta
+FR2: Epic 3 - Visualizar Contas
+FR3: Epic 3 - Editar Conta
+FR4: Epic 3 - Excluir Conta
+FR5: Epic 3 - Criar Categoria
+FR6: Epic 3 - Visualizar Categorias
+FR7: Epic 3 - Editar Categoria
+FR8: Epic 3 - Excluir Categoria
+FR31: Epic 3 - Impedir cadastro se faltam dependências
 
-FR9: Epic 3 - Criar Despesa Variável
-FR10: Epic 3 - Visualizar Despesas Variáveis
-FR11: Epic 3 - Editar Despesa Variável
-FR12: Epic 3 - Excluir Despesa Variável
-FR13: Epic 3 - Criar Despesa Fixa
-FR14: Epic 3 - Visualizar Despesas Fixas
-FR15: Epic 3 - Editar Despesa Fixa
-FR16: Epic 3 - Excluir Despesa Fixa
-FR17: Epic 3 - Criar Receita Variável
-FR18: Epic 3 - Visualizar Receitas Variáveis
-FR19: Epic 3 - Editar Receita Variável
-FR20: Epic 3 - Excluir Receita Variável
-FR21: Epic 3 - Criar Receita Fixa
-FR22: Epic 3 - Visualizar Receitas Fixas
-FR23: Epic 3 - Editar Receita Fixa
-FR24: Epic 3 - Excluir Receita Fixa
-FR33: Epic 3 - Aceitar Parcela Única
+FR9: Epic 4 - Criar Despesa Variável
+FR10: Epic 4 - Visualizar Despesas Variáveis
+FR11: Epic 4 - Editar Despesa Variável
+FR12: Epic 4 - Excluir Despesa Variável
+FR13: Epic 4 - Criar Despesa Fixa
+FR14: Epic 4 - Visualizar Despesas Fixas
+FR15: Epic 4 - Editar Despesa Fixa
+FR16: Epic 4 - Excluir Despesa Fixa
+FR17: Epic 4 - Criar Receita Variável
+FR18: Epic 4 - Visualizar Receitas Variáveis
+FR19: Epic 4 - Editar Receita Variável
+FR20: Epic 4 - Excluir Receita Variável
+FR21: Epic 4 - Criar Receita Fixa
+FR22: Epic 4 - Visualizar Receitas Fixas
+FR23: Epic 4 - Editar Receita Fixa
+FR24: Epic 4 - Excluir Receita Fixa
+FR33: Epic 4 - Aceitar Parcela Única
 
-FR25: Epic 4 - Selecionar mês inicial da grade
-FR26: Epic 4 - Bloco Receitas por Conta
-FR27: Epic 4 - Bloco Despesas por Conta
-FR28: Epic 4 - Bloco Categorias (R$)
-FR29: Epic 4 - Bloco Categorias (%)
-FR30: Epic 4 - Bloco Resumo Geral
+FR25: Epic 5 - Selecionar mês inicial da grade
+FR26: Epic 5 - Bloco Receitas por Conta
+FR27: Epic 5 - Bloco Despesas por Conta
+FR28: Epic 5 - Bloco Categorias (R$)
+FR29: Epic 5 - Bloco Categorias (%)
+FR30: Epic 5 - Bloco Resumo Geral
 
 ## Epic List
 
-* **Epic 1: Autenticação e Navegação Segura (Auth & Shell)** — Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados por usuário, fornecendo a casca visual e navegação principal (Pill Nav Desktop e Bottom Nav Mobile).
-* **Epic 2: Configuração Financeira Básica (Contas e Categorias)** — Permitir que o usuário configure suas origens financeiras e categorias macro com integridade referencial protegida contra exclusões acidentais.
-* **Epic 3: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas, arredondamento de centavos e sincronização de filtros.
-* **Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
+* **Epic 1: Autenticação e Navegação Segura (OAuth 2.0 Clássico)** — [IMPLEMENTADO] Permite que o usuário acesse o sistema de forma segura via Google e isola os dados por usuário. Fornece a casca visual unificada (shell e barra de navegação).
+* **Epic 2: Autenticação Fluida com Google One Tap** — [PRÓXIMO] Evoluir a experiência de login para o Google One Tap, mantendo o usuário na tela de boas-vindas sem redirecionamento forçado, integrando a validação no backend existente.
+* **Epic 3: Configuração Financeira Básica (Contas e Categorias)** — Permitir que o usuário configure suas origens financeiras e categorias macro com integridade referencial protegida contra exclusões acidentais.
+* **Epic 4: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas, arredondamento de centavos e sincronização de filtros.
+* **Epic 5: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
 
 ---
 
@@ -209,11 +210,47 @@ So that eu possa proteger meus dados ao deixar o dispositivo sem que o botão de
 
 ---
 
-## Epic 2: Configuração Financeira Básica (Contas e Categorias)
+
+---
+
+## Epic 2: Autenticação Fluida com Google One Tap
+
+Evoluir a experiência de login para o Google One Tap, mantendo o usuário na tela de boas-vindas sem redirecionamento forçado, integrando a validação no backend existente.
+
+### Story 2.1: Renderização do Prompt do Google One Tap via Clique
+
+As a Usuário não autenticado,
+I want que o prompt do Google One Tap seja acionado quando eu clicar no botão de login,
+So that eu possa me autenticar rapidamente no contexto da página, apenas quando eu tiver a intenção explícita de entrar.
+
+**Acceptance Criteria:**
+
+**Given** que o usuário acessa a aplicação e visualiza a tela de boas-vindas com o botão "Entrar com Google"
+**When** o usuário **clica no botão** "Entrar com Google"
+**Then** o prompt nativo do Google One Tap deve ser exibido sobre a interface (sem recarregar a página)
+**And** se o usuário fechar o prompt (ou se houver bloqueio do navegador), o foco do teclado deve retornar ao botão
+**And** no caso de bloqueio nativo do One Tap, o sistema não deve travar, permitindo o fluxo normal ou exibindo mensagem de erro tratada.
+
+### Story 2.2: Validação do Token e Transição de Estado (Backend + Integração)
+
+As a Usuário,
+I want que minhas credenciais do One Tap sejam validadas pela API de forma invisível,
+So that eu seja logado na aplicação e direcionado ao painel, mantendo a compatibilidade com a segurança existente.
+
+**Acceptance Criteria:**
+
+**Given** que o usuário selecionou sua conta no prompt do One Tap com sucesso
+**When** o frontend recebe a resposta contendo a credencial (token OIDC)
+**Then** o frontend deve enviar este token (POST) para um novo endpoint de verificação (`/api/auth/onetap`)
+**And** o backend deve validar a assinatura criptográfica do token, reconhecer o usuário e emitir o JWT padrão no cookie `HttpOnly` (reaproveitando a lógica do Epic 1)
+**And** no sucesso da resposta, o frontend transita o usuário direto para a aba de "Consolidação"
+**And** em caso de falha de validação, um Toast de erro é exibido (via `aria-live`) e o usuário continua na tela de login.
+
+## Epic 3: Configuração Financeira Básica (Contas e Categorias)
 
 Permitir que o usuário configure suas origens de dinheiro e suas categorias macro, preparando o sistema para que as movimentações possam ser cadastradas com integridade referencial.
 
-### Story 2.1: Gestão de Contas (CRUD) com Proteção de Vínculo
+### Story 3.1: Gestão de Contas (CRUD) com Proteção de Vínculo
 
 As a Usuário,
 I want criar, visualizar, editar e excluir minhas Contas financeiras,
@@ -230,7 +267,7 @@ So that eu possa cadastrar locais de origem ou destino (ex: Conta Corrente, Cart
 **Then** o backend rejeita a exclusão via regra `ON DELETE RESTRICT` e retorna a contagem de movimentações associadas
 **And** o frontend exibe um modal explicativo informando a quantidade de lançamentos vinculados e bloqueando a remoção até que eles sejam realocados ou excluídos
 
-### Story 2.2: Gestão de Categorias (CRUD) com Proteção de Vínculo
+### Story 3.2: Gestão de Categorias (CRUD) com Proteção de Vínculo
 
 As a Usuário,
 I want criar, visualizar, editar e excluir Categorias financeiras,
@@ -246,7 +283,7 @@ So that eu possa classificar minhas receitas e despesas de forma organizada.
 **When** o usuário tenta excluí-la
 **Then** a exclusão é bloqueada com mensagem explícita e contagem de itens que utilizam a categoria
 
-### Story 2.3: Restrição Granular de Cadastro sem Dependências
+### Story 3.3: Restrição Granular de Cadastro sem Dependências
 
 As a Usuário com conta recém-criada,
 I want ser orientado sobre quais dependências (Contas ou Categorias) preciso cadastrar antes de fazer lançamentos,
@@ -264,11 +301,11 @@ So that eu não enfrente formulários com seletores vazios ou erros de validaç�
 
 ---
 
-## Epic 3: Lançamentos Financeiros (Despesas e Receitas)
+## Epic 4: Lançamentos Financeiros (Despesas e Receitas)
 
 Permitir que o usuário registre, edite, visualize e exclua todos os tipos de entrada e saída financeira, com pré-visualização de cálculos, distribuição precisa de centavos e sincronização de filtros.
 
-### Story 3.1: Lançamentos Fixos (Despesas e Receitas) com Vigência
+### Story 4.1: Lançamentos Fixos (Despesas e Receitas) com Vigência
 
 As a Usuário,
 I want registrar receitas e despesas fixas recorrentes,
@@ -282,7 +319,7 @@ So that valores mensais contínuos sejam projetados automaticamente ao longo de 
 **And** ao editar o valor de um item fixo, a alteração define o novo valor projetado a partir da data de vigência editada
 **And** o usuário pode excluir o registro fixo permanentemente com confirmação via modal
 
-### Story 3.2: Lançamentos Variáveis e Parcelados com Arredondamento de Centavos
+### Story 4.2: Lançamentos Variáveis e Parcelados com Arredondamento de Centavos
 
 As a Usuário,
 I want registrar compras e entradas parceladas com cálculo em tempo real e distribuição exata de centavos,
@@ -296,7 +333,7 @@ So that o sistema projete com exatidão as parcelas sem divergências de arredon
 **And** quando a divisão do Valor Total pelo Nº de Parcelas gerar centavos fracionados, o resíduo é alocado na primeira parcela para que a soma das parcelas seja rigorosamente igual ao Valor Total
 **And** parcelamentos com duração superior a 24 meses são persistidos integralmente e projetados na grade de acordo com a janela de meses visualizada
 
-### Story 3.3: Lançamentos Variáveis à Vista (Parcela Única)
+### Story 4.3: Lançamentos Variáveis à Vista (Parcela Única)
 
 As a Usuário,
 I want informar compras ou entradas pontuais não parceladas,
@@ -310,7 +347,7 @@ So that a movimentação incida de forma isolada em um único mês da minha grad
 **And** o Valor Total reflete instantaneamente o Valor Parcela, e a Última Parcela é preenchida com o mesmo mês da Primeira Parcela
 **And** o registro é salvo afetando exclusivamente o mês selecionado
 
-### Story 3.4: Sincronização de Visão Mensal, Invalidação de Cache e Filtro Global
+### Story 4.4: Sincronização de Visão Mensal, Invalidação de Cache e Filtro Global
 
 As a Usuário,
 I want que minhas listagens mostrem os itens do mês ativo com atualização imediata após mutações,
@@ -329,11 +366,11 @@ So that meus dados estejam sempre sincronizados entre as abas sem recarregamento
 
 ---
 
-## Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)
+## Epic 5: Consolidação e Projeção Mensal (Painel de 24 Meses)
 
 Dar ao usuário o poder de visualizar o impacto de suas decisões financeiras 24 meses no futuro, através de uma matriz consolidada com totais, categorias, sobras acumuladas e navegação responsiva.
 
-### Story 4.1: Seleção de Mês, Navegação Temporal e Grid com Suporte a Gestos Mobile
+### Story 5.1: Seleção de Mês, Navegação Temporal e Grid com Suporte a Gestos Mobile
 
 As a Usuário,
 I want selecionar um mês inicial e navegar em uma grade de 24 colunas com suporte a scroll e gestos mobile,
@@ -347,7 +384,7 @@ So that eu possa visualizar o horizonte financeiro com fluidez no Desktop e Mobi
 **And** a primeira coluna lateral com os nomes de Contas e Categorias permanece fixa (`sticky`) durante a rolagem horizontal
 **And** no Mobile, o usuário pode realizar gestos de Swipe horizontal para avançar ou recuar o mês de foco da visualização
 
-### Story 4.2: Bloco de Consolidação por Conta (Receitas e Despesas)
+### Story 5.2: Bloco de Consolidação por Conta (Receitas e Despesas)
 
 As a Usuário,
 I want visualizar blocos consolidados que agrupam meus ganhos e gastos por Conta,
@@ -361,7 +398,7 @@ So that eu conheça o fluxo mensal de cada uma das minhas contas cadastradas.
 **And** o "Bloco Despesas por Conta" exibe a soma de despesas fixas e variáveis mês a mês para cada Conta
 **And** células de meses sem movimentação para determinada Conta exibem o valor `R$ 0,00`
 
-### Story 4.3: Bloco Analítico de Categorias (Valores e Percentuais com Proteção Zero)
+### Story 5.3: Bloco Analítico de Categorias (Valores e Percentuais com Proteção Zero)
 
 As a Usuário,
 I want visualizar as despesas somadas por Categoria e sua representação percentual em relação ao total gasto,
@@ -375,7 +412,7 @@ So that eu identifique quais áreas concentram a maior fatia do meu orçamento.
 **And** o "Bloco Categorias (%)" calcula e exibe a proporção percentual `(Gasto da Categoria / Gasto Total do Mês) * 100`
 **And** se o Total Gasto do mês for igual a R$ 0,00, todas as categorias exibem `0%`, prevenindo divisão por zero (`NaN`)
 
-### Story 4.4: Bloco de Resumo Geral com Sobra Histórica Acumulada
+### Story 5.4: Bloco de Resumo Geral com Sobra Histórica Acumulada
 
 As a Usuário,
 I want visualizar a sobra líquida mensal e a sobra retroativa acumulada desde o histórico pré-grade,

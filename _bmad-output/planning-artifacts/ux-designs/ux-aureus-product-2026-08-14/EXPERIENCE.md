@@ -1,5 +1,7 @@
 ---
 sources: ["../../../docs/product/prd.md", "../../../docs/product/brief.md"]
+status: final
+updated: 2026-08-18
 ---
 
 # Aureus Experience Spine
@@ -63,20 +65,23 @@ Secondary features (Accounts, Categories, Settings, Logout) are accessed via a g
 - **Real-time Input:** Numeric calculations (like installments * value) happen instantly as the user types, without requiring a "Calculate" button.
 
 ## Accessibility Floor
-- **Focus:** Standard browser focus rings are overridden with brand-compliant teal rings. 
-- **Focus Trapping:** When a Modal or Bottom Sheet opens, keyboard focus MUST be trapped inside the overlay until dismissed.
+- **Focus:** Standard browser focus rings are overridden with brand-compliant teal rings. This includes the "Entrar com Google" login button.
+- **Focus Trapping & Management:** When a Modal or Bottom Sheet opens, keyboard focus MUST be trapped inside the overlay until dismissed. For the One Tap overlay, if dismissed, focus must programmatically return to the "Entrar com Google" button. On successful login, focus must move to the main `<h1>` of the Consolidação tab to establish context.
 - **Contrast:** Status colors (red/green) are used in conjunction with text weight or background tints to ensure readability. Red is never the sole indicator of an error.
-- **Screen Readers (ARIA):** The complex 24-month grid MUST implement `role="grid"`, `role="rowgroup"`, `role="row"`, and `role="gridcell"` attributes. Header cells must use `aria-label` to explicitly announce context to screen readers (e.g., "Ago 2026, Receitas por Conta, Aureus Conta: R$ 3.500").
+- **Screen Readers (ARIA):** 
+  - The complex 24-month grid MUST implement `role="grid"`, `role="rowgroup"`, `role="row"`, and `role="gridcell"` attributes. Header cells must use `aria-label` to explicitly announce context to screen readers (e.g., "Ago 2026, Receitas por Conta, Aureus Conta: R$ 3.500").
+  - Toasts (like the authentication failure message) MUST be implemented as an `aria-live` region (`role="alert"`) so they are announced immediately.
 
 ## Key Flows
 
-### Flow 0: Autenticação (Login)
+### Flow 0: Autenticação (Login via Google One Tap)
 - **Protagonist:** Unauthenticated User.
-- **Step 1:** User accesses the Aureus URL.
-- **Step 2:** User lands on the Login screen presenting "Entrar com Google" or standard email/password fields.
-- **Step 3:** User selects Google OAuth and authenticates.
-- **Climax:** User is redirected to the Consolidação tab (Home).
-- **Failure Path:** Authentication rejected. Error toast displays "Falha ao autenticar. Tente novamente."
+- **Step 1:** User accesses the Aureus URL and lands on a minimalist welcome screen (clean white background) featuring a centered "Entrar com Google" button.
+- **Step 2:** User clicks or uses `Enter`/`Space` to trigger the "Entrar com Google" button.
+- **Step 3:** Instead of a page redirect, the native Google Identity Services prompt (One Tap UI popup) overlays the screen contextually. Focus is handed to the popup.
+- **Step 4:** User selects their Google account within the popup and authenticates.
+- **Climax:** The popup closes and the screen smoothly transitions to the Consolidação tab (Home) without a hard page reload. Focus is programmatically shifted to the new page's main `<h1>`.
+- **Failure Path:** Authentication rejected or popup closed. Error toast displays "Falha ao autenticar. Tente novamente." (announced via screen reader) and the user remains on the welcome screen. Focus returns to the "Entrar com Google" button.
 
 ### Flow 1: Visualizar Consolidação
 - **Protagonist:** Returning User analyzing their month.
