@@ -87,7 +87,10 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
         
         {isDropdownOpen && (
           <div className="absolute top-[50px] right-0 bg-surface rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] min-w-[150px] overflow-hidden z-[101] border border-[rgba(0,0,0,0.05)]" role="menu">
-            <button className="block w-full py-3 px-4 text-left bg-transparent border-none cursor-pointer font-inherit text-base text-[#d32f2f] font-medium transition-colors duration-200 ease-out hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleLogout} role="menuitem" disabled={isLoggingOut}>
+            <button className="block w-full py-3 px-4 text-left bg-transparent border-none cursor-pointer font-inherit text-base text-text-main font-medium transition-colors duration-200 ease-out hover:bg-main" onClick={() => { navigate('/contas'); setIsDropdownOpen(false); }} role="menuitem">
+              Contas
+            </button>
+            <button className="block w-full py-3 px-4 text-left bg-transparent border-none cursor-pointer font-inherit text-base text-[#d32f2f] font-medium transition-colors duration-200 ease-out hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed border-t border-[rgba(0,0,0,0.05)]" onClick={handleLogout} role="menuitem" disabled={isLoggingOut}>
               {isLoggingOut ? 'Saindo...' : 'Sair'}
             </button>
           </div>
