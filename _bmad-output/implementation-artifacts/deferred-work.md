@@ -201,3 +201,18 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-correcao-uso-tailwind.md`
   summary: Utilizar a inicial do usuário logado no avatar padrão em vez de 'U' fixo.
   evidence: Surfaced by blind-hunter review.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Adicionar testes de unidade e integração (Backend e Frontend) para Contas
+  evidence: Nenhuma cobertura de teste foi adicionada na implementação da story 2.1.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Adicionar métodos equals() e hashCode() na entidade Conta
+  evidence: Conta não possui implementação customizada recomendada pelo JPA.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Implementar Focus Trap acessível e completo no Modal
+  evidence: Componente genérico Modal.tsx não possui restrição de foco para teclado.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Adicionar suporte à paginação no backend e listagem de Contas
+  evidence: O endpoint /api/contas retorna todos os registros de uma vez.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Adicionar tratamento e exibição de erro da API com parsing estruturado no frontend
+  evidence: useContas.ts lança erros genéricos sem extrair mensagens do body de erro.

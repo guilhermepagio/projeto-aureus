@@ -42,8 +42,8 @@ development_status:
   1-4-encerrar-sessão-logout-e-limpeza-de-estado: done
   epic-1-retrospective: done
 
-  epic-2: backlog
-  2-1-gestão-de-contas-crud-com-proteção-de-vínculo: backlog
+  epic-2: in-progress
+  2-1-gestão-de-contas-crud-com-proteção-de-vínculo: review
   2-2-gestão-de-categorias-crud-com-proteção-de-vínculo: backlog
   2-3-restrição-granular-de-cadastro-sem-dependências: backlog
   epic-2-retrospective: optional
