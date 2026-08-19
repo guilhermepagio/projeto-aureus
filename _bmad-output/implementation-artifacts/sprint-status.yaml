@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 08-18-2026 20:55
+last_updated: 08-19-2026 11:33
 project: projeto-aureus
 project_key: NOKEY
 tracking_system: file-system
@@ -40,7 +40,7 @@ development_status:
   1-2-autenticação-via-google-oauth-2-0-e-tratamento-de-erros: done
   1-3-proteção-de-sessão-e-isolamento-de-dados: done
   1-4-encerrar-sessão-logout-e-limpeza-de-estado: done
-  epic-1-retrospective: optional
+  epic-1-retrospective: done
 
   epic-2: backlog
   2-1-gestão-de-contas-crud-com-proteção-de-vínculo: backlog
@@ -61,3 +61,17 @@ development_status:
   4-3-bloco-analítico-de-categorias-valores-e-percentuais-com-prot: backlog
   4-4-bloco-de-resumo-geral-com-sobra-histórica-acumulada: backlog
   epic-4-retrospective: optional
+action_items:
+  - id: "epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave"
+    epic: 1
+    action: "Corrigir ordem das abas na barra de navegacao (Receitas Variaveis antes
+      de Receitas Fixas)"
+    owner: "Guilherme"
+    status: open
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-1-retro-08-19-2026.md"
+  - id: "epic-1-retro-item-2-criar-testes-automatizados-para-o-pacote"
+    epic: 1
+    action: "Criar testes automatizados para o pacote security no backend"
+    owner: "Guilherme"
+    status: open
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-1-retro-08-19-2026.md"
