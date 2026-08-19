@@ -1,6 +1,6 @@
 ---
 status: final
-updated: 2026-08-14
+updated: 2026-08-19
 ---
 # Architecture Spine: Aureus V1
 
@@ -54,3 +54,7 @@ Modular Monolith (Backend) + Responsive Single Page Application (Frontend)
   - **Binds:** Where the JWT token resides on the client.
   - **Prevents:** XSS vulnerabilities associated with `localStorage`.
   - **Rule:** HttpOnly Cookie. The backend MUST issue the JWT in a secure, HttpOnly cookie that the frontend cannot access via JavaScript, but the browser automatically attaches to subsequent requests.
+- **AD-8: Dual Authentication Flow (Google One Tap + OAuth 2.0)**
+  - **Binds:** How Google login is implemented across Frontend and Backend.
+  - **Prevents:** Irresponsible replacement of a secure fallback flow, or vulnerable manual JWT validation.
+  - **Rule:** The system MUST support Google One Tap via a native prompt (no redirect), sending the credential via POST to a dedicated backend endpoint. The backend MUST validate the JWT securely using `google-api-client` (`GoogleIdTokenVerifier`). The system MUST ALSO maintain the classic OAuth 2.0 flow (Spring Security `.oauth2Login()`) as a fallback in case the native prompt is blocked.
