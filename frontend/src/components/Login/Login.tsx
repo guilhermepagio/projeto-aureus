@@ -33,7 +33,7 @@ const Login: React.FC = () => {
             <div className="bg-surface p-8 rounded-md shadow-md text-center w-full max-w-[400px]">
                 <h1 className="text-primary text-[2rem] mb-2">Aureus</h1>
                 <p className="text-[#666666] mb-8">Acesse sua conta para continuar</p>
-                <button className="bg-primary text-white border-none rounded-sm px-6 py-3 text-base cursor-pointer w-full transition-colors duration-200 ease-in-out hover:bg-secondary hover:text-[#333333]" onClick={handleLogin}>
+                <button className="bg-primary text-white border-none rounded-sm px-6 py-3 text-base cursor-pointer w-full transition-colors duration-200 ease-in-out hover:bg-secondary hover:text-[#333333] focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none" onClick={handleLogin}>
                     Entrar com Google
                 </button>
             </div>
