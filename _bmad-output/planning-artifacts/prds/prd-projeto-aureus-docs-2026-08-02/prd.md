@@ -2,7 +2,7 @@
 title: "PRD: Aureus"
 status: final
 created: 2026-08-02
-updated: 2026-08-18
+updated: 2026-08-13
 ---
 
 # PRD: Aureus
@@ -136,17 +136,16 @@ O nome remete ao *aureus*, moeda de ouro da Roma Antiga, simbolizando valor e es
 > **Entry state:** Usuário não autenticado.
 >
 > **Path:**
-> 1. Acessa a tela de entrada. O Aureus exibe automaticamente o prompt do Google One Tap (One Tap sign-up/sign-in).
-> 2. Guilherme seleciona sua conta Google diretamente no prompt do One Tap, sem sair da página do Aureus.
-> 3. (Fallback) Caso o One Tap falhe, seja bloqueado pelo navegador ou cancelado, ele clica no botão explícito "Entrar com Google" e é redirecionado ao fluxo OAuth tradicional.
-> 4. Após o login bem-sucedido (One Tap ou OAuth), o Aureus identifica ou cria a conta local associada ao identificador estável do Google e abre o painel.
-> 5. Ao acessar novamente, uma sessão autenticada permite consultar e alterar somente os dados financeiros vinculados à sua própria conta.
+> 1. Abre a tela de entrada e seleciona “Entrar com Google”.
+> 2. É redirecionado ao Google para autenticação e consentimento, quando aplicável.
+> 3. Após o retorno bem-sucedido, o Aureus identifica ou cria a conta local associada ao identificador estável do Google e abre o painel.
+> 4. Ao acessar novamente, uma sessão autenticada permite consultar e alterar somente os dados financeiros vinculados à sua própria conta.
 >
-> **Climax:** Guilherme acessa seus dados sem cadastrar senha no Aureus, de forma fluida via One Tap.
+> **Climax:** Guilherme acessa seus dados sem cadastrar senha no Aureus.
 >
 > **Resolution:** A sessão é encerrada pelo comando “Sair” e o usuário volta à tela de entrada.
 >
-> **Edge cases:** O sistema oferece botão OAuth caso o One Tap falhe ou não apareça. O sistema não cria uma conta quando o consentimento final é negado ou a resposta do provedor é inválida; erros de autenticação não revelam dados de outras contas.
+> **Edge cases:** O sistema não cria uma conta quando o consentimento é negado ou a resposta do provedor é inválida; erros de autenticação não revelam dados de outras contas.
 
 ## 3. Glossário
 
@@ -474,16 +473,14 @@ O Usuário pode informar Nº Parcelas = 1 em qualquer Movimentação Variável.
 
 ### 4.11 Autenticação e Isolamento de Dados
 
-**Descrição:** O Aureus autentica Usuários por meio do Google, preferencialmente usando Google One Tap para uma experiência fluida, com fallback para o fluxo OAuth 2.0 com OpenID Connect. A autenticação é requisito para acessar as funcionalidades financeiras; cada registro financeiro pertence a um Usuário e não pode ser consultado ou alterado por outro.
+**Descrição:** O Aureus autentica Usuários por meio do Google usando OAuth 2.0 com OpenID Connect. A autenticação é requisito para acessar as funcionalidades financeiras; cada registro financeiro pertence a um Usuário e não pode ser consultado ou alterado por outro.
 
 #### FR-34: Entrar com Google
 
-O sistema deve tentar autenticar o Usuário primeiramente através do Google One Tap (One Tap sign-up/sign-in) diretamente na tela de entrada. Caso o One Tap falhe ou não esteja disponível, o Usuário pode iniciar a autenticação através do botão explícito “Entrar com Google” via OAuth. O sistema considera o login concluído apenas após validar a resposta (token) do Provedor de Identidade.
+O Usuário pode iniciar autenticação selecionando “Entrar com Google”. O sistema usa um fluxo de autorização adequado a aplicações web no servidor e somente considera o login concluído após validar a resposta do Provedor de Identidade.
 
 **Consequências (testáveis):**
 - Usuário não autenticado é direcionado à tela de entrada ao tentar acessar uma área protegida.
-- A tela de entrada exibe automaticamente o prompt do Google One Tap (se suportado e não bloqueado).
-- A tela de entrada mantém um botão de fallback "Entrar com Google" visível e operante.
 - O sistema solicita somente os escopos de identidade necessários ao login na V1 (`openid`, `profile` e `email`).
 - O sistema não coleta nem armazena a senha do Google.
 - Consentimento negado, código inválido, resposta expirada ou falha de validação produzem erro controlado, sem criar sessão autenticada.
@@ -541,7 +538,7 @@ O Usuário pode selecionar “Sair” para invalidar a sessão local e retornar 
 - Painel de Consolidação com grade de 24 meses e 5 blocos analíticos.
 - Seleção do mês inicial (manual ou botão "Mês Atual").
 - Sobra Retroativa Acumulada com soma cumulativa.
-- Autenticação por Google One Tap (com fallback para OAuth 2.0/OIDC) e sessão protegida.
+- Autenticação por Google via OAuth 2.0/OpenID Connect e sessão protegida.
 - Isolamento de todos os dados financeiros por Usuário autenticado.
 - Execução local (backend via código-fonte, PostgreSQL via Docker).
 
@@ -588,5 +585,5 @@ Todas as assumptions foram confirmadas ou corrigidas pelo Usuário e convertidas
 | §4.7 FR-27 — Contas sem Despesas omitidas do Painel | ❌ Corrigida → Contas sem Despesas **geram linhas zeradas**. |
 | §4.7 FR-29 — Exibir 0% quando total de Despesas é zero | ✅ Confirmada. |
 | §4.8 FR-31 — Mensagem com link para cadastro de dependências | ✅ Confirmada. |
-| Autenticação Google no MVP | ✅ Confirmada pelo pedido de atualização; One Tap (fallback OAuth 2.0/OIDC) e isolamento por Usuário entram na V1. |
+| Autenticação Google no MVP | ✅ Confirmada pelo pedido de atualização; OAuth 2.0/OIDC e isolamento por Usuário entram na V1. |
 | Login por senha próprio | ❌ Fora do escopo; não haverá armazenamento de senhas na V1. |

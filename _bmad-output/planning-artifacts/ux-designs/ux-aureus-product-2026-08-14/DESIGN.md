@@ -36,8 +36,6 @@ tokens:
   elevation:
     shadow-sm: "0 1px 3px rgba(0,0,0,0.08)"
     shadow-up: "0 -4px 6px -1px rgba(0,0,0,0.05)"
-status: final
-updated: 2026-08-18
 ---
 
 # Aureus Design Spine
@@ -93,8 +91,6 @@ Corners are uniformly rounded to soften the UI.
 | **Global Filter Toggle** | Small icon button located in the list header (e.g., funnel icon). Active state uses `color.brand.primary` tint, inactive uses `color.text.secondary`. |
 | **Calculation Preview** | Inline block within forms. Uses `teal-light` background, `color.brand.primary` text, and prominent typography to show real-time totals. |
 | **Toast** | Floating dark notification (`color.text.primary` bg, white text), `radius-sm`, semantic left border (e.g., green for success). |
-| **Welcome Screen** | Clean white background (`color.surface.card`) taking full viewport height. Used exclusively as the landing page for unauthenticated users. |
-| **Login Button** | Standard "Entrar com Google" button styling, centered horizontally and vertically on the Welcome Screen. MUST use a high-contrast variant (e.g., standard Google blue or a prominent dark border) to ensure visibility against the white background. Triggers the Google One Tap UI prompt overlay rather than a page redirect. |
 
 ## Do's and Don'ts
 - **Do** align monetary values right and use tabular lining.
