@@ -25,7 +25,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       <Header>
         <Navigation />
       </Header>
-      <main className="main-content">
+      <main className="pb-[80px] md:pb-0">
         {children}
       </main>
     </>

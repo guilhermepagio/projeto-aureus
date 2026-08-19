@@ -1,36 +1,34 @@
-:root {
-  /* Brand Colors */
-  --color-primary: #004d40; /* Deep Teal */
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #004d40;
   --color-primary-light: #00695c;
-  --color-secondary: #ffb300; /* Warm Amber */
+  --color-secondary: #ffb300;
   --color-secondary-light: #ffc107;
 
-  /* Neutrals */
-  --bg-main: #f8f9fa;
-  --bg-surface: #ffffff;
-  --text-main: #212529;
-  --text-muted: #6c757d;
-  --border-color: #dee2e6;
+  --color-main: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-text-main: #212529;
+  --color-text-muted: #6c757d;
+  --color-border: #dee2e6;
 
-  /* Typography */
   --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
 
-  /* Border Radius */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-pill: 9999px;
-
-  /* Shadow */
+  
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
   --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-
-  font-family: var(--font-sans);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-main);
-  background-color: var(--bg-main);
+  
+  --breakpoint-md: 769px;
 }
 
 body {
+  font-family: var(--font-sans);
+  color: var(--color-text-main);
+  background-color: var(--color-main);
+  font-variant-numeric: tabular-nums;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
@@ -42,20 +40,7 @@ body {
 }
 
 #root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* Mobile Only: padding for fixed bottom navigation */
-.main-content {
-  padding-bottom: 80px;
-}
-
-@media (min-width: 769px) {
-  .main-content {
-    padding-bottom: 0;
-  }
+  @apply flex flex-col min-h-screen;
 }
 
 /* Typography margin reset */

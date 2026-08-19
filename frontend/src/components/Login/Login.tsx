@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
-import './Login.css';
-
 const Login: React.FC = () => {
     const { isAuthenticated, isLoading } = useAuthStore();
     const navigate = useNavigate();
@@ -26,16 +24,16 @@ const Login: React.FC = () => {
     };
 
     if (isLoading) {
-        return <div className="login-loading">Carregando...</div>;
+        return <div className="flex justify-center items-center min-h-screen text-primary">Carregando...</div>;
     }
 
     return (
-        <div className="login-container">
+        <div className="flex justify-center items-center min-h-screen bg-[#f5f5f5]">
             <Toaster position="top-right" />
-            <div className="login-card">
-                <h1 className="login-title">Aureus</h1>
-                <p className="login-subtitle">Acesse sua conta para continuar</p>
-                <button className="login-button" onClick={handleLogin}>
+            <div className="bg-surface p-8 rounded-md shadow-md text-center w-full max-w-[400px]">
+                <h1 className="text-primary text-[2rem] mb-2">Aureus</h1>
+                <p className="text-[#666666] mb-8">Acesse sua conta para continuar</p>
+                <button className="bg-primary text-white border-none rounded-sm px-6 py-3 text-base cursor-pointer w-full transition-colors duration-200 ease-in-out hover:bg-secondary hover:text-[#333333]" onClick={handleLogin}>
                     Entrar com Google
                 </button>
             </div>
