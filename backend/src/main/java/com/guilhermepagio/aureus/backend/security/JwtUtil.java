@@ -16,12 +16,12 @@ public class JwtUtil {
     private final SecretKey key;
     private final long expiration;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") long expiration) {
+    public JwtUtil(@Value("${jwt.secret}") final String secret, @Value("${jwt.expiration}") final long expiration) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.expiration = expiration;
     }
 
-    public String generateToken(String subjectId) {
+    public String generateToken(final String subjectId) {
         return Jwts.builder()
                 .subject(subjectId)
                 .issuedAt(new Date())
@@ -30,7 +30,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public void validateToken(String token) {
+    public void validateToken(final String token) {
         Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
     }
 
@@ -38,7 +38,7 @@ public class JwtUtil {
         return this.expiration;
     }
 
-    public String getSubject(String token) {
+    public String getSubject(final String token) {
         return Jwts.parser()
                 .verifyWith(key)
                 .build()

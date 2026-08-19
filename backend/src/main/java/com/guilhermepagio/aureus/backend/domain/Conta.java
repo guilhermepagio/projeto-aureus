@@ -8,8 +8,17 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
 @Entity
 @Table(name = "contas")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Conta extends TenantAwareEntity {
 
     @Id
@@ -22,36 +31,4 @@ public class Conta extends TenantAwareEntity {
     
     @Column(length = 500)
     private String observacoes;
-
-    public Conta() {
-    }
-
-    public Conta(String descricao, String observacoes) {
-        this.descricao = descricao;
-        this.observacoes = observacoes;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
-    }
-
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
-    }
 }

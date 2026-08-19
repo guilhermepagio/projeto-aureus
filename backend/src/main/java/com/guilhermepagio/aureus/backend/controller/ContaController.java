@@ -23,12 +23,12 @@ public class ContaController {
     }
 
     @PostMapping
-    public Conta criar(@Valid @RequestBody Conta conta) {
+    public Conta criar(final @Valid @RequestBody Conta conta) {
         return contaRepository.save(conta);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Conta> atualizar(@PathVariable Long id, @Valid @RequestBody Conta contaAtualizada) {
+    public ResponseEntity<Conta> atualizar(final @PathVariable Long id, final @Valid @RequestBody Conta contaAtualizada) {
         return contaRepository.findById(id)
                 .map(conta -> {
                     conta.setDescricao(contaAtualizada.getDescricao());
@@ -39,14 +39,14 @@ public class ContaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(final @PathVariable Long id) {
         if (!contaRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
         try {
             contaRepository.deleteById(id);
             return ResponseEntity.noContent().build();
-        } catch (DataIntegrityViolationException e) {
+        } catch (final DataIntegrityViolationException e) {
             // Future-proofing for FK violations
             return ResponseEntity.badRequest().build();
         }
