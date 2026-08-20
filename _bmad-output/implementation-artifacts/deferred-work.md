@@ -288,3 +288,9 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
   summary: Missing frontend component tests for DespesasFixasPage and ReceitasFixasPage.
   evidence: Project currently lacks test infrastructure, deferring per Epic 1 retro items.
+
+## Deferred from: code review (2026-08-20) spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md
+- Falta de validação de propriedade (Tenant) nos relacionamentos informados (conta/categoria)
+- Mutação de histórico financeiro em exclusões (falta de dataFim/soft-delete)
+- Falta de paginação nos endpoints `GET` de listagem
+- Falta de cobertura de testes automatizados (integração e UI)

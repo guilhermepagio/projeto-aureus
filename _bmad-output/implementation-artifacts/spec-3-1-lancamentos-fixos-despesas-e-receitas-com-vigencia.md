@@ -99,6 +99,19 @@ context:
 - Given mesmos cenários acima, when aplicados a `/receitas-fixas`, then o comportamento é idêntico para receitas fixas.
 - Given dados inválidos (descrição vazia, valor <= 0, conta/categoria não selecionada), when tenta salvar, then validação inline bloqueia a submissão com mensagens específicas.
 
+### Review Findings
+
+- [x] [Review][Patch] Resposta de erro não é JSON ("Erro de integridade") — Backend retorna string simples, quebrando o `await response.json()` no frontend.
+- [x] [Review][Patch] Bypass do Try-Catch no PUT — `atualizar` usa `save()` sem `@Transactional`, fazendo com que a exceção de integridade escape da captura.
+- [x] [Review][Patch] Vulnerabilidade de ID Hijacking no POST — `criar` não zera o `id` da entidade, permitindo overwrite indevido se o cliente enviar um ID.
+- [x] [Review][Patch] Risco de LazyInitializationException — Entidades retornadas com relacionamentos `FetchType.LAZY` causarão erro na serialização JSON.
+- [x] [Review][Patch] Mensagem de exclusão hardcoded no Frontend — Resposta de erro 400 do backend é ignorada em favor de uma mensagem fixa.
+- [x] [Review][Patch] Falta de ordenação padrão na Listagem — `findAll()` retorna dados em ordem arbitrária; falta um `Sort.by()`.
+- [x] [Review][Defer] Falta de validação de propriedade (Tenant) nos relacionamentos informados (conta/categoria) — deferred, pre-existing
+- [x] [Review][Defer] Mutação de histórico financeiro em exclusões (falta de dataFim/soft-delete) — deferred, pre-existing
+- [x] [Review][Defer] Falta de paginação nos endpoints `GET` de listagem — deferred, pre-existing
+- [x] [Review][Defer] Falta de cobertura de testes automatizados (integração e UI) — deferred, pre-existing
+
 ## Verification
 
 **Commands:**
