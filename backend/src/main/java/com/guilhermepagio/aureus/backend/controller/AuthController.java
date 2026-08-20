@@ -1,9 +1,9 @@
 package com.guilhermepagio.aureus.backend.controller;
 
-import com.guilhermepagio.aureus.backend.domain.Usuario;
-import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import com.guilhermepagio.aureus.backend.domain.Usuario;
+import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,15 +27,15 @@ public class AuthController {
     private final UsuarioRepository usuarioRepository;
 
     @GetMapping("/me")
-    public ResponseEntity<?> me(Authentication authentication) {
+    public ResponseEntity<?> me(final Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
             return ResponseEntity.status(401).build();
         }
         
-        String subjectId = String.valueOf(authentication.getPrincipal());
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByGoogleSubjectId(subjectId);
+        final String subjectId = String.valueOf(authentication.getPrincipal());
+        final Optional<Usuario> usuarioOpt = usuarioRepository.findById(Long.valueOf(subjectId));
         
-        Map<String, Object> responseBody = new HashMap<>();
+        final Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("subjectId", subjectId);
         usuarioOpt.ifPresent(usuario -> responseBody.put("fotoPerfil", usuario.getFotoPerfil()));
         
@@ -41,8 +43,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
-        ResponseCookie cookie = ResponseCookie.from("AUREUS_SESSION", "")
+    public ResponseEntity<Void> logout(final HttpServletRequest request) {
+        final ResponseCookie cookie = ResponseCookie.from("AUREUS_SESSION", "")
                 .httpOnly(true)
                 .secure(request.isSecure())
                 .path("/")

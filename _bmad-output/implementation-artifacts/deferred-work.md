@@ -201,3 +201,75 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-correcao-uso-tailwind.md`
   summary: Utilizar a inicial do usuário logado no avatar padrão em vez de 'U' fixo.
   evidence: Surfaced by blind-hunter review.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Adicionar testes de unidade e integração (Backend e Frontend) para Contas
+  evidence: Nenhuma cobertura de teste foi adicionada na implementação da story 2.1.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Adicionar métodos equals() e hashCode() na entidade Conta
+  evidence: Conta não possui implementação customizada recomendada pelo JPA.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Implementar Focus Trap acessível e completo no Modal
+  evidence: Componente genérico Modal.tsx não possui restrição de foco para teclado.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Adicionar suporte à paginação no backend e listagem de Contas
+  evidence: O endpoint /api/contas retorna todos os registros de uma vez.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
+  summary: Adicionar tratamento e exibição de erro da API com parsing estruturado no frontend
+  evidence: useContas.ts lança erros genéricos sem extrair mensagens do body de erro.
+
+## Deferred from: code review (2026-08-19) - code review of spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md
+- Endpoint criar Conta retorna 200 OK em vez de 201 Created.
+- Modal genérico não possui Focus Trap acessível.
+- Tratamento de erros de validação server-side não mapeados no formulário.
+- Endpoint de listagem de contas não é paginado.
+- Entidade Conta sem implementação customizada de equals() e hashCode().
+- Modal não se adapta dinamicamente para Bottom Sheet em mobile.
+- Ausência de testes verificando isolamento cross-tenant e invalidação de cache.
+- Ausência de testes para contrato de violação de FK na deleção.
+
+## Deferred from: code review of spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Endpoint criar Categoria retorna 200 OK em vez de 201 Created.
+  evidence: Pre-existing pattern from Conta Controller; low impact for now.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Entidade Categoria sem métodos equals() e hashCode().
+  evidence: Pre-existing pattern; low impact for current detached entity usage.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: O endpoint de exclusão assume 400 apenas como FK violation.
+  evidence: Out of scope to overhaul error parsing; validation details might be masked.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Listagem de Categorias não possui paginação.
+  evidence: Frontend and backend fetch all records at once, risky for large tenants.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Falta de tratamento de timeout para requisições frontend.
+  evidence: Network hangs indefinitely instead of aborting.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Testes automatizados ausentes para Categoria.
+  evidence: Multi-tenant isolation, FK constraint errors, and frontend cache invalidation have no automated tests.
+
+## Deferred from: code review (2026-08-20) - code review of spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md
+- Missing Location header in Categoria creation.
+- useCategorias.ts lacks AbortSignal.
+- Optimistic locking (missing @Version).
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Improve UX by checking both accounts and categories simultaneously to avoid a "waterfall" of empty states.
+  evidence: A user missing both will first see the warning for accounts, fix it, and then unexpectedly face a second block for categories.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Add data-testid attributes to loading, error, and empty states.
+  evidence: Automated testing will be brittle without semantic data-testid attributes.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Add a Retry button to the error state.
+  evidence: Currently, the user is forced to manually refresh the entire application if the initial fetch fails.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Improve error state UI to match the polished, card-based layouts of the empty states.
+  evidence: The error state UI is a simple line of text, which feels visually inconsistent.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Add automated tests to verify dependency guards block access to transaction routes.
+  evidence: The test suite would not fail if a developer removed the RequiresDependencies wrapper, allowing users to access transaction pages without required data.
+
+## Deferred from: code review of spec-2-3-restricao-granular-de-cadastro-sem-dependencias (2026-08-20)
+- Missing `role="status"` on loading state.
+- Missing `role="alert"` on error state.
+- Missing `data-testid` attributes on conditional UI states.
+- Repetitive `<ProtectedRoute><RequiresDependencies>` wrappers in App.tsx.
+- Scope creep / missing `aria-hidden="true"`: Unrequested additions of `lucide-react` icons in Header.tsx.
