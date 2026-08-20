@@ -56,6 +56,7 @@ const ContaFormModal: React.FC<ContaFormModalProps> = ({ isOpen, onClose, contaT
       isOpen={isOpen}
       onClose={onClose}
       title={contaToEdit ? 'Editar Conta' : 'Nova Conta'}
+      disableClose={isPending}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -66,8 +67,15 @@ const ContaFormModal: React.FC<ContaFormModalProps> = ({ isOpen, onClose, contaT
             type="text"
             id="descricao"
             value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border"
+            onChange={(e) => {
+              setDescricao(e.target.value);
+              if (error && e.target.value.trim()) setError('');
+            }}
+            onBlur={(e) => {
+              if (!e.target.value.trim()) setError('A descrição é obrigatória.');
+            }}
+            disabled={isPending}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100"
             placeholder="Ex: Carteira, NuBank, Itaú"
             maxLength={100}
           />
@@ -81,9 +89,14 @@ const ContaFormModal: React.FC<ContaFormModalProps> = ({ isOpen, onClose, contaT
           <textarea
             id="observacoes"
             value={observacoes}
-            onChange={(e) => setObservacoes(e.target.value)}
+            onChange={(e) => {
+              setObservacoes(e.target.value);
+              e.target.style.height = 'auto';
+              e.target.style.height = `${e.target.scrollHeight}px`;
+            }}
+            disabled={isPending}
             rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 min-h-[5rem]"
             maxLength={500}
           />
         </div>
@@ -92,14 +105,14 @@ const ContaFormModal: React.FC<ContaFormModalProps> = ({ isOpen, onClose, contaT
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
             disabled={isPending}
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none"
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary-light focus:outline-none"
             disabled={isPending}
           >
             {isPending ? 'Salvando...' : 'Salvar'}

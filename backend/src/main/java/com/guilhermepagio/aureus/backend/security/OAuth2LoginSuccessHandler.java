@@ -46,7 +46,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         usuario.setFotoPerfil(picture);
         usuarioRepository.save(usuario);
 
-        String token = jwtUtil.generateToken(usuario.getGoogleSubjectId());
+        String token = jwtUtil.generateToken(usuario.getId().toString());
 
         org.springframework.http.ResponseCookie cookie = org.springframework.http.ResponseCookie.from("AUREUS_SESSION", token)
                 .httpOnly(true)

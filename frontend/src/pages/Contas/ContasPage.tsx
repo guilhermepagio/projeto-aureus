@@ -35,7 +35,7 @@ const ContasPage: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-800">Contas</h1>
         <button
           onClick={handleCreate}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm font-medium"
+          className="cursor-pointer bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-light text-sm font-medium"
         >
           Nova Conta
         </button>
@@ -52,7 +52,7 @@ const ContasPage: React.FC = () => {
             <button
               onClick={handleCreate}
               type="button"
-              className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="cursor-pointer inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               <svg className="-ml-0.5 mr-1.5 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -67,7 +67,7 @@ const ContasPage: React.FC = () => {
             {contas.map((conta) => (
               <li key={conta.id} className="px-4 py-4 sm:px-6 flex items-center justify-between hover:bg-gray-50">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-indigo-600 truncate">{conta.descricao}</p>
+                  <p className="text-sm font-medium text-primary truncate">{conta.descricao}</p>
                   {conta.observacoes && (
                     <p className="mt-1 text-sm text-gray-500 truncate">{conta.observacoes}</p>
                   )}
@@ -75,14 +75,14 @@ const ContasPage: React.FC = () => {
                 <div className="flex space-x-3 ml-4">
                   <button
                     onClick={() => handleEdit(conta)}
-                    className="text-gray-400 hover:text-indigo-600"
+                    className="font-inherit cursor-pointer text-gray-400 hover:text-primary"
                     title="Editar"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => handleDelete(conta)}
-                    className="text-gray-400 hover:text-red-600"
+                    className="font-inherit cursor-pointer text-gray-400 hover:text-red-600"
                     title="Excluir"
                   >
                     Excluir

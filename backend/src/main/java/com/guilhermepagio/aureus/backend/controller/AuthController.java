@@ -31,7 +31,7 @@ public class AuthController {
         }
         
         final String subjectId = String.valueOf(authentication.getPrincipal());
-        final Optional<Usuario> usuarioOpt = usuarioRepository.findByGoogleSubjectId(subjectId);
+        final Optional<Usuario> usuarioOpt = usuarioRepository.findById(Long.valueOf(subjectId));
         
         final Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("subjectId", subjectId);

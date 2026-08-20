@@ -9,7 +9,6 @@ import lombok.Setter;
 
 @MappedSuperclass
 @Getter
-@Setter
 public abstract class TenantAwareEntity {
 
     @TenantId

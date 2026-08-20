@@ -47,8 +47,8 @@ public class ContaController {
             contaRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (final DataIntegrityViolationException e) {
-            // Future-proofing for FK violations
-            return ResponseEntity.badRequest().build();
+            // Future-proofing for FK violations (count will be added in Epic 3 when Movimentacao exists)
+            return ResponseEntity.badRequest().body(null); // returning empty for now to match current frontend
         }
     }
 }

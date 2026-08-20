@@ -24,10 +24,11 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
       isOpen={isOpen}
       onClose={onClose}
       title="Excluir Conta"
+      disableClose={deleteMutation.isPending}
     >
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          Tem certeza de que deseja excluir a conta <strong>{contaToDelete?.descricao}</strong>?
+          Tem certeza de que deseja excluir a conta <strong>{contaToDelete ? contaToDelete.descricao : ''}</strong>?
           Esta ação não poderá ser desfeita.
         </p>
 
@@ -35,7 +36,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
             disabled={deleteMutation.isPending}
           >
             Cancelar
@@ -43,7 +44,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
           <button
             type="button"
             onClick={handleDelete}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none"
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none"
             disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending ? 'Excluindo...' : 'Excluir'}

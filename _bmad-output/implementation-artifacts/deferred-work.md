@@ -216,3 +216,13 @@
 - source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md`
   summary: Adicionar tratamento e exibição de erro da API com parsing estruturado no frontend
   evidence: useContas.ts lança erros genéricos sem extrair mensagens do body de erro.
+
+## Deferred from: code review (2026-08-19) - code review of spec-2-1-gestao-de-contas-crud-com-protecao-de-vinculo.md
+- Endpoint criar Conta retorna 200 OK em vez de 201 Created.
+- Modal genérico não possui Focus Trap acessível.
+- Tratamento de erros de validação server-side não mapeados no formulário.
+- Endpoint de listagem de contas não é paginado.
+- Entidade Conta sem implementação customizada de equals() e hashCode().
+- Modal não se adapta dinamicamente para Bottom Sheet em mobile.
+- Ausência de testes verificando isolamento cross-tenant e invalidação de cache.
+- Ausência de testes para contrato de violação de FK na deleção.

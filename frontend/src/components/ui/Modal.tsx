@@ -6,14 +6,15 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  disableClose?: boolean;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, disableClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape' && !disableClose) onClose();
     };
 
     if (isOpen) {
@@ -30,10 +31,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40">
       <div 
         ref={modalRef}
-        className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col"
+        className="bg-white rounded-lg shadow-2xl drop-shadow-2xl w-full max-w-md overflow-hidden flex flex-col"
         role="dialog"
         aria-modal="true"
       >
@@ -41,7 +42,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
           <button 
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 focus:outline-none"
+            disabled={disableClose}
+            className={`cursor-pointer focus:outline-none ${disableClose ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:text-gray-700'}`}
             aria-label="Close modal"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

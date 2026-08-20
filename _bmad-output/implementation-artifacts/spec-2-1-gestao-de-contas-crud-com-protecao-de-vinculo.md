@@ -149,3 +149,22 @@ const { mutate } = useMutation({
 
 - Roteamento principal do módulo
   [`App.tsx:32`](../../frontend/src/App.tsx#L32)
+
+### Review Findings
+- [x] [Review][Patch] Falha ao persistir Conta (Falta envio de token CSRF no fetch) [useContas.ts]
+- [x] [Review][Patch] Cores dos botões não seguem o padrão Aureus (Uso de indigo no lugar de primary) [ContaFormModal.tsx]
+- [x] [Review][Patch] Blur do Modal muito forte e sobreposição (z-index) incorreta com Navigation/Header [Modal.tsx]
+- [x] [Review][Patch] Modal fecha abruptamente ao pressionar Escape durante mutação assíncrona [ContaFormModal.tsx]
+- [x] [Review][Patch] Campos do formulário não são desabilitados durante o salvamento assíncrono [ContaFormModal.tsx]
+- [x] [Review][Patch] Texto de confirmação de exclusão incompleto se contaToDelete for nulo [DeleteConfirmModal.tsx]
+- [x] [Review][Patch] Faltam anotações de validação @Size para descricao e observacoes [Conta.java]
+- [x] [Review][Patch] Setter público para usuarioId permite mutação de campo updatable=false [TenantAwareEntity.java]
+- [x] [Review][Patch] Controller de exclusão não retorna a contagem de vínculos ativos em caso de violação de FK [ContaController.java]
+- [x] [Review][Defer] Endpoint criar Conta retorna 200 OK em vez de 201 Created [ContaController.java] — deferred, pre-existing
+- [x] [Review][Defer] Modal genérico não possui Focus Trap acessível [Modal.tsx] — deferred, pre-existing
+- [x] [Review][Defer] Tratamento de erros de validação server-side não mapeados no formulário — deferred, pre-existing
+- [x] [Review][Defer] Endpoint de listagem de contas não é paginado [ContaController.java] — deferred, pre-existing
+- [x] [Review][Defer] Entidade Conta sem implementação customizada de equals() e hashCode() [Conta.java] — deferred, pre-existing
+- [x] [Review][Defer] Modal não se adapta dinamicamente para Bottom Sheet em mobile [Modal.tsx] — deferred, pre-existing
+- [x] [Review][Defer] Ausência de testes verificando isolamento cross-tenant e invalidação de cache — deferred, pre-existing
+- [x] [Review][Defer] Ausência de testes para contrato de violação de FK na deleção — deferred, pre-existing

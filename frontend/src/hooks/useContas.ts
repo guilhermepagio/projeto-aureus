@@ -9,6 +9,11 @@ export interface Conta {
 
 const API_URL = '/api/contas';
 
+const getCsrfToken = () => {
+  const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : '';
+};
+
 // Fetchers
 const fetchContas = async (): Promise<Conta[]> => {
   const response = await fetch(API_URL);
@@ -19,7 +24,10 @@ const fetchContas = async (): Promise<Conta[]> => {
 const createConta = async (conta: Omit<Conta, 'id'>): Promise<Conta> => {
   const response = await fetch(API_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'X-XSRF-TOKEN': getCsrfToken()
+    },
     body: JSON.stringify(conta),
   });
   if (!response.ok) throw new Error('Erro ao criar conta');
@@ -29,7 +37,10 @@ const createConta = async (conta: Omit<Conta, 'id'>): Promise<Conta> => {
 const updateConta = async (conta: Conta): Promise<Conta> => {
   const response = await fetch(`${API_URL}/${conta.id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'X-XSRF-TOKEN': getCsrfToken()
+    },
     body: JSON.stringify(conta),
   });
   if (!response.ok) throw new Error('Erro ao atualizar conta');
@@ -39,6 +50,9 @@ const updateConta = async (conta: Conta): Promise<Conta> => {
 const deleteConta = async (id: number): Promise<void> => {
   const response = await fetch(`${API_URL}/${id}`, {
     method: 'DELETE',
+    headers: {
+      'X-XSRF-TOKEN': getCsrfToken()
+    }
   });
   if (!response.ok) {
     if (response.status === 400) {
