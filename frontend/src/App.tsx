@@ -7,6 +7,7 @@ import { useAuthStore } from './store/authStore';
 import { useEffect } from 'react';
 import ContasPage from './pages/Contas/ContasPage';
 import CategoriasPage from './pages/Categorias/CategoriasPage';
+import RequiresDependencies from './components/RequiresDependencies';
 
 // Placeholders for routes
 const Consolidacao = () => <div style={{ padding: '24px' }}><h2>Consolidação</h2><p>Conteúdo da Consolidação</p></div>;
@@ -72,10 +73,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         
         <Route path="/" element={<ProtectedRoute><Consolidacao /></ProtectedRoute>} />
-        <Route path="/despesas-variaveis" element={<ProtectedRoute><DespesasVariaveis /></ProtectedRoute>} />
-        <Route path="/despesas-fixas" element={<ProtectedRoute><DespesasFixas /></ProtectedRoute>} />
-        <Route path="/receitas-variaveis" element={<ProtectedRoute><ReceitasVariaveis /></ProtectedRoute>} />
-        <Route path="/receitas-fixas" element={<ProtectedRoute><ReceitasFixas /></ProtectedRoute>} />
+        <Route path="/despesas-variaveis" element={<ProtectedRoute><RequiresDependencies><DespesasVariaveis /></RequiresDependencies></ProtectedRoute>} />
+        <Route path="/despesas-fixas" element={<ProtectedRoute><RequiresDependencies><DespesasFixas /></RequiresDependencies></ProtectedRoute>} />
+        <Route path="/receitas-variaveis" element={<ProtectedRoute><RequiresDependencies><ReceitasVariaveis /></RequiresDependencies></ProtectedRoute>} />
+        <Route path="/receitas-fixas" element={<ProtectedRoute><RequiresDependencies><ReceitasFixas /></RequiresDependencies></ProtectedRoute>} />
         <Route path="/contas" element={<ProtectedRoute><ContasPage /></ProtectedRoute>} />
         <Route path="/categorias" element={<ProtectedRoute><CategoriasPage /></ProtectedRoute>} />
         

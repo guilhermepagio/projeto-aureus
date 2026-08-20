@@ -251,3 +251,18 @@
 - Missing Location header in Categoria creation.
 - useCategorias.ts lacks AbortSignal.
 - Optimistic locking (missing @Version).
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Improve UX by checking both accounts and categories simultaneously to avoid a "waterfall" of empty states.
+  evidence: A user missing both will first see the warning for accounts, fix it, and then unexpectedly face a second block for categories.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Add data-testid attributes to loading, error, and empty states.
+  evidence: Automated testing will be brittle without semantic data-testid attributes.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Add a Retry button to the error state.
+  evidence: Currently, the user is forced to manually refresh the entire application if the initial fetch fails.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Improve error state UI to match the polished, card-based layouts of the empty states.
+  evidence: The error state UI is a simple line of text, which feels visually inconsistent.
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
+  summary: Add automated tests to verify dependency guards block access to transaction routes.
+  evidence: The test suite would not fail if a developer removed the RequiresDependencies wrapper, allowing users to access transaction pages without required data.
