@@ -92,12 +92,12 @@ const ContaFormModal: React.FC<ContaFormModalProps> = ({ isOpen, onClose, contaT
             onChange={(e) => {
               setObservacoes(e.target.value);
               const target = e.target;
-              target.style.height = 'auto';
+              target.style.height = '0px'; // Force recalculation from scratch
               target.style.height = `${target.scrollHeight + 2}px`;
             }}
             disabled={isPending}
             rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 min-h-[5rem]"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 min-h-[5rem] overflow-hidden"
             maxLength={500}
           />
         </div>
