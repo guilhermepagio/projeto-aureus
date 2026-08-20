@@ -1,9 +1,9 @@
 package com.guilhermepagio.aureus.backend.controller;
 
-import com.guilhermepagio.aureus.backend.domain.Usuario;
-import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import com.guilhermepagio.aureus.backend.domain.Usuario;
+import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
