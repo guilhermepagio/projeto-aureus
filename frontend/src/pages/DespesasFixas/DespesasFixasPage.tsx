@@ -62,15 +62,10 @@ const DespesasFixasPage: React.FC = () => {
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul role="list" className="divide-y divide-gray-200">
             {despesas.map((despesa) => (
-              <li key={despesa.id} className="px-4 py-4 sm:px-6 flex items-center justify-between hover:bg-gray-50">
+              <li key={despesa.id} className="px-4 py-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-gray-50">
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="text-sm font-medium text-primary truncate">{despesa.descricao}</p>
-                    <p className="text-sm font-semibold text-red-600 tabular-nums">
-                      - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valor)}
-                    </p>
-                  </div>
-                  <div className="flex text-xs text-gray-500 space-x-4">
+                  <p className="text-sm font-medium text-primary truncate">{despesa.descricao}</p>
+                  <div className="flex text-xs text-gray-500 space-x-4 mt-1">
                     <span>{despesa.conta?.descricao}</span>
                     <span>&bull;</span>
                     <span>{despesa.categoria?.descricao}</span>
@@ -78,23 +73,28 @@ const DespesasFixasPage: React.FC = () => {
                     <span>Início: {despesa.dataInicio?.substring(0, 7)}</span>
                   </div>
                 </div>
-                <div className="flex space-x-3 ml-4">
-                  <button
-                    type="button"
-                    onClick={() => handleEdit(despesa)}
-                    className="font-inherit cursor-pointer text-gray-400 hover:text-primary"
-                    title="Editar"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(despesa)}
-                    className="font-inherit cursor-pointer text-gray-400 hover:text-red-600"
-                    title="Excluir"
-                  >
-                    Excluir
-                  </button>
+                <div className="mt-4 sm:mt-0 sm:ml-4 flex items-center justify-between sm:justify-end space-x-6">
+                  <p className="text-sm font-semibold text-red-600 tabular-nums whitespace-nowrap">
+                    - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valor)}
+                  </p>
+                  <div className="flex space-x-3">
+                    <button
+                      type="button"
+                      onClick={() => handleEdit(despesa)}
+                      className="font-inherit cursor-pointer text-gray-400 hover:text-primary"
+                      title="Editar"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(despesa)}
+                      className="font-inherit cursor-pointer text-gray-400 hover:text-red-600"
+                      title="Excluir"
+                    >
+                      Excluir
+                    </button>
+                  </div>
                 </div>
               </li>
             ))}
