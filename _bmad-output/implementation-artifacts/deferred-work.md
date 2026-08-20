@@ -273,3 +273,18 @@
 - Missing `data-testid` attributes on conditional UI states.
 - Repetitive `<ProtectedRoute><RequiresDependencies>` wrappers in App.tsx.
 - Scope creep / missing `aria-hidden="true"`: Unrequested additions of `lucide-react` icons in Header.tsx.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Missing Relationship Ownership Validation (verify if related conta/categoria belong to user).
+  evidence: Not specific to this story, applies globally to existing entities too.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Missing Pagination for /api/despesas-fixas and /api/receitas-fixas.
+  evidence: Table grows large over time, missing in other controllers as well.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Clarify if fixed items need an end date (dataFim) or active flag to prevent history mutation on deletion.
+  evidence: Currently deletion removes the item entirely, which might break historical monthly projections. Needs product definition.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Missing backend integration tests for new endpoints.
+  evidence: Project currently lacks test infrastructure, deferring per Epic 1 retro items.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Missing frontend component tests for DespesasFixasPage and ReceitasFixasPage.
+  evidence: Project currently lacks test infrastructure, deferring per Epic 1 retro items.
