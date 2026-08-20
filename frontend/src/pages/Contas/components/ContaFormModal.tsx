@@ -57,6 +57,7 @@ const ContaFormModal: React.FC<ContaFormModalProps> = ({ isOpen, onClose, contaT
       onClose={onClose}
       title={contaToEdit ? 'Editar Conta' : 'Nova Conta'}
       disableClose={isPending}
+      maxWidth="max-w-lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -89,16 +90,11 @@ const ContaFormModal: React.FC<ContaFormModalProps> = ({ isOpen, onClose, contaT
           <textarea
             id="observacoes"
             value={observacoes}
-            onChange={(e) => {
-              setObservacoes(e.target.value);
-              const target = e.target;
-              target.style.height = '0px'; // Force recalculation from scratch
-              target.style.height = `${target.scrollHeight + 2}px`;
-            }}
+            onChange={(e) => setObservacoes(e.target.value)}
             disabled={isPending}
-            rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 min-h-[5rem] overflow-hidden"
-            maxLength={500}
+            rows={8}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none"
+            maxLength={300}
           />
         </div>
 
