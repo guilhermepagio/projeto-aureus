@@ -1,8 +1,10 @@
 package com.guilhermepagio.aureus.backend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,15 +30,16 @@ public class ReceitaFixaController {
 
     @GetMapping
     public List<ReceitaFixa> listar() {
-        return repository.findAll();
+        return repository.findAll(Sort.by("descricao"));
     }
 
     @PostMapping
     public ResponseEntity<?> criar(final @Valid @RequestBody ReceitaFixa receitaFixa) {
         try {
+            receitaFixa.setId(null);
             return ResponseEntity.ok(repository.save(receitaFixa));
         } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body("Erro de integridade relacional. Verifique os vínculos informados.");
+            return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
         }
     }
 
@@ -51,9 +54,9 @@ public class ReceitaFixaController {
                     existente.setCategoria(atualizada.getCategoria());
                     existente.setObservacoes(atualizada.getObservacoes());
                     try {
-                        return ResponseEntity.ok(repository.save(existente));
+                        return ResponseEntity.ok(repository.saveAndFlush(existente));
                     } catch (DataIntegrityViolationException e) {
-                        return ResponseEntity.badRequest().body("Erro de integridade relacional. Verifique os vínculos informados.");
+                        return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
                     }
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -66,9 +69,10 @@ public class ReceitaFixaController {
         }
         try {
             repository.deleteById(id);
+            repository.flush(); // ensure deletion triggers exception here if violated
             return ResponseEntity.noContent().build();
         } catch (final DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body("Não é possível excluir esta receita porque ela está em uso.");
+            return ResponseEntity.badRequest().body(Map.of("message", "Não é possível excluir esta receita porque ela está em uso."));
         }
     }
 }

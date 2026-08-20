@@ -50,14 +50,16 @@ public class ReceitaFixa extends TenantAwareEntity {
     @NotNull(message = "Selecione uma conta")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conta_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Conta conta;
 
     @NotNull(message = "Selecione uma categoria")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Categoria categoria;
 
-    @Size(max = 500, message = "As observações devem ter no máximo 500 caracteres")
-    @Column(length = 500)
+    @Size(max = 300, message = "As observações devem ter no máximo 300 caracteres")
+    @Column(length = 300)
     private String observacoes;
 }
