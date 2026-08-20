@@ -81,3 +81,17 @@ context:
 
 - Envelopamento das rotas placeholder de movimentações financeiras com `RequiresDependencies`.
   [`App.tsx:76`](../../frontend/src/App.tsx#L76)
+
+### Review Findings
+- [x] [Review][Patch] Improve UX by checking both accounts and categories simultaneously to avoid a "waterfall" of empty states. [RequiresDependencies.tsx]
+- [x] [Review][Patch] Fix bug where background refetch failure unmounts the form (add `!contas.length` check). [RequiresDependencies.tsx:20]
+- [x] [Review][Patch] Fix bug where URL query params and hash are lost on redirect (add `location.search` and `location.hash`). [RequiresDependencies.tsx:44]
+- [x] [Review][Patch] Add actionable Retry button to the error state. [RequiresDependencies.tsx]
+- [x] [Review][Patch] Improve error and loading state UI to match the card-based layout of the empty states. [RequiresDependencies.tsx]
+- [x] [Review][Patch] Standardize icons to use the project's inline SVGs instead of `lucide-react` in the empty state CTAs. [RequiresDependencies.tsx]
+- [x] [Review][Patch] Remove mismatched `vectorEffect="non-scaling-stroke"` from the category empty state SVG. [RequiresDependencies.tsx:59]
+- [x] [Review][Defer] Missing `role="status"` on loading state. [RequiresDependencies.tsx] — deferred, pre-existing
+- [x] [Review][Defer] Missing `role="alert"` on error state. [RequiresDependencies.tsx] — deferred, pre-existing
+- [x] [Review][Defer] Missing `data-testid` attributes on conditional UI states. [RequiresDependencies.tsx] — deferred, pre-existing
+- [x] [Review][Defer] Repetitive `<ProtectedRoute><RequiresDependencies>` wrappers. [App.tsx:76] — deferred, pre-existing
+- [x] [Review][Defer] Scope creep / missing `aria-hidden="true"`: Unrequested additions of `lucide-react` icons. [Header.tsx:91] — deferred, pre-existing

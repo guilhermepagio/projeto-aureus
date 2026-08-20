@@ -266,3 +266,10 @@
 - source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-2-3-restricao-granular-de-cadastro-sem-dependencias.md`
   summary: Add automated tests to verify dependency guards block access to transaction routes.
   evidence: The test suite would not fail if a developer removed the RequiresDependencies wrapper, allowing users to access transaction pages without required data.
+
+## Deferred from: code review of spec-2-3-restricao-granular-de-cadastro-sem-dependencias (2026-08-20)
+- Missing `role="status"` on loading state.
+- Missing `role="alert"` on error state.
+- Missing `data-testid` attributes on conditional UI states.
+- Repetitive `<ProtectedRoute><RequiresDependencies>` wrappers in App.tsx.
+- Scope creep / missing `aria-hidden="true"`: Unrequested additions of `lucide-react` icons in Header.tsx.
