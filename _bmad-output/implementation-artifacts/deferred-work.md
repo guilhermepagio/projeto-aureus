@@ -226,3 +226,23 @@
 - Modal não se adapta dinamicamente para Bottom Sheet em mobile.
 - Ausência de testes verificando isolamento cross-tenant e invalidação de cache.
 - Ausência de testes para contrato de violação de FK na deleção.
+
+## Deferred from: code review of spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Endpoint criar Categoria retorna 200 OK em vez de 201 Created.
+  evidence: Pre-existing pattern from Conta Controller; low impact for now.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Entidade Categoria sem métodos equals() e hashCode().
+  evidence: Pre-existing pattern; low impact for current detached entity usage.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: O endpoint de exclusão assume 400 apenas como FK violation.
+  evidence: Out of scope to overhaul error parsing; validation details might be masked.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Listagem de Categorias não possui paginação.
+  evidence: Frontend and backend fetch all records at once, risky for large tenants.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Falta de tratamento de timeout para requisições frontend.
+  evidence: Network hangs indefinitely instead of aborting.
+- source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
+  summary: Testes automatizados ausentes para Categoria.
+  evidence: Multi-tenant isolation, FK constraint errors, and frontend cache invalidation have no automated tests.

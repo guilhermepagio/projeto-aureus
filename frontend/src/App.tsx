@@ -6,6 +6,7 @@ import Login from './components/Login/Login';
 import { useAuthStore } from './store/authStore';
 import { useEffect } from 'react';
 import ContasPage from './pages/Contas/ContasPage';
+import CategoriasPage from './pages/Categorias/CategoriasPage';
 
 // Placeholders for routes
 const Consolidacao = () => <div style={{ padding: '24px' }}><h2>Consolidação</h2><p>Conteúdo da Consolidação</p></div>;
@@ -76,6 +77,7 @@ function App() {
         <Route path="/receitas-variaveis" element={<ProtectedRoute><ReceitasVariaveis /></ProtectedRoute>} />
         <Route path="/receitas-fixas" element={<ProtectedRoute><ReceitasFixas /></ProtectedRoute>} />
         <Route path="/contas" element={<ProtectedRoute><ContasPage /></ProtectedRoute>} />
+        <Route path="/categorias" element={<ProtectedRoute><CategoriasPage /></ProtectedRoute>} />
         
         <Route path="*" element={<ProtectedRoute><div style={{ padding: '24px' }}><h2>404 - Página não encontrada</h2></div></ProtectedRoute>} />
       </Routes>
