@@ -99,8 +99,8 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
             value={observacoes}
             onChange={(e) => setObservacoes(e.target.value)}
             disabled={isPending}
-            rows={8}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none"
+            rows={12}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
             maxLength={300}
           />
         </div>
