@@ -30,19 +30,9 @@ const DespesasFixasPage: React.FC = () => {
   const isEmpty = !despesas || despesas.length === 0;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Despesas Fixas</h1>
-        <button
-          onClick={handleCreate}
-          className="cursor-pointer bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-light text-sm font-medium"
-        >
-          Nova Despesa Fixa
-        </button>
-      </div>
-
+    <div className="px-4 pb-4 w-full">
       {isEmpty ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200 mt-4">
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -59,46 +49,85 @@ const DespesasFixasPage: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          <ul role="list" className="divide-y divide-gray-200">
-            {despesas.map((despesa) => (
-              <li key={despesa.id} className="px-4 py-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-gray-50">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-primary truncate">{despesa.descricao}</p>
-                  <div className="flex text-xs text-gray-500 space-x-4 mt-1">
-                    <span>{despesa.conta?.descricao}</span>
-                    <span>&bull;</span>
-                    <span>{despesa.categoria?.descricao}</span>
-                    <span>&bull;</span>
-                    <span>Início: {despesa.dataInicio?.substring(0, 7)}</span>
+        <div className="bg-white shadow sm:rounded-2xl overflow-hidden mt-2">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-1/3">
+                  Descrição
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Valor
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Início
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Categoria
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Conta
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Observações
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex justify-end ml-auto w-[160px]">
+                    <button
+                      onClick={handleCreate}
+                      className="cursor-pointer w-full h-8 flex items-center justify-center bg-primary text-white rounded-full hover:bg-primary-light text-xs font-semibold whitespace-nowrap"
+                    >
+                      + Nova Despesa
+                    </button>
                   </div>
-                </div>
-                <div className="mt-4 sm:mt-0 sm:ml-4 flex items-center justify-between sm:justify-end space-x-6">
-                  <p className="text-sm font-semibold text-red-600 tabular-nums whitespace-nowrap">
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {despesas.map((despesa) => (
+                <tr key={despesa.id} className="even:bg-gray-100/60 odd:bg-white text-sm">
+                  <td className="px-6 py-[3px] font-medium text-primary whitespace-normal break-words">
+                    {despesa.descricao}
+                  </td>
+                  <td className="px-6 py-[3px] font-semibold text-red-600 tabular-nums whitespace-nowrap">
                     - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valor)}
-                  </p>
-                  <div className="flex space-x-3">
-                    <button
-                      type="button"
-                      onClick={() => handleEdit(despesa)}
-                      className="font-inherit cursor-pointer text-gray-400 hover:text-primary"
-                      title="Editar"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(despesa)}
-                      className="font-inherit cursor-pointer text-gray-400 hover:text-red-600"
-                      title="Excluir"
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+                  </td>
+                  <td className="px-6 py-[3px] text-gray-600 whitespace-nowrap">
+                    {despesa.dataInicio ? `${despesa.dataInicio.substring(5, 7)}/${despesa.dataInicio.substring(0, 4)}` : '-'}
+                  </td>
+                  <td className="px-6 py-[3px] text-gray-600 truncate max-w-[150px]" title={despesa.categoria?.descricao}>
+                    {despesa.categoria?.descricao}
+                  </td>
+                  <td className="px-6 py-[3px] text-gray-600 truncate max-w-[150px]" title={despesa.conta?.descricao}>
+                    {despesa.conta?.descricao}
+                  </td>
+                  <td className="px-6 py-[3px] text-gray-500 max-w-[150px] truncate" title={despesa.observacoes}>
+                    {despesa.observacoes || '-'}
+                  </td>
+                  <td className="px-6 py-[3px]">
+                    <div className="flex justify-end ml-auto w-[160px] gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(despesa)}
+                        className="flex-1 h-8 flex items-center justify-center cursor-pointer bg-green-50 text-green-700 rounded-full hover:bg-green-100 text-xs font-semibold text-center transition-colors"
+                        title="Editar"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(despesa)}
+                        className="flex-1 h-8 flex items-center justify-center cursor-pointer bg-red-50 text-red-700 rounded-full hover:bg-red-100 text-xs font-semibold text-center transition-colors"
+                        title="Excluir"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
