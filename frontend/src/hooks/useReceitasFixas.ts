@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Conta } from './useContas';
-import { Categoria } from './useCategorias';
+import type { Conta } from './useContas';
+import type { Categoria } from './useCategorias';
 
 export interface ReceitaFixa {
   id: number;
@@ -83,8 +83,9 @@ const deleteReceitaFixa = async (id: number): Promise<void> => {
     }
   });
   if (!response.ok) {
-    if (response.status === 400) {
-       throw new Error('Não é possível excluir esta receita fixa.');
+    const errorData = await response.json().catch(() => ({}));
+    if (errorData.message) {
+      throw new Error(errorData.message);
     }
     throw new Error('Erro ao excluir receita fixa');
   }
