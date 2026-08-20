@@ -246,3 +246,8 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md`
   summary: Testes automatizados ausentes para Categoria.
   evidence: Multi-tenant isolation, FK constraint errors, and frontend cache invalidation have no automated tests.
+
+## Deferred from: code review (2026-08-20) - code review of spec-2-2-gestao-de-categorias-crud-com-protecao-de-vinculo.md
+- Missing Location header in Categoria creation.
+- useCategorias.ts lacks AbortSignal.
+- Optimistic locking (missing @Version).

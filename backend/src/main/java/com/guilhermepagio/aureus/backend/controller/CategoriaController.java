@@ -50,15 +50,14 @@ public class CategoriaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        if (!categoriaRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        try {
-            categoriaRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } catch (final DataIntegrityViolationException e) {
-            // Future-proofing for FK violations (count will be added in Epic 3 when Movimentacao exists)
-            return ResponseEntity.badRequest().build();
-        }
+        return categoriaRepository.findById(id).map(categoria -> {
+            try {
+                categoriaRepository.delete(categoria);
+                return ResponseEntity.noContent().<Void>build();
+            } catch (final DataIntegrityViolationException e) {
+                // Future-proofing for FK violations (count will be added in Epic 3 when Movimentacao exists)
+                return ResponseEntity.badRequest().<Void>build();
+            }
+        }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

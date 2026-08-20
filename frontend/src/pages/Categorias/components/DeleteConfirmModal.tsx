@@ -14,7 +14,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
   const handleDelete = () => {
     if (categoriaToDelete) {
       deleteMutation.mutate(categoriaToDelete.id, {
-        onSettled: () => onClose()
+        onSuccess: () => onClose()
       });
     }
   };

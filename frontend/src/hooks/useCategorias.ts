@@ -30,7 +30,13 @@ const createCategoria = async (categoria: Omit<Categoria, 'id'>): Promise<Catego
     },
     body: JSON.stringify(categoria),
   });
-  if (!response.ok) throw new Error('Erro ao criar categoria');
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    if (errorData.errors && errorData.errors.length > 0) {
+      throw new Error(errorData.errors[0].defaultMessage);
+    }
+    throw new Error(errorData.message || 'Erro ao criar categoria');
+  }
   return response.json();
 };
 
@@ -43,7 +49,13 @@ const updateCategoria = async (categoria: Categoria): Promise<Categoria> => {
     },
     body: JSON.stringify(categoria),
   });
-  if (!response.ok) throw new Error('Erro ao atualizar categoria');
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    if (errorData.errors && errorData.errors.length > 0) {
+      throw new Error(errorData.errors[0].defaultMessage);
+    }
+    throw new Error(errorData.message || 'Erro ao atualizar categoria');
+  }
   return response.json();
 };
 

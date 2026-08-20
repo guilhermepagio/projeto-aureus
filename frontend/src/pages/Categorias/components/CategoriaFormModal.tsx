@@ -39,12 +39,18 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
     if (categoriaToEdit) {
       updateMutation.mutate(
         { id: categoriaToEdit.id, descricao: descricao.trim(), observacoes: observacoes.trim() },
-        { onSuccess: () => onClose() }
+        { 
+          onSuccess: () => onClose(),
+          onError: (err) => setError(err.message)
+        }
       );
     } else {
       createMutation.mutate(
         { descricao: descricao.trim(), observacoes: observacoes.trim() },
-        { onSuccess: () => onClose() }
+        { 
+          onSuccess: () => onClose(),
+          onError: (err) => setError(err.message)
+        }
       );
     }
   };
@@ -66,6 +72,7 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
           <input
             type="text"
             id="descricao"
+            autoFocus
             value={descricao}
             onChange={(e) => {
               setDescricao(e.target.value);

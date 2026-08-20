@@ -90,6 +90,9 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
             <button className="block w-full py-3 px-4 text-left bg-transparent border-none cursor-pointer font-inherit text-base text-text-main font-medium transition-colors duration-200 ease-out hover:bg-main" onClick={() => { navigate('/contas'); setIsDropdownOpen(false); }} role="menuitem">
               Contas
             </button>
+            <button className="block w-full py-3 px-4 text-left bg-transparent border-none cursor-pointer font-inherit text-base text-text-main font-medium transition-colors duration-200 ease-out hover:bg-main" onClick={() => { navigate('/categorias'); setIsDropdownOpen(false); }} role="menuitem">
+              Categorias
+            </button>
             <button className="block w-full py-3 px-4 text-left bg-transparent border-none cursor-pointer font-inherit text-base text-[#d32f2f] font-medium transition-colors duration-200 ease-out hover:bg-main disabled:opacity-50 disabled:cursor-not-allowed border-t border-[rgba(0,0,0,0.05)]" onClick={handleLogout} role="menuitem" disabled={isLoggingOut}>
               {isLoggingOut ? 'Saindo...' : 'Sair'}
             </button>

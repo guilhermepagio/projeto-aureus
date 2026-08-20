@@ -111,3 +111,15 @@ context:
 
 - Roteamento da nova tela protegido por autenticação
   [`App.tsx:39`](../../frontend/src/App.tsx#L39)
+
+### Review Findings
+
+- [x] [Review][Patch] Backend Validation Errors Not Surfaced in Form [frontend/src/hooks/useCategorias.ts:42]
+- [x] [Review][Patch] Missing Navigation Menu Link for Categorias Page [frontend/src/App.tsx:311]
+- [x] [Review][Patch] DeleteConfirmModal closes unconditionally [frontend/src/pages/Categorias/components/DeleteConfirmModal.tsx:14]
+- [x] [Review][Patch] Entity deleted by another transaction between existsById and deleteById [backend/src/main/java/com/guilhermepagio/aureus/backend/controller/CategoriaController.java:55]
+- [x] [Review][Patch] CategoriaFormModal missing autofocus on Descrição [frontend/src/pages/Categorias/components/CategoriaFormModal.tsx:64]
+- [x] [Review][Patch] Buttons do not reflect loading state [frontend/src/pages/Categorias/CategoriasPage.tsx:50]
+- [x] [Review][Defer] Missing Location header [backend/src/main/java/com/guilhermepagio/aureus/backend/controller/CategoriaController.java:34] — deferred, pre-existing
+- [x] [Review][Defer] useCategorias.ts lacks AbortSignal [frontend/src/hooks/useCategorias.ts:18] — deferred, pre-existing
+- [x] [Review][Defer] Optimistic locking (missing @Version) [backend/src/main/java/com/guilhermepagio/aureus/backend/domain/Categoria.java:22] — deferred, pre-existing
