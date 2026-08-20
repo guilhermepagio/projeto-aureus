@@ -29,7 +29,7 @@ public class Categoria extends TenantAwareEntity {
     @Column(nullable = false, length = 100)
     private String descricao;
     
-    @jakarta.validation.constraints.Size(max = 500, message = "As observações devem ter no máximo 500 caracteres")
-    @Column(length = 500)
+    @jakarta.validation.constraints.Size(max = 300, message = "As observações devem ter no máximo 300 caracteres")
+    @Column(length = 300)
     private String observacoes;
 }
