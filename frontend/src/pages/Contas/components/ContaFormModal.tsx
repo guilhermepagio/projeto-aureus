@@ -91,8 +91,9 @@ const ContaFormModal: React.FC<ContaFormModalProps> = ({ isOpen, onClose, contaT
             value={observacoes}
             onChange={(e) => {
               setObservacoes(e.target.value);
-              e.target.style.height = 'auto';
-              e.target.style.height = `${e.target.scrollHeight}px`;
+              const target = e.target;
+              target.style.height = 'auto';
+              target.style.height = `${target.scrollHeight + 2}px`;
             }}
             disabled={isPending}
             rows={3}
