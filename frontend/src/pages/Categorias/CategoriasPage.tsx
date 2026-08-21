@@ -63,21 +63,21 @@ const CategoriasPage: React.FC = () => {
         <div className="bg-white shadow sm:rounded-2xl overflow-x-auto mt-2 w-full">
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
-              <tr>
+              <tr className="divide-x divide-gray-200">
                 <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
                   Descrição
                 </th>
                 <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[300px]">
                   Observações
                 </th>
-                <th scope="col" className="sticky right-0 px-6 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] border-l border-gray-200 w-[180px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th scope="col" className="sticky right-0 px-6 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[180px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                   Ações
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {categorias.map((categoria) => (
-                <tr key={categoria.id} className="group even:bg-gray-200 odd:bg-white text-sm">
+                <tr key={categoria.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
                   <td className="px-6 py-1 font-medium text-gray-900 align-middle">
                     <div className="line-clamp-2 whitespace-normal break-words" title={categoria.descricao}>
                       {categoria.descricao}
@@ -88,7 +88,7 @@ const CategoriasPage: React.FC = () => {
                       {categoria.observacoes || '-'}
                     </div>
                   </td>
-                  <td className="sticky right-0 px-6 py-1 group-even:bg-gray-200 group-odd:bg-white border-l border-gray-200 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
+                  <td className="sticky right-0 px-6 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
                     <div className="flex justify-end ml-auto w-full gap-2">
                       <button
                         type="button"
