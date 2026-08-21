@@ -73,9 +73,9 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
       const [year, month] = dataInicio.split('-');
       const d = new Date(Number(year), Number(month) - 1, 1);
       d.setMonth(d.getMonth() + qtdNum - 1);
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const y = d.getFullYear();
-      return `${m}/${y}`;
+      const monthName = d.toLocaleDateString('pt-BR', { month: 'long' });
+      const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+      return `${capitalizedMonth} de ${d.getFullYear()}`;
     }
     return '-';
   }, [dataInicio, quantidadeParcelas]);
