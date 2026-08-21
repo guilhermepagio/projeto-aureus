@@ -67,7 +67,7 @@ const DespesasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
                   Descrição
                 </th>
-                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
+                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
                   Data Compra
                 </th>
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
@@ -104,7 +104,7 @@ const DespesasVariaveisPage: React.FC = () => {
                       {despesa.descricao}
                     </div>
                   </td>
-                  <td className="px-3 py-1 text-center text-gray-900 align-middle whitespace-nowrap">
+                  <td className="px-1 py-1 text-center text-gray-900 align-middle whitespace-nowrap">
                     {despesa.dataCompra ? despesa.dataCompra.split('-').reverse().join('/') : '-'}
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
