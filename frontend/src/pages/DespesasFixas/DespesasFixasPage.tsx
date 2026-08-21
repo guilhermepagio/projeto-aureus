@@ -88,9 +88,9 @@ const DespesasFixasPage: React.FC = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {despesas.map((despesa) => (
-                <tr key={despesa.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
+                <tr key={despesa.id} className="group even:bg-gray-200 odd:bg-white text-xs divide-x divide-gray-200">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
-                    <div className="line-clamp-2 whitespace-normal break-words" title={despesa.descricao}>
+                    <div className="truncate w-full" title={despesa.descricao}>
                       {despesa.descricao}
                     </div>
                   </td>
@@ -109,7 +109,7 @@ const DespesasFixasPage: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-3 py-1 text-gray-900 align-middle">
-                    <div className="line-clamp-2 whitespace-normal break-words" title={despesa.observacoes}>
+                    <div className="truncate w-full" title={despesa.observacoes}>
                       {despesa.observacoes || '-'}
                     </div>
                   </td>
