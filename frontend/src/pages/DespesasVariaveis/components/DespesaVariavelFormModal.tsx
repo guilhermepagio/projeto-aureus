@@ -150,6 +150,7 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
                 type="text"
                 id="despesa-descricao"
                 autoFocus
+                maxLength={100}
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
                 disabled={isPending}
@@ -166,6 +167,7 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
                 <input
                   type="text"
                   id="despesa-localCompra"
+                  maxLength={100}
                   value={localCompra}
                   onChange={(e) => setLocalCompra(e.target.value)}
                   disabled={isPending}

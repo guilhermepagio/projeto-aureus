@@ -125,3 +125,9 @@ context:
 - [x] [Review][Patch] Stale error message shown for different record in DeleteConfirmModal [DeleteConfirmModal.tsx]
 - [x] [Review][Defer] Missing automated verification tests (dataFim, relational errors, API parsing) [backend/frontend] — deferred, pre-existing
 - [x] [Review][Defer] Missing DTOs, Service Layer, and Global Exception Handler [backend] — deferred, pre-existing
+- [x] [Review][Patch] Inconsistent Theme/Styling for Expense Page Header [DespesasVariaveisPage.tsx]
+- [x] [Review][Patch] dataInicio Day drift in calculation [DespesaVariavelController.java]
+- [x] [Review][Patch] Missing saveAndFlush() in controllers [DespesaVariavelController.java]
+- [x] [Review][Patch] @Max(9999999) used on valorParcela instead of @DecimalMax [DespesaVariavel.java]
+- [x] [Review][Patch] Missing maxLength={100} on descricao and localCompra inputs [DespesaVariavelFormModal.tsx]
+- [x] [Review][Defer] Fetcher swallows non-JSON 500 errors [useDespesasVariaveis.ts] — deferred, pre-existing

@@ -325,3 +325,4 @@
 ## Deferred from: code review of spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md (2026-08-21)
 - Missing automated verification tests (dataFim, relational errors, API parsing)
 - Missing DTOs, Service Layer, and Global Exception Handler
+- Fetcher swallows non-JSON 500 errors

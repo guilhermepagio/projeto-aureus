@@ -35,6 +35,7 @@ public class DespesaVariavelController {
 
     private void preencherDataFim(DespesaVariavel despesaVariavel) {
         if (despesaVariavel.getDataInicio() != null && despesaVariavel.getQuantidadeParcelas() != null && despesaVariavel.getQuantidadeParcelas() > 0) {
+            despesaVariavel.setDataInicio(despesaVariavel.getDataInicio().withDayOfMonth(1));
             despesaVariavel.setDataFim(despesaVariavel.getDataInicio().plusMonths(despesaVariavel.getQuantidadeParcelas() - 1));
         }
     }
@@ -44,7 +45,7 @@ public class DespesaVariavelController {
         try {
             despesaVariavel.setId(null);
             preencherDataFim(despesaVariavel);
-            return ResponseEntity.ok(repository.save(despesaVariavel));
+            return ResponseEntity.ok(repository.saveAndFlush(despesaVariavel));
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
         }

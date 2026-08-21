@@ -142,6 +142,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
                 type="text"
                 id="receita-descricao"
                 autoFocus
+                maxLength={100}
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
                 disabled={isPending}

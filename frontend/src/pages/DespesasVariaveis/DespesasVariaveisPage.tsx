@@ -32,7 +32,7 @@ const DespesasVariaveisPage: React.FC = () => {
   return (
     <div className="px-4 pb-4 w-full">
       <div className="mb-4 mt-2 flex justify-between items-center">
-        <div className="pl-2 border-l-4 border-primary">
+        <div className="pl-2 border-l-4 border-red-600">
           <h1 className="text-2xl font-bold text-gray-800">Despesas Variáveis</h1>
         </div>
         <button

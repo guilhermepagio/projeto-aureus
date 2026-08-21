@@ -52,7 +52,7 @@ public class DespesaVariavel extends TenantAwareEntity {
 
     @NotNull(message = "O valor da parcela é obrigatório")
     @Positive(message = "O valor da parcela deve ser maior que zero")
-    @Max(value = 9999999, message = "O valor deve ser de no máximo R$ 9.999.999,99")
+    @jakarta.validation.constraints.DecimalMax(value = "9999999.99", message = "O valor deve ser de no máximo R$ 9.999.999,99")
     @Digits(integer = 7, fraction = 2, message = "Formato numérico inválido")
     @Column(nullable = false, precision = 9, scale = 2)
     private BigDecimal valorParcela;

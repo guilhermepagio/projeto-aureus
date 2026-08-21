@@ -35,6 +35,7 @@ public class ReceitaVariavelController {
 
     private void preencherDataFim(ReceitaVariavel receitaVariavel) {
         if (receitaVariavel.getDataInicio() != null && receitaVariavel.getQuantidadeParcelas() != null && receitaVariavel.getQuantidadeParcelas() > 0) {
+            receitaVariavel.setDataInicio(receitaVariavel.getDataInicio().withDayOfMonth(1));
             receitaVariavel.setDataFim(receitaVariavel.getDataInicio().plusMonths(receitaVariavel.getQuantidadeParcelas() - 1));
         }
     }
@@ -44,7 +45,7 @@ public class ReceitaVariavelController {
         try {
             receitaVariavel.setId(null);
             preencherDataFim(receitaVariavel);
-            return ResponseEntity.ok(repository.save(receitaVariavel));
+            return ResponseEntity.ok(repository.saveAndFlush(receitaVariavel));
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
         }
