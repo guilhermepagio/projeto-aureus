@@ -70,7 +70,7 @@ const ContasPage: React.FC = () => {
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[300px]">
                   Observações
                 </th>
-                <th scope="col" className="sticky right-0 px-3 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[120px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th scope="col" className="sticky right-0 px-1 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[100px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                   Ações
                 </th>
               </tr>
@@ -88,7 +88,7 @@ const ContasPage: React.FC = () => {
                       {conta.observacoes || '-'}
                     </div>
                   </td>
-                  <td className="sticky right-0 px-3 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
+                  <td className="sticky right-0 px-1 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
                     <div className="flex justify-end ml-auto w-full gap-2">
                       <button
                         type="button"
