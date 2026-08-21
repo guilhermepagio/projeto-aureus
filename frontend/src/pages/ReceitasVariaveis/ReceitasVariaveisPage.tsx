@@ -67,10 +67,10 @@ const ReceitasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
                   Descrição
                 </th>
-                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
+                <th scope="col" className="px-2 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
                   Parcela
                 </th>
-                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[90px]">
+                <th scope="col" className="px-2 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[90px]">
                   Qtd. Parcelas
                 </th>
                 <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
@@ -98,10 +98,10 @@ const ReceitasVariaveisPage: React.FC = () => {
                       {receita.descricao}
                     </div>
                   </td>
-                  <td className="px-6 py-1 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-2 py-1 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela)}
                   </td>
-                  <td className="px-6 py-1 text-center tabular-nums text-gray-900 align-middle">
+                  <td className="px-2 py-1 text-center tabular-nums text-gray-900 align-middle">
                     {receita.quantidadeParcelas}
                   </td>
                   <td className="px-6 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
