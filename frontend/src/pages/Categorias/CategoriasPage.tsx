@@ -61,7 +61,7 @@ const CategoriasPage: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-white shadow sm:rounded-2xl overflow-x-auto mt-2 w-full">
+        <div className="bg-white shadow sm:rounded-2xl overflow-visible mt-2 w-full">
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr className="divide-x divide-gray-200">
