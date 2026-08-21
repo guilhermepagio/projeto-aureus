@@ -107,18 +107,18 @@ const DespesasVariaveisPage: React.FC = () => {
                   <td className="px-6 py-1 text-center text-gray-900 align-middle whitespace-nowrap">
                     {despesa.dataCompra ? despesa.dataCompra.split('-').reverse().join('/') : '-'}
                   </td>
-                  <td className="px-6 py-1 text-gray-900 align-middle">
+                  <td className="px-6 py-1 text-center text-gray-900 align-middle">
                     <div className="truncate w-full" title={despesa.localCompra || ''}>
                       {despesa.localCompra || '-'}
                     </div>
                   </td>
-                  <td className="px-6 py-1 text-right font-semibold text-red-600 tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-6 py-1 text-center font-semibold text-red-600 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela)}
                   </td>
-                  <td className="px-6 py-1 text-right tabular-nums text-gray-900 align-middle">
+                  <td className="px-6 py-1 text-center tabular-nums text-gray-900 align-middle">
                     {despesa.quantidadeParcelas}
                   </td>
-                  <td className="px-6 py-1 text-right font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-6 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela * despesa.quantidadeParcelas)}
                   </td>
                   <td className="px-6 py-1 text-center text-gray-900 align-middle">

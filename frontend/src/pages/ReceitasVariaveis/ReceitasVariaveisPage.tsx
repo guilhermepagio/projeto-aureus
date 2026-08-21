@@ -98,13 +98,13 @@ const ReceitasVariaveisPage: React.FC = () => {
                       {receita.descricao}
                     </div>
                   </td>
-                  <td className="px-6 py-1 text-right font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-6 py-1 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela)}
                   </td>
-                  <td className="px-6 py-1 text-right tabular-nums text-gray-900 align-middle">
+                  <td className="px-6 py-1 text-center tabular-nums text-gray-900 align-middle">
                     {receita.quantidadeParcelas}
                   </td>
-                  <td className="px-6 py-1 text-right font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-6 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela * receita.quantidadeParcelas)}
                   </td>
                   <td className="px-6 py-1 text-center text-gray-900 align-middle">
