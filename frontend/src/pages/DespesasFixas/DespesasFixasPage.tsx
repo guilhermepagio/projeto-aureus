@@ -64,7 +64,7 @@ const DespesasFixasPage: React.FC = () => {
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr>
-                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
                   Descrição
                 </th>
                 <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[140px]">
@@ -77,7 +77,7 @@ const DespesasFixasPage: React.FC = () => {
                 <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
                   Conta
                 </th>
-                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
                   Observações
                 </th>
                 <th scope="col" className="sticky right-0 px-6 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] border-l border-gray-200 w-[180px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
