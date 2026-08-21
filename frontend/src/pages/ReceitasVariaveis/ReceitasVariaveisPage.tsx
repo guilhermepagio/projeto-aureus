@@ -64,28 +64,28 @@ const ReceitasVariaveisPage: React.FC = () => {
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr className="divide-x divide-gray-200">
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
                   Descrição
                 </th>
-                <th scope="col" className="px-2 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
+                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
                   Parcela
                 </th>
-                <th scope="col" className="px-2 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[90px]">
+                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[90px]">
                   Qtd. Parcelas
                 </th>
-                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
+                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Valor Total
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Categoria
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Conta
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Observações
                 </th>
-                <th scope="col" className="sticky right-0 px-6 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[140px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th scope="col" className="sticky right-0 px-3 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[140px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                   Ações
                 </th>
               </tr>
@@ -93,36 +93,36 @@ const ReceitasVariaveisPage: React.FC = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {receitas.map((receita) => (
                 <tr key={receita.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
-                  <td className="px-6 py-1 font-medium text-gray-900 align-middle">
+                  <td className="px-3 py-1 font-medium text-gray-900 align-middle">
                     <div className="line-clamp-2 whitespace-normal break-words" title={receita.descricao}>
                       {receita.descricao}
                     </div>
                   </td>
-                  <td className="px-2 py-1 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-3 py-1 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela)}
                   </td>
-                  <td className="px-2 py-1 text-center tabular-nums text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center tabular-nums text-gray-900 align-middle">
                     {receita.quantidadeParcelas}
                   </td>
-                  <td className="px-6 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-3 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela * receita.quantidadeParcelas)}
                   </td>
-                  <td className="px-6 py-1 text-center text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="truncate w-full" title={receita.categoria?.descricao}>
                       {receita.categoria?.descricao}
                     </div>
                   </td>
-                  <td className="px-6 py-1 text-center text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="truncate w-full" title={receita.conta?.descricao}>
                       {receita.conta?.descricao}
                     </div>
                   </td>
-                  <td className="px-6 py-1 text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-gray-900 align-middle">
                     <div className="line-clamp-2 whitespace-normal break-words" title={receita.observacoes}>
                       {receita.observacoes || '-'}
                     </div>
                   </td>
-                  <td className="sticky right-0 px-6 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
+                  <td className="sticky right-0 px-3 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
                     <div className="flex justify-end ml-auto w-full gap-2">
                       <button
                         type="button"

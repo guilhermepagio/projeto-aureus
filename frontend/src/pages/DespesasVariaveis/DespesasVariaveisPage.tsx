@@ -64,34 +64,34 @@ const DespesasVariaveisPage: React.FC = () => {
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr className="divide-x divide-gray-200">
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
                   Descrição
                 </th>
-                <th scope="col" className="px-2 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
                   Data Compra
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
                   Local Compra
                 </th>
-                <th scope="col" className="px-2 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
+                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
                   Parcela
                 </th>
-                <th scope="col" className="px-2 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[90px]">
+                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[90px]">
                   Qtd. Parcelas
                 </th>
-                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
+                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Valor Total
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Categoria
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Conta
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Observações
                 </th>
-                <th scope="col" className="sticky right-0 px-6 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[140px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th scope="col" className="sticky right-0 px-3 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[140px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                   Ações
                 </th>
               </tr>
@@ -99,44 +99,44 @@ const DespesasVariaveisPage: React.FC = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {despesas.map((despesa) => (
                 <tr key={despesa.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
-                  <td className="px-6 py-1 font-medium text-gray-900 align-middle">
+                  <td className="px-3 py-1 font-medium text-gray-900 align-middle">
                     <div className="line-clamp-2 whitespace-normal break-words" title={despesa.descricao}>
                       {despesa.descricao}
                     </div>
                   </td>
-                  <td className="px-2 py-1 text-center text-gray-900 align-middle whitespace-nowrap">
+                  <td className="px-3 py-1 text-center text-gray-900 align-middle whitespace-nowrap">
                     {despesa.dataCompra ? despesa.dataCompra.split('-').reverse().join('/') : '-'}
                   </td>
-                  <td className="px-6 py-1 text-center text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="truncate w-full" title={despesa.localCompra || ''}>
                       {despesa.localCompra || '-'}
                     </div>
                   </td>
-                  <td className="px-2 py-1 text-center font-semibold text-red-600 tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-3 py-1 text-center font-semibold text-red-600 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela)}
                   </td>
-                  <td className="px-2 py-1 text-center tabular-nums text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center tabular-nums text-gray-900 align-middle">
                     {despesa.quantidadeParcelas}
                   </td>
-                  <td className="px-6 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-3 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela * despesa.quantidadeParcelas)}
                   </td>
-                  <td className="px-6 py-1 text-center text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="truncate w-full" title={despesa.categoria?.descricao}>
                       {despesa.categoria?.descricao}
                     </div>
                   </td>
-                  <td className="px-6 py-1 text-center text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="truncate w-full" title={despesa.conta?.descricao}>
                       {despesa.conta?.descricao}
                     </div>
                   </td>
-                  <td className="px-6 py-1 text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-gray-900 align-middle">
                     <div className="line-clamp-2 whitespace-normal break-words" title={despesa.observacoes}>
                       {despesa.observacoes || '-'}
                     </div>
                   </td>
-                  <td className="sticky right-0 px-6 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
+                  <td className="sticky right-0 px-3 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
                     <div className="flex justify-end ml-auto w-full gap-2">
                       <button
                         type="button"
