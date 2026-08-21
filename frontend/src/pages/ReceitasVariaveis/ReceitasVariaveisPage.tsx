@@ -37,7 +37,7 @@ const ReceitasVariaveisPage: React.FC = () => {
         </div>
         <button
           onClick={handleCreate}
-          className="cursor-pointer h-8 px-4 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white rounded-md text-xs font-semibold whitespace-nowrap shadow-sm"
+          className="cursor-pointer h-8 px-4 flex items-center justify-center bg-primary hover:bg-primary-light text-white rounded-md text-xs font-semibold whitespace-nowrap shadow-sm"
         >
           + Nova Receita
         </button>
@@ -53,7 +53,7 @@ const ReceitasVariaveisPage: React.FC = () => {
             <button
               onClick={handleCreate}
               type="button"
-              className="cursor-pointer inline-flex items-center rounded-md bg-green-600 px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+              className="cursor-pointer inline-flex items-center rounded-md bg-primary px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               Nova Receita Variável
             </button>
@@ -95,7 +95,7 @@ const ReceitasVariaveisPage: React.FC = () => {
                       {receita.descricao}
                     </div>
                   </td>
-                  <td className="px-6 py-1 text-center font-semibold text-green-600 tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-6 py-1 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela)}
                   </td>
                   <td className="px-6 py-1 text-center text-gray-900 align-middle">
