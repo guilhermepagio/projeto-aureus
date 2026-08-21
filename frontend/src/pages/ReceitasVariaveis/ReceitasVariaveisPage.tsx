@@ -67,10 +67,10 @@ const ReceitasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
                   Descrição
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[140px]">
+                <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[140px]">
                   Parcela
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
+                <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
                   Qtd
                 </th>
                 <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
@@ -95,10 +95,10 @@ const ReceitasVariaveisPage: React.FC = () => {
                       {receita.descricao}
                     </div>
                   </td>
-                  <td className="px-6 py-1 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-6 py-1 text-right font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela)}
                   </td>
-                  <td className="px-6 py-1 text-center text-gray-900 align-middle">
+                  <td className="px-6 py-1 text-right tabular-nums text-gray-900 align-middle">
                     {receita.quantidadeParcelas}
                   </td>
                   <td className="px-6 py-1 text-center text-gray-900 align-middle">

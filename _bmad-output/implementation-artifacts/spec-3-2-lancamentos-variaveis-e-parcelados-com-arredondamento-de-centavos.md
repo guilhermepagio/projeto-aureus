@@ -118,3 +118,10 @@ context:
 - Inserção de rotas da aplicação para navegação completa das novas páginas
   [`App.tsx:85`](../../frontend/src/App.tsx#L85)
 
+### Review Findings
+- [x] [Review][Patch] Incorrect Temporal Competence Handling and Date Rollover Bug [DespesaVariavelFormModal.tsx]
+- [x] [Review][Patch] Incorrect Table Alignment for Numeric/Monetary Values [DespesasVariaveisPage.tsx]
+- [x] [Review][Patch] Missing safe currency arithmetic in frontend [DespesaVariavelFormModal.tsx]
+- [x] [Review][Patch] Stale error message shown for different record in DeleteConfirmModal [DeleteConfirmModal.tsx]
+- [x] [Review][Defer] Missing automated verification tests (dataFim, relational errors, API parsing) [backend/frontend] — deferred, pre-existing
+- [x] [Review][Defer] Missing DTOs, Service Layer, and Global Exception Handler [backend] — deferred, pre-existing

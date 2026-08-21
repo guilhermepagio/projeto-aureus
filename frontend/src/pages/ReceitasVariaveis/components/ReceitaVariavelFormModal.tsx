@@ -34,7 +34,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
         setDescricao(receitaToEdit.descricao || '');
         setValorParcela(receitaToEdit.valorParcela ? formatCurrency(receitaToEdit.valorParcela) : '');
         setQuantidadeParcelas(receitaToEdit.quantidadeParcelas || '');
-        setDataInicio(receitaToEdit.dataInicio || '');
+        setDataInicio(receitaToEdit.dataInicio ? receitaToEdit.dataInicio.substring(0, 7) : '');
         setContaId(receitaToEdit.conta?.id || '');
         setCategoriaId(receitaToEdit.categoria?.id || '');
         setObservacoes(receitaToEdit.observacoes || '');
@@ -55,7 +55,8 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
     const valorNum = parseCurrency(valorParcela);
     const qtdNum = Number(quantidadeParcelas);
     if (valorNum > 0 && qtdNum > 0) {
-      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorNum * qtdNum);
+      const totalSafe = Math.round(valorNum * qtdNum * 100) / 100;
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSafe);
     }
     return '-';
   }, [valorParcela, quantidadeParcelas]);
@@ -63,8 +64,8 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
   const ultimaParcelaPreview = useMemo(() => {
     const qtdNum = Number(quantidadeParcelas);
     if (dataInicio && qtdNum > 0) {
-      const [year, month, day] = dataInicio.split('-');
-      const d = new Date(Number(year), Number(month) - 1, Number(day));
+      const [year, month] = dataInicio.split('-');
+      const d = new Date(Number(year), Number(month) - 1, 1);
       d.setMonth(d.getMonth() + qtdNum - 1);
       const m = String(d.getMonth() + 1).padStart(2, '0');
       const y = d.getFullYear();
@@ -93,7 +94,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
       descricao: descricao.trim(),
       valorParcela: parseCurrency(valorParcela),
       quantidadeParcelas: Number(quantidadeParcelas),
-      dataInicio: dataInicio,
+      dataInicio: dataInicio.length === 7 ? `${dataInicio}-01` : dataInicio,
       conta: { id: Number(contaId) },
       categoria: { id: Number(categoriaId) },
       observacoes: observacoes.trim() || undefined
@@ -192,7 +193,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
                   Primeira Parcela (Mês) *
                 </label>
                 <input
-                  type="date"
+                  type="month"
                   id="receita-dataInicio"
                   value={dataInicio}
                   onChange={(e) => setDataInicio(e.target.value)}

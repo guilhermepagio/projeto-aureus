@@ -321,3 +321,7 @@
 - source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
   summary: Concurrent deletion causes unhandled 500 EmptyResultDataAccessException
   evidence: Pre-existing basic CRUD pattern does not handle race conditions gracefully
+
+## Deferred from: code review of spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md (2026-08-21)
+- Missing automated verification tests (dataFim, relational errors, API parsing)
+- Missing DTOs, Service Layer, and Global Exception Handler

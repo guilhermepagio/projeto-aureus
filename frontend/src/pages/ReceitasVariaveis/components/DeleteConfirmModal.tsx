@@ -11,6 +11,12 @@ interface DeleteConfirmModalProps {
 const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose, receitaToDelete }) => {
   const deleteMutation = useDeleteReceitaVariavel();
 
+  React.useEffect(() => {
+    if (isOpen) {
+      deleteMutation.reset();
+    }
+  }, [isOpen]);
+
   const handleDelete = () => {
     if (receitaToDelete) {
       deleteMutation.mutate(receitaToDelete.id, {
