@@ -294,3 +294,30 @@
 - Mutação de histórico financeiro em exclusões (falta de dataFim/soft-delete)
 - Falta de paginação nos endpoints `GET` de listagem
 - Falta de cobertura de testes automatizados (integração e UI)
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Controllers return JPA Entities directly instead of using DTOs, risking Mass Assignment
+  evidence: Found in DespesaVariavelController and ReceitaVariavelController (Pre-existing project pattern)
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Duplicated date logic (preencherDataFim) in controllers instead of centralizing in service or lifecycle hook
+  evidence: Found repeated in both variable controllers
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Missing DB indexes for dataInicio and dataFim which will be heavily queried in Epic 4
+  evidence: Not explicitly requested in the spec, but necessary for future performance
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Missing class-level validation to ensure dataFim >= dataInicio
+  evidence: Although the controller calculates it, programmatic API changes could introduce inconsistencies
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Unbounded findAll queries in backend list endpoints
+  evidence: Pre-existing technical debt across the project (Epic 2, etc.)
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: DRY violation in frontend form/list pages for variable expenses and revenues
+  evidence: Boilerplate is duplicated between the two modules
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Missing Auditing fields (createdAt, updatedAt) across entities
+  evidence: Technical debt from prior architecture setup
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Lack of global @ControllerAdvice for standard constraint violations
+  evidence: Pre-existing pattern where controllers individually catch DataIntegrityViolationException
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Concurrent deletion causes unhandled 500 EmptyResultDataAccessException
+  evidence: Pre-existing basic CRUD pattern does not handle race conditions gracefully
