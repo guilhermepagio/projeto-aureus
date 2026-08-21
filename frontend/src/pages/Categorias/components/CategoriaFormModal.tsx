@@ -72,7 +72,7 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
           </label>
           <input
             type="text"
-            id="descricao"
+            id="categoria-descricao"
             autoFocus
             value={descricao}
             onChange={(e) => {
@@ -85,7 +85,7 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
             disabled={isPending}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100"
             placeholder="Ex: Alimentação, Transporte, Salário"
-            maxLength={100}
+            maxLength={20}
           />
           {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
         </div>
