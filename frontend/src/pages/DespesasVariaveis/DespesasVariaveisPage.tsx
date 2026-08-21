@@ -76,8 +76,11 @@ const DespesasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Parcela
                 </th>
-                <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[60px]">
-                  Qtd
+                <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[110px]">
+                  Qtd. Parcelas
+                </th>
+                <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[130px]">
+                  Valor Total
                 </th>
                 <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[130px]">
                   Categoria
@@ -114,6 +117,9 @@ const DespesasVariaveisPage: React.FC = () => {
                   </td>
                   <td className="px-6 py-1 text-right tabular-nums text-gray-900 align-middle">
                     {despesa.quantidadeParcelas}
+                  </td>
+                  <td className="px-6 py-1 text-right font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela * despesa.quantidadeParcelas)}
                   </td>
                   <td className="px-6 py-1 text-center text-gray-900 align-middle">
                     <div className="truncate w-full" title={despesa.categoria?.descricao}>
