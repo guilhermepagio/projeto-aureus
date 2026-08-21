@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Menu, Pencil, Trash2 } from 'lucide-react';
 
 interface ActionMenuProps {
@@ -8,11 +9,17 @@ interface ActionMenuProps {
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ onEdit, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (
+        menuRef.current && !menuRef.current.contains(target) &&
+        buttonRef.current && !buttonRef.current.contains(target)
+      ) {
         setIsOpen(false);
       }
     };
@@ -22,22 +29,36 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ onEdit, onDelete }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
+  const toggleMenu = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (buttonRef.current && !isOpen) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + window.scrollY - 8,
+        left: rect.left + window.scrollX - 120
+      });
+    }
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <div className="relative inline-flex" ref={menuRef}>
+    <>
       <button
+        ref={buttonRef}
         type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-        }}
-        className="flex items-center justify-center p-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-200 transition-colors cursor-pointer"
+        onClick={toggleMenu}
+        className="flex items-center justify-center p-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-black/10 transition-colors cursor-pointer"
         title="Ações"
       >
         <Menu className="w-4 h-4" />
       </button>
 
-      {isOpen && (
-        <div className="absolute right-8 top-0 z-50 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+      {isOpen && createPortal(
+        <div
+          ref={menuRef}
+          className="absolute z-[9999] w-32 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+          style={{ top: coords.top, left: coords.left }}
+        >
           <div className="py-1">
             <button
               onClick={(e) => {
@@ -62,9 +83,10 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ onEdit, onDelete }) => {
               Excluir
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 };
 
