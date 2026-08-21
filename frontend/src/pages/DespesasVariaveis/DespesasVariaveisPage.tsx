@@ -67,6 +67,9 @@ const DespesasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
                   Descrição
                 </th>
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
+                  Data Compra
+                </th>
                 <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[140px]">
                   Parcela
                 </th>
@@ -94,6 +97,9 @@ const DespesasVariaveisPage: React.FC = () => {
                     <div className="line-clamp-2 whitespace-normal break-words" title={despesa.descricao}>
                       {despesa.descricao}
                     </div>
+                  </td>
+                  <td className="px-6 py-1 text-center text-gray-900 align-middle whitespace-nowrap">
+                    {despesa.dataCompra ? despesa.dataCompra.split('-').reverse().join('/') : '-'}
                   </td>
                   <td className="px-6 py-1 text-right font-semibold text-red-600 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela)}
