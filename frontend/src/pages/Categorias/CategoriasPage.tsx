@@ -64,7 +64,7 @@ const CategoriasPage: React.FC = () => {
         <div className="bg-white shadow sm:rounded-2xl overflow-visible mt-2 w-full">
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
-              <tr className="divide-x divide-gray-200">
+              <tr className="divide-x divide-gray-200 h-[44px]">
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[280px]">
                   Descrição
                 </th>
