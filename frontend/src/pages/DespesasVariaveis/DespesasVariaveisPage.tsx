@@ -64,31 +64,31 @@ const DespesasVariaveisPage: React.FC = () => {
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr>
-                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
+                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[200px]">
                   Descrição
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[110px]">
                   Data Compra
                 </th>
-                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
+                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Local Compra
                 </th>
-                <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[140px]">
+                <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Parcela
                 </th>
-                <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
+                <th scope="col" className="px-6 py-1 text-right tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[60px]">
                   Qtd
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[130px]">
                   Categoria
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[130px]">
                   Conta
                 </th>
-                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
+                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[200px]">
                   Observações
                 </th>
-                <th scope="col" className="sticky right-0 px-6 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] border-l border-gray-200 w-[180px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th scope="col" className="sticky right-0 px-6 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] border-l border-gray-200 w-[140px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                   Ações
                 </th>
               </tr>
