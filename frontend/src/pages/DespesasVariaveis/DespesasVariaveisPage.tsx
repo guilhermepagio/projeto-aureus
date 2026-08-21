@@ -64,31 +64,31 @@ const DespesasVariaveisPage: React.FC = () => {
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr className="divide-x divide-gray-200">
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[200px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
                   Descrição
                 </th>
                 <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[110px]">
                   Data Compra
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Local Compra
                 </th>
                 <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Parcela
                 </th>
-                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[110px]">
+                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
                   Qtd. Parcelas
                 </th>
-                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[130px]">
+                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Valor Total
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Categoria
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Conta
                 </th>
-                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[200px]">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Observações
                 </th>
                 <th scope="col" className="sticky right-0 px-6 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[140px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
