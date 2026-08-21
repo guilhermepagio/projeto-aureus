@@ -1,3 +1,4 @@
+import ActionMenu from '../../components/ui/ActionMenu';
 import React, { useState } from 'react';
 import { useReceitasFixas, type ReceitaFixa } from '../../hooks/useReceitasFixas';
 import ReceitaFixaFormModal from './components/ReceitaFixaFormModal';
@@ -64,7 +65,7 @@ const ReceitasFixasPage: React.FC = () => {
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr className="divide-x divide-gray-200">
-                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[280px]">
                   Descrição
                 </th>
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[140px]">
@@ -77,11 +78,11 @@ const ReceitasFixasPage: React.FC = () => {
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
                   Conta
                 </th>
-                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[280px]">
                   Observações
                 </th>
-                <th scope="col" className="sticky right-0 px-1 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[100px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Ações
+                <th scope="col" className="sticky right-0 px-1 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[44px]">
+                  <span className="sr-only">Ações</span>
                 </th>
               </tr>
             </thead>
@@ -113,24 +114,7 @@ const ReceitasFixasPage: React.FC = () => {
                     </div>
                   </td>
                   <td className="sticky right-0 px-1 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
-                    <div className="flex justify-end ml-auto w-full gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleEdit(receita)}
-                        className="flex-1 h-8 flex items-center justify-center cursor-pointer bg-transparent text-primary hover:text-primary-light text-xs font-semibold text-center transition-colors"
-                        title="Editar"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(receita)}
-                        className="flex-1 h-8 flex items-center justify-center cursor-pointer bg-transparent text-red-600 hover:text-red-500 text-xs font-semibold text-center transition-colors"
-                        title="Excluir"
-                      >
-                        Excluir
-                      </button>
-                    </div>
+                    <div className="flex justify-center w-full"><ActionMenu onEdit={() => handleEdit(receita)} onDelete={() => handleDelete(receita)} /></div>
                   </td>
                 </tr>
               ))}
