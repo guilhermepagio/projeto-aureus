@@ -67,7 +67,7 @@ const ReceitasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
                   Descrição
                 </th>
-                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
+                <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
                   Parcela
                 </th>
                 <th scope="col" className="px-6 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
