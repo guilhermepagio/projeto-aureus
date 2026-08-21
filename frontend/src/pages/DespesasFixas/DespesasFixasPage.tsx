@@ -31,6 +31,17 @@ const DespesasFixasPage: React.FC = () => {
 
   return (
     <div className="px-4 pb-4 w-full">
+      <div className="mb-4 mt-2 flex justify-between items-center">
+        <div className="pl-2 border-l-4 border-primary">
+          <h1 className="text-2xl font-bold text-gray-800">Despesas Fixas</h1>
+        </div>
+        <button
+          onClick={handleCreate}
+          className="cursor-pointer h-8 px-4 flex items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-md text-xs font-semibold whitespace-nowrap shadow-sm"
+        >
+          + Nova Despesa
+        </button>
+      </div>
       {isEmpty ? (
         <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200 mt-4">
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -42,74 +53,71 @@ const DespesasFixasPage: React.FC = () => {
             <button
               onClick={handleCreate}
               type="button"
-              className="cursor-pointer inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              className="cursor-pointer inline-flex items-center rounded-md bg-red-600 px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
             >
               Nova Despesa Fixa
             </button>
           </div>
         </div>
       ) : (
-        <div className="bg-white shadow sm:rounded-2xl overflow-hidden mt-2">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="bg-white shadow sm:rounded-2xl overflow-x-auto mt-2 w-full">
+          <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-1/3">
+                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
                   Descrição
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[140px]">
                   Valor
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Início
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
                   Categoria
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
                   Conta
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[250px]">
                   Observações
                 </th>
-                <th scope="col" className="px-6 py-3">
-                  <div className="flex justify-end ml-auto w-[160px]">
-                    <button
-                      onClick={handleCreate}
-                      className="cursor-pointer w-full h-8 flex items-center justify-center bg-primary text-white rounded-full hover:bg-primary-light text-xs font-semibold whitespace-nowrap"
-                    >
-                      + Nova Despesa
-                    </button>
-                  </div>
+                <th scope="col" className="sticky right-0 px-6 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] border-l border-gray-200 w-[180px] text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Ações
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {despesas.map((despesa) => (
-                <tr key={despesa.id} className="even:bg-gray-100/60 odd:bg-white text-sm">
-                  <td className="px-6 py-[3px] font-medium text-primary whitespace-normal break-words">
-                    {despesa.descricao}
+                <tr key={despesa.id} className="group even:bg-gray-200 odd:bg-white text-sm">
+                  <td className="px-6 py-1 font-medium text-gray-900 align-middle">
+                    <div className="line-clamp-2 whitespace-normal break-words" title={despesa.descricao}>
+                      {despesa.descricao}
+                    </div>
                   </td>
-                  <td className="px-6 py-[3px] font-semibold text-red-600 tabular-nums whitespace-nowrap">
-                    - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valor)}
+                  <td className="px-6 py-1 text-center font-semibold text-red-600 tabular-nums whitespace-nowrap align-middle">
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valor)}
                   </td>
-                  <td className="px-6 py-[3px] text-gray-600 whitespace-nowrap">
-                    {despesa.dataInicio ? `${despesa.dataInicio.substring(5, 7)}/${despesa.dataInicio.substring(0, 4)}` : '-'}
+                  
+                  <td className="px-6 py-1 text-center text-gray-900 align-middle">
+                    <div className="truncate w-full" title={despesa.categoria?.descricao}>
+                      {despesa.categoria?.descricao}
+                    </div>
                   </td>
-                  <td className="px-6 py-[3px] text-gray-600 truncate max-w-[150px]" title={despesa.categoria?.descricao}>
-                    {despesa.categoria?.descricao}
+                  <td className="px-6 py-1 text-center text-gray-900 align-middle">
+                    <div className="truncate w-full" title={despesa.conta?.descricao}>
+                      {despesa.conta?.descricao}
+                    </div>
                   </td>
-                  <td className="px-6 py-[3px] text-gray-600 truncate max-w-[150px]" title={despesa.conta?.descricao}>
-                    {despesa.conta?.descricao}
+                  <td className="px-6 py-1 text-gray-900 align-middle">
+                    <div className="line-clamp-2 whitespace-normal break-words" title={despesa.observacoes}>
+                      {despesa.observacoes || '-'}
+                    </div>
                   </td>
-                  <td className="px-6 py-[3px] text-gray-500 max-w-[150px] truncate" title={despesa.observacoes}>
-                    {despesa.observacoes || '-'}
-                  </td>
-                  <td className="px-6 py-[3px]">
-                    <div className="flex justify-end ml-auto w-[160px] gap-2">
+                  <td className="sticky right-0 px-6 py-1 group-even:bg-gray-200 group-odd:bg-white border-l border-gray-200 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
+                    <div className="flex justify-end ml-auto w-full gap-2">
                       <button
                         type="button"
                         onClick={() => handleEdit(despesa)}
-                        className="flex-1 h-8 flex items-center justify-center cursor-pointer bg-green-50 text-green-700 rounded-full hover:bg-green-100 text-xs font-semibold text-center transition-colors"
+                        className="flex-1 h-8 flex items-center justify-center cursor-pointer bg-transparent text-primary hover:text-primary-light text-xs font-semibold text-center transition-colors"
                         title="Editar"
                       >
                         Editar
@@ -117,7 +125,7 @@ const DespesasFixasPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleDelete(despesa)}
-                        className="flex-1 h-8 flex items-center justify-center cursor-pointer bg-red-50 text-red-700 rounded-full hover:bg-red-100 text-xs font-semibold text-center transition-colors"
+                        className="flex-1 h-8 flex items-center justify-center cursor-pointer bg-transparent text-red-600 hover:text-red-500 text-xs font-semibold text-center transition-colors"
                         title="Excluir"
                       >
                         Excluir

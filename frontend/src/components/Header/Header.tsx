@@ -59,7 +59,12 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
 
   return (
     <header className="grid grid-cols-[1fr_auto_1fr] items-center p-4 bg-transparent relative z-[100] pointer-events-none">
-      <div className="flex justify-start pointer-events-auto"></div>
+      <div className="flex justify-start pointer-events-auto">
+        <div className="text-[22px] font-bold text-primary tracking-[-0.5px] flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+          Aureus
+          <span className="w-2 h-2 bg-secondary rounded-full"></span>
+        </div>
+      </div>
       
       <div className="flex justify-center pointer-events-auto">
         {children}

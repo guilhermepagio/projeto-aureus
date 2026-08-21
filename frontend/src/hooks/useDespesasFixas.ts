@@ -7,7 +7,6 @@ export interface DespesaFixa {
   id: number;
   descricao: string;
   valor: number;
-  dataInicio: string;
   conta: Conta;
   categoria: Categoria;
   observacoes: string;
@@ -17,7 +16,6 @@ export interface DespesaFixaInput {
   id?: number;
   descricao: string;
   valor: number;
-  dataInicio: string;
   conta: { id: number };
   categoria: { id: number };
   observacoes: string;

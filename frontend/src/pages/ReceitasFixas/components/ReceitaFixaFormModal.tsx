@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { formatCurrency, parseCurrency } from '../../../utils/currencyFormat';
+
 import Modal from '../../../components/ui/Modal';
 import { useCreateReceitaFixa, useUpdateReceitaFixa, type ReceitaFixa } from '../../../hooks/useReceitasFixas';
 import { useContas } from '../../../hooks/useContas';
@@ -12,10 +14,9 @@ interface ReceitaFixaFormModalProps {
 
 const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onClose, receitaToEdit }) => {
   const [descricao, setDescricao] = useState('');
-  const [valor, setValor] = useState<number | ''>('');
+  const [valor, setValor] = useState<string>('');
   const [contaId, setContaId] = useState<number | ''>('');
   const [categoriaId, setCategoriaId] = useState<number | ''>('');
-  const [dataInicio, setDataInicio] = useState('');
   const [observacoes, setObservacoes] = useState('');
   
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -30,10 +31,9 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
     if (isOpen) {
       if (receitaToEdit) {
         setDescricao(receitaToEdit.descricao || '');
-        setValor(receitaToEdit.valor);
+        setValor(receitaToEdit.valor ? formatCurrency(receitaToEdit.valor) : '');
         setContaId(receitaToEdit.conta?.id || '');
         setCategoriaId(receitaToEdit.categoria?.id || '');
-        setDataInicio(receitaToEdit.dataInicio ? receitaToEdit.dataInicio.substring(0, 7) : '');
         setObservacoes(receitaToEdit.observacoes || '');
       } else {
         setDescricao('');
@@ -41,10 +41,6 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
         setContaId('');
         setCategoriaId('');
         
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        setDataInicio(`${year}-${month}`);
         
         setObservacoes('');
       }
@@ -60,7 +56,6 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
     if (!valor || Number(valor) <= 0) newErrors.valor = 'O valor deve ser maior que zero';
     if (!contaId) newErrors.contaId = 'Selecione uma conta';
     if (!categoriaId) newErrors.categoriaId = 'Selecione uma categoria';
-    if (!dataInicio) newErrors.dataInicio = 'Data de início é obrigatória';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -69,10 +64,9 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
 
     const payload = {
       descricao: descricao.trim(),
-      valor: Number(valor),
+      valor: parseCurrency(valor),
       conta: { id: Number(contaId) },
       categoria: { id: Number(categoriaId) },
-      dataInicio: `${dataInicio}-01`,
       observacoes: observacoes.trim()
     };
 
@@ -110,7 +104,7 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
 
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left Column */}
-          <div className="w-full md:w-1/2 space-y-4">
+          <div className="w-full md:w-1/3 space-y-4">
             <div>
               <label htmlFor="descricao" className="block text-sm font-medium text-gray-700">
                 Descrição *
@@ -134,15 +128,13 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
                 Valor *
               </label>
               <input
-                type="number"
+                type="text"
                 id="valor"
-                step="0.01"
-                min="0.01"
                 value={valor}
-                onChange={(e) => setValor(e.target.value ? Number(e.target.value) : '')}
+                onChange={(e) => setValor(formatCurrency(e.target.value))}
                 disabled={isPending}
                 className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.valor ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-primary focus:ring-primary'}`}
-                placeholder="0.00"
+                placeholder="R$ 0,00"
               />
               {errors.valor && <p className="mt-1 text-sm text-red-600">{errors.valor}</p>}
             </div>
@@ -187,24 +179,10 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
               </div>
             </div>
 
-            <div>
-              <label htmlFor="dataInicio" className="block text-sm font-medium text-gray-700">
-                Competência (Início) *
-              </label>
-              <input
-                type="month"
-                id="dataInicio"
-                value={dataInicio}
-                onChange={(e) => setDataInicio(e.target.value)}
-                disabled={isPending}
-                className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.dataInicio ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-primary focus:ring-primary'}`}
-              />
-              {errors.dataInicio && <p className="mt-1 text-sm text-red-600">{errors.dataInicio}</p>}
-            </div>
           </div>
 
           {/* Right Column */}
-          <div className="w-full md:w-1/2 flex flex-col min-h-0">
+          <div className="w-full md:w-2/3 flex flex-col min-h-0">
             <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">
               Observações
             </label>
@@ -213,7 +191,7 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
               value={observacoes}
               onChange={(e) => setObservacoes(e.target.value)}
               disabled={isPending}
-              className="mt-1 block w-full flex-1 min-h-0 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
+              className="mt-1 block w-full flex-1 min-h-[160px] rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
               maxLength={300}
             />
           </div>

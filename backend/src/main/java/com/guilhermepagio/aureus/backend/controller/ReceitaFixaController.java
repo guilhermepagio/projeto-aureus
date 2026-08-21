@@ -49,7 +49,6 @@ public class ReceitaFixaController {
                 .map(existente -> {
                     existente.setDescricao(atualizada.getDescricao());
                     existente.setValor(atualizada.getValor());
-                    existente.setDataInicio(atualizada.getDataInicio());
                     existente.setConta(atualizada.getConta());
                     existente.setCategoria(atualizada.getCategoria());
                     existente.setObservacoes(atualizada.getObservacoes());

@@ -13,9 +13,30 @@ import DespesasFixasPage from './pages/DespesasFixas/DespesasFixasPage';
 import ReceitasFixasPage from './pages/ReceitasFixas/ReceitasFixasPage';
 
 // Placeholders for routes
-const Consolidacao = () => <div style={{ padding: '24px' }}><h2>Consolidação</h2><p>Conteúdo da Consolidação</p></div>;
-const DespesasVariaveis = () => <div style={{ padding: '24px' }}><h2>Despesas Variáveis</h2><p>Conteúdo de Despesas Variáveis</p></div>;
-const ReceitasVariaveis = () => <div style={{ padding: '24px' }}><h2>Receitas Variáveis</h2><p>Conteúdo de Receitas Variáveis</p></div>;
+const Consolidacao = () => (
+  <div className="px-4 pb-4 w-full">
+    <div className="mb-4 mt-2 pl-2 border-l-4 border-primary">
+      <h1 className="text-2xl font-bold text-gray-800">Consolidação</h1>
+    </div>
+    <div style={{ padding: '24px' }}><p>Conteúdo da Consolidação</p></div>
+  </div>
+);
+const DespesasVariaveis = () => (
+  <div className="px-4 pb-4 w-full">
+    <div className="mb-4 mt-2 pl-2 border-l-4 border-primary">
+      <h1 className="text-2xl font-bold text-gray-800">Despesas Variáveis</h1>
+    </div>
+    <div style={{ padding: '24px' }}><p>Conteúdo de Despesas Variáveis</p></div>
+  </div>
+);
+const ReceitasVariaveis = () => (
+  <div className="px-4 pb-4 w-full">
+    <div className="mb-4 mt-2 pl-2 border-l-4 border-primary">
+      <h1 className="text-2xl font-bold text-gray-800">Receitas Variáveis</h1>
+    </div>
+    <div style={{ padding: '24px' }}><p>Conteúdo de Receitas Variáveis</p></div>
+  </div>
+);
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuthStore();

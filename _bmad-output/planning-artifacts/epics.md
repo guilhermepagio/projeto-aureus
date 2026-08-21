@@ -389,3 +389,23 @@ So that eu saiba a real evolução patrimonial e a sustentabilidade das minhas f
 **And** a linha "Sobra do Mês" exibe a diferença `Receitas do Mês - Despesas do Mês`
 **And** o backend calcula e envia o saldo acumulado histórico anterior ao primeiro mês da grade
 **And** a linha "Sobra Retroativa Acumulada" computa no primeiro mês `Saldo Histórico Pré-Grade + Sobra do Mês 1` e, para os meses subsequentes `n`, `Sobra Retroativa Mês n = Sobra Retroativa Mês n-1 + Sobra do Mês n`
+
+---
+
+## Epic 5: Production Readiness & Tech Debt Resolution
+
+Preparar a aplicação para implantação em ambiente produtivo, garantindo que todas as especificações arquiteturais e de estabilidade (como o versionamento de banco) sejam estritamente cumpridas.
+
+### Story 5.1: Congelamento de Schema e Ativação do Flyway
+
+As a Administrador do Sistema,
+I want que o esquema do banco de dados seja versionado e controlado explicitamente via scripts SQL,
+So that implantações em produção sejam seguras, rastreáveis e livres de alterações destrutivas acidentais.
+
+**Acceptance Criteria:**
+
+**Given** que a fase de prototipação (Epics 1 a 4) foi finalizada
+**When** o desenvolvedor inicia a preparação para produção
+**Then** um script de migração basilar (`V1__init_schema.sql`) é gerado capturando o estado final de todas as tabelas
+**And** o Hibernate é reconfigurado de `ddl-auto: update` para `ddl-auto: validate`
+**And** a dependência do Flyway é ativada no `pom.xml` para executar as migrações na inicialização do Spring Boot

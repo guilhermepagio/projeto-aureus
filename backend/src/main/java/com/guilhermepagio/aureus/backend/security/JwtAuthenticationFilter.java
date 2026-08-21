@@ -13,6 +13,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.HttpHeaders;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -38,14 +40,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                     TenantContext.setTenantId(subjectId);
                 } catch (Exception e) {
-                    org.springframework.http.ResponseCookie clearCookie = org.springframework.http.ResponseCookie.from("AUREUS_SESSION", "")
+                    ResponseCookie clearCookie = ResponseCookie.from("AUREUS_SESSION", "")
                             .maxAge(0)
                             .path("/")
                             .httpOnly(true)
                             .secure(request.isSecure())
                             .sameSite("Lax")
                             .build();
-                    response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, clearCookie.toString());
+                    response.addHeader(HttpHeaders.SET_COOKIE, clearCookie.toString());
                 }
             }
             
