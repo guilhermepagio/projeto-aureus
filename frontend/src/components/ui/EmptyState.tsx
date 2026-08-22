@@ -20,7 +20,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ title, description, icon, actio
 
   return (
     <div className="max-w-lg mx-auto w-full mt-4">
-      <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="text-center py-12">
       {icon ? (
         <div className="mx-auto h-12 w-12 text-gray-400 flex items-center justify-center">
           {icon}

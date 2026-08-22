@@ -21,7 +21,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
   if (isLoadingContas || isLoadingCategorias) {
     return (
       <div className="p-6 max-w-lg mx-auto">
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="text-center py-12">
           <p className="text-gray-500">Carregando informações...</p>
         </div>
       </div>
@@ -35,7 +35,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
     console.error('Erro ao carregar dependências para os formulários de movimentação');
     return (
       <div className="p-6 max-w-lg mx-auto">
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="text-center py-12">
           <h3 className="mt-2 text-sm font-semibold text-red-600">Erro ao carregar dados</h3>
           <p className="mt-1 text-sm text-gray-500 mb-6">Não foi possível carregar contas ou categorias. Por favor, tente novamente.</p>
           <button 
@@ -58,7 +58,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
     
     return (
       <div className="p-6 max-w-lg mx-auto">
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="text-center py-12">
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             {!hasContas ? (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
