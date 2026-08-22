@@ -193,7 +193,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="receita-valorParcela" className="block text-sm font-medium text-gray-700">
-                  Valor da Parcela *
+                  Valor Parcela *
                 </label>
                 <input
                   type="text"
@@ -207,7 +207,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
               </div>
               <div>
                 <label htmlFor="receita-quantidadeParcelas" className="block text-sm font-medium text-gray-700">
-                  Nº Parcelas *
+                  Qtd. Parcelas *
                 </label>
                 <input
                   type="number"

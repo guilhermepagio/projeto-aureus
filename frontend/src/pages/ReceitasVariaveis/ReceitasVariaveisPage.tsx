@@ -69,7 +69,7 @@ const ReceitasVariaveisPage: React.FC = () => {
                   Descrição
                 </th>
                 <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
-                  Parcela
+                  Valor Parcela
                 </th>
                 <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
                   Qtd. Parcelas

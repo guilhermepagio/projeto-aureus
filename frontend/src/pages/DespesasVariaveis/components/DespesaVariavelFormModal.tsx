@@ -201,7 +201,7 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="despesa-valorParcela" className="block text-sm font-medium text-gray-700">
-                  Valor da Parcela *
+                  Valor Parcela *
                 </label>
                 <input
                   type="text"
@@ -215,7 +215,7 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
               </div>
               <div>
                 <label htmlFor="despesa-quantidadeParcelas" className="block text-sm font-medium text-gray-700">
-                  Nº Parcelas *
+                  Qtd. Parcelas *
                 </label>
                 <input
                   type="number"
