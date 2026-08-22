@@ -7,13 +7,15 @@ interface EmptyStateProps {
   action?: {
     label: string;
     onClick: () => void;
-    color?: 'primary' | 'danger';
+    color?: 'primary' | 'danger' | 'blue';
   };
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({ title, description, icon, action }) => {
   const buttonColorClass = action?.color === 'danger' 
     ? 'bg-red-600 hover:bg-red-700 focus-visible:outline-red-600'
+    : action?.color === 'blue'
+    ? 'bg-blue-600 hover:bg-blue-700 focus-visible:outline-blue-600'
     : 'bg-primary hover:bg-primary-light focus-visible:outline-primary';
 
   return (

@@ -34,12 +34,12 @@ const ContasPage: React.FC = () => {
   return (
     <div className="px-4 pb-4 w-full">
       <div className="mb-4 mt-2 flex justify-between items-center">
-        <div className="pl-2 border-l-4 border-primary">
+        <div className="pl-2 border-l-4 border-blue-600">
           <h1 className="text-2xl font-bold text-gray-800">Contas</h1>
         </div>
         <button
           onClick={handleCreate}
-          className="cursor-pointer h-8 px-4 flex items-center justify-center bg-primary hover:bg-primary-light text-white rounded-md text-xs font-semibold whitespace-nowrap shadow-sm"
+          className="cursor-pointer h-8 px-4 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold whitespace-nowrap shadow-sm"
         >
           + Nova Conta
         </button>
@@ -48,7 +48,7 @@ const ContasPage: React.FC = () => {
         <EmptyState
           title="Nenhuma conta"
           description="Comece criando sua primeira conta."
-          action={{ label: 'Nova Conta', onClick: handleCreate }}
+          action={{ label: 'Nova Conta', onClick: handleCreate, color: 'blue' }}
         />
       ) : (
         <div className="bg-white shadow sm:rounded-2xl overflow-visible mt-2 w-full">
