@@ -104,7 +104,7 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
 
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left Column */}
-          <div className="w-full md:w-1/2 space-y-4">
+          <div className="w-full md:w-2/3 space-y-4">
             <div>
               <label htmlFor="descricao" className="block text-sm font-medium text-gray-700">
                 Descrição *
@@ -182,7 +182,7 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
           </div>
 
           {/* Right Column */}
-          <div className="w-full md:w-1/2 flex flex-col min-h-0">
+          <div className="w-full md:w-1/3 flex flex-col min-h-0">
             <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">
               Observações
             </label>
@@ -191,7 +191,7 @@ const ReceitaFixaFormModal: React.FC<ReceitaFixaFormModalProps> = ({ isOpen, onC
               value={observacoes}
               onChange={(e) => setObservacoes(e.target.value)}
               disabled={isPending}
-              className="mt-1 block w-full flex-1 min-h-[160px] rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
+              className="mt-1 block w-full flex-1 min-h-[270px] rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
               maxLength={300}
             />
           </div>
