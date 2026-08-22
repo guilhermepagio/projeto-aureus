@@ -51,6 +51,10 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
 
   if (!hasContas || !hasCategorias) {
     const returnState = { from: location.pathname + location.search + location.hash };
+    const isDespesa = location.pathname.includes('despesas');
+    const buttonColorClass = isDespesa 
+      ? 'bg-red-600 hover:bg-red-700 focus-visible:outline-red-600'
+      : 'bg-primary hover:bg-primary-light focus-visible:outline-primary';
     
     return (
       <div className="p-6 max-w-lg mx-auto">
@@ -77,7 +81,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
               <Link
                 to="/contas"
                 state={returnState}
-                className="inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className={`cursor-pointer h-8 px-4 flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
               >
                 <PlusIcon />
                 Cadastrar Conta
@@ -87,7 +91,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
               <Link
                 to="/categorias"
                 state={returnState}
-                className="inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className={`cursor-pointer h-8 px-4 flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
               >
                 <PlusIcon />
                 Cadastrar Categoria
