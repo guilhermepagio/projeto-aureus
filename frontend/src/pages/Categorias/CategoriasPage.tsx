@@ -79,17 +79,17 @@ const CategoriasPage: React.FC = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {categorias.map((categoria) => (
                 <tr key={categoria.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
-                  <td className="px-3 py-0.5 font-medium text-gray-900 align-middle">
+                  <td className="px-3 py-1 font-medium text-gray-900 align-middle">
                     <div className="truncate w-full" title={categoria.descricao}>
                       {categoria.descricao}
                     </div>
                   </td>
-                  <td className="px-3 py-0.5 text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-gray-900 align-middle">
                     <div className="truncate w-full" title={categoria.observacoes}>
                       {categoria.observacoes || '-'}
                     </div>
                   </td>
-                  <td className="sticky right-0 px-1 py-0.5 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
+                  <td className="sticky right-0 px-1 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
                     <div className="flex justify-center w-full"><ActionMenu onEdit={() => handleEdit(categoria)} onDelete={() => handleDelete(categoria)} /></div>
                   </td>
                 </tr>

@@ -94,36 +94,36 @@ const ReceitasVariaveisPage: React.FC = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {receitas.map((receita) => (
                 <tr key={receita.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
-                  <td className="px-3 py-0.5 font-medium text-gray-900 align-middle">
+                  <td className="px-3 py-1 font-medium text-gray-900 align-middle">
                     <div className="truncate w-full" title={receita.descricao}>
                       {receita.descricao}
                     </div>
                   </td>
-                  <td className="px-3 py-0.5 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-3 py-1 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela)}
                   </td>
-                  <td className="px-3 py-0.5 text-center tabular-nums text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center tabular-nums text-gray-900 align-middle">
                     {receita.quantidadeParcelas}
                   </td>
-                  <td className="px-3 py-0.5 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-3 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela * receita.quantidadeParcelas)}
                   </td>
-                  <td className="px-3 py-0.5 text-center text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="truncate w-full" title={receita.categoria?.descricao}>
                       {receita.categoria?.descricao}
                     </div>
                   </td>
-                  <td className="px-3 py-0.5 text-center text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="truncate w-full" title={receita.conta?.descricao}>
                       {receita.conta?.descricao}
                     </div>
                   </td>
-                  <td className="px-3 py-0.5 text-gray-900 align-middle">
+                  <td className="px-3 py-1 text-gray-900 align-middle">
                     <div className="truncate w-full" title={receita.observacoes}>
                       {receita.observacoes || '-'}
                     </div>
                   </td>
-                  <td className="sticky right-0 px-1 py-0.5 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
+                  <td className="sticky right-0 px-1 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
                     <div className="flex justify-center w-full"><ActionMenu onEdit={() => handleEdit(receita)} onDelete={() => handleDelete(receita)} /></div>
                   </td>
                 </tr>

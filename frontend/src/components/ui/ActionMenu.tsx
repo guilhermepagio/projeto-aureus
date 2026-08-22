@@ -50,7 +50,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ onEdit, onDelete }) => {
         ref={buttonRef}
         type="button"
         onClick={toggleMenu}
-        className="flex items-center justify-center p-0.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-black/10 transition-colors cursor-pointer"
+        className="flex items-center justify-center p-1 rounded-md text-gray-500 hover:text-gray-900 hover:bg-black/10 transition-colors cursor-pointer"
         title="Ações"
       >
         <Menu className="w-4 h-4" />
