@@ -74,7 +74,7 @@ const ReceitasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
                   Qtd. Parcelas
                 </th>
-                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
+                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
                   Valor Total
                 </th>
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
