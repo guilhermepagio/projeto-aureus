@@ -153,6 +153,45 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
 
             <div className="grid grid-cols-2 gap-4">
               <div>
+                <label htmlFor="receita-categoriaId" className="block text-sm font-medium text-gray-700">
+                  Categoria *
+                </label>
+                <select
+                  id="receita-categoriaId"
+                  value={categoriaId}
+                  onChange={(e) => setCategoriaId(e.target.value ? Number(e.target.value) : '')}
+                  disabled={isPending}
+                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.categoriaId ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-primary'}`}
+                >
+                  <option value="">Selecione...</option>
+                  {categorias?.map(c => (
+                    <option key={c.id} value={c.id}>{c.descricao}</option>
+                  ))}
+                </select>
+                {errors.categoriaId && <p className="mt-1 text-sm text-red-600">{errors.categoriaId}</p>}
+              </div>
+              <div>
+                <label htmlFor="receita-contaId" className="block text-sm font-medium text-gray-700">
+                  Conta *
+                </label>
+                <select
+                  id="receita-contaId"
+                  value={contaId}
+                  onChange={(e) => setContaId(e.target.value ? Number(e.target.value) : '')}
+                  disabled={isPending}
+                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.contaId ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-primary'}`}
+                >
+                  <option value="">Selecione...</option>
+                  {contas?.map(c => (
+                    <option key={c.id} value={c.id}>{c.descricao}</option>
+                  ))}
+                </select>
+                {errors.contaId && <p className="mt-1 text-sm text-red-600">{errors.contaId}</p>}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
                 <label htmlFor="receita-valorParcela" className="block text-sm font-medium text-gray-700">
                   Valor da Parcela *
                 </label>
@@ -215,44 +254,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
           </div>
 
           <div className="w-full md:w-1/2 space-y-4 flex flex-col min-h-0">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="receita-categoriaId" className="block text-sm font-medium text-gray-700">
-                  Categoria *
-                </label>
-                <select
-                  id="receita-categoriaId"
-                  value={categoriaId}
-                  onChange={(e) => setCategoriaId(e.target.value ? Number(e.target.value) : '')}
-                  disabled={isPending}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.categoriaId ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                >
-                  <option value="">Selecione...</option>
-                  {categorias?.map(c => (
-                    <option key={c.id} value={c.id}>{c.descricao}</option>
-                  ))}
-                </select>
-                {errors.categoriaId && <p className="mt-1 text-sm text-red-600">{errors.categoriaId}</p>}
-              </div>
-              <div>
-                <label htmlFor="receita-contaId" className="block text-sm font-medium text-gray-700">
-                  Conta *
-                </label>
-                <select
-                  id="receita-contaId"
-                  value={contaId}
-                  onChange={(e) => setContaId(e.target.value ? Number(e.target.value) : '')}
-                  disabled={isPending}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.contaId ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                >
-                  <option value="">Selecione...</option>
-                  {contas?.map(c => (
-                    <option key={c.id} value={c.id}>{c.descricao}</option>
-                  ))}
-                </select>
-                {errors.contaId && <p className="mt-1 text-sm text-red-600">{errors.contaId}</p>}
-              </div>
-            </div>
+            
 
             <div className="flex-1 flex flex-col pt-2">
               <label htmlFor="receita-observacoes" className="block text-sm font-medium text-gray-700">
