@@ -19,7 +19,8 @@ const EmptyState: React.FC<EmptyStateProps> = ({ title, description, icon, actio
     : 'bg-primary hover:bg-primary-light focus-visible:outline-primary';
 
   return (
-    <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200 mt-4">
+    <div className="max-w-lg mx-auto w-full mt-4">
+      <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
       {icon ? (
         <div className="mx-auto h-12 w-12 text-gray-400 flex items-center justify-center">
           {icon}
@@ -54,6 +55,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ title, description, icon, actio
           </button>
         </div>
       )}
+    </div>
     </div>
   );
 };
