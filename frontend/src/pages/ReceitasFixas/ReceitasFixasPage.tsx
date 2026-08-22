@@ -94,7 +94,7 @@ const ReceitasFixasPage: React.FC = () => {
                       {receita.descricao}
                     </div>
                   </td>
-                  <td className="px-3 py-1 text-center font-semibold text-primary tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-3 py-1 text-center text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valor)}
                   </td>
                   
