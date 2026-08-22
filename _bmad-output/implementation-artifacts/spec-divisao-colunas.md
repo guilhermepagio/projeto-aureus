@@ -1,27 +1,27 @@
 ---
-title: 'Modernização e Padronização das Listagens'
+title: 'Modernização e Padronização das Listagens e Modais'
 type: 'spec'
 created: '2026-08-21'
 status: 'done'
 route: 'one-shot'
 ---
 
-# Modernização e Padronização das Listagens
+# Modernização e Padronização das Listagens e Modais
 
 ## Intent
-**Problem:** O usuário sentia falta de uma divisão clara nas colunas para saber onde cada uma começava e terminava nas tabelas de listagem, além de apontar problemas com botões volumosos na coluna de ações, desalinhamento de conteúdo e despadronização nas larguras e alturas das linhas e cabeçalhos.
+**Problem:** O usuário solicitava melhorias de layout e padronização visual abrangente, incluindo tabelas e modais. As colunas sofriam distorção de largura devido ao `w-full` em telas grandes, o menu de ação estava muito carregado e quebrando o layout, os modais de cadastro possuíam proporções assimétricas e a nomenclatura de "Parcela/Valor" estava inconsistente pelo sistema.
 **Approach:** 
-1. Adicionados utilitários `divide-x` e `divide-gray-200` nas linhas de cabeçalho e dados de todas as 6 páginas.
-2. Refatoração dos botões de ação para um `<ActionMenu>` suspenso via `createPortal`, abrindo espaço útil para as colunas.
-3. Centralização de todos os conteúdos numéricos e datas, com ajustes estritos de paddings (`px-3` para `px-1` e redistribuição de larguras).
-4. Equalização total de altura (`h-[44px]` nos cabeçalhos, e `py-0.5` + `truncate` nas linhas) garantindo simetria absoluta entre as tabelas do sistema.
+1. Refatoração do `<ActionMenu>` para usar `createPortal`, isolando-o do contexto de empilhamento das tabelas e permitindo fluidez vertical.
+2. Padronização de cores financeiras (remoção de vermelhos/azuis e `font-semibold` nas células), adotando `text-gray-900` para sobriedade.
+3. Absorção de espaço excedente usando `w-full min-w-[380px]` nas colunas "Descrição" e "Observações" das abas Fixas, prevenindo estiramento indesejado de outras colunas.
+4. Ajuste proporcional e empilhamento lógico nos modais (1/2 esquerdo para formulários, 1/2 direito para Observações com `min-h-[160px]` esticável).
+5. Padronização ubíqua das nomenclaturas para `Valor Parcela` e `Qtd. Parcelas` em todas as tabelas e cabeçalhos do formulário.
 
 ## Suggested Review Order
 
-1. [ActionMenu.tsx](file:///home/guilhermepagio/developer/workspace/projeto-aureus/frontend/src/components/ui/ActionMenu.tsx) — Componente de menu suspenso centralizado via Portal para z-index absoluto.
-2. [CategoriasPage.tsx](file:///home/guilhermepagio/developer/workspace/projeto-aureus/frontend/src/pages/Categorias/CategoriasPage.tsx) — Aplicação de divisórias, ActionMenu, equalização de paddings e alturas fixas.
-3. [ContasPage.tsx](file:///home/guilhermepagio/developer/workspace/projeto-aureus/frontend/src/pages/Contas/ContasPage.tsx) — Aplicação de divisórias, ActionMenu, equalização de paddings e alturas fixas.
-4. [DespesasFixasPage.tsx](file:///home/guilhermepagio/developer/workspace/projeto-aureus/frontend/src/pages/DespesasFixas/DespesasFixasPage.tsx) — Aplicação de divisórias, ActionMenu, equalização de paddings e alturas fixas.
-5. [DespesasVariaveisPage.tsx](file:///home/guilhermepagio/developer/workspace/projeto-aureus/frontend/src/pages/DespesasVariaveis/DespesasVariaveisPage.tsx) — Aplicação de divisórias, ActionMenu, equalização de paddings e alturas fixas.
-6. [ReceitasFixasPage.tsx](file:///home/guilhermepagio/developer/workspace/projeto-aureus/frontend/src/pages/ReceitasFixas/ReceitasFixasPage.tsx) — Aplicação de divisórias, ActionMenu, equalização de paddings e alturas fixas.
-7. [ReceitasVariaveisPage.tsx](file:///home/guilhermepagio/developer/workspace/projeto-aureus/frontend/src/pages/ReceitasVariaveis/ReceitasVariaveisPage.tsx) — Aplicação de divisórias, ActionMenu, equalização de paddings e alturas fixas.
+1. [ActionMenu.tsx](../../frontend/src/components/ui/ActionMenu.tsx) — Portal implementation para o z-index.
+2. [DespesasFixasPage.tsx](../../frontend/src/pages/DespesasFixas/DespesasFixasPage.tsx) — Fixas com Descrição expansiva.
+3. [DespesaFixaFormModal.tsx](../../frontend/src/pages/DespesasFixas/components/DespesaFixaFormModal.tsx) — Empilhamento de Categoria/Conta e layout 50/50.
+4. [ReceitaFixaFormModal.tsx](../../frontend/src/pages/ReceitasFixas/components/ReceitaFixaFormModal.tsx) — Empilhamento de Categoria/Conta e layout 50/50.
+5. [DespesaVariavelFormModal.tsx](../../frontend/src/pages/DespesasVariaveis/components/DespesaVariavelFormModal.tsx) — Inversão de localização Categoria/Conta x Local/Data.
+6. [ReceitaVariavelFormModal.tsx](../../frontend/src/pages/ReceitasVariaveis/components/ReceitaVariavelFormModal.tsx) — Move Categoria/Conta para a esquerda.
