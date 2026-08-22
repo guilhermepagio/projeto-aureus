@@ -101,7 +101,7 @@ const DespesasVariaveisPage: React.FC = () => {
               {despesas.map((despesa) => (
                 <tr key={despesa.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
-                    <div className="line-clamp-2 whitespace-normal break-words" title={despesa.descricao}>
+                    <div className="line-clamp-3 whitespace-normal break-words" title={despesa.descricao}>
                       {despesa.descricao}
                     </div>
                   </td>
@@ -109,7 +109,7 @@ const DespesasVariaveisPage: React.FC = () => {
                     {despesa.dataCompra ? despesa.dataCompra.split('-').reverse().join('/') : '-'}
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
-                    <div className="line-clamp-2 whitespace-normal break-words" title={despesa.localCompra || ''}>
+                    <div className="line-clamp-3 whitespace-normal break-words" title={despesa.localCompra || ''}>
                       {despesa.localCompra || '-'}
                     </div>
                   </td>
@@ -123,17 +123,17 @@ const DespesasVariaveisPage: React.FC = () => {
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela * despesa.quantidadeParcelas)}
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
-                    <div className="line-clamp-2 whitespace-normal break-words" title={despesa.categoria?.descricao}>
+                    <div className="line-clamp-3 whitespace-normal break-words" title={despesa.categoria?.descricao}>
                       {despesa.categoria?.descricao}
                     </div>
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
-                    <div className="line-clamp-2 whitespace-normal break-words" title={despesa.conta?.descricao}>
+                    <div className="line-clamp-3 whitespace-normal break-words" title={despesa.conta?.descricao}>
                       {despesa.conta?.descricao}
                     </div>
                   </td>
                   <td className="px-3 py-1 text-gray-900 align-middle">
-                    <div className="line-clamp-2 whitespace-normal break-words" title={despesa.observacoes}>
+                    <div className="line-clamp-3 whitespace-normal break-words" title={despesa.observacoes}>
                       {despesa.observacoes || '-'}
                     </div>
                   </td>

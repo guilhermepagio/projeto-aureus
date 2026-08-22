@@ -80,12 +80,12 @@ const CategoriasPage: React.FC = () => {
               {categorias.map((categoria) => (
                 <tr key={categoria.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
-                    <div className="line-clamp-2 whitespace-normal break-words" title={categoria.descricao}>
+                    <div className="line-clamp-3 whitespace-normal break-words" title={categoria.descricao}>
                       {categoria.descricao}
                     </div>
                   </td>
                   <td className="px-3 py-1 text-gray-900 align-middle">
-                    <div className="line-clamp-2 whitespace-normal break-words" title={categoria.observacoes}>
+                    <div className="line-clamp-3 whitespace-normal break-words" title={categoria.observacoes}>
                       {categoria.observacoes || '-'}
                     </div>
                   </td>
