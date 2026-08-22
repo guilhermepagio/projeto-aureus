@@ -3,9 +3,12 @@ import React, { useState } from 'react';
 import { useReceitasFixas, type ReceitaFixa } from '../../hooks/useReceitasFixas';
 import ReceitaFixaFormModal from './components/ReceitaFixaFormModal';
 import DeleteConfirmModal from './components/DeleteConfirmModal';
+import { useMonthStore } from '../../store/monthStore';
+import EmptyState from '../../components/ui/EmptyState';
 
 const ReceitasFixasPage: React.FC = () => {
   const { data: receitas, isLoading, isError } = useReceitasFixas();
+  const { isGlobalFilterActive, toggleGlobalFilter } = useMonthStore();
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedReceita, setSelectedReceita] = useState<ReceitaFixa | null>(null);
@@ -25,10 +28,15 @@ const ReceitasFixasPage: React.FC = () => {
     setIsDeleteModalOpen(true);
   };
 
+  const filteredReceitas = React.useMemo(() => {
+    if (!receitas) return [];
+    return receitas;
+  }, [receitas]);
+
   if (isLoading) return <div className="p-6">Carregando receitas fixas...</div>;
   if (isError) return <div className="p-6 text-red-600">Erro ao carregar receitas fixas.</div>;
 
-  const isEmpty = !receitas || receitas.length === 0;
+  const isEmpty = filteredReceitas.length === 0;
 
   return (
     <div className="px-4 pb-4 w-full">
@@ -44,22 +52,16 @@ const ReceitasFixasPage: React.FC = () => {
         </button>
       </div>
       {isEmpty ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200 mt-4">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <h3 className="mt-2 text-sm font-semibold text-gray-900">Nenhuma receita fixa</h3>
-          <p className="mt-1 text-sm text-gray-500">Comece criando sua primeira receita fixa.</p>
-          <div className="mt-6">
-            <button
-              onClick={handleCreate}
-              type="button"
-              className="cursor-pointer inline-flex items-center rounded-md bg-primary px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-            >
-              Nova Receita Fixa
-            </button>
-          </div>
-        </div>
+        <EmptyState
+          title="Nenhuma receita fixa"
+          description="Nenhuma receita fixa encontrada."
+          icon={
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" className="w-12 h-12">
+              <path vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          }
+          action={{ label: 'Nova Receita Fixa', onClick: handleCreate }}
+        />
       ) : (
         <div className="bg-white shadow sm:rounded-2xl overflow-visible mt-2 w-full">
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
@@ -87,7 +89,7 @@ const ReceitasFixasPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {receitas.map((receita) => (
+              {filteredReceitas.map((receita) => (
                 <tr key={receita.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
                     <div className="line-clamp-3 whitespace-normal break-words" title={receita.descricao}>

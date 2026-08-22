@@ -102,6 +102,7 @@ export const useCreateDespesaFixa = () => {
     mutationFn: createDespesaFixa,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['despesas-fixas'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Despesa fixa criada com sucesso!');
     },
     onError: (error: Error) => {
@@ -116,6 +117,7 @@ export const useUpdateDespesaFixa = () => {
     mutationFn: updateDespesaFixa,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['despesas-fixas'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Despesa fixa atualizada com sucesso!');
     },
     onError: (error: Error) => {
@@ -130,6 +132,7 @@ export const useDeleteDespesaFixa = () => {
     mutationFn: deleteDespesaFixa,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['despesas-fixas'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Despesa fixa excluída com sucesso!');
     },
     onError: (error: Error) => {

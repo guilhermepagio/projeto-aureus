@@ -107,6 +107,7 @@ export const useCreateReceitaVariavel = () => {
     mutationFn: createReceitaVariavel,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['receitas-variaveis'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Receita variável criada com sucesso!');
     },
     onError: (error: Error) => {
@@ -121,6 +122,7 @@ export const useUpdateReceitaVariavel = () => {
     mutationFn: updateReceitaVariavel,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['receitas-variaveis'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Receita variável atualizada com sucesso!');
     },
     onError: (error: Error) => {
@@ -135,6 +137,7 @@ export const useDeleteReceitaVariavel = () => {
     mutationFn: deleteReceitaVariavel,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['receitas-variaveis'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Receita variável excluída com sucesso!');
     },
     onError: (error: Error) => {

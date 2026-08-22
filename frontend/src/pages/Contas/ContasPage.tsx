@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useContas, type Conta } from '../../hooks/useContas';
 import ContaFormModal from './components/ContaFormModal';
 import DeleteConfirmModal from './components/DeleteConfirmModal';
+import EmptyState from '../../components/ui/EmptyState';
 
 const ContasPage: React.FC = () => {
   const { data: contas, isLoading, isError } = useContas();
@@ -44,22 +45,11 @@ const ContasPage: React.FC = () => {
         </button>
       </div>
       {isEmpty ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200 mt-4">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-          </svg>
-          <h3 className="mt-2 text-sm font-semibold text-gray-900">Nenhuma conta</h3>
-          <p className="mt-1 text-sm text-gray-500">Comece criando sua primeira conta.</p>
-          <div className="mt-6">
-            <button
-              onClick={handleCreate}
-              type="button"
-              className="cursor-pointer inline-flex items-center rounded-md bg-primary px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-            >
-              Nova Conta
-            </button>
-          </div>
-        </div>
+        <EmptyState
+          title="Nenhuma conta"
+          description="Comece criando sua primeira conta."
+          action={{ label: 'Nova Conta', onClick: handleCreate }}
+        />
       ) : (
         <div className="bg-white shadow sm:rounded-2xl overflow-visible mt-2 w-full">
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">

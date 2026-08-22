@@ -102,6 +102,7 @@ export const useCreateReceitaFixa = () => {
     mutationFn: createReceitaFixa,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['receitas-fixas'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Receita fixa criada com sucesso!');
     },
     onError: (error: Error) => {
@@ -116,6 +117,7 @@ export const useUpdateReceitaFixa = () => {
     mutationFn: updateReceitaFixa,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['receitas-fixas'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Receita fixa atualizada com sucesso!');
     },
     onError: (error: Error) => {
@@ -130,6 +132,7 @@ export const useDeleteReceitaFixa = () => {
     mutationFn: deleteReceitaFixa,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['receitas-fixas'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Receita fixa excluída com sucesso!');
     },
     onError: (error: Error) => {

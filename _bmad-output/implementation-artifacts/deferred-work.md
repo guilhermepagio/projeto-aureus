@@ -326,3 +326,12 @@
 - Missing automated verification tests (dataFim, relational errors, API parsing)
 - Missing DTOs, Service Layer, and Global Exception Handler
 - Fetcher swallows non-JSON 500 errors
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: Fixed transactions lack start/end dates in the domain model, preventing month-based filtering.
+  evidence: Fixed transaction components had to bypass the month filtering logic completely because `dataInicio` does not exist on the current entity.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: Missing test coverage for React Query mutation cache invalidations and global month filter logic.
+  evidence: No component or hook tests assert that `['consolidacao']` is invalidated or that `isGlobalFilterActive` works correctly.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: `epic-3-context.md` was translated to English, losing technical specificity and causing context fragmentation with Portuguese PRDs.
+  evidence: The document omits explicit constraints like `ON DELETE RESTRICT` for foreign keys that were present in the Portuguese original.

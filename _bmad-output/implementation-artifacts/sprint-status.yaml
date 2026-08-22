@@ -51,8 +51,8 @@ development_status:
   epic-3: in-progress
   3-1-lançamentos-fixos-despesas-e-receitas-com-vigência: done
   3-2-lançamentos-variáveis-e-parcelados-com-arredondamento-de-cen: done
-  3-3-lançamentos-variáveis-à-vista-parcela-única: backlog
-  3-4-sincronização-de-visão-mensal-invalidação-de-cache-e-filtro: backlog
+  3-3-lançamentos-variáveis-à-vista-parcela-única: discarded # Absorvida pela story 3-2 (lançamentos com 1 parcela)
+  3-4-sincronização-de-visão-mensal-invalidação-de-cache-e-filtro: review
   epic-3-retrospective: optional
 
   epic-4: backlog

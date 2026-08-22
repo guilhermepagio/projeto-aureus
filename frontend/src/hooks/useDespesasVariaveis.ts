@@ -111,6 +111,7 @@ export const useCreateDespesaVariavel = () => {
     mutationFn: createDespesaVariavel,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['despesas-variaveis'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Despesa variável criada com sucesso!');
     },
     onError: (error: Error) => {
@@ -125,6 +126,7 @@ export const useUpdateDespesaVariavel = () => {
     mutationFn: updateDespesaVariavel,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['despesas-variaveis'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Despesa variável atualizada com sucesso!');
     },
     onError: (error: Error) => {
@@ -139,6 +141,7 @@ export const useDeleteDespesaVariavel = () => {
     mutationFn: deleteDespesaVariavel,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['despesas-variaveis'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Despesa variável excluída com sucesso!');
     },
     onError: (error: Error) => {
