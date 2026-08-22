@@ -74,7 +74,7 @@ const ReceitasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
                   Qtd. Parcelas
                 </th>
-                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
+                <th scope="col" className="px-1 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Valor Total
                 </th>
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
@@ -105,7 +105,7 @@ const ReceitasVariaveisPage: React.FC = () => {
                   <td className="px-3 py-1 text-center tabular-nums text-gray-900 align-middle">
                     {receita.quantidadeParcelas}
                   </td>
-                  <td className="px-3 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
+                  <td className="px-1 py-1 text-center font-semibold text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela * receita.quantidadeParcelas)}
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
