@@ -104,7 +104,7 @@ const DespesaFixaFormModal: React.FC<DespesaFixaFormModalProps> = ({ isOpen, onC
 
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left Column */}
-          <div className="w-full md:w-2/3 space-y-4">
+          <div className="w-full md:w-1/2 space-y-4">
             <div>
               <label htmlFor="descricao" className="block text-sm font-medium text-gray-700">
                 Descrição *
@@ -139,8 +139,26 @@ const DespesaFixaFormModal: React.FC<DespesaFixaFormModalProps> = ({ isOpen, onC
               {errors.valor && <p className="mt-1 text-sm text-red-600">{errors.valor}</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+            <div>
+                <label htmlFor="categoriaId" className="block text-sm font-medium text-gray-700">
+                  Categoria *
+                </label>
+                <select
+                  id="categoriaId"
+                  value={categoriaId}
+                  onChange={(e) => setCategoriaId(e.target.value ? Number(e.target.value) : '')}
+                  disabled={isPending}
+                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.categoriaId ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-primary focus:ring-primary'}`}
+                >
+                  <option value="">Selecione...</option>
+                  {categorias?.map(c => (
+                    <option key={c.id} value={c.id}>{c.descricao}</option>
+                  ))}
+                </select>
+                {errors.categoriaId && <p className="mt-1 text-sm text-red-600">{errors.categoriaId}</p>}
+              </div>
+
+            <div>
                 <label htmlFor="contaId" className="block text-sm font-medium text-gray-700">
                   Conta *
                 </label>
@@ -159,30 +177,10 @@ const DespesaFixaFormModal: React.FC<DespesaFixaFormModalProps> = ({ isOpen, onC
                 {errors.contaId && <p className="mt-1 text-sm text-red-600">{errors.contaId}</p>}
               </div>
 
-              <div>
-                <label htmlFor="categoriaId" className="block text-sm font-medium text-gray-700">
-                  Categoria *
-                </label>
-                <select
-                  id="categoriaId"
-                  value={categoriaId}
-                  onChange={(e) => setCategoriaId(e.target.value ? Number(e.target.value) : '')}
-                  disabled={isPending}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.categoriaId ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-primary focus:ring-primary'}`}
-                >
-                  <option value="">Selecione...</option>
-                  {categorias?.map(c => (
-                    <option key={c.id} value={c.id}>{c.descricao}</option>
-                  ))}
-                </select>
-                {errors.categoriaId && <p className="mt-1 text-sm text-red-600">{errors.categoriaId}</p>}
-              </div>
-            </div>
-
           </div>
 
           {/* Right Column */}
-          <div className="w-full md:w-1/3 flex flex-col min-h-0">
+          <div className="w-full md:w-1/2 flex flex-col min-h-0">
             <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">
               Observações
             </label>
@@ -191,7 +189,7 @@ const DespesaFixaFormModal: React.FC<DespesaFixaFormModalProps> = ({ isOpen, onC
               value={observacoes}
               onChange={(e) => setObservacoes(e.target.value)}
               disabled={isPending}
-              className="mt-1 block w-full flex-1 min-h-[270px] rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
+              className="mt-1 block w-full flex-1 min-h-[160px] rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
               maxLength={300}
             />
           </div>
