@@ -1,19 +1,19 @@
 import React from 'react';
 import Modal from '../../../components/ui/Modal';
-import { useDeleteCategoria, type Categoria } from '../../../hooks/useCategorias';
+import { useDeleteDespesaFixa, type DespesaFixa } from '../../../hooks/useDespesasFixas';
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  categoriaToDelete?: Categoria | null;
+  despesaToDelete?: DespesaFixa | null;
 }
 
-const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose, categoriaToDelete }) => {
-  const deleteMutation = useDeleteCategoria();
+const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose, despesaToDelete }) => {
+  const deleteMutation = useDeleteDespesaFixa();
 
   const handleDelete = () => {
-    if (categoriaToDelete) {
-      deleteMutation.mutate(categoriaToDelete.id, {
+    if (despesaToDelete) {
+      deleteMutation.mutate(despesaToDelete.id, {
         onSuccess: () => onClose()
       });
     }
@@ -23,12 +23,12 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Excluir Categoria"
+      title="Excluir Despesa Fixa"
       disableClose={deleteMutation.isPending}
     >
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          Tem certeza de que deseja excluir a categoria <strong>{categoriaToDelete ? categoriaToDelete.descricao : ''}</strong>?
+          Tem certeza de que deseja excluir a despesa fixa <strong>{despesaToDelete ? despesaToDelete.descricao : ''}</strong>?
           Esta ação não poderá ser desfeita.
         </p>
 

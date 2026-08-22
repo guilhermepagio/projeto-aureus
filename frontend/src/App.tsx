@@ -9,12 +9,21 @@ import ContasPage from './pages/Contas/ContasPage';
 import CategoriasPage from './pages/Categorias/CategoriasPage';
 import RequiresDependencies from './components/RequiresDependencies';
 
+import DespesasFixasPage from './pages/DespesasFixas/DespesasFixasPage';
+import ReceitasFixasPage from './pages/ReceitasFixas/ReceitasFixasPage';
+
+import DespesasVariaveisPage from './pages/DespesasVariaveis/DespesasVariaveisPage';
+import ReceitasVariaveisPage from './pages/ReceitasVariaveis/ReceitasVariaveisPage';
+
 // Placeholders for routes
-const Consolidacao = () => <div style={{ padding: '24px' }}><h2>Consolidação</h2><p>Conteúdo da Consolidação</p></div>;
-const DespesasVariaveis = () => <div style={{ padding: '24px' }}><h2>Despesas Variáveis</h2><p>Conteúdo de Despesas Variáveis</p></div>;
-const DespesasFixas = () => <div style={{ padding: '24px' }}><h2>Despesas Fixas</h2><p>Conteúdo de Despesas Fixas</p></div>;
-const ReceitasVariaveis = () => <div style={{ padding: '24px' }}><h2>Receitas Variáveis</h2><p>Conteúdo de Receitas Variáveis</p></div>;
-const ReceitasFixas = () => <div style={{ padding: '24px' }}><h2>Receitas Fixas</h2><p>Conteúdo de Receitas Fixas</p></div>;
+const Consolidacao = () => (
+  <div className="px-4 pb-4 w-full">
+    <div className="mb-4 mt-2 pl-2 border-l-4 border-blue-600">
+      <h1 className="text-2xl font-bold text-gray-800">Consolidação</h1>
+    </div>
+    <div style={{ padding: '24px' }}><p>Conteúdo da Consolidação</p></div>
+  </div>
+);
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuthStore();
@@ -73,10 +82,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         
         <Route path="/" element={<ProtectedRoute><Consolidacao /></ProtectedRoute>} />
-        <Route path="/despesas-variaveis" element={<ProtectedRoute><RequiresDependencies><DespesasVariaveis /></RequiresDependencies></ProtectedRoute>} />
-        <Route path="/despesas-fixas" element={<ProtectedRoute><RequiresDependencies><DespesasFixas /></RequiresDependencies></ProtectedRoute>} />
-        <Route path="/receitas-variaveis" element={<ProtectedRoute><RequiresDependencies><ReceitasVariaveis /></RequiresDependencies></ProtectedRoute>} />
-        <Route path="/receitas-fixas" element={<ProtectedRoute><RequiresDependencies><ReceitasFixas /></RequiresDependencies></ProtectedRoute>} />
+        <Route path="/despesas-variaveis" element={<ProtectedRoute><RequiresDependencies><DespesasVariaveisPage /></RequiresDependencies></ProtectedRoute>} />
+        <Route path="/despesas-fixas" element={<ProtectedRoute><RequiresDependencies><DespesasFixasPage /></RequiresDependencies></ProtectedRoute>} />
+        <Route path="/receitas-variaveis" element={<ProtectedRoute><RequiresDependencies><ReceitasVariaveisPage /></RequiresDependencies></ProtectedRoute>} />
+        <Route path="/receitas-fixas" element={<ProtectedRoute><RequiresDependencies><ReceitasFixasPage /></RequiresDependencies></ProtectedRoute>} />
         <Route path="/contas" element={<ProtectedRoute><ContasPage /></ProtectedRoute>} />
         <Route path="/categorias" element={<ProtectedRoute><CategoriasPage /></ProtectedRoute>} />
         

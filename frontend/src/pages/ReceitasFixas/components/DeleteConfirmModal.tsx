@@ -1,19 +1,19 @@
 import React from 'react';
 import Modal from '../../../components/ui/Modal';
-import { useDeleteCategoria, type Categoria } from '../../../hooks/useCategorias';
+import { useDeleteReceitaFixa, type ReceitaFixa } from '../../../hooks/useReceitasFixas';
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  categoriaToDelete?: Categoria | null;
+  receitaToDelete?: ReceitaFixa | null;
 }
 
-const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose, categoriaToDelete }) => {
-  const deleteMutation = useDeleteCategoria();
+const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose, receitaToDelete }) => {
+  const deleteMutation = useDeleteReceitaFixa();
 
   const handleDelete = () => {
-    if (categoriaToDelete) {
-      deleteMutation.mutate(categoriaToDelete.id, {
+    if (receitaToDelete) {
+      deleteMutation.mutate(receitaToDelete.id, {
         onSuccess: () => onClose()
       });
     }
@@ -23,12 +23,12 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Excluir Categoria"
+      title="Excluir Receita Fixa"
       disableClose={deleteMutation.isPending}
     >
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          Tem certeza de que deseja excluir a categoria <strong>{categoriaToDelete ? categoriaToDelete.descricao : ''}</strong>?
+          Tem certeza de que deseja excluir a receita fixa <strong>{receitaToDelete ? receitaToDelete.descricao : ''}</strong>?
           Esta ação não poderá ser desfeita.
         </p>
 

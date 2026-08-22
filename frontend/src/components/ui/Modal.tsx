@@ -7,9 +7,10 @@ interface ModalProps {
   title: string;
   children: React.ReactNode;
   disableClose?: boolean;
+  maxWidth?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, disableClose }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, disableClose, maxWidth = 'max-w-md' }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, disable
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40">
       <div 
         ref={modalRef}
-        className="bg-white rounded-lg shadow-2xl drop-shadow-2xl w-full max-w-md overflow-hidden flex flex-col"
+        className={`bg-white rounded-lg shadow-2xl drop-shadow-2xl w-full ${maxWidth} overflow-hidden flex flex-col`}
         role="dialog"
         aria-modal="true"
       >

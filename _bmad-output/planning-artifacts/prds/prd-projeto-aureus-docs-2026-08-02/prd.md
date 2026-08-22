@@ -67,7 +67,7 @@ O nome remete ao *aureus*, moeda de ouro da Roma Antiga, simbolizando valor e es
 >    - **Descrição:** "Fone de Ouvido Air Pods Pro 2nd Gen" *(obrigatório)*
 >    - **Local Compra:** "Mercado Livre" *(opcional — facilita conferência de fatura)*
 >    - **Data Compra:** 15/08/2026 *(opcional — data em que a compra foi computada no cartão)*
->    - **Valor Parcela:** R$ 124,00 *(obrigatório — arredondado para cima para evitar divergência de centavos)*
+>    - **Valor Parcela:** R$ 124,00 *(obrigatório)*
 >    - **Nº Parcelas:** 3 *(obrigatório)*
 >    - **Valor Total:** R$ 372,00 *(calculado: Valor Parcela × Nº Parcelas)*
 >    - **Primeira Parcela:** 01/09/2026 *(obrigatório — dia 1 do mês da fatura)*

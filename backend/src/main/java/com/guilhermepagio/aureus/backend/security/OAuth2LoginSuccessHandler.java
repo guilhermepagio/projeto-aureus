@@ -15,6 +15,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.HttpHeaders;
 
 @Component
 @RequiredArgsConstructor
@@ -48,14 +50,14 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         String token = jwtUtil.generateToken(usuario.getId().toString());
 
-        org.springframework.http.ResponseCookie cookie = org.springframework.http.ResponseCookie.from("AUREUS_SESSION", token)
+        ResponseCookie cookie = ResponseCookie.from("AUREUS_SESSION", token)
                 .httpOnly(true)
                 .secure(request.isSecure())
                 .sameSite("Lax")
                 .path("/")
                 .maxAge(jwtUtil.getExpiration() / 1000)
                 .build();
-        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         getRedirectStrategy().sendRedirect(request, response, frontendUrl);
     }

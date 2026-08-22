@@ -63,6 +63,7 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
       onClose={onClose}
       title={categoriaToEdit ? 'Editar Categoria' : 'Nova Categoria'}
       disableClose={isPending}
+      maxWidth="max-w-lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -71,7 +72,7 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
           </label>
           <input
             type="text"
-            id="descricao"
+            id="categoria-descricao"
             autoFocus
             value={descricao}
             onChange={(e) => {
@@ -84,7 +85,7 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
             disabled={isPending}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100"
             placeholder="Ex: Alimentação, Transporte, Salário"
-            maxLength={100}
+            maxLength={20}
           />
           {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
         </div>
@@ -96,16 +97,11 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
           <textarea
             id="observacoes"
             value={observacoes}
-            onChange={(e) => {
-              setObservacoes(e.target.value);
-              const target = e.target;
-              target.style.height = '0px'; // Force recalculation from scratch
-              target.style.height = `${target.scrollHeight + 2}px`;
-            }}
+            onChange={(e) => setObservacoes(e.target.value)}
             disabled={isPending}
-            rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 min-h-[5rem] max-h-64 overflow-y-auto"
-            maxLength={500}
+            rows={12}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
+            maxLength={300}
           />
         </div>
 
@@ -113,14 +109,14 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
           <button
             type="button"
             onClick={onClose}
-            className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
+            className="cursor-pointer px-4 h-8 inline-flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
             disabled={isPending}
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary-light focus:outline-none"
+            className="cursor-pointer px-4 h-8 inline-flex items-center justify-center text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary-light focus:outline-none"
             disabled={isPending}
           >
             {isPending ? 'Salvando...' : 'Salvar'}

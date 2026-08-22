@@ -273,3 +273,77 @@
 - Missing `data-testid` attributes on conditional UI states.
 - Repetitive `<ProtectedRoute><RequiresDependencies>` wrappers in App.tsx.
 - Scope creep / missing `aria-hidden="true"`: Unrequested additions of `lucide-react` icons in Header.tsx.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Missing Relationship Ownership Validation (verify if related conta/categoria belong to user).
+  evidence: Not specific to this story, applies globally to existing entities too.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Missing Pagination for /api/despesas-fixas and /api/receitas-fixas.
+  evidence: Table grows large over time, missing in other controllers as well.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Clarify if fixed items need an end date (dataFim) or active flag to prevent history mutation on deletion.
+  evidence: Currently deletion removes the item entirely, which might break historical monthly projections. Needs product definition.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Missing backend integration tests for new endpoints.
+  evidence: Project currently lacks test infrastructure, deferring per Epic 1 retro items.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md`
+  summary: Missing frontend component tests for DespesasFixasPage and ReceitasFixasPage.
+  evidence: Project currently lacks test infrastructure, deferring per Epic 1 retro items.
+
+## Deferred from: code review (2026-08-20) spec-3-1-lancamentos-fixos-despesas-e-receitas-com-vigencia.md
+- Falta de validação de propriedade (Tenant) nos relacionamentos informados (conta/categoria)
+- Mutação de histórico financeiro em exclusões (falta de dataFim/soft-delete)
+- Falta de paginação nos endpoints `GET` de listagem
+- Falta de cobertura de testes automatizados (integração e UI)
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Controllers return JPA Entities directly instead of using DTOs, risking Mass Assignment
+  evidence: Found in DespesaVariavelController and ReceitaVariavelController (Pre-existing project pattern)
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Duplicated date logic (preencherDataFim) in controllers instead of centralizing in service or lifecycle hook
+  evidence: Found repeated in both variable controllers
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Missing DB indexes for dataInicio and dataFim which will be heavily queried in Epic 4
+  evidence: Not explicitly requested in the spec, but necessary for future performance
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Missing class-level validation to ensure dataFim >= dataInicio
+  evidence: Although the controller calculates it, programmatic API changes could introduce inconsistencies
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Unbounded findAll queries in backend list endpoints
+  evidence: Pre-existing technical debt across the project (Epic 2, etc.)
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: DRY violation in frontend form/list pages for variable expenses and revenues
+  evidence: Boilerplate is duplicated between the two modules
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Missing Auditing fields (createdAt, updatedAt) across entities
+  evidence: Technical debt from prior architecture setup
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Lack of global @ControllerAdvice for standard constraint violations
+  evidence: Pre-existing pattern where controllers individually catch DataIntegrityViolationException
+- source_spec: `/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md`
+  summary: Concurrent deletion causes unhandled 500 EmptyResultDataAccessException
+  evidence: Pre-existing basic CRUD pattern does not handle race conditions gracefully
+
+## Deferred from: code review of spec-3-2-lancamentos-variaveis-e-parcelados-com-arredondamento-de-centavos.md (2026-08-21)
+- Missing automated verification tests (dataFim, relational errors, API parsing)
+- Missing DTOs, Service Layer, and Global Exception Handler
+- Fetcher swallows non-JSON 500 errors
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: Fixed transactions lack start/end dates in the domain model, preventing month-based filtering.
+  evidence: Fixed transaction components had to bypass the month filtering logic completely because `dataInicio` does not exist on the current entity.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: Missing test coverage for React Query mutation cache invalidations and global month filter logic.
+  evidence: No component or hook tests assert that `['consolidacao']` is invalidated or that `isGlobalFilterActive` works correctly.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: `epic-3-context.md` was translated to English, losing technical specificity and causing context fragmentation with Portuguese PRDs.
+  evidence: The document omits explicit constraints like `ON DELETE RESTRICT` for foreign keys that were present in the Portuguese original.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: monthStore currentMonth is initialized at module load and can become stale.
+  evidence: initialized at top-level instead of inside the store or getter.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: No UI exists to change the selected month.
+  evidence: month picker belongs to Epic 4 (Seleção de mês).
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: Duplicated toggle switch and SVG icon markup.
+  evidence: identical markup across pages instead of reusable UI components.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: useContas and useCategorias do not invalidate ['consolidacao'].
+  evidence: deleting accounts/categories could affect consolidation cache but wasn't updated here.

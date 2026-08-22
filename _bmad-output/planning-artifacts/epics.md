@@ -138,7 +138,7 @@ FR30: Epic 4 - Bloco Resumo Geral
 
 * **Epic 1: Autenticação e Navegação Segura (Auth & Shell)** — Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados por usuário, fornecendo a casca visual e navegação principal (Pill Nav Desktop e Bottom Nav Mobile).
 * **Epic 2: Configuração Financeira Básica (Contas e Categorias)** — Permitir que o usuário configure suas origens financeiras e categorias macro com integridade referencial protegida contra exclusões acidentais.
-* **Epic 3: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas, arredondamento de centavos e sincronização de filtros.
+* **Epic 3: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas e sincronização de filtros.
 * **Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
 
 ---
@@ -266,7 +266,7 @@ So that eu não enfrente formulários com seletores vazios ou erros de validaç�
 
 ## Epic 3: Lançamentos Financeiros (Despesas e Receitas)
 
-Permitir que o usuário registre, edite, visualize e exclua todos os tipos de entrada e saída financeira, com pré-visualização de cálculos, distribuição precisa de centavos e sincronização de filtros.
+Permitir que o usuário registre, edite, visualize e exclua todos os tipos de entrada e saída financeira, com pré-visualização de cálculos e sincronização de filtros.
 
 ### Story 3.1: Lançamentos Fixos (Despesas e Receitas) com Vigência
 
@@ -282,10 +282,10 @@ So that valores mensais contínuos sejam projetados automaticamente ao longo de 
 **And** ao editar o valor de um item fixo, a alteração define o novo valor projetado a partir da data de vigência editada
 **And** o usuário pode excluir o registro fixo permanentemente com confirmação via modal
 
-### Story 3.2: Lançamentos Variáveis e Parcelados com Arredondamento de Centavos
+### Story 3.2: Lançamentos Variáveis e Parcelados
 
 As a Usuário,
-I want registrar compras e entradas parceladas com cálculo em tempo real e distribuição exata de centavos,
+I want registrar compras e entradas parceladas com cálculo em tempo real,
 So that o sistema projete com exatidão as parcelas sem divergências de arredondamento.
 
 **Acceptance Criteria:**
@@ -293,10 +293,11 @@ So that o sistema projete com exatidão as parcelas sem divergências de arredon
 **Given** que o usuário preenche o formulário de itens Variáveis
 **When** ele informa Valor Total, Nº de Parcelas (>= 1) e Primeira Parcela (mês/ano)
 **Then** o componente Calculation Preview calcula e exibe em tempo real o Valor da Parcela e a Última Parcela no formato `YearMonth`
-**And** quando a divisão do Valor Total pelo Nº de Parcelas gerar centavos fracionados, o resíduo é alocado na primeira parcela para que a soma das parcelas seja rigorosamente igual ao Valor Total
 **And** parcelamentos com duração superior a 24 meses são persistidos integralmente e projetados na grade de acordo com a janela de meses visualizada
 
-### Story 3.3: Lançamentos Variáveis à Vista (Parcela Única)
+### Story 3.3: Lançamentos Variáveis à Vista (Parcela Única) [DESCARTADA/ABSORVIDA]
+
+> **Nota de Implementação:** Esta história foi absorvida pela **Story 3.2**. O conceito de lançamentos à vista foi implementado nativamente suportando "Nº Parcelas = 1" no mesmo fluxo.
 
 As a Usuário,
 I want informar compras ou entradas pontuais não parceladas,
@@ -389,3 +390,23 @@ So that eu saiba a real evolução patrimonial e a sustentabilidade das minhas f
 **And** a linha "Sobra do Mês" exibe a diferença `Receitas do Mês - Despesas do Mês`
 **And** o backend calcula e envia o saldo acumulado histórico anterior ao primeiro mês da grade
 **And** a linha "Sobra Retroativa Acumulada" computa no primeiro mês `Saldo Histórico Pré-Grade + Sobra do Mês 1` e, para os meses subsequentes `n`, `Sobra Retroativa Mês n = Sobra Retroativa Mês n-1 + Sobra do Mês n`
+
+---
+
+## Epic 5: Production Readiness & Tech Debt Resolution
+
+Preparar a aplicação para implantação em ambiente produtivo, garantindo que todas as especificações arquiteturais e de estabilidade (como o versionamento de banco) sejam estritamente cumpridas.
+
+### Story 5.1: Congelamento de Schema e Ativação do Flyway
+
+As a Administrador do Sistema,
+I want que o esquema do banco de dados seja versionado e controlado explicitamente via scripts SQL,
+So that implantações em produção sejam seguras, rastreáveis e livres de alterações destrutivas acidentais.
+
+**Acceptance Criteria:**
+
+**Given** que a fase de prototipação (Epics 1 a 4) foi finalizada
+**When** o desenvolvedor inicia a preparação para produção
+**Then** um script de migração basilar (`V1__init_schema.sql`) é gerado capturando o estado final de todas as tabelas
+**And** o Hibernate é reconfigurado de `ddl-auto: update` para `ddl-auto: validate`
+**And** a dependência do Flyway é ativada no `pom.xml` para executar as migrações na inicialização do Spring Boot

@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "contas")
@@ -25,11 +26,11 @@ public class Conta extends TenantAwareEntity {
     private Long id;
 
     @NotBlank(message = "A descrição é obrigatória")
-    @jakarta.validation.constraints.Size(max = 100, message = "A descrição deve ter no máximo 100 caracteres")
-    @Column(nullable = false, length = 100)
+    @Size(max = 20, message = "A descrição deve ter no máximo 20 caracteres")
+    @Column(nullable = false, length = 20)
     private String descricao;
     
-    @jakarta.validation.constraints.Size(max = 500, message = "As observações devem ter no máximo 500 caracteres")
-    @Column(length = 500)
+    @Size(max = 300, message = "As observações devem ter no máximo 300 caracteres")
+    @Column(length = 300)
     private String observacoes;
 }
