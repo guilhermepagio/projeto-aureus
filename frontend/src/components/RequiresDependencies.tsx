@@ -81,7 +81,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
               <Link
                 to="/contas"
                 state={returnState}
-                className={`cursor-pointer h-8 px-4 flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
+                className={`cursor-pointer h-8 px-4 inline-flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
               >
                 <PlusIcon />
                 Cadastrar Conta
@@ -91,7 +91,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
               <Link
                 to="/categorias"
                 state={returnState}
-                className={`cursor-pointer h-8 px-4 flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
+                className={`cursor-pointer h-8 px-4 inline-flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
               >
                 <PlusIcon />
                 Cadastrar Categoria

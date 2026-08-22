@@ -46,7 +46,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ title, description, icon, actio
           <button
             onClick={action.onClick}
             type="button"
-            className={`cursor-pointer h-8 px-4 flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
+            className={`cursor-pointer h-8 px-4 inline-flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
           >
             {action.label}
           </button>
