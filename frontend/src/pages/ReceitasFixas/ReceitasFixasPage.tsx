@@ -90,7 +90,7 @@ const ReceitasFixasPage: React.FC = () => {
               {receitas.map((receita) => (
                 <tr key={receita.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
-                    <div className="truncate w-full" title={receita.descricao}>
+                    <div className="line-clamp-2 whitespace-normal break-words" title={receita.descricao}>
                       {receita.descricao}
                     </div>
                   </td>
@@ -99,17 +99,17 @@ const ReceitasFixasPage: React.FC = () => {
                   </td>
                   
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
-                    <div className="truncate w-full" title={receita.categoria?.descricao}>
+                    <div className="line-clamp-2 whitespace-normal break-words" title={receita.categoria?.descricao}>
                       {receita.categoria?.descricao}
                     </div>
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
-                    <div className="truncate w-full" title={receita.conta?.descricao}>
+                    <div className="line-clamp-2 whitespace-normal break-words" title={receita.conta?.descricao}>
                       {receita.conta?.descricao}
                     </div>
                   </td>
                   <td className="px-3 py-1 text-gray-900 align-middle">
-                    <div className="truncate w-full" title={receita.observacoes}>
+                    <div className="line-clamp-2 whitespace-normal break-words" title={receita.observacoes}>
                       {receita.observacoes || '-'}
                     </div>
                   </td>

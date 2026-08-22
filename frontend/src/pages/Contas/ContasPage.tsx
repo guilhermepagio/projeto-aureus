@@ -80,12 +80,12 @@ const ContasPage: React.FC = () => {
               {contas.map((conta) => (
                 <tr key={conta.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
-                    <div className="truncate w-full" title={conta.descricao}>
+                    <div className="line-clamp-2 whitespace-normal break-words" title={conta.descricao}>
                       {conta.descricao}
                     </div>
                   </td>
                   <td className="px-3 py-1 text-gray-900 align-middle">
-                    <div className="truncate w-full" title={conta.observacoes}>
+                    <div className="line-clamp-2 whitespace-normal break-words" title={conta.observacoes}>
                       {conta.observacoes || '-'}
                     </div>
                   </td>
