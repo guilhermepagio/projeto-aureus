@@ -335,3 +335,15 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
   summary: `epic-3-context.md` was translated to English, losing technical specificity and causing context fragmentation with Portuguese PRDs.
   evidence: The document omits explicit constraints like `ON DELETE RESTRICT` for foreign keys that were present in the Portuguese original.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: monthStore currentMonth is initialized at module load and can become stale.
+  evidence: initialized at top-level instead of inside the store or getter.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: No UI exists to change the selected month.
+  evidence: month picker belongs to Epic 4 (Seleção de mês).
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: Duplicated toggle switch and SVG icon markup.
+  evidence: identical markup across pages instead of reusable UI components.
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
+  summary: useContas and useCategorias do not invalidate ['consolidacao'].
+  evidence: deleting accounts/categories could affect consolidation cache but wasn't updated here.

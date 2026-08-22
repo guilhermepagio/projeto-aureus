@@ -32,9 +32,9 @@ const ReceitasVariaveisPage: React.FC = () => {
     if (!receitas) return [];
     if (isGlobalFilterActive) return receitas;
     return receitas.filter(r => {
-      // For variable expenses, check if selectedMonth falls between dataInicio and dataFim
-      const start = r.dataInicio ? r.dataInicio.substring(0, 7) : ''; // YYYY-MM
-      const end = r.dataFim ? r.dataFim.substring(0, 7) : '';
+      // Verifica se o mês selecionado está dentro do período de vigência da receita
+      const start = r.dataInicio ? r.dataInicio.substring(0, 7) : '0000-01'; // YYYY-MM
+      const end = r.dataFim ? r.dataFim.substring(0, 7) : '9999-12';
       return selectedMonth >= start && selectedMonth <= end;
     });
   }, [receitas, selectedMonth, isGlobalFilterActive]);
@@ -51,14 +51,26 @@ const ReceitasVariaveisPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-800">Receitas Variáveis</h1>
         </div>
         <div className="flex items-center space-x-4">
-          <label className="flex items-center space-x-2 cursor-pointer">
+          <label className="flex items-center space-x-2 cursor-pointer group">
             <span className="text-sm text-gray-600 font-medium">Ver Todos</span>
-            <div className="relative" role="switch" aria-checked={isGlobalFilterActive}>
+            <div 
+              className="relative focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 rounded-full" 
+              role="switch" 
+              aria-checked={isGlobalFilterActive}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  toggleGlobalFilter();
+                }
+              }}
+            >
               <input
                 type="checkbox"
                 className="sr-only"
                 checked={isGlobalFilterActive}
                 onChange={toggleGlobalFilter}
+                tabIndex={-1}
                 aria-label="Ativar Filtro Global"
               />
               <div className={`block w-10 h-6 rounded-full transition-colors ${isGlobalFilterActive ? 'bg-primary' : 'bg-gray-300'}`}></div>

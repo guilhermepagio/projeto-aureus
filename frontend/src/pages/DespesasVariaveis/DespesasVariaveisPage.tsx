@@ -33,8 +33,8 @@ const DespesasVariaveisPage: React.FC = () => {
     if (isGlobalFilterActive) return despesas;
     return despesas.filter(d => {
       // For variable expenses, check if selectedMonth falls between dataInicio and dataFim
-      const start = d.dataInicio ? d.dataInicio.substring(0, 7) : ''; // YYYY-MM
-      const end = d.dataFim ? d.dataFim.substring(0, 7) : '';
+      const start = d.dataInicio ? d.dataInicio.substring(0, 7) : '0000-01'; // YYYY-MM
+      const end = d.dataFim ? d.dataFim.substring(0, 7) : '9999-12';
       return selectedMonth >= start && selectedMonth <= end;
     });
   }, [despesas, selectedMonth, isGlobalFilterActive]);
@@ -51,14 +51,26 @@ const DespesasVariaveisPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-800">Despesas Variáveis</h1>
         </div>
         <div className="flex items-center space-x-4">
-          <label className="flex items-center space-x-2 cursor-pointer">
+          <label className="flex items-center space-x-2 cursor-pointer group">
             <span className="text-sm text-gray-600 font-medium">Ver Todos</span>
-            <div className="relative" role="switch" aria-checked={isGlobalFilterActive}>
+            <div 
+              className="relative focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 rounded-full" 
+              role="switch" 
+              aria-checked={isGlobalFilterActive}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  toggleGlobalFilter();
+                }
+              }}
+            >
               <input
                 type="checkbox"
                 className="sr-only"
                 checked={isGlobalFilterActive}
                 onChange={toggleGlobalFilter}
+                tabIndex={-1}
                 aria-label="Ativar Filtro Global"
               />
               <div className={`block w-10 h-6 rounded-full transition-colors ${isGlobalFilterActive ? 'bg-red-600' : 'bg-gray-300'}`}></div>

@@ -79,6 +79,20 @@ context:
 - Given a página de listagem de Lançamentos, when o toggle global (Ver Todos) estiver ativado, then o filtro de mês será desconsiderado e todos os lançamentos cadastrados serão exibidos.
 - Given o cadastro, edição ou deleção de um Lançamento, when a mutação obtém sucesso, then os caches da própria entidade afetada e do painel de Consolidação são invalidados, atualizando todas as views.
 
+### Review Findings
+
+- [x] [Review][Patch] Unused store variables and missing "Ver Todos" toggle UI in fixed pages [DespesasFixasPage.tsx:11]
+- [x] [Review][Patch] Variable records with missing dates are silently excluded from filtered view [DespesasVariaveisPage.tsx:35]
+- [x] [Review][Patch] Copy-paste comment error in ReceitasVariaveisPage [ReceitasVariaveisPage.tsx:34]
+- [x] [Review][Patch] Inconsistent EmptyState messaging across pages [DespesasFixasPage.tsx:55]
+- [x] [Review][Patch] Custom toggle switch lacks keyboard accessibility [DespesasVariaveisPage.tsx:42]
+- [x] [Review][Defer] Month filter is a pure pass-through in fixed pages [DespesasFixasPage.tsx:31-33] — deferred, pre-existing
+- [x] [Review][Defer] monthStore currentMonth is initialized at module load and can become stale [monthStore.ts:10-11] — deferred, pre-existing
+- [x] [Review][Defer] No UI exists to change the selected month [monthStore.ts] — deferred, pre-existing
+- [x] [Review][Defer] Duplicated toggle switch and SVG icon markup [DespesasVariaveisPage.tsx] — deferred, pre-existing
+- [x] [Review][Defer] useContas and useCategorias do not invalidate ['consolidacao'] [useContas.ts] — deferred, pre-existing
+- [x] [Review][Defer] Missing test coverage for new filter logic and store [frontend/src/*] — deferred, pre-existing
+
 ## Spec Change Log
 
 ## Verification
