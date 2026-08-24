@@ -78,7 +78,7 @@ const ReceitasFixasPage: React.FC = () => {
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Conta
                 </th>
-                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-full min-w-[330px]">
+                <th scope="col" className="px-3 py-1 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[330px] w-auto">
                   Observações
                 </th>
                 <th scope="col" className="sticky right-0 px-1 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[44px] min-w-[44px] max-w-[44px]">
