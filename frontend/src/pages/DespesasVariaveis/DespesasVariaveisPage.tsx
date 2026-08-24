@@ -101,13 +101,13 @@ const DespesasVariaveisPage: React.FC = () => {
           <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr className="divide-x divide-gray-200 h-[44px]">
-                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[255px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[195px]">
                   Descrição
                 </th>
                 <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
                   Data Compra
                 </th>
-                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Local Compra
                 </th>
                 <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
@@ -118,6 +118,12 @@ const DespesasVariaveisPage: React.FC = () => {
                 </th>
                 <th scope="col" className="px-1 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Valor Total
+                </th>
+                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
+                  Data Início
+                </th>
+                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
+                  Data Fim
                 </th>
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Categoria
@@ -157,6 +163,12 @@ const DespesasVariaveisPage: React.FC = () => {
                   </td>
                   <td className="px-1 py-1 text-center text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela * despesa.quantidadeParcelas)}
+                  </td>
+                  <td className="px-1 py-1 text-center text-gray-900 tabular-nums align-middle">
+                    {despesa.dataInicio ? new Date(despesa.dataInicio + 'T00:00:00').toLocaleDateString('pt-BR') : '-'}
+                  </td>
+                  <td className="px-1 py-1 text-center text-gray-900 tabular-nums align-middle">
+                    {despesa.dataFim ? new Date(despesa.dataFim + 'T00:00:00').toLocaleDateString('pt-BR') : '-'}
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="line-clamp-3 whitespace-normal break-words" title={despesa.categoria?.descricao}>
