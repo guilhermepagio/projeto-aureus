@@ -151,10 +151,10 @@ const ReceitasVariaveisPage: React.FC = () => {
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valorParcela * receita.quantidadeParcelas)}
                   </td>
                   <td className="px-1 py-1 text-center text-gray-900 tabular-nums align-middle">
-                    {receita.dataInicio ? new Date(receita.dataInicio + 'T00:00:00').toLocaleDateString('pt-BR') : '-'}
+                    {receita.dataInicio ? new Date(receita.dataInicio + 'T00:00:00').toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' }) : '-'}
                   </td>
                   <td className="px-1 py-1 text-center text-gray-900 tabular-nums align-middle">
-                    {receita.dataFim ? new Date(receita.dataFim + 'T00:00:00').toLocaleDateString('pt-BR') : '-'}
+                    {receita.dataFim ? new Date(receita.dataFim + 'T00:00:00').toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' }) : '-'}
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="line-clamp-3 whitespace-normal break-words" title={receita.categoria?.descricao}>

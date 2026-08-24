@@ -165,10 +165,10 @@ const DespesasVariaveisPage: React.FC = () => {
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela * despesa.quantidadeParcelas)}
                   </td>
                   <td className="px-1 py-1 text-center text-gray-900 tabular-nums align-middle">
-                    {despesa.dataInicio ? new Date(despesa.dataInicio + 'T00:00:00').toLocaleDateString('pt-BR') : '-'}
+                    {despesa.dataInicio ? new Date(despesa.dataInicio + 'T00:00:00').toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' }) : '-'}
                   </td>
                   <td className="px-1 py-1 text-center text-gray-900 tabular-nums align-middle">
-                    {despesa.dataFim ? new Date(despesa.dataFim + 'T00:00:00').toLocaleDateString('pt-BR') : '-'}
+                    {despesa.dataFim ? new Date(despesa.dataFim + 'T00:00:00').toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' }) : '-'}
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="line-clamp-3 whitespace-normal break-words" title={despesa.categoria?.descricao}>
