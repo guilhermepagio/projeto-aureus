@@ -135,7 +135,7 @@ const ReceitasVariaveisPage: React.FC = () => {
             </thead>
             <tbody className="bg-white">
               {filteredReceitas.map((receita) => (
-                <tr key={receita.id} className="group even:bg-gray-200 odd:bg-white text-sm [&>td]:border-b [&>td]:border-gray-200 [&>td:not(:first-child)]:border-l">
+                <tr key={receita.id} className="group bg-white hover:bg-gray-50 transition-colors text-sm [&>td]:border-b [&>td]:border-gray-200 [&>td:not(:first-child)]:border-l">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
                     <div className="line-clamp-3 whitespace-normal break-words" title={receita.descricao}>
                       {receita.descricao}
@@ -171,7 +171,7 @@ const ReceitasVariaveisPage: React.FC = () => {
                       {receita.observacoes || '-'}
                     </div>
                   </td>
-                  <td className="sticky right-0 px-1 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
+                  <td className="sticky right-0 px-1 py-1 bg-white group-hover:bg-gray-50 transition-colors shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
                     <div className="flex justify-center w-full"><ActionMenu onEdit={() => handleEdit(receita)} onDelete={() => handleDelete(receita)} /></div>
                   </td>
                 </tr>
