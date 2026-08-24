@@ -97,7 +97,7 @@ const ReceitasVariaveisPage: React.FC = () => {
           action={{ label: 'Nova Receita Variável', onClick: handleCreate }}
         />
       ) : (
-        <div className="bg-white shadow sm:rounded-2xl overflow-x-auto mt-2 w-full">
+        <div className="bg-white shadow sm:rounded-2xl overflow-auto mt-2 w-full max-h-[calc(100vh-220px)] md:max-h-[calc(100vh-140px)]">
           <table className="min-w-max w-full border-separate border-spacing-0 table-fixed relative">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr className="h-[44px] [&>th]:border-b [&>th]:border-gray-200 [&>th:not(:first-child)]:border-l">

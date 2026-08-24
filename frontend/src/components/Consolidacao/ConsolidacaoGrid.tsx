@@ -32,7 +32,7 @@ export default function ConsolidacaoGrid() {
 
   return (
     <div className="w-full border rounded-lg bg-white shadow-sm">
-      <div className="overflow-x-auto">
+      <div className="overflow-auto max-h-[calc(100vh-220px)] md:max-h-[calc(100vh-140px)]">
         <table className="w-full border-separate border-spacing-0 min-w-max relative">
           <thead>
             <tr className="bg-gray-50">
