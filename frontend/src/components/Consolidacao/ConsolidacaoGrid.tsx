@@ -1,6 +1,5 @@
 import { useMonthStore } from '../../store/monthStore';
 
-const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
 const getNext24Months = (startMonthYYYYMM: string) => {
   const [yearStr, monthStr] = startMonthYYYYMM.split('-');
