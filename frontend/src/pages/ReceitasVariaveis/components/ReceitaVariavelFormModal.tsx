@@ -34,7 +34,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
         setDescricao(receitaToEdit.descricao || '');
         setValorParcela(receitaToEdit.valorParcela ? formatCurrency(receitaToEdit.valorParcela) : '');
         setQuantidadeParcelas(receitaToEdit.quantidadeParcelas || '');
-        setDataInicio(receitaToEdit.dataInicio ? receitaToEdit.dataInicio.substring(0, 7) : '');
+        setDataInicio(receitaToEdit.dataInicio ? (() => { const parts = receitaToEdit.dataInicio.split('-'); return `${parts[1]}/${parts[0]}`; })() : '');
         setContaId(receitaToEdit.conta?.id || '');
         setCategoriaId(receitaToEdit.categoria?.id || '');
         setObservacoes(receitaToEdit.observacoes || '');
@@ -64,7 +64,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
   const ultimaParcelaPreview = useMemo(() => {
     const qtdNum = Number(quantidadeParcelas);
     if (dataInicio && qtdNum > 0) {
-      const [year, month] = dataInicio.split('-');
+      const [month, year] = dataInicio.split('/');
       const d = new Date(Number(year), Number(month) - 1, 1);
       d.setMonth(d.getMonth() + qtdNum - 1);
       const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -80,7 +80,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
     if (!descricao.trim()) newErrors.descricao = 'A descrição é obrigatória';
     if (!valorParcela || Number(parseCurrency(valorParcela)) <= 0) newErrors.valorParcela = 'O valor da parcela deve ser maior que zero';
     if (!quantidadeParcelas || Number(quantidadeParcelas) < 1) newErrors.quantidadeParcelas = 'Mínimo de 1 parcela';
-    if (!dataInicio) newErrors.dataInicio = 'Data da 1ª parcela é obrigatória';
+    if (!dataInicio || dataInicio.length !== 7) newErrors.dataInicio = 'Informe no padrão MM/YYYY';
     if (!contaId) newErrors.contaId = 'Selecione uma conta';
     if (!categoriaId) newErrors.categoriaId = 'Selecione uma categoria';
 
@@ -93,7 +93,7 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
       descricao: descricao.trim(),
       valorParcela: parseCurrency(valorParcela),
       quantidadeParcelas: Number(quantidadeParcelas),
-      dataInicio: dataInicio.length === 7 ? `${dataInicio}-01` : dataInicio,
+      dataInicio: dataInicio.length === 7 ? `${dataInicio.split('/')[1]}-${dataInicio.split('/')[0]}-01` : dataInicio,
       conta: { id: Number(contaId) },
       categoria: { id: Number(categoriaId) },
       observacoes: observacoes.trim() || undefined
@@ -232,10 +232,18 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
                   Primeira Parcela *
                 </label>
                 <input
-                  type="month"
+                  type="text"
+                  placeholder="MM/YYYY"
+                  maxLength={7}
                   id="receita-dataInicio"
                   value={dataInicio}
-                  onChange={(e) => setDataInicio(e.target.value)}
+                  onChange={(e) => {
+                    let val = e.target.value.replace(/\D/g, '');
+                    if (val.length > 2) {
+                      val = val.substring(0, 2) + '/' + val.substring(2, 6);
+                    }
+                    setDataInicio(val);
+                  }}
                   disabled={isPending}
                   className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.dataInicio ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-primary'}`}
                 />

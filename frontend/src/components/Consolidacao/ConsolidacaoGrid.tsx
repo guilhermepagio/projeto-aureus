@@ -10,7 +10,7 @@ const getNext24Months = (startMonthYYYYMM: string) => {
   const result = [];
   for (let i = 0; i < 24; i++) {
     result.push({
-      label: `${MONTHS[monthIndex]}/${String(year).slice(-2)}`,
+      label: `${String(monthIndex + 1).padStart(2, '0')}/${year}`,
       value: `${year}-${String(monthIndex + 1).padStart(2, '0')}`
     });
     
