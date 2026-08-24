@@ -347,3 +347,6 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-4-sincronizacao-de-visao-mensal-invalidacao-de-cache-e-filtro.md`
   summary: useContas and useCategorias do not invalidate ['consolidacao'].
   evidence: deleting accounts/categories could affect consolidation cache but wasn't updated here.
+- source_spec: `_bmad-output/implementation-artifacts/spec-4-1-selecao-de-mes-navegacao-temporal-e-grid-com-suporte-a-gesto.md`
+  summary: Adicionar testes de unidade para ConsolidacaoPage, ConsolidacaoGrid e ConsolidacaoToolbar garantindo que as 24 colunas são renderizadas e o seletor funciona.
+  evidence: Foi identificado que `App.test.tsx` apenas testa o título, e a nova navegação de meses do Painel de Consolidação ficou sem testes de regressão de renderização.

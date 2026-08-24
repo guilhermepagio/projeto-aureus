@@ -15,15 +15,7 @@ import ReceitasFixasPage from './pages/ReceitasFixas/ReceitasFixasPage';
 import DespesasVariaveisPage from './pages/DespesasVariaveis/DespesasVariaveisPage';
 import ReceitasVariaveisPage from './pages/ReceitasVariaveis/ReceitasVariaveisPage';
 
-// Placeholders for routes
-const Consolidacao = () => (
-  <div className="px-4 pb-4 w-full">
-    <div className="mb-4 mt-2 pl-2 border-l-4 border-blue-600">
-      <h1 className="text-2xl font-bold text-gray-800">Consolidação</h1>
-    </div>
-    <div style={{ padding: '24px' }}><p>Conteúdo da Consolidação</p></div>
-  </div>
-);
+import ConsolidacaoPage from './pages/Consolidacao/ConsolidacaoPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuthStore();
@@ -81,7 +73,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         
-        <Route path="/" element={<ProtectedRoute><Consolidacao /></ProtectedRoute>} />
+        <Route path="/" element={<ProtectedRoute><RequiresDependencies><ConsolidacaoPage /></RequiresDependencies></ProtectedRoute>} />
         <Route path="/despesas-variaveis" element={<ProtectedRoute><RequiresDependencies><DespesasVariaveisPage /></RequiresDependencies></ProtectedRoute>} />
         <Route path="/despesas-fixas" element={<ProtectedRoute><RequiresDependencies><DespesasFixasPage /></RequiresDependencies></ProtectedRoute>} />
         <Route path="/receitas-variaveis" element={<ProtectedRoute><RequiresDependencies><ReceitasVariaveisPage /></RequiresDependencies></ProtectedRoute>} />
@@ -96,3 +88,4 @@ function App() {
 }
 
 export default App;
+
