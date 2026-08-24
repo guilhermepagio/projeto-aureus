@@ -119,11 +119,11 @@ const DespesasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-1 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Valor Total
                 </th>
-                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
-                  Data Início
+                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
+                  Primeira Parcela
                 </th>
-                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
-                  Data Fim
+                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
+                  Última Parcela
                 </th>
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Categoria

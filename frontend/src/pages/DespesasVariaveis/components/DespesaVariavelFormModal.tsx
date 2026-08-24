@@ -73,9 +73,8 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
       const [year, month] = dataInicio.split('-');
       const d = new Date(Number(year), Number(month) - 1, 1);
       d.setMonth(d.getMonth() + qtdNum - 1);
-      const monthName = d.toLocaleDateString('pt-BR', { month: 'long' });
-      const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-      return `${capitalizedMonth} de ${d.getFullYear()}`;
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      return `${m}/${d.getFullYear()}`;
     }
     return '-';
   }, [dataInicio, quantidadeParcelas]);
@@ -238,7 +237,7 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="despesa-dataInicio" className="block text-sm font-medium text-gray-700">
-                  Primeira Parcela (Mês) *
+                  Primeira Parcela *
                 </label>
                 <input
                   type="month"
@@ -252,7 +251,7 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Última Parcela (Preview)
+                  Última Parcela
                 </label>
                 <div className="mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border border-gray-300 bg-gray-50 text-gray-500">
                   {ultimaParcelaPreview}
