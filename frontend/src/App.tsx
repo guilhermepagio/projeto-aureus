@@ -24,15 +24,14 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   
   return (
-    <>
-      
+    <div className="flex flex-col h-[100dvh] overflow-hidden">
       <Header>
         <Navigation />
       </Header>
-      <main className="pb-[80px] md:pb-0">
+      <main className="flex-1 overflow-hidden pb-[80px] md:pb-0 flex flex-col">
         {children}
       </main>
-    </>
+    </div>
   );
 };
 

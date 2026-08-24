@@ -45,8 +45,8 @@ const DespesasVariaveisPage: React.FC = () => {
   const isEmpty = filteredDespesas.length === 0;
 
   return (
-    <div className="px-4 pb-4 w-full">
-      <div className="mb-4 mt-2 flex justify-between items-center">
+    <div className="px-4 pb-4 w-full h-full flex flex-col">
+      <div className="mb-4 mt-2 flex justify-between items-center shrink-0">
         <div className="pl-2 border-l-4 border-red-600">
           <h1 className="text-2xl font-bold text-gray-800">Despesas Variáveis</h1>
         </div>
@@ -97,7 +97,7 @@ const DespesasVariaveisPage: React.FC = () => {
           action={{ label: 'Nova Despesa Variável', onClick: handleCreate, color: 'danger' }}
         />
       ) : (
-        <div className="bg-white shadow sm:rounded-2xl overflow-auto mt-2 w-full h-[calc(100vh-220px)] md:h-[calc(100vh-140px)]">
+        <div className="bg-white shadow sm:rounded-2xl overflow-auto mt-2 w-full flex-1 min-h-0">
           <table className="min-w-max w-full border-separate border-spacing-0 table-fixed relative">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr className="h-[44px] [&>th]:border-b [&>th]:border-gray-200 [&>th:not(:first-child)]:border-l">

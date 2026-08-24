@@ -31,8 +31,8 @@ export default function ConsolidacaoGrid() {
   const months = getNext24Months(selectedMonth);
 
   return (
-    <div className="w-full border rounded-lg bg-white shadow-sm">
-      <div className="overflow-auto h-[calc(100vh-220px)] md:h-[calc(100vh-140px)]">
+    <div className="w-full border rounded-lg bg-white shadow-sm h-full flex flex-col">
+      <div className="overflow-auto h-[calc(100vh-250px)] md:h-[calc(100vh-180px)]">
         <table className="w-full border-separate border-spacing-0 min-w-max relative">
           <thead>
             <tr className="bg-gray-50">
