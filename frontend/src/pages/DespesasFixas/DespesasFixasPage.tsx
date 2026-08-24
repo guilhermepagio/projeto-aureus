@@ -62,9 +62,9 @@ const DespesasFixasPage: React.FC = () => {
         />
       ) : (
         <div className="bg-white shadow sm:rounded-2xl overflow-x-auto mt-2 w-full">
-          <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
+          <table className="min-w-max w-full border-separate border-spacing-0 table-fixed relative">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
-              <tr className="divide-x divide-gray-200 h-[44px]">
+              <tr className="h-[44px] [&>th]:border-b [&>th]:border-gray-200 [&>th:not(:first-child)]:border-l">
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[380px]">
                   Descrição
                 </th>
@@ -86,9 +86,9 @@ const DespesasFixasPage: React.FC = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white">
               {filteredDespesas.map((despesa) => (
-                <tr key={despesa.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
+                <tr key={despesa.id} className="group even:bg-gray-200 odd:bg-white text-sm [&>td]:border-b [&>td]:border-gray-200 [&>td:not(:first-child)]:border-l">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
                     <div className="line-clamp-3 whitespace-normal break-words" title={despesa.descricao}>
                       {despesa.descricao}

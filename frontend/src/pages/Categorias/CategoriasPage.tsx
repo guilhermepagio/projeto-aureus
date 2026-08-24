@@ -66,7 +66,7 @@ const CategoriasPage: React.FC = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white">
               {categorias.map((categoria) => (
                 <tr key={categoria.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
