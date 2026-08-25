@@ -1,5 +1,5 @@
 import { useMonthStore } from '../../store/monthStore';
-
+import { useConsolidacao, type LinhaConsolidacaoDTO } from '../../hooks/useConsolidacao';
 
 const getNext24Months = (startMonthYYYYMM: string) => {
   const [yearStr, monthStr] = startMonthYYYYMM.split('-');
@@ -22,9 +22,13 @@ const getNext24Months = (startMonthYYYYMM: string) => {
   return result;
 };
 
+const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
 export default function ConsolidacaoGrid() {
   const { selectedMonth } = useMonthStore();
   
+  const { data, isLoading, isError } = useConsolidacao(selectedMonth);
+
   if (!selectedMonth || !selectedMonth.includes('-')) return null;
   
   const months = getNext24Months(selectedMonth);
@@ -46,19 +50,77 @@ export default function ConsolidacaoGrid() {
             </tr>
           </thead>
           <tbody>
-            {/* Fake rows to validate layout */}
-            {[...Array(15)].map((_, rowIndex) => (
-              <tr key={rowIndex} className="group hover:bg-gray-50 transition-colors">
-                <th scope="row" className="sticky left-0 z-10 bg-white group-hover:bg-gray-50 p-4 text-left font-medium text-gray-800 border-b border-r border-gray-200">
-                  Categoria {rowIndex + 1}
-                </th>
-                {months.map((m, colIndex) => (
-                  <td key={m.value} className="p-4 text-center text-gray-600 border-b border-r border-gray-200">
-                    R$ {(rowIndex * 100 + colIndex * 50).toFixed(2)}
-                  </td>
-                ))}
+            {isLoading && (
+              <tr>
+                <td colSpan={25} className="p-8 text-center text-gray-500">
+                  Carregando consolidação...
+                </td>
               </tr>
-            ))}
+            )}
+            
+            {isError && (
+              <tr>
+                <td colSpan={25} className="p-8 text-center text-red-500">
+                  Erro ao carregar dados da consolidação.
+                </td>
+              </tr>
+            )}
+
+            {!isLoading && !isError && data && (
+              <>
+                {/* Receitas */}
+                <tr className="bg-green-50">
+                  <th scope="row" className="sticky left-0 z-10 bg-green-50 p-4 text-left font-bold text-green-800 border-b border-r border-green-200" colSpan={25}>
+                    Receitas por Conta
+                  </th>
+                </tr>
+                {data.receitas.map((linha: LinhaConsolidacaoDTO) => (
+                  <tr key={`rec-${linha.contaId}`} className="group hover:bg-gray-50 transition-colors">
+                    <th scope="row" className="sticky left-0 z-10 bg-white group-hover:bg-gray-50 p-4 text-left font-medium text-gray-800 border-b border-r border-gray-200">
+                      {linha.contaDescricao}
+                    </th>
+                    {linha.valoresMensais.map((valor, idx) => (
+                      <td key={idx} className="p-4 text-center text-gray-600 border-b border-r border-gray-200">
+                        {formatter.format(valor)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                {(!data.receitas || data.receitas.length === 0) && (
+                  <tr>
+                    <td colSpan={25} className="p-4 text-center text-gray-500 border-b border-r border-gray-200">
+                      Nenhuma conta encontrada para receitas.
+                    </td>
+                  </tr>
+                )}
+
+                {/* Despesas */}
+                <tr className="bg-red-50">
+                  <th scope="row" className="sticky left-0 z-10 bg-red-50 p-4 text-left font-bold text-red-800 border-b border-r border-red-200" colSpan={25}>
+                    Despesas por Conta
+                  </th>
+                </tr>
+                {data.despesas.map((linha: LinhaConsolidacaoDTO) => (
+                  <tr key={`desp-${linha.contaId}`} className="group hover:bg-gray-50 transition-colors">
+                    <th scope="row" className="sticky left-0 z-10 bg-white group-hover:bg-gray-50 p-4 text-left font-medium text-gray-800 border-b border-r border-gray-200">
+                      {linha.contaDescricao}
+                    </th>
+                    {linha.valoresMensais.map((valor, idx) => (
+                      <td key={idx} className="p-4 text-center text-gray-600 border-b border-r border-gray-200">
+                        {formatter.format(valor)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                {data.despesas.length === 0 && (
+                  <tr>
+                    <td colSpan={25} className="p-4 text-center text-gray-500 border-b border-gray-200">
+                      Nenhuma despesa encontrada.
+                    </td>
+                  </tr>
+                )}
+              </>
+            )}
           </tbody>
         </table>
       </div>
