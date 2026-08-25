@@ -351,3 +351,15 @@
   summary: Adicionar testes de unidade para ConsolidacaoPage, ConsolidacaoGrid e ConsolidacaoToolbar garantindo que as 24 colunas são renderizadas e o seletor funciona.
   evidence: Foi identificado que `App.test.tsx` apenas testa o título, e a nova navegação de meses do Painel de Consolidação ficou sem testes de regressão de renderização.
 \n- source_spec: `_bmad-output/implementation-artifacts/spec-4-2-bloco-de-consolidacao-por-conta-receitas-e-despesas.md`\n  summary: O hook useConsolidacao utiliza fetch diretamente, possivelmente contornando clientes de API centralizados como Axios se existirem.\n  evidence: O código usa window.fetch e extrai CSRF token manualmente.\n- source_spec: `_bmad-output/implementation-artifacts/spec-4-2-bloco-de-consolidacao-por-conta-receitas-e-despesas.md`\n  summary: O ConsolidacaoService possui o valor de 24 meses hardcoded em vários locais.\n  evidence: Loops e ArrayLists inicializados com capacidade 24 explicitamente.
+- source_spec: `_bmad-output/implementation-artifacts/spec-4-3-bloco-analitico-de-categorias.md`
+  summary: Manual usuarioId == null check instead of Spring Security filters in ConsolidacaoController.
+  evidence: Controller manually rejects unauthorized access.
+- source_spec: `_bmad-output/implementation-artifacts/spec-4-3-bloco-analitico-de-categorias.md`
+  summary: O(N*M) loop instead of O(N) in ConsolidacaoService for 24-month projection.
+  evidence: The logic iterates through all transactions 24 times instead of calculating index offsets.
+- source_spec: `_bmad-output/implementation-artifacts/spec-4-3-bloco-analitico-de-categorias.md`
+  summary: Redundant map lookups in ConsolidacaoService 24-month loop.
+  evidence: start and end dates are repeatedly retrieved from maps for every transaction inside the inner loop.
+- source_spec: `_bmad-output/implementation-artifacts/spec-4-3-bloco-analitico-de-categorias.md`
+  summary: BlocoCategorias loads independently causing layout shifts.
+  evidence: The block is rendered immediately and manages its own loading state below accounts, causing visual snap.

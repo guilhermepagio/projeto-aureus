@@ -43,12 +43,12 @@ public class ConsolidacaoController {
 
     @GetMapping("/por-categoria")
     public ResponseEntity<ConsolidacaoPorCategoriaDTO> getPorCategoria(
-            @AuthenticationPrincipal org.springframework.security.oauth2.core.user.OAuth2User principal,
-            @RequestParam("mesAno") String mesAno) {
-        if (principal == null) {
+            @RequestParam @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])$", message = "Formato de data inválido. Use YYYY-MM") String mesAno,
+            @AuthenticationPrincipal String usuarioId) {
+        
+        if (usuarioId == null) {
             return ResponseEntity.status(401).build();
         }
-        String usuarioId = principal.getAttribute("sub");
         
         ConsolidacaoPorCategoriaDTO dto = consolidacaoService.calcularConsolidacaoPorCategoria(usuarioId, mesAno);
         return ResponseEntity.ok(dto);
