@@ -58,7 +58,7 @@ development_status:
   epic-4: in-progress
   4-1-seleção-de-mês-navegação-temporal-e-grid-com-suporte-a-gesto: done
   4-2-bloco-de-consolidação-por-conta-receitas-e-despesas: done
-  4-3-bloco-analítico-de-categorias-valores-e-percentuais-com-prot: backlog
+  4-3-bloco-analítico-de-categorias-valores-e-percentuais-com-prot: review
   4-4-bloco-de-resumo-geral-com-sobra-histórica-acumulada: backlog
   epic-4-retrospective: optional
 action_items:
