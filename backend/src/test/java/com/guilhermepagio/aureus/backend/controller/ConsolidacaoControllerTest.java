@@ -69,4 +69,38 @@ public class ConsolidacaoControllerTest {
 
         verify(consolidacaoService).calcularConsolidacaoPorConta("usuario1", "2024-01");
     }
+
+    @Test
+    public void deveRejeitarMesAnoInvalido() throws Exception {
+        java.lang.reflect.Method method = ConsolidacaoController.class.getMethod("getPorConta", String.class, String.class);
+        boolean hasPattern = false;
+        for (java.lang.annotation.Annotation ann : method.getParameterAnnotations()[0]) {
+            if (ann instanceof jakarta.validation.constraints.Pattern) {
+                hasPattern = true;
+                org.junit.jupiter.api.Assertions.assertEquals("^\\d{4}-(0[1-9]|1[0-2])$", ((jakarta.validation.constraints.Pattern) ann).regexp());
+            }
+        }
+        org.junit.jupiter.api.Assertions.assertTrue(hasPattern);
+    }
+
+    @Test
+    public void deveRejeitarUsuarioNaoAutenticado() throws Exception {
+        MockMvc unauthMockMvc = MockMvcBuilders.standaloneSetup(consolidacaoController)
+            .setCustomArgumentResolvers(new HandlerMethodArgumentResolver() {
+                @Override
+                public boolean supportsParameter(MethodParameter parameter) {
+                    return parameter.hasParameterAnnotation(org.springframework.security.core.annotation.AuthenticationPrincipal.class);
+                }
+                @Override
+                public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+                    return null;
+                }
+            })
+            .build();
+
+        unauthMockMvc.perform(get("/api/consolidacao/por-conta")
+                .param("mesAno", "2024-01"))
+                .andExpect(status().isUnauthorized());
+    }
 }

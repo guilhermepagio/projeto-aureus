@@ -57,6 +57,12 @@ context: ['_bmad-output/implementation-artifacts/epic-4-context.md']
 - Given a ausência de token, when o hook executa, then não envia requisições com "Bearer null".
 - Given a estrutura do projeto, when a branch for finalizada, then o arquivo `seed.sql` NÃO FOI apagado ou modificado indevidamente.
 
+### Review Findings
+- [x] [Review][Patch] Testes ausentes para a validação do @Pattern e autenticação do usuarioId [ConsolidacaoControllerTest.java]
+- [x] [Review][Patch] Bug no fuso horário instanciando a data local [frontend/src/components/Consolidacao/ConsolidacaoGrid.tsx:22]
+- [x] [Review][Patch] Exceção ConstraintViolationException não tratada para falhas do @Pattern [backend/src/main/java/com/guilhermepagio/aureus/backend/controller/ConsolidacaoController.java]
+- [x] [Review][Patch] Ausência de testes de unidade para o algoritmo de projeção de 24 meses [backend/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java]
+
 ## Spec Change Log
 
 - **Trigger:** Edge Case & Verification Gap review - Falta de isolamento de usuário (`findAll()`), deleção acidental de `seed.sql`, ignoração de `dataInicio` para movimentações fixas, falta de testes.

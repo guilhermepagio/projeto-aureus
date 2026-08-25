@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useMonthStore } from '../../store/monthStore';
 import { useConsolidacao, type LinhaConsolidacaoDTO } from '../../hooks/useConsolidacao';
 
@@ -29,9 +30,12 @@ export default function ConsolidacaoGrid() {
   
   const { data, isLoading, isError } = useConsolidacao(selectedMonth);
 
-  if (!selectedMonth || !selectedMonth.includes('-')) return null;
-  
-  const months = getNext24Months(selectedMonth);
+  const months = useMemo(() => {
+    if (!selectedMonth || !selectedMonth.includes('-')) return [];
+    return getNext24Months(selectedMonth);
+  }, [selectedMonth]);
+
+  if (months.length === 0) return null;
 
   return (
     <div className="w-full border rounded-lg bg-white shadow-sm h-full flex flex-col">

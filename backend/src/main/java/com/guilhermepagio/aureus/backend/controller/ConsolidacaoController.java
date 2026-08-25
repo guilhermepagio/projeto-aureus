@@ -34,4 +34,9 @@ public class ConsolidacaoController {
         ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta(usuarioId, mesAno);
         return ResponseEntity.ok(dto);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
+    public ResponseEntity<String> handleConstraintViolation(jakarta.validation.ConstraintViolationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }
