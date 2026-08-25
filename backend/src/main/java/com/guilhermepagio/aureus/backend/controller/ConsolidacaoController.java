@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.guilhermepagio.aureus.backend.domain.dto.ConsolidacaoPorContaDTO;
+import com.guilhermepagio.aureus.backend.domain.dto.ConsolidacaoPorCategoriaDTO;
 import com.guilhermepagio.aureus.backend.service.ConsolidacaoService;
 
 import jakarta.validation.constraints.Pattern;
@@ -38,5 +39,18 @@ public class ConsolidacaoController {
     @org.springframework.web.bind.annotation.ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
     public ResponseEntity<String> handleConstraintViolation(jakarta.validation.ConstraintViolationException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @GetMapping("/por-categoria")
+    public ResponseEntity<ConsolidacaoPorCategoriaDTO> getPorCategoria(
+            @AuthenticationPrincipal org.springframework.security.oauth2.core.user.OAuth2User principal,
+            @RequestParam("mesAno") String mesAno) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        String usuarioId = principal.getAttribute("sub");
+        
+        ConsolidacaoPorCategoriaDTO dto = consolidacaoService.calcularConsolidacaoPorCategoria(usuarioId, mesAno);
+        return ResponseEntity.ok(dto);
     }
 }

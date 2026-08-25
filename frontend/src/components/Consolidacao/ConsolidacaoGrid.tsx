@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useMonthStore } from '../../store/monthStore';
 import { useConsolidacao, type LinhaConsolidacaoDTO } from '../../hooks/useConsolidacao';
+import { BlocoCategorias } from './BlocoCategorias';
 
 const getNext24Months = (startMonthYYYYMM: string) => {
   const [yearStr, monthStr] = startMonthYYYYMM.split('-');
@@ -123,6 +124,14 @@ export default function ConsolidacaoGrid() {
                     </td>
                   </tr>
                 )}
+
+                {/* Separador entre blocos */}
+                <tr className="border-b-4 border-gray-200">
+                  <td colSpan={25}></td>
+                </tr>
+
+                {/* Bloco de Categorias */}
+                <BlocoCategorias selectedMonth={selectedMonth} />
               </>
             )}
           </tbody>
