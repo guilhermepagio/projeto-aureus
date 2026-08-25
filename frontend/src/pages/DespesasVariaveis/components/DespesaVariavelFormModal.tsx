@@ -230,8 +230,8 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
               </div>
             </div>
 
-            <div className="bg-teal-50 border border-teal-200 rounded-md p-3">
-              <p className="text-sm text-teal-800 font-medium">Valor Total: {valorTotalPreview}</p>
+            <div className="bg-red-50 border border-red-200 rounded-md p-3">
+              <p className="text-sm text-red-800 font-medium">Valor Total: {valorTotalPreview}</p>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
@@ -323,7 +323,7 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
           </button>
           <button
             type="submit"
-            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary-light focus:outline-none"
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none"
             disabled={isPending}
           >
             {isPending ? 'Salvando...' : 'Salvar'}
