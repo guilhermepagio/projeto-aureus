@@ -2,113 +2,122 @@ import { useConsolidacaoCategoria, type LinhaConsolidacaoCategoriaDTO } from '..
 import { formatCurrency } from '../../utils/currencyFormat';
 
 interface BlocoCategoriasProps {
-  selectedMonth: string;
+  selectedMonth: string | null;
 }
 
 export function BlocoCategorias({ selectedMonth }: BlocoCategoriasProps) {
+  if (!selectedMonth) return null;
+
   const { data, isLoading, isError } = useConsolidacaoCategoria(selectedMonth);
 
   if (isLoading) {
-    return <div className="p-4 text-center">Carregando categorias...</div>;
+    return (
+      <tr>
+        <td colSpan={25} className="p-8 text-center text-gray-500">
+          Carregando categorias...
+        </td>
+      </tr>
+    );
   }
 
   if (isError || !data) {
-    return <div className="p-4 text-center text-red-500">Erro ao carregar os dados das categorias.</div>;
+    return (
+      <tr>
+        <td colSpan={25} className="p-8 text-center text-red-500">
+          Erro ao carregar os dados das categorias.
+        </td>
+      </tr>
+    );
   }
 
-  const { receitas, despesas } = data;
+  const { despesas } = data;
 
-  // Calculamos totais mensais de receitas por categoria
-  const totalReceitasMensais = Array(24).fill(0);
-  receitas.forEach(r => {
-    r.valoresMensais.forEach((val, i) => {
-      totalReceitasMensais[i] += val;
-    });
-  });
-
-  // Calculamos totais mensais de despesas por categoria
+  // Calcula totais mensais (seguro contra precisão)
   const totalDespesasMensais = Array(24).fill(0);
   despesas.forEach(d => {
-    d.valoresMensais.forEach((val, i) => {
-      totalDespesasMensais[i] += val;
+    (d.valoresMensais || []).forEach((val, i) => {
+      // Evita problemas de precisão arredondando para 2 casas
+      totalDespesasMensais[i] = Math.round((totalDespesasMensais[i] + val) * 100) / 100;
     });
   });
 
-  const renderRow = (row: LinhaConsolidacaoCategoriaDTO, isTotal: boolean = false) => (
-    <tr key={row.categoriaId} className={`hover:bg-gray-50 border-b ${isTotal ? 'font-semibold bg-gray-50' : ''}`}>
-      <td className="sticky left-0 bg-white min-w-[200px] max-w-[200px] p-3 shadow-[1px_0_0_0_#e5e7eb]">
+  const renderMonetaryRow = (row: LinhaConsolidacaoCategoriaDTO) => (
+    <tr key={row.categoriaId} className="group hover:bg-gray-50 transition-colors">
+      <th scope="row" className="sticky left-0 z-10 bg-white group-hover:bg-gray-50 p-4 text-left font-medium text-gray-800 border-b border-r border-gray-200">
         <div className="truncate" title={row.categoriaDescricao}>
           {row.categoriaDescricao}
         </div>
-      </td>
-      {row.valoresMensais.map((val, i) => (
-        <td key={i} className="min-w-[120px] p-3 text-right tabular-nums whitespace-nowrap border-l">
+      </th>
+      {(row.valoresMensais || []).map((val, i) => (
+        <td key={i} className={`p-4 text-center tabular-nums whitespace-nowrap border-b border-r border-gray-200 ${val === 0 ? 'text-gray-400' : 'text-gray-600'}`}>
           {formatCurrency(val)}
         </td>
       ))}
     </tr>
   );
 
+  const renderPercentageRow = (row: LinhaConsolidacaoCategoriaDTO) => (
+    <tr key={row.categoriaId} className="group hover:bg-gray-50 transition-colors">
+      <th scope="row" className="sticky left-0 z-10 bg-white group-hover:bg-gray-50 p-4 text-left font-medium text-gray-800 border-b border-r border-gray-200">
+        <div className="truncate" title={row.categoriaDescricao}>
+          {row.categoriaDescricao}
+        </div>
+      </th>
+      {(row.valoresMensais || []).map((val, i) => {
+        const total = totalDespesasMensais[i];
+        let percent = 0;
+        if (total > 0) {
+          percent = (val / total) * 100;
+        }
+        
+        return (
+          <td key={i} className={`p-4 text-center tabular-nums whitespace-nowrap border-b border-r border-gray-200 ${val === 0 ? 'text-gray-400' : 'text-gray-600'}`}>
+            {percent.toFixed(1).replace('.', ',')}%
+          </td>
+        );
+      })}
+    </tr>
+  );
+
   return (
     <>
-      {/* Bloco de Receitas por Categoria */}
-      <tr className="bg-gray-100/50">
-        <td colSpan={25} className="p-3 sticky left-0 font-semibold text-gray-700 shadow-[1px_0_0_0_#e5e7eb]">
-          Receitas por Categoria
-        </td>
-      </tr>
-      
-      {receitas.length === 0 ? (
-        <tr>
-          <td colSpan={25} className="p-3 text-center text-gray-500 sticky left-0 shadow-[1px_0_0_0_#e5e7eb]">
-            Nenhuma receita cadastrada
-          </td>
-        </tr>
-      ) : (
-        <>
-          {receitas.map(r => renderRow(r))}
-          {/* Total Row */}
-          <tr className="font-semibold bg-gray-50 border-b">
-            <td className="sticky left-0 bg-white min-w-[200px] max-w-[200px] p-3 shadow-[1px_0_0_0_#e5e7eb]">
-              Total Receitas
-            </td>
-            {totalReceitasMensais.map((val, i) => (
-              <td key={i} className="min-w-[120px] p-3 text-right tabular-nums whitespace-nowrap border-l">
-                {formatCurrency(val)}
-              </td>
-            ))}
-          </tr>
-        </>
-      )}
-
-      {/* Bloco de Despesas por Categoria */}
-      <tr className="bg-gray-100/50">
-        <td colSpan={25} className="p-3 sticky left-0 font-semibold text-gray-700 shadow-[1px_0_0_0_#e5e7eb]">
-          Despesas por Categoria
-        </td>
+      {/* ═══ BLOCO 3: CATEGORIAS R$ ═══ */}
+      <tr className="bg-amber-50">
+        <th scope="row" className="sticky left-0 z-10 bg-amber-50 p-4 text-left font-bold text-amber-800 border-b border-r border-amber-200" colSpan={25}>
+          Categorias (R$)
+        </th>
       </tr>
       
       {despesas.length === 0 ? (
         <tr>
-          <td colSpan={25} className="p-3 text-center text-gray-500 sticky left-0 shadow-[1px_0_0_0_#e5e7eb]">
-            Nenhuma despesa cadastrada
+          <td colSpan={25} className="p-4 text-center text-gray-500 border-b border-r border-gray-200">
+            Nenhuma despesa categorizada no período.
           </td>
         </tr>
       ) : (
-        <>
-          {despesas.map(d => renderRow(d))}
-          {/* Total Row */}
-          <tr className="font-semibold bg-gray-50 border-b">
-            <td className="sticky left-0 bg-white min-w-[200px] max-w-[200px] p-3 shadow-[1px_0_0_0_#e5e7eb]">
-              Total Despesas
-            </td>
-            {totalDespesasMensais.map((val, i) => (
-              <td key={i} className="min-w-[120px] p-3 text-right tabular-nums whitespace-nowrap border-l">
-                {formatCurrency(val)}
-              </td>
-            ))}
-          </tr>
-        </>
+        despesas.map(d => renderMonetaryRow(d))
+      )}
+
+      {/* Separador entre blocos */}
+      <tr>
+        <td colSpan={25} className="h-8 bg-gray-50 border-b border-gray-200"></td>
+      </tr>
+
+      {/* ═══ BLOCO 4: CATEGORIAS % ═══ */}
+      <tr className="bg-amber-50">
+        <th scope="row" className="sticky left-0 z-10 bg-amber-50 p-4 text-left font-bold text-amber-800 border-b border-r border-amber-200" colSpan={25}>
+          Categorias (%)
+        </th>
+      </tr>
+      
+      {despesas.length === 0 ? (
+        <tr>
+          <td colSpan={25} className="p-4 text-center text-gray-500 border-b border-r border-gray-200">
+            Nenhuma despesa categorizada no período.
+          </td>
+        </tr>
+      ) : (
+        despesas.map(d => renderPercentageRow(d))
       )}
     </>
   );

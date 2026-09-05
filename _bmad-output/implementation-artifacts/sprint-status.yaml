@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 08-25-2026 18:46
+last_updated: 09-05-2026 16:52
 project: projeto-aureus
 project_key: NOKEY
 tracking_system: file-system
@@ -58,7 +58,7 @@ development_status:
   epic-4: in-progress
   4-1-seleção-de-mês-navegação-temporal-e-grid-com-suporte-a-gesto: done
   4-2-bloco-de-consolidação-por-conta-receitas-e-despesas: done
-  4-3-bloco-analítico-de-categorias-valores-e-percentuais-com-prot: review
+  4-3-bloco-analítico-de-categorias-valores-e-percentuais-com-prot: done
   4-4-bloco-de-resumo-geral-com-sobra-histórica-acumulada: backlog
   epic-4-retrospective: optional
 action_items:
@@ -68,19 +68,19 @@ action_items:
       de Receitas Fixas)"
     owner: "Guilherme"
     status: open
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-1-retro-08-19-2026.md"
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-1/epic-1-retro-08-19-2026.md"
   - id: "epic-1-retro-item-2-criar-testes-automatizados-para-o-pacote"
     epic: 1
     action: "Criar testes automatizados para o pacote security no backend"
     owner: "Guilherme"
     status: open
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-1-retro-08-19-2026.md"
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-1/epic-1-retro-08-19-2026.md"
   - id: "epic-2-retro-item-3-commitar-as-alterações-pendentes-da-revi"
     epic: 2
     action: "Commitar as alterações pendentes da revisão de código da Story 2.3"
     owner: "Desenvolvedor"
     status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-2-retro-2026-08-20.md"
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-2/epic-2-retro-2026-08-20.md"
   - id: "epic-3-retro-item-4-refatorar-os-componentes-de-formulários"
     epic: 3
     action: "Refatorar os componentes de formulários e hooks de Despesas e Receitas
@@ -88,25 +88,25 @@ action_items:
       de código."
     owner: "Desenvolvedor"
     status: open
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-3-retro-2026-08-23.md"
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"
   - id: "epic-3-retro-item-5-adicionar-cobertura-de-testes-unitários"
     epic: 3
     action: "Adicionar cobertura de testes unitários para os Domain Models e Controllers
       desenvolvidos (DespesaFixa, ReceitaFixa, DespesaVariavel, ReceitaVariavel)."
     owner: "QA"
     status: open
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-3-retro-2026-08-23.md"
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"
   - id: "epic-3-retro-item-6-criar-uma-camada-de-serviço-service-laye"
     epic: 3
     action: "Criar uma camada de serviço (Service Layer) no backend para encapsular
       e remover a regra de negócio dos Controllers."
     owner: "Desenvolvedor Backend"
     status: open
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-3-retro-2026-08-23.md"
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"
   - id: "epic-3-retro-item-7-refatorar-as-apis-rest-para-utilizar-dto"
     epic: 3
     action: "Refatorar as APIs REST para utilizar DTOs (Data Transfer Objects), de
       preferência usando records do Java, isolando as entidades do domínio."
     owner: "Desenvolvedor Backend"
     status: open
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-3-retro-2026-08-23.md"
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"

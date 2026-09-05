@@ -163,103 +163,71 @@ public class ConsolidacaoService {
             throw new IllegalArgumentException("mesAno não pode ser nulo");
         }
         YearMonth startMonth = YearMonth.parse(mesAno);
+        YearMonth endMonth = startMonth.plusMonths(23);
         
         List<Categoria> categorias = categoriaRepository.findByUsuarioId(usuarioId);
         
-        Map<Long, LinhaConsolidacaoCategoriaDTO> receitasMap = new LinkedHashMap<>();
         Map<Long, LinhaConsolidacaoCategoriaDTO> despesasMap = new LinkedHashMap<>();
         
         for (Categoria c : categorias) {
-            receitasMap.put(c.getId(), criarLinhaCategoria(c.getId(), c.getDescricao()));
             despesasMap.put(c.getId(), criarLinhaCategoria(c.getId(), c.getDescricao()));
         }
         
         // Synthetic line for "Sem Categoria"
-        receitasMap.put(SEM_CATEGORIA_ID, criarLinhaCategoria(SEM_CATEGORIA_ID, "Sem Categoria"));
         despesasMap.put(SEM_CATEGORIA_ID, criarLinhaCategoria(SEM_CATEGORIA_ID, "Sem Categoria"));
 
-        List<ReceitaFixa> receitasFixas = receitaFixaRepository.findByUsuarioId(usuarioId);
-        List<ReceitaVariavel> receitasVariaveis = receitaVariavelRepository.findByUsuarioId(usuarioId);
         List<DespesaFixa> despesasFixas = despesaFixaRepository.findByUsuarioId(usuarioId);
         List<DespesaVariavel> despesasVariaveis = despesaVariavelRepository.findByUsuarioId(usuarioId);
 
-        // Pré-calcular inícios para otimização
-        Map<Long, YearMonth> inicioReceitaVariavel = new HashMap<>();
-        Map<Long, YearMonth> fimReceitaVariavel = new HashMap<>();
-        for (ReceitaVariavel rv : receitasVariaveis) {
-            if (rv.getDataInicio() != null && rv.getQuantidadeParcelas() != null) {
-                YearMonth inicio = YearMonth.from(rv.getDataInicio());
-                inicioReceitaVariavel.put(rv.getId(), inicio);
-                fimReceitaVariavel.put(rv.getId(), inicio.plusMonths(rv.getQuantidadeParcelas() - 1));
-            }
-        }
-        
-        Map<Long, YearMonth> inicioDespesaVariavel = new HashMap<>();
-        Map<Long, YearMonth> fimDespesaVariavel = new HashMap<>();
-        for (DespesaVariavel dv : despesasVariaveis) {
-            if (dv.getDataInicio() != null && dv.getQuantidadeParcelas() != null) {
-                YearMonth inicio = YearMonth.from(dv.getDataInicio());
-                inicioDespesaVariavel.put(dv.getId(), inicio);
-                fimDespesaVariavel.put(dv.getId(), inicio.plusMonths(dv.getQuantidadeParcelas() - 1));
-            }
-        }
-
-        Map<Long, YearMonth> inicioReceitaFixa = new HashMap<>();
-        for (ReceitaFixa rf : receitasFixas) {
-            if (rf.getDataInicio() != null) {
-                inicioReceitaFixa.put(rf.getId(), YearMonth.from(rf.getDataInicio()));
-            }
-        }
-
-        Map<Long, YearMonth> inicioDespesaFixa = new HashMap<>();
+        // O(N) loop for DespesaFixa
         for (DespesaFixa df : despesasFixas) {
-            if (df.getDataInicio() != null) {
-                inicioDespesaFixa.put(df.getId(), YearMonth.from(df.getDataInicio()));
-            }
-        }
-
-        for (int i = 0; i < 24; i++) {
-            YearMonth currentMonth = startMonth.plusMonths(i);
-
-            for (ReceitaFixa rf : receitasFixas) {
-                Long catId = rf.getCategoria() != null ? rf.getCategoria().getId() : SEM_CATEGORIA_ID;
-                YearMonth inicio = inicioReceitaFixa.get(rf.getId());
-                if (inicio == null || !inicio.isAfter(currentMonth)) {
-                    somarValorCategoria(receitasMap, catId, i, rf.getValor());
-                }
-            }
-
-            for (ReceitaVariavel rv : receitasVariaveis) {
-                Long catId = rv.getCategoria() != null ? rv.getCategoria().getId() : SEM_CATEGORIA_ID;
-                YearMonth inicio = inicioReceitaVariavel.get(rv.getId());
-                YearMonth fim = fimReceitaVariavel.get(rv.getId());
-                if (inicio != null && fim != null && !currentMonth.isBefore(inicio) && !currentMonth.isAfter(fim)) {
-                    somarValorCategoria(receitasMap, catId, i, rv.getValorParcela());
-                }
-            }
-
-            for (DespesaFixa df : despesasFixas) {
-                Long catId = df.getCategoria() != null ? df.getCategoria().getId() : SEM_CATEGORIA_ID;
-                YearMonth inicio = inicioDespesaFixa.get(df.getId());
-                if (inicio == null || !inicio.isAfter(currentMonth)) {
+            if (df.getDataInicio() == null || df.getValor() == null) continue;
+            Long catId = df.getCategoria() != null ? df.getCategoria().getId() : SEM_CATEGORIA_ID;
+            YearMonth inicio = YearMonth.from(df.getDataInicio());
+            
+            for (int i = 0; i < 24; i++) {
+                YearMonth current = startMonth.plusMonths(i);
+                if (!inicio.isAfter(current)) {
                     somarValorCategoria(despesasMap, catId, i, df.getValor());
                 }
             }
+        }
 
-            for (DespesaVariavel dv : despesasVariaveis) {
-                Long catId = dv.getCategoria() != null ? dv.getCategoria().getId() : SEM_CATEGORIA_ID;
-                YearMonth inicio = inicioDespesaVariavel.get(dv.getId());
-                YearMonth fim = fimDespesaVariavel.get(dv.getId());
-                if (inicio != null && fim != null && !currentMonth.isBefore(inicio) && !currentMonth.isAfter(fim)) {
-                    somarValorCategoria(despesasMap, catId, i, dv.getValorParcela());
-                }
+        // O(N) loop for DespesaVariavel
+        for (DespesaVariavel dv : despesasVariaveis) {
+            if (dv.getDataInicio() == null || dv.getQuantidadeParcelas() == null || dv.getValorParcela() == null) continue;
+            Long catId = dv.getCategoria() != null ? dv.getCategoria().getId() : SEM_CATEGORIA_ID;
+            YearMonth inicio = YearMonth.from(dv.getDataInicio());
+            YearMonth fim = inicio.plusMonths(dv.getQuantidadeParcelas() - 1);
+            
+            // Skip if entirely outside the 24-month window
+            if (fim.isBefore(startMonth) || inicio.isAfter(endMonth)) continue;
+            
+            // Calculate overlap bounds
+            int startIdx = Math.max(0, (int) java.time.temporal.ChronoUnit.MONTHS.between(startMonth, inicio));
+            int endIdx = Math.min(23, (int) java.time.temporal.ChronoUnit.MONTHS.between(startMonth, fim));
+            
+            for (int i = startIdx; i <= endIdx; i++) {
+                somarValorCategoria(despesasMap, catId, i, dv.getValorParcela());
             }
         }
 
-        return new ConsolidacaoPorCategoriaDTO(
-            new ArrayList<>(receitasMap.values()),
-            new ArrayList<>(despesasMap.values())
-        );
+        // Filter out empty categories
+        List<LinhaConsolidacaoCategoriaDTO> despesasFiltradas = new ArrayList<>();
+        for (LinhaConsolidacaoCategoriaDTO linha : despesasMap.values()) {
+            boolean hasValue = false;
+            for (BigDecimal valor : linha.getValoresMensais()) {
+                if (valor != null && valor.compareTo(BigDecimal.ZERO) != 0) {
+                    hasValue = true;
+                    break;
+                }
+            }
+            if (hasValue) {
+                despesasFiltradas.add(linha);
+            }
+        }
+
+        return new ConsolidacaoPorCategoriaDTO(despesasFiltradas);
     }
 
     private LinhaConsolidacaoCategoriaDTO criarLinhaCategoria(Long id, String descricao) {

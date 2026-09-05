@@ -27,11 +27,6 @@ public class ConsolidacaoController {
     public ResponseEntity<ConsolidacaoPorContaDTO> getPorConta(
             @RequestParam @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])$", message = "Formato de data inválido. Use YYYY-MM") String mesAno,
             @AuthenticationPrincipal String usuarioId) {
-        
-        if (usuarioId == null) {
-            return ResponseEntity.status(401).build();
-        }
-
         ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta(usuarioId, mesAno);
         return ResponseEntity.ok(dto);
     }
@@ -45,11 +40,6 @@ public class ConsolidacaoController {
     public ResponseEntity<ConsolidacaoPorCategoriaDTO> getPorCategoria(
             @RequestParam @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])$", message = "Formato de data inválido. Use YYYY-MM") String mesAno,
             @AuthenticationPrincipal String usuarioId) {
-        
-        if (usuarioId == null) {
-            return ResponseEntity.status(401).build();
-        }
-        
         ConsolidacaoPorCategoriaDTO dto = consolidacaoService.calcularConsolidacaoPorCategoria(usuarioId, mesAno);
         return ResponseEntity.ok(dto);
     }

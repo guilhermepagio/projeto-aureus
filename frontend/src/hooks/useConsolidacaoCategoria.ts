@@ -8,7 +8,6 @@ export interface LinhaConsolidacaoCategoriaDTO {
 }
 
 export interface ConsolidacaoPorCategoriaDTO {
-  receitas: LinhaConsolidacaoCategoriaDTO[];
   despesas: LinhaConsolidacaoCategoriaDTO[];
 }
 
