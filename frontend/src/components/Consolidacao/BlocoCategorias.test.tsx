@@ -12,7 +12,7 @@ describe('BlocoCategorias', () => {
     const { container } = render(
       <table>
         <tbody>
-          <BlocoCategorias selectedMonth={null} />
+          <BlocoCategorias selectedMonth={null} currentIdx={0} />
         </tbody>
       </table>
     );
@@ -51,12 +51,12 @@ describe('BlocoCategorias', () => {
     render(
       <table>
         <tbody>
-          <BlocoCategorias selectedMonth="2024-01" />
+          <BlocoCategorias selectedMonth="2024-01" currentIdx={0} />
         </tbody>
       </table>
     );
 
-    expect(screen.getByText(/Erro ao carregar os dados das categorias/i)).toBeInTheDocument();
+    expect(screen.getByText(/Erro ao carregar dados das categorias/i)).toBeDefined();
   });
 
   it('renderiza os blocos de R$ e % com cálculos corretos e previne divisão por zero', () => {
@@ -106,25 +106,25 @@ describe('BlocoCategorias', () => {
     render(
       <table>
         <tbody>
-          <BlocoCategorias selectedMonth="2024-01" />
+          <BlocoCategorias selectedMonth="2024-01" currentIdx={0} />
         </tbody>
       </table>
     );
 
     // Blocos devem estar presentes
-    expect(screen.getByText('Categorias (R$)')).toBeInTheDocument();
-    expect(screen.getByText('Categorias (%)')).toBeInTheDocument();
+    expect(screen.getByText('Categorias (R$)')).toBeDefined();
+    expect(screen.getByText('Categorias (%)')).toBeDefined();
     
     // Nomes das categorias
     expect(screen.getAllByText('Alimentação')).toHaveLength(2); // um no R$, um no %
     expect(screen.getAllByText('Transporte')).toHaveLength(2);
 
     // Mês 0 percentuais: Alimentação = 100/150 = 66.7%, Transporte = 50/150 = 33.3%
-    expect(screen.getByText('66,7%')).toBeInTheDocument();
-    expect(screen.getByText('33,3%')).toBeInTheDocument();
+    expect(screen.getByText('66,7%')).toBeDefined();
+    expect(screen.getByText('33,3%')).toBeDefined();
 
     // Mês 1 percentuais: Alimentação = 200/200 = 100%, Transporte = 0/200 = 0%
-    expect(screen.getByText('100,0%')).toBeInTheDocument();
+    expect(screen.getByText('100,0%')).toBeDefined();
     
     // Mês 2 tem total 0, então divisões por zero devem resultar em 0,0%
     const zeroPercents = screen.getAllByText('0,0%');
