@@ -115,4 +115,26 @@ public class ConsolidacaoControllerTest {
 
         verify(consolidacaoService).calcularConsolidacaoPorCategoria("usuario1", "2024-01");
     }
+
+    @Test
+    public void deveRejeitarMesAnoInvalidoPorCategoria() throws Exception {
+        java.lang.reflect.Method method = ConsolidacaoController.class.getMethod("getPorCategoria", String.class, String.class);
+        boolean hasPattern = false;
+        for (java.lang.annotation.Annotation ann : method.getParameterAnnotations()[0]) {
+            if (ann instanceof jakarta.validation.constraints.Pattern) {
+                hasPattern = true;
+                org.junit.jupiter.api.Assertions.assertEquals("^\\d{4}-(0[1-9]|1[0-2])$", ((jakarta.validation.constraints.Pattern) ann).regexp());
+            }
+        }
+        org.junit.jupiter.api.Assertions.assertTrue(hasPattern);
+    }
+
+    @Test
+    public void deveRetornar401QuandoUsuarioIdNulo() {
+        org.springframework.http.ResponseEntity<ConsolidacaoPorContaDTO> respConta = consolidacaoController.getPorConta("2024-01", null);
+        org.junit.jupiter.api.Assertions.assertEquals(401, respConta.getStatusCode().value());
+
+        org.springframework.http.ResponseEntity<ConsolidacaoPorCategoriaDTO> respCat = consolidacaoController.getPorCategoria("2024-01", null);
+        org.junit.jupiter.api.Assertions.assertEquals(401, respCat.getStatusCode().value());
+    }
 }

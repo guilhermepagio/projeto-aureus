@@ -106,7 +106,11 @@ public class ConsolidacaoServiceTest {
         categoria.setId(1L);
         categoria.setDescricao("Cat 1");
         
-        when(categoriaRepository.findByUsuarioId("user1")).thenReturn(Collections.singletonList(categoria));
+        Categoria categoriaVazia = new Categoria();
+        categoriaVazia.setId(2L);
+        categoriaVazia.setDescricao("Vazia");
+        
+        when(categoriaRepository.findByUsuarioIdOrderByDescricaoAsc("user1")).thenReturn(List.of(categoria, categoriaVazia));
         
         DespesaVariavel dv = new DespesaVariavel();
         dv.setId(10L);
@@ -121,8 +125,14 @@ public class ConsolidacaoServiceTest {
         df.setDataInicio(LocalDate.of(2024, 2, 1));
         df.setValor(BigDecimal.valueOf(50));
         
+        DespesaFixa dfSemData = new DespesaFixa();
+        dfSemData.setId(30L);
+        dfSemData.setCategoria(categoria);
+        dfSemData.setDataInicio(null); // Data nula incide em todos os meses
+        dfSemData.setValor(BigDecimal.valueOf(20));
+        
         when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(dv));
-        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(df));
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(df, dfSemData));
         
         ConsolidacaoPorCategoriaDTO dto = consolidacaoService.calcularConsolidacaoPorCategoria("user1", "2024-01");
         
@@ -131,9 +141,12 @@ public class ConsolidacaoServiceTest {
         Optional<LinhaConsolidacaoCategoriaDTO> despesaOpt = dto.getDespesas().stream().filter(r -> r.getCategoriaId().equals(1L)).findFirst();
         assertTrue(despesaOpt.isPresent());
         LinhaConsolidacaoCategoriaDTO despesa = despesaOpt.get();
-        assertEquals(0, BigDecimal.valueOf(100).compareTo(despesa.getValoresMensais().get(0))); // Mês 1
-        assertEquals(0, BigDecimal.valueOf(100).compareTo(despesa.getValoresMensais().get(4))); // Mês 5 (boundary)
-        assertEquals(0, BigDecimal.ZERO.compareTo(despesa.getValoresMensais().get(5))); // Mês 6 (outside boundary)
+        // Mês 1: 100 (dv) + 20 (dfSemData) = 120
+        assertEquals(0, BigDecimal.valueOf(120).compareTo(despesa.getValoresMensais().get(0)));
+        // Mês 5: 100 (dv) + 20 (dfSemData) = 120
+        assertEquals(0, BigDecimal.valueOf(120).compareTo(despesa.getValoresMensais().get(4)));
+        // Mês 6: 0 (dv) + 20 (dfSemData) = 20
+        assertEquals(0, BigDecimal.valueOf(20).compareTo(despesa.getValoresMensais().get(5)));
         
         Optional<LinhaConsolidacaoCategoriaDTO> despesaSemCatOpt = dto.getDespesas().stream().filter(d -> d.getCategoriaId().equals(ConsolidacaoService.SEM_CATEGORIA_ID)).findFirst();
         assertTrue(despesaSemCatOpt.isPresent());
@@ -141,5 +154,21 @@ public class ConsolidacaoServiceTest {
         assertEquals(0, BigDecimal.ZERO.compareTo(despesaSemCat.getValoresMensais().get(0)));
         assertEquals(0, BigDecimal.valueOf(50).compareTo(despesaSemCat.getValoresMensais().get(1)));
         assertEquals(0, BigDecimal.valueOf(50).compareTo(despesaSemCat.getValoresMensais().get(23)));
+    }
+
+    @Test
+    void testCalcularConsolidacaoParametrosInvalidos() {
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            consolidacaoService.calcularConsolidacaoPorCategoria("user1", null);
+        });
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            consolidacaoService.calcularConsolidacaoPorConta("user1", null);
+        });
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            consolidacaoService.calcularConsolidacaoPorCategoria(null, "2024-01");
+        });
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            consolidacaoService.calcularConsolidacaoPorConta(null, "2024-01");
+        });
     }
 }

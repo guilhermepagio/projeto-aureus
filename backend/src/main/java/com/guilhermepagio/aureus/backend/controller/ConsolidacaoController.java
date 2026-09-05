@@ -21,12 +21,17 @@ import lombok.RequiredArgsConstructor;
 @Validated
 public class ConsolidacaoController {
 
+    private static final String MES_ANO_REGEX = "^\\d{4}-(0[1-9]|1[0-2])$";
+
     private final ConsolidacaoService consolidacaoService;
 
     @GetMapping("/por-conta")
     public ResponseEntity<ConsolidacaoPorContaDTO> getPorConta(
-            @RequestParam @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])$", message = "Formato de data inválido. Use YYYY-MM") String mesAno,
+            @RequestParam @Pattern(regexp = MES_ANO_REGEX, message = "Formato de data inválido. Use YYYY-MM") String mesAno,
             @AuthenticationPrincipal String usuarioId) {
+        if (usuarioId == null) {
+            return ResponseEntity.status(401).build();
+        }
         ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta(usuarioId, mesAno);
         return ResponseEntity.ok(dto);
     }
@@ -38,8 +43,11 @@ public class ConsolidacaoController {
 
     @GetMapping("/por-categoria")
     public ResponseEntity<ConsolidacaoPorCategoriaDTO> getPorCategoria(
-            @RequestParam @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])$", message = "Formato de data inválido. Use YYYY-MM") String mesAno,
+            @RequestParam @Pattern(regexp = MES_ANO_REGEX, message = "Formato de data inválido. Use YYYY-MM") String mesAno,
             @AuthenticationPrincipal String usuarioId) {
+        if (usuarioId == null) {
+            return ResponseEntity.status(401).build();
+        }
         ConsolidacaoPorCategoriaDTO dto = consolidacaoService.calcularConsolidacaoPorCategoria(usuarioId, mesAno);
         return ResponseEntity.ok(dto);
     }

@@ -34,6 +34,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConsolidacaoService {
 
+    public static final Long SEM_CATEGORIA_ID = -1L;
+
     private final ContaRepository contaRepository;
     private final CategoriaRepository categoriaRepository;
     private final ReceitaFixaRepository receitaFixaRepository;
@@ -43,6 +45,12 @@ public class ConsolidacaoService {
 
     @Transactional(readOnly = true)
     public ConsolidacaoPorContaDTO calcularConsolidacaoPorConta(String usuarioId, String mesAno) {
+        if (usuarioId == null) {
+            throw new IllegalArgumentException("usuarioId não pode ser nulo");
+        }
+        if (mesAno == null) {
+            throw new IllegalArgumentException("mesAno não pode ser nulo");
+        }
         YearMonth startMonth = YearMonth.parse(mesAno);
         
         List<Conta> contas = contaRepository.findByUsuarioId(usuarioId);
@@ -155,17 +163,18 @@ public class ConsolidacaoService {
         }
     }
 
-    public static final Long SEM_CATEGORIA_ID = Long.MIN_VALUE;
-
     @Transactional(readOnly = true)
     public ConsolidacaoPorCategoriaDTO calcularConsolidacaoPorCategoria(String usuarioId, String mesAno) {
+        if (usuarioId == null) {
+            throw new IllegalArgumentException("usuarioId não pode ser nulo");
+        }
         if (mesAno == null) {
             throw new IllegalArgumentException("mesAno não pode ser nulo");
         }
         YearMonth startMonth = YearMonth.parse(mesAno);
         YearMonth endMonth = startMonth.plusMonths(23);
         
-        List<Categoria> categorias = categoriaRepository.findByUsuarioId(usuarioId);
+        List<Categoria> categorias = categoriaRepository.findByUsuarioIdOrderByDescricaoAsc(usuarioId);
         
         Map<Long, LinhaConsolidacaoCategoriaDTO> despesasMap = new LinkedHashMap<>();
         
@@ -181,21 +190,22 @@ public class ConsolidacaoService {
 
         // O(N) loop for DespesaFixa
         for (DespesaFixa df : despesasFixas) {
-            if (df.getDataInicio() == null || df.getValor() == null) continue;
+            if (df.getValor() == null) continue;
             Long catId = df.getCategoria() != null ? df.getCategoria().getId() : SEM_CATEGORIA_ID;
-            YearMonth inicio = YearMonth.from(df.getDataInicio());
+            int startIdx = 0;
+            if (df.getDataInicio() != null) {
+                YearMonth inicio = YearMonth.from(df.getDataInicio());
+                startIdx = Math.max(0, (int) java.time.temporal.ChronoUnit.MONTHS.between(startMonth, inicio));
+            }
             
-            for (int i = 0; i < 24; i++) {
-                YearMonth current = startMonth.plusMonths(i);
-                if (!inicio.isAfter(current)) {
-                    somarValorCategoria(despesasMap, catId, i, df.getValor());
-                }
+            for (int i = startIdx; i < 24; i++) {
+                somarValorCategoria(despesasMap, catId, i, df.getValor());
             }
         }
 
         // O(N) loop for DespesaVariavel
         for (DespesaVariavel dv : despesasVariaveis) {
-            if (dv.getDataInicio() == null || dv.getQuantidadeParcelas() == null || dv.getValorParcela() == null) continue;
+            if (dv.getDataInicio() == null || dv.getQuantidadeParcelas() == null || dv.getQuantidadeParcelas() <= 0 || dv.getValorParcela() == null) continue;
             Long catId = dv.getCategoria() != null ? dv.getCategoria().getId() : SEM_CATEGORIA_ID;
             YearMonth inicio = YearMonth.from(dv.getDataInicio());
             YearMonth fim = inicio.plusMonths(dv.getQuantidadeParcelas() - 1);
