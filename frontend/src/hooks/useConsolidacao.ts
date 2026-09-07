@@ -10,6 +10,7 @@ export interface LinhaConsolidacaoDTO {
 export interface ConsolidacaoPorContaDTO {
   receitas: LinhaConsolidacaoDTO[];
   despesas: LinhaConsolidacaoDTO[];
+  saldoHistoricoPreGrade?: number;
 }
 
 const getCsrfToken = () => {

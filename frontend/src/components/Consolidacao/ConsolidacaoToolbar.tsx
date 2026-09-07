@@ -40,32 +40,37 @@ export default function ConsolidacaoToolbar() {
   };
 
   return (
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center space-x-4">
+    <div className="flex items-center mb-4">
+      <div className="flex items-center gap-3 flex-wrap">
+        <h1 className="text-2xl font-bold tracking-tight text-[#1A1A2E]">Consolidação</h1>
+
+        <div className="flex items-center gap-1 bg-white border border-[#E5E7EB] rounded-lg p-1 shadow-sm">
+          <button
+            onClick={handlePrevMonth}
+            className="w-7 h-7 flex items-center justify-center rounded text-[#6B7280] hover:text-[#0D7377] hover:bg-[#E8F4F4] transition-colors"
+            aria-label="Mês anterior"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span aria-live="polite" className="text-sm font-semibold text-[#1A1A2E] px-2 min-w-[100px] text-center">
+            {MONTHS[monthIndex]} {year}
+          </span>
+          <button
+            onClick={handleNextMonth}
+            className="w-7 h-7 flex items-center justify-center rounded text-[#6B7280] hover:text-[#0D7377] hover:bg-[#E8F4F4] transition-colors"
+            aria-label="Próximo mês"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
         <button
-          onClick={handlePrevMonth}
-          className="p-2 border rounded-md hover:bg-gray-100 transition-colors bg-white"
-          aria-label="Mês anterior"
+          onClick={handleCurrentMonth}
+          className="px-4 py-1.5 text-[13px] font-semibold text-white bg-[#D4A843] hover:bg-[#C09538] rounded-lg shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer"
         >
-          <ChevronLeft className="w-5 h-5 text-gray-700" />
-        </button>
-        <span aria-live="polite" className="text-lg font-medium text-gray-800 capitalize w-24 text-center">
-          {MONTHS[monthIndex]} {year}
-        </span>
-        <button
-          onClick={handleNextMonth}
-          className="p-2 border rounded-md hover:bg-gray-100 transition-colors bg-white"
-          aria-label="Próximo mês"
-        >
-          <ChevronRight className="w-5 h-5 text-gray-700" />
+          Mês Atual
         </button>
       </div>
-      <button
-        onClick={handleCurrentMonth}
-        className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors"
-      >
-        Mês Atual
-      </button>
     </div>
   );
 }

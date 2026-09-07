@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useMonthStore } from '../../store/monthStore';
 import { useConsolidacao, type LinhaConsolidacaoDTO } from '../../hooks/useConsolidacao';
 import { BlocoCategorias } from './BlocoCategorias';
+import { BlocoResumo } from './BlocoResumo';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 const MONTH_ABBR = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
@@ -224,6 +225,17 @@ export default function ConsolidacaoGrid() {
 
                 {/* ═══ BLOCO DE CATEGORIAS ═══ */}
                 <BlocoCategorias selectedMonth={selectedMonth} currentIdx={currentIdx} />
+
+                <BlockSep colCount={24} />
+
+                {/* ═══ BLOCO DE RESUMO GERAL ═══ */}
+                <BlocoResumo
+                  selectedMonth={selectedMonth}
+                  currentIdx={currentIdx}
+                  receitas={contaData.receitas}
+                  despesas={contaData.despesas}
+                  saldoHistoricoPreGrade={contaData.saldoHistoricoPreGrade}
+                />
               </>
             )}
           </tbody>
