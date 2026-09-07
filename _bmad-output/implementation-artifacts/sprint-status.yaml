@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 09-05-2026 16:52
+last_updated: 09-07-2026 15:45
 project: projeto-aureus
 project_key: NOKEY
 tracking_system: file-system
@@ -55,11 +55,11 @@ development_status:
   3-4-sincronização-de-visão-mensal-invalidação-de-cache-e-filtro: done
   epic-3-retrospective: done
 
-  epic-4: in-progress
+  epic-4: done
   4-1-seleção-de-mês-navegação-temporal-e-grid-com-suporte-a-gesto: done
   4-2-bloco-de-consolidação-por-conta-receitas-e-despesas: done
   4-3-bloco-analítico-de-categorias-valores-e-percentuais-com-prot: done
-  4-4-bloco-de-resumo-geral-com-sobra-histórica-acumulada: backlog
+  4-4-bloco-de-resumo-geral-com-sobra-histórica-acumulada: done
   epic-4-retrospective: optional
 action_items:
   - id: "epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave"

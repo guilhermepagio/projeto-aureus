@@ -375,3 +375,7 @@
 - Hardcoded column count (24) in ConsolidacaoGrid.tsx — standard 24-month design layout for Epic 4.
 - Duplicated month abbreviations between ConsolidacaoPage and ConsolidacaoGrid — non-blocking cosmetic refactoring.
 - Fragmented design system colors in ConsolidacaoPage.tsx — pre-existing hex usage in pages.
+
+## Deferred from: code review of spec-4-4-bloco-de-resumo-geral-com-sobra-historica-acumulada.md (2026-09-06)
+- Divergência na agregação entre contas e categorias para lançamentos com conta nula [backend/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:140] — pre-existing logic in category consolidation where null accounts are assigned to synthetic 'Sem Categoria'.
+
