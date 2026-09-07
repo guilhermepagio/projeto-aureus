@@ -22,6 +22,7 @@ import com.guilhermepagio.aureus.backend.domain.Categoria;
 import com.guilhermepagio.aureus.backend.domain.DespesaFixa;
 import com.guilhermepagio.aureus.backend.domain.DespesaVariavel;
 import com.guilhermepagio.aureus.backend.domain.ReceitaFixa;
+import com.guilhermepagio.aureus.backend.domain.ReceitaVariavel;
 import com.guilhermepagio.aureus.backend.domain.dto.ConsolidacaoPorContaDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ConsolidacaoPorContaDTO.LinhaConsolidacaoDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ConsolidacaoPorCategoriaDTO;
@@ -170,5 +171,197 @@ public class ConsolidacaoServiceTest {
         org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> {
             consolidacaoService.calcularConsolidacaoPorConta(null, "2024-01");
         });
+    }
+
+    @Test
+    void testSaldoHistoricoPreGradeSemHistorico() {
+        Conta conta = new Conta();
+        conta.setId(1L);
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(List.of(conta));
+
+        ReceitaFixa rf = new ReceitaFixa();
+        rf.setId(1L);
+        rf.setConta(conta);
+        rf.setDataInicio(LocalDate.of(2024, 5, 1));
+        rf.setValor(new BigDecimal("500.00"));
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(rf));
+
+        DespesaVariavel dv = new DespesaVariavel();
+        dv.setId(2L);
+        dv.setConta(conta);
+        dv.setDataInicio(LocalDate.of(2024, 5, 1));
+        dv.setQuantidadeParcelas(3);
+        dv.setValorParcela(new BigDecimal("100.00"));
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(dv));
+
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-05");
+
+        assertEquals(0, new BigDecimal("0.00").compareTo(dto.getSaldoHistoricoPreGrade()));
+    }
+
+    @Test
+    void testSaldoHistoricoPreGradeComFixosEValoresVariaveis() {
+        Conta conta = new Conta();
+        conta.setId(1L);
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(List.of(conta));
+
+        DespesaFixa df = new DespesaFixa();
+        df.setId(1L);
+        df.setConta(conta);
+        df.setDataInicio(LocalDate.of(2024, 1, 1));
+        df.setValor(new BigDecimal("50.00"));
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(df));
+
+        ReceitaVariavel rv = new ReceitaVariavel();
+        rv.setId(2L);
+        rv.setConta(conta);
+        rv.setDataInicio(LocalDate.of(2024, 1, 15));
+        rv.setQuantidadeParcelas(3);
+        rv.setValorParcela(new BigDecimal("100.00"));
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(rv));
+
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-03");
+
+        assertEquals(0, new BigDecimal("100.00").compareTo(dto.getSaldoHistoricoPreGrade()));
+    }
+
+    @Test
+    void testSaldoHistoricoPreGradeComReceitaFixaEDespesaVariavel() {
+        Conta conta = new Conta();
+        conta.setId(1L);
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(List.of(conta));
+
+        ReceitaFixa rf = new ReceitaFixa();
+        rf.setId(1L);
+        rf.setConta(conta);
+        rf.setDataInicio(LocalDate.of(2023, 11, 1));
+        rf.setValor(new BigDecimal("200.00"));
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(rf));
+
+        DespesaVariavel dv = new DespesaVariavel();
+        dv.setId(2L);
+        dv.setConta(conta);
+        dv.setDataInicio(LocalDate.of(2023, 12, 1));
+        dv.setQuantidadeParcelas(5);
+        dv.setValorParcela(new BigDecimal("80.00"));
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(dv));
+
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-02");
+
+        assertEquals(0, new BigDecimal("440.00").compareTo(dto.getSaldoHistoricoPreGrade()));
+    }
+
+    @Test
+    void testSaldoHistoricoSemDataInicioNaoGeraRetroativo() {
+        Conta conta = new Conta();
+        conta.setId(1L);
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(List.of(conta));
+
+        ReceitaFixa rfSemData = new ReceitaFixa();
+        rfSemData.setId(1L);
+        rfSemData.setConta(conta);
+        rfSemData.setDataInicio(null);
+        rfSemData.setValor(new BigDecimal("500.00"));
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(rfSemData));
+
+        DespesaFixa dfSemData = new DespesaFixa();
+        dfSemData.setId(2L);
+        dfSemData.setConta(conta);
+        dfSemData.setDataInicio(null);
+        dfSemData.setValor(new BigDecimal("300.00"));
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(dfSemData));
+
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-01");
+
+        assertEquals(0, new BigDecimal("0.00").compareTo(dto.getSaldoHistoricoPreGrade()));
+    }
+
+    @Test
+    void testSaldoHistoricoPreGradeNegativo() {
+        Conta conta = new Conta();
+        conta.setId(1L);
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(List.of(conta));
+
+        DespesaFixa df = new DespesaFixa();
+        df.setId(1L);
+        df.setConta(conta);
+        df.setDataInicio(LocalDate.of(2023, 10, 1));
+        df.setValor(new BigDecimal("200.00")); // 3 meses antes de 2024-01 = 600.00
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(df));
+
+        ReceitaFixa rf = new ReceitaFixa();
+        rf.setId(2L);
+        rf.setConta(conta);
+        rf.setDataInicio(LocalDate.of(2023, 11, 1));
+        rf.setValor(new BigDecimal("100.00")); // 2 meses antes de 2024-01 = 200.00
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(rf));
+
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-01");
+
+        // 200.00 (receitas) - 600.00 (despesas) = -400.00
+        assertEquals(0, new BigDecimal("-400.00").compareTo(dto.getSaldoHistoricoPreGrade()));
+    }
+
+    @Test
+    void testSaldoHistoricoPreGradeParcelasVariaveisLimitadasPelaQuantidade() {
+        Conta conta = new Conta();
+        conta.setId(1L);
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(List.of(conta));
+
+        DespesaVariavel dv = new DespesaVariavel();
+        dv.setId(1L);
+        dv.setConta(conta);
+        dv.setDataInicio(LocalDate.of(2024, 1, 1));
+        dv.setQuantidadeParcelas(3);
+        dv.setValorParcela(new BigDecimal("100.00"));
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(dv));
+
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        // 6 meses entre 2024-01 e 2024-07, mas limitado a 3 parcelas = 300.00 de despesas
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-07");
+
+        assertEquals(0, new BigDecimal("-300.00").compareTo(dto.getSaldoHistoricoPreGrade()));
+    }
+
+    @Test
+    void testSaldoHistoricoPreGradeReceitasVariaveisLimitadasPelaQuantidade() {
+        Conta conta = new Conta();
+        conta.setId(1L);
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(List.of(conta));
+
+        ReceitaVariavel rv = new ReceitaVariavel();
+        rv.setId(1L);
+        rv.setConta(conta);
+        rv.setDataInicio(LocalDate.of(2024, 1, 1));
+        rv.setQuantidadeParcelas(3);
+        rv.setValorParcela(new BigDecimal("100.00"));
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(rv));
+
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        // 6 meses entre 2024-01 e 2024-07, mas limitado a 3 parcelas = 300.00 de receitas
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-07");
+
+        assertEquals(0, new BigDecimal("300.00").compareTo(dto.getSaldoHistoricoPreGrade()));
     }
 }

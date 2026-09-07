@@ -141,9 +141,63 @@ public class ConsolidacaoService {
             }
         }
 
+        BigDecimal totalReceitasHistoricas = BigDecimal.ZERO;
+        BigDecimal totalDespesasHistoricas = BigDecimal.ZERO;
+
+        for (ReceitaFixa rf : receitasFixas) {
+            if (rf.getConta() == null || !receitasMap.containsKey(rf.getConta().getId())) continue;
+            if (rf.getDataInicio() != null && rf.getValor() != null) {
+                YearMonth inicio = YearMonth.from(rf.getDataInicio());
+                if (inicio.isBefore(startMonth)) {
+                    long meses = java.time.temporal.ChronoUnit.MONTHS.between(inicio, startMonth);
+                    totalReceitasHistoricas = totalReceitasHistoricas.add(rf.getValor().multiply(BigDecimal.valueOf(meses)));
+                }
+            }
+        }
+
+        for (ReceitaVariavel rv : receitasVariaveis) {
+            if (rv.getConta() == null || !receitasMap.containsKey(rv.getConta().getId())) continue;
+            if (rv.getDataInicio() != null && rv.getQuantidadeParcelas() != null && rv.getQuantidadeParcelas() > 0 && rv.getValorParcela() != null) {
+                YearMonth inicio = YearMonth.from(rv.getDataInicio());
+                if (inicio.isBefore(startMonth)) {
+                    long parcelasAntes = Math.min((long) rv.getQuantidadeParcelas(), java.time.temporal.ChronoUnit.MONTHS.between(inicio, startMonth));
+                    if (parcelasAntes > 0) {
+                        totalReceitasHistoricas = totalReceitasHistoricas.add(rv.getValorParcela().multiply(BigDecimal.valueOf(parcelasAntes)));
+                    }
+                }
+            }
+        }
+
+        for (DespesaFixa df : despesasFixas) {
+            if (df.getConta() == null || !despesasMap.containsKey(df.getConta().getId())) continue;
+            if (df.getDataInicio() != null && df.getValor() != null) {
+                YearMonth inicio = YearMonth.from(df.getDataInicio());
+                if (inicio.isBefore(startMonth)) {
+                    long meses = java.time.temporal.ChronoUnit.MONTHS.between(inicio, startMonth);
+                    totalDespesasHistoricas = totalDespesasHistoricas.add(df.getValor().multiply(BigDecimal.valueOf(meses)));
+                }
+            }
+        }
+
+        for (DespesaVariavel dv : despesasVariaveis) {
+            if (dv.getConta() == null || !despesasMap.containsKey(dv.getConta().getId())) continue;
+            if (dv.getDataInicio() != null && dv.getQuantidadeParcelas() != null && dv.getQuantidadeParcelas() > 0 && dv.getValorParcela() != null) {
+                YearMonth inicio = YearMonth.from(dv.getDataInicio());
+                if (inicio.isBefore(startMonth)) {
+                    long parcelasAntes = Math.min((long) dv.getQuantidadeParcelas(), java.time.temporal.ChronoUnit.MONTHS.between(inicio, startMonth));
+                    if (parcelasAntes > 0) {
+                        totalDespesasHistoricas = totalDespesasHistoricas.add(dv.getValorParcela().multiply(BigDecimal.valueOf(parcelasAntes)));
+                    }
+                }
+            }
+        }
+
+        BigDecimal saldoHistoricoPreGrade = totalReceitasHistoricas.subtract(totalDespesasHistoricas).setScale(2, java.math.RoundingMode.HALF_UP);
+
         return new ConsolidacaoPorContaDTO(
             new ArrayList<>(receitasMap.values()),
-            new ArrayList<>(despesasMap.values())
+            new ArrayList<>(despesasMap.values()),
+            saldoHistoricoPreGrade
         );
     }
 

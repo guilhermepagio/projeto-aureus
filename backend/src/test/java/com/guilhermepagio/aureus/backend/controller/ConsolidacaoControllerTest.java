@@ -4,7 +4,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -67,6 +69,19 @@ public class ConsolidacaoControllerTest {
         mockMvc.perform(get("/api/consolidacao/por-conta")
                 .param("mesAno", "2024-01"))
                 .andExpect(status().isOk());
+
+        verify(consolidacaoService).calcularConsolidacaoPorConta("usuario1", "2024-01");
+    }
+
+    @Test
+    public void deveRetornarSaldoHistoricoPreGrade() throws Exception {
+        when(consolidacaoService.calcularConsolidacaoPorConta("usuario1", "2024-01"))
+                .thenReturn(new ConsolidacaoPorContaDTO(Collections.emptyList(), Collections.emptyList(), new BigDecimal("150.00")));
+
+        mockMvc.perform(get("/api/consolidacao/por-conta")
+                .param("mesAno", "2024-01"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.saldoHistoricoPreGrade").value(150.00));
 
         verify(consolidacaoService).calcularConsolidacaoPorConta("usuario1", "2024-01");
     }
