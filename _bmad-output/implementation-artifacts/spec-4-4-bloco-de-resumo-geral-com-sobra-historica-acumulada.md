@@ -98,6 +98,8 @@ context: ['_bmad-output/implementation-artifacts/epic-4-context.md']
 - [x] [Review][Patch] Reorganizar hooks incondicionalmente no topo de BlocoResumo.tsx conforme as Rules of Hooks [frontend/src/components/Consolidacao/BlocoResumo.tsx:20]
 - [x] [Review][Patch] Implementar setter explícito com fallback para zero em ConsolidacaoPorContaDTO.java [backend/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ConsolidacaoPorContaDTO.java:17]
 - [x] [Review][Patch] Adicionar testes unitários para os estados de loading e error em BlocoResumo.test.tsx [frontend/src/components/Consolidacao/BlocoResumo.test.tsx:90]
+- [x] [Review][Patch] Garantir escala monetária (scale 2) para valores não-nulos em ConsolidacaoPorContaDTO [backend/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ConsolidacaoPorContaDTO.java:25]
+- [x] [Review][Patch] Adicionar atributo type="button" nos botões de navegação em ConsolidacaoToolbar [frontend/src/components/Consolidacao/ConsolidacaoToolbar.tsx:48]
 
 **Acceptance Criteria:**
 - Given todos os blocos anteriores calculados, when as linhas de resumo da Consolidação são renderizadas, then a linha "Total Gasto" exibe a somatória de todas as despesas do mês.

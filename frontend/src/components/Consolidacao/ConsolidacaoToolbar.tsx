@@ -46,6 +46,7 @@ export default function ConsolidacaoToolbar() {
 
         <div className="flex items-center gap-1 bg-white border border-[#E5E7EB] rounded-lg p-1 shadow-sm">
           <button
+            type="button"
             onClick={handlePrevMonth}
             className="w-7 h-7 flex items-center justify-center rounded text-[#6B7280] hover:text-[#0D7377] hover:bg-[#E8F4F4] transition-colors"
             aria-label="Mês anterior"
@@ -56,6 +57,7 @@ export default function ConsolidacaoToolbar() {
             {MONTHS[monthIndex]} {year}
           </span>
           <button
+            type="button"
             onClick={handleNextMonth}
             className="w-7 h-7 flex items-center justify-center rounded text-[#6B7280] hover:text-[#0D7377] hover:bg-[#E8F4F4] transition-colors"
             aria-label="Próximo mês"
@@ -65,6 +67,7 @@ export default function ConsolidacaoToolbar() {
         </div>
 
         <button
+          type="button"
           onClick={handleCurrentMonth}
           className="px-4 py-1.5 text-[13px] font-semibold text-white bg-[#D4A843] hover:bg-[#C09538] rounded-lg shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer"
         >

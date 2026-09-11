@@ -22,11 +22,15 @@ public class ConsolidacaoPorContaDTO {
     public ConsolidacaoPorContaDTO(List<LinhaConsolidacaoDTO> receitas, List<LinhaConsolidacaoDTO> despesas, BigDecimal saldoHistoricoPreGrade) {
         this.receitas = receitas;
         this.despesas = despesas;
-        this.saldoHistoricoPreGrade = saldoHistoricoPreGrade != null ? saldoHistoricoPreGrade : BigDecimal.ZERO.setScale(2, java.math.RoundingMode.HALF_UP);
+        this.saldoHistoricoPreGrade = saldoHistoricoPreGrade != null 
+                ? saldoHistoricoPreGrade.setScale(2, java.math.RoundingMode.HALF_UP) 
+                : BigDecimal.ZERO.setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
     public void setSaldoHistoricoPreGrade(BigDecimal saldoHistoricoPreGrade) {
-        this.saldoHistoricoPreGrade = saldoHistoricoPreGrade != null ? saldoHistoricoPreGrade : BigDecimal.ZERO.setScale(2, java.math.RoundingMode.HALF_UP);
+        this.saldoHistoricoPreGrade = saldoHistoricoPreGrade != null 
+                ? saldoHistoricoPreGrade.setScale(2, java.math.RoundingMode.HALF_UP) 
+                : BigDecimal.ZERO.setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
     @Data
