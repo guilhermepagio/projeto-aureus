@@ -59,7 +59,6 @@ describe('BlocoResumo', () => {
     // Deve exibir as três linhas de consolidação
     expect(screen.getByText('Total Gasto no Mês')).toBeDefined();
     expect(screen.getByText('Sobra do Mês')).toBeDefined();
-    expect(screen.getByText('Sobra Retroativa Acum.')).toBeDefined();
     expect(screen.getByText('Sobra Retroativa Acumulada')).toBeDefined();
 
     // Mês 0 (Jan):
@@ -101,7 +100,7 @@ describe('BlocoResumo', () => {
     expect(screen.getByText('Resumo Geral')).toBeDefined();
     expect(screen.getByText('Total Gasto no Mês')).toBeDefined();
     expect(screen.getByText('Sobra do Mês')).toBeDefined();
-    expect(screen.getByText('Sobra Retroativa Acum.')).toBeDefined();
+    expect(screen.getByText('Sobra Retroativa Acumulada')).toBeDefined();
 
     // Com 0 receitas e 0 despesas, deve renderizar R$ 0,00 sem erros
     const zeros = screen.getAllByText('R$ 0,00');

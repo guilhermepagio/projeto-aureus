@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import ConsolidacaoToolbar from './ConsolidacaoToolbar';
 import { useMonthStore } from '../../store/monthStore';
 
@@ -44,5 +44,56 @@ describe('ConsolidacaoToolbar', () => {
     const now = new Date();
     const expected = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     expect(useMonthStore.getState().selectedMonth).toBe(expected);
+  });
+
+  it('chama onResetScroll quando fornecido e o botão Mês Atual é clicado', () => {
+    const onResetScroll = vi.fn();
+    render(<ConsolidacaoToolbar onResetScroll={onResetScroll} />);
+
+    const btnAtual = screen.getByRole('button', { name: 'Mês Atual' });
+    fireEvent.click(btnAtual);
+
+    expect(onResetScroll).toHaveBeenCalledTimes(1);
+  });
+
+  it('executa scrollTo suave no elemento #consolidacao-scroll-container por fallback', () => {
+    const container = document.createElement('div');
+    container.id = 'consolidacao-scroll-container';
+    container.scrollTo = vi.fn();
+    document.body.appendChild(container);
+
+    render(<ConsolidacaoToolbar />);
+
+    const btnAtual = screen.getByRole('button', { name: 'Mês Atual' });
+    fireEvent.click(btnAtual);
+
+    expect(container.scrollTo).toHaveBeenCalledWith({ left: 0, behavior: 'smooth' });
+    document.body.removeChild(container);
+  });
+
+  it('renderiza a chave seletora (on/off) para Ocultar tudo quando onToggleAll é fornecido', () => {
+    const onToggleAll = vi.fn();
+    const { rerender } = render(
+      <ConsolidacaoToolbar
+        isAllCollapsed={false}
+        onToggleAll={onToggleAll}
+      />
+    );
+
+    const switchBtn = screen.getByRole('switch', { name: 'Ocultar tudo' });
+    expect(switchBtn).toBeDefined();
+    expect(switchBtn.getAttribute('aria-checked')).toBe('false');
+
+    fireEvent.click(switchBtn);
+    expect(onToggleAll).toHaveBeenCalledTimes(1);
+
+    // Rerender com estado ativo
+    rerender(
+      <ConsolidacaoToolbar
+        isAllCollapsed={true}
+        onToggleAll={onToggleAll}
+      />
+    );
+    expect(switchBtn.getAttribute('aria-checked')).toBe('true');
   });
 });

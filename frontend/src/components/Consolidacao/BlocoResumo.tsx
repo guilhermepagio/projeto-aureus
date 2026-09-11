@@ -1,22 +1,31 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useConsolidacao, type LinhaConsolidacaoDTO } from '../../hooks/useConsolidacao';
 import { formatCurrency } from '../../utils/currencyFormat';
 
 export interface BlocoResumoProps {
   selectedMonth?: string | null;
-  currentIdx: number;
+  currentIdx?: number;
   receitas?: LinhaConsolidacaoDTO[];
   despesas?: LinhaConsolidacaoDTO[];
   saldoHistoricoPreGrade?: number;
+  isYearEnd?: (idx: number) => boolean;
+  isCollapsed?: boolean;
+  onToggle?: () => void;
 }
 
 export function BlocoResumo({
   selectedMonth,
-  currentIdx,
   receitas: propsReceitas,
   despesas: propsDespesas,
   saldoHistoricoPreGrade: propsSaldoHistorico,
+  isYearEnd,
+  isCollapsed: propsIsCollapsed,
+  onToggle: propsOnToggle,
 }: BlocoResumoProps) {
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const isCollapsed = propsIsCollapsed !== undefined ? propsIsCollapsed : internalCollapsed;
+  const toggleCollapsed = propsOnToggle ?? (() => setInternalCollapsed(p => !p));
   // If props are provided, use them; otherwise fetch via hook
   const hasProps = Boolean(propsReceitas && propsDespesas);
   const queryResult = useConsolidacao(hasProps || !selectedMonth ? null : selectedMonth);
@@ -107,64 +116,94 @@ export function BlocoResumo({
   return (
     <>
       {/* ═══ BLOCO 5: RESUMO GERAL ═══ */}
-      <tr>
+      <tr
+        onClick={toggleCollapsed}
+        className="cursor-pointer select-none hover:brightness-95 transition-all"
+        role="button"
+        aria-expanded={!isCollapsed}
+      >
         <th
           scope="row"
-          className="px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.8px] border-b border-[#E5E7EB] sticky left-0 z-10 text-left min-w-[180px] bg-teal-50 text-teal-700"
+          className="px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.8px] border-b border-teal-200 border-r border-[#E5E7EB] shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)] sticky left-0 z-10 text-left w-[220px] min-w-[220px] max-w-[220px] bg-teal-100/80 text-teal-900"
         >
-          Resumo Geral
+          <span className="flex items-center gap-1.5">
+            {isCollapsed ? (
+              <ChevronRight className="w-3.5 h-3.5 shrink-0" />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5 shrink-0" />
+            )}
+            <span>Resumo Geral</span>
+          </span>
         </th>
-        <td colSpan={24} className="border-b border-[#E5E7EB] bg-teal-50" />
+        <td colSpan={24} className="border-b border-teal-200 bg-teal-100/80" />
       </tr>
 
-      {/* Linha 1: Total Gasto no Mês */}
-      <tr className="group hover:bg-[#FAFAFA] transition-colors border-t border-[#E5E7EB]">
-        <td className="px-3.5 py-2 text-[13px] font-semibold text-[#1A1A2E] sticky left-0 z-10 bg-white group-hover:bg-[#FAFAFA] border-b border-r border-[#F3F4F6] min-w-[180px] max-w-[180px] truncate transition-colors">
-          <span>Total Gasto no Mês</span>
-        </td>
-        {totalDespesas.map((val, i) => (
-          <td
-            key={i}
-            className={`px-3.5 py-2 text-[13px] font-semibold text-right tabular-nums whitespace-nowrap border-b border-r border-[#F3F4F6] ${i === currentIdx ? 'bg-teal-50/50' : ''} ${val === 0 ? 'text-[#9CA3AF]' : 'text-[#6B7280]'}`}
-            style={{ minWidth: 110 }}
-          >
-            {formatCurrency(val)}
-          </td>
-        ))}
-      </tr>
+      {!isCollapsed && (
+        <>
+          {/* Linha 1: Total Gasto no Mês */}
+          <tr className="group hover:bg-[#FAFAFA] transition-colors">
+            <td className="px-3.5 py-2 text-[13px] font-semibold text-[#1A1A2E] sticky left-0 z-10 bg-white group-hover:bg-[#FAFAFA] border-b border-r border-[#E5E7EB] shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)] w-[220px] min-w-[220px] max-w-[220px] truncate transition-colors">
+              <span>Total Gasto no Mês</span>
+            </td>
+            {totalDespesas.map((val, i) => {
+              const isYearBoundary = isYearEnd ? isYearEnd(i) : false;
+              return (
+                <td
+                  key={i}
+                  className={`px-3.5 py-2 text-[13px] font-semibold text-right tabular-nums whitespace-nowrap border-b border-b-[#F3F4F6] transition-colors ${
+                    isYearBoundary ? 'border-r-2 border-r-slate-300' : 'border-r border-r-[#F3F4F6]'
+                  } ${val > 0 ? 'text-red-600' : 'text-[#9CA3AF]'}`}
+                  style={{ minWidth: 110 }}
+                >
+                  {formatCurrency(val)}
+                </td>
+              );
+            })}
+          </tr>
 
-      {/* Linha 2: Sobra do Mês */}
-      <tr className="group hover:bg-[#FAFAFA] transition-colors">
-        <td className="px-3.5 py-2 text-[13px] font-semibold text-[#1A1A2E] sticky left-0 z-10 bg-white group-hover:bg-[#FAFAFA] border-b border-r border-[#F3F4F6] min-w-[180px] max-w-[180px] truncate transition-colors">
-          <span>Sobra do Mês</span>
-        </td>
-        {sobraMes.map((val, i) => (
-          <td
-            key={i}
-            className={`px-3.5 py-2 text-[13px] text-right tabular-nums whitespace-nowrap border-b border-r border-[#F3F4F6] ${i === currentIdx ? 'bg-teal-50/50' : ''} ${getSemanticColorClass(val)}`}
-            style={{ minWidth: 110 }}
-          >
-            {formatCurrency(val)}
-          </td>
-        ))}
-      </tr>
+          {/* Linha 2: Sobra do Mês */}
+          <tr className="group hover:bg-[#FAFAFA] transition-colors">
+            <td className="px-3.5 py-2 text-[13px] font-semibold text-[#1A1A2E] sticky left-0 z-10 bg-white group-hover:bg-[#FAFAFA] border-b border-r border-[#E5E7EB] shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)] w-[220px] min-w-[220px] max-w-[220px] truncate transition-colors">
+              <span>Sobra do Mês</span>
+            </td>
+            {sobraMes.map((val, i) => {
+              const isYearBoundary = isYearEnd ? isYearEnd(i) : false;
+              return (
+                <td
+                  key={i}
+                  className={`px-3.5 py-2 text-[13px] text-right tabular-nums whitespace-nowrap border-b border-b-[#F3F4F6] transition-colors ${
+                    isYearBoundary ? 'border-r-2 border-r-slate-300' : 'border-r border-r-[#F3F4F6]'
+                  } ${getSemanticColorClass(val)}`}
+                  style={{ minWidth: 110 }}
+                >
+                  {formatCurrency(val)}
+                </td>
+              );
+            })}
+          </tr>
 
-      {/* Linha 3: Sobra Retroativa Acumulada */}
-      <tr className="group hover:bg-[#FAFAFA] transition-colors border-t-2 border-t-[#0D7377]">
-        <td className="px-3.5 py-2 text-[14px] font-bold text-[#1A1A2E] sticky left-0 z-10 bg-white group-hover:bg-[#FAFAFA] border-t-2 border-t-[#0D7377] border-b border-r border-[#F3F4F6] min-w-[180px] max-w-[180px] truncate transition-colors">
-          <span className="sr-only">Sobra Retroativa Acumulada</span>
-          <span aria-hidden="true">Sobra Retroativa Acum.</span>
-        </td>
-        {sobraRetroativa.map((val, i) => (
-          <td
-            key={i}
-            className={`px-3.5 py-2 text-[14px] text-right tabular-nums whitespace-nowrap border-t-2 border-t-[#0D7377] border-b border-r border-[#F3F4F6] ${i === currentIdx ? 'bg-teal-50/50' : ''} ${getSemanticColorClass(val, true)}`}
-            style={{ minWidth: 110 }}
-          >
-            {formatCurrency(val)}
-          </td>
-        ))}
-      </tr>
+          {/* Linha 3: Sobra Retroativa Acumulada */}
+          <tr className="group hover:bg-[#FAFAFA] transition-colors">
+            <td className="px-3.5 py-2 text-[13px] font-semibold text-[#1A1A2E] sticky left-0 z-10 bg-white group-hover:bg-[#FAFAFA] border-b border-r border-[#E5E7EB] shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)] w-[220px] min-w-[220px] max-w-[220px] truncate transition-colors">
+              <span>Sobra Retroativa Acumulada</span>
+            </td>
+            {sobraRetroativa.map((val, i) => {
+              const isYearBoundary = isYearEnd ? isYearEnd(i) : false;
+              return (
+                <td
+                  key={i}
+                  className={`px-3.5 py-2 text-[13px] text-right tabular-nums whitespace-nowrap border-b border-b-[#F3F4F6] transition-colors ${
+                    isYearBoundary ? 'border-r-2 border-r-slate-300' : 'border-r border-r-[#F3F4F6]'
+                  } ${getSemanticColorClass(val)}`}
+                  style={{ minWidth: 110 }}
+                >
+                  {formatCurrency(val)}
+                </td>
+              );
+            })}
+          </tr>
+        </>
+      )}
     </>
   );
 }

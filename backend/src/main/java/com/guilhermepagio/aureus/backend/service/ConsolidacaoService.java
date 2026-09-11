@@ -194,9 +194,38 @@ public class ConsolidacaoService {
 
         BigDecimal saldoHistoricoPreGrade = totalReceitasHistoricas.subtract(totalDespesasHistoricas).setScale(2, java.math.RoundingMode.HALF_UP);
 
+        // Oculta contas que não possuem nenhum valor lançado na grade de 24 meses
+        List<LinhaConsolidacaoDTO> receitasFiltradas = new ArrayList<>();
+        for (LinhaConsolidacaoDTO linha : receitasMap.values()) {
+            boolean hasValue = false;
+            for (BigDecimal valor : linha.getValoresMensais()) {
+                if (valor != null && valor.compareTo(BigDecimal.ZERO) != 0) {
+                    hasValue = true;
+                    break;
+                }
+            }
+            if (hasValue) {
+                receitasFiltradas.add(linha);
+            }
+        }
+
+        List<LinhaConsolidacaoDTO> despesasFiltradas = new ArrayList<>();
+        for (LinhaConsolidacaoDTO linha : despesasMap.values()) {
+            boolean hasValue = false;
+            for (BigDecimal valor : linha.getValoresMensais()) {
+                if (valor != null && valor.compareTo(BigDecimal.ZERO) != 0) {
+                    hasValue = true;
+                    break;
+                }
+            }
+            if (hasValue) {
+                despesasFiltradas.add(linha);
+            }
+        }
+
         return new ConsolidacaoPorContaDTO(
-            new ArrayList<>(receitasMap.values()),
-            new ArrayList<>(despesasMap.values()),
+            receitasFiltradas,
+            despesasFiltradas,
             saldoHistoricoPreGrade
         );
     }

@@ -364,4 +364,59 @@ public class ConsolidacaoServiceTest {
 
         assertEquals(0, new BigDecimal("300.00").compareTo(dto.getSaldoHistoricoPreGrade()));
     }
+
+    @Test
+    void testContasSemValoresLancadosNaGradeSaoOcultadas() {
+        Conta contaAtiva = new Conta();
+        contaAtiva.setId(1L);
+        contaAtiva.setDescricao("Conta Ativa");
+
+        Conta contaInativa = new Conta();
+        contaInativa.setId(2L);
+        contaInativa.setDescricao("Conta Inativa");
+
+        Conta contaSoReceitas = new Conta();
+        contaSoReceitas.setId(3L);
+        contaSoReceitas.setDescricao("Conta Só Receitas");
+
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(List.of(contaAtiva, contaInativa, contaSoReceitas));
+
+        ReceitaFixa rf1 = new ReceitaFixa();
+        rf1.setId(1L);
+        rf1.setConta(contaAtiva);
+        rf1.setDataInicio(LocalDate.of(2024, 1, 1));
+        rf1.setValor(new BigDecimal("100.00"));
+
+        ReceitaFixa rf3 = new ReceitaFixa();
+        rf3.setId(2L);
+        rf3.setConta(contaSoReceitas);
+        rf3.setDataInicio(LocalDate.of(2024, 1, 1));
+        rf3.setValor(new BigDecimal("50.00"));
+
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(rf1, rf3));
+
+        DespesaFixa df1 = new DespesaFixa();
+        df1.setId(1L);
+        df1.setConta(contaAtiva);
+        df1.setDataInicio(LocalDate.of(2024, 1, 1));
+        df1.setValor(new BigDecimal("30.00"));
+
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(df1));
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-01");
+
+        // Receitas deve conter apenas Conta Ativa e Conta Só Receitas (2 contas)
+        assertEquals(2, dto.getReceitas().size());
+        assertTrue(dto.getReceitas().stream().anyMatch(r -> r.getContaId().equals(1L)));
+        assertTrue(dto.getReceitas().stream().anyMatch(r -> r.getContaId().equals(3L)));
+        assertTrue(dto.getReceitas().stream().noneMatch(r -> r.getContaId().equals(2L)));
+
+        // Despesas deve conter apenas Conta Ativa (1 conta)
+        assertEquals(1, dto.getDespesas().size());
+        assertTrue(dto.getDespesas().stream().anyMatch(d -> d.getContaId().equals(1L)));
+        assertTrue(dto.getDespesas().stream().noneMatch(d -> d.getContaId().equals(2L)));
+        assertTrue(dto.getDespesas().stream().noneMatch(d -> d.getContaId().equals(3L)));
+    }
 }
