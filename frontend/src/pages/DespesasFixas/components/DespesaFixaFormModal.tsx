@@ -206,7 +206,7 @@ const DespesaFixaFormModal: React.FC<DespesaFixaFormModalProps> = ({ isOpen, onC
           </button>
           <button
             type="submit"
-            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary-light focus:outline-none"
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none"
             disabled={isPending}
           >
             {isPending ? 'Salvando...' : 'Salvar'}

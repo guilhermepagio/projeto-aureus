@@ -67,9 +67,8 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
       const [year, month] = dataInicio.split('-');
       const d = new Date(Number(year), Number(month) - 1, 1);
       d.setMonth(d.getMonth() + qtdNum - 1);
-      const monthName = d.toLocaleDateString('pt-BR', { month: 'long' });
-      const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-      return `${capitalizedMonth} de ${d.getFullYear()}`;
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      return `${m}/${d.getFullYear()}`;
     }
     return '-';
   }, [dataInicio, quantidadeParcelas]);
@@ -230,21 +229,26 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="receita-dataInicio" className="block text-sm font-medium text-gray-700">
-                  Primeira Parcela (Mês) *
+                  Primeira Parcela *
                 </label>
-                <input
-                  type="month"
-                  id="receita-dataInicio"
-                  value={dataInicio}
-                  onChange={(e) => setDataInicio(e.target.value)}
-                  disabled={isPending}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.dataInicio ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                />
+                <div className={`relative mt-1 flex items-center w-full rounded-md shadow-sm sm:text-sm px-3 py-2 border focus-within:ring-1 focus-within:border-primary focus-within:ring-primary min-h-[38px] ${errors.dataInicio ? 'border-red-500' : 'border-gray-300'} ${isPending ? 'opacity-50 bg-gray-100' : 'bg-white'}`}>
+                  <span className={dataInicio ? 'text-gray-900' : 'text-gray-400'}>
+                    {dataInicio ? `${dataInicio.split('-')[1]}/${dataInicio.split('-')[0]}` : 'MM/YYYY'}
+                  </span>
+                  <input
+                    type="month"
+                    id="receita-dataInicio"
+                    value={dataInicio}
+                    onChange={(e) => setDataInicio(e.target.value)}
+                    disabled={isPending}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:m-0 [&::-webkit-calendar-picker-indicator]:p-0"
+                  />
+                </div>
                 {errors.dataInicio && <p className="mt-1 text-sm text-red-600">{errors.dataInicio}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Última Parcela (Preview)
+                  Última Parcela
                 </label>
                 <div className="mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border border-gray-300 bg-gray-50 text-gray-500">
                   {ultimaParcelaPreview}
