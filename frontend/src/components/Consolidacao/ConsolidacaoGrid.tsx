@@ -285,7 +285,8 @@ export default function ConsolidacaoGrid({
                   <th
                     key={m.value}
                     scope="col"
-                    className={`sticky top-[28px] z-20 px-3.5 py-2.5 text-right text-[11px] font-bold uppercase tracking-[0.5px] whitespace-nowrap border-b-2 border-b-[#E5E7EB] transition-colors cursor-default ${
+                    title={m.label}
+                    className={`sticky top-[28px] z-20 px-3.5 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.5px] whitespace-nowrap border-b-2 border-b-[#E5E7EB] transition-colors cursor-default ${
                       isYearBoundary ? 'border-r-2 border-r-slate-300' : 'border-r border-r-[#F3F4F6]'
                     } bg-white text-[#1A1A2E]`}
                     style={{ minWidth: 110 }}
