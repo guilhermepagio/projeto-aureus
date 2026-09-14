@@ -51,4 +51,35 @@ h5 { font-size: 0.83em; font-weight: bold; margin: 0; }
 h6 { font-size: 0.67em; font-weight: bold; margin: 0; }
 p { margin: 0; }
 
+/* ── Barra de rolagem moderna e minimalista (Linear / Stripe style) ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F3F4F6;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+  border: 2px solid #F3F4F6;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #64748B;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #CBD5E1 #F3F4F6;
+}
+
+
 

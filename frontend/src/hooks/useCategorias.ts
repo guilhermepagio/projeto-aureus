@@ -88,6 +88,7 @@ export const useCreateCategoria = () => {
     mutationFn: createCategoria,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categorias'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Categoria criada com sucesso!');
     },
     onError: (error) => {
@@ -102,6 +103,7 @@ export const useUpdateCategoria = () => {
     mutationFn: updateCategoria,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categorias'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Categoria atualizada com sucesso!');
     },
     onError: (error) => {
@@ -116,6 +118,7 @@ export const useDeleteCategoria = () => {
     mutationFn: deleteCategoria,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categorias'] });
+      queryClient.invalidateQueries({ queryKey: ['consolidacao'] });
       toast.success('Categoria excluída com sucesso!');
     },
     onError: (error) => {

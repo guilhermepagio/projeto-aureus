@@ -61,4 +61,7 @@ public class DespesaFixa extends TenantAwareEntity {
     @Size(max = 300, message = "As observações devem ter no máximo 300 caracteres")
     @Column(length = 300)
     private String observacoes;
+
+    @Column(name = "data_inicio")
+    private java.time.LocalDate dataInicio;
 }

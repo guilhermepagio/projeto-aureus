@@ -45,8 +45,8 @@ const DespesasVariaveisPage: React.FC = () => {
   const isEmpty = filteredDespesas.length === 0;
 
   return (
-    <div className="px-4 pb-4 w-full">
-      <div className="mb-4 mt-2 flex justify-between items-center">
+    <div className="px-4 pb-4 w-full h-full flex flex-col">
+      <div className="mb-4 mt-2 flex justify-between items-center shrink-0">
         <div className="pl-2 border-l-4 border-red-600">
           <h1 className="text-2xl font-bold text-gray-800">Despesas Variáveis</h1>
         </div>
@@ -97,27 +97,33 @@ const DespesasVariaveisPage: React.FC = () => {
           action={{ label: 'Nova Despesa Variável', onClick: handleCreate, color: 'danger' }}
         />
       ) : (
-        <div className="bg-white shadow sm:rounded-2xl overflow-visible mt-2 w-full">
-          <table className="min-w-max w-full divide-y divide-gray-200 table-fixed">
+        <div className="bg-white shadow sm:rounded-2xl overflow-auto mt-2 w-full flex-1 min-h-0">
+          <table className="min-w-max w-full border-separate border-spacing-0 table-fixed relative">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
-              <tr className="divide-x divide-gray-200 h-[44px]">
-                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[255px]">
+              <tr className="h-[44px] [&>th]:border-b [&>th]:border-gray-200 [&>th:not(:first-child)]:border-l">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[400px]">
                   Descrição
                 </th>
-                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
+                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[105px]">
                   Data Compra
                 </th>
-                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[160px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
                   Local Compra
                 </th>
                 <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Valor Parcela
                 </th>
-                <th scope="col" className="px-3 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
-                  Qtd. Parcelas
+                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
+                  Qtd.<br/>Parcelas
                 </th>
                 <th scope="col" className="px-1 py-1 text-center tabular-nums text-xs font-semibold text-gray-700 uppercase tracking-wider w-[120px]">
                   Valor Total
+                </th>
+                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
+                  Primeira<br/>Parcela
+                </th>
+                <th scope="col" className="px-1 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[80px]">
+                  Última<br/>Parcela
                 </th>
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Categoria
@@ -125,17 +131,17 @@ const DespesasVariaveisPage: React.FC = () => {
                 <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[150px]">
                   Conta
                 </th>
-                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[180px]">
+                <th scope="col" className="px-3 py-1 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[400px]">
                   Observações
                 </th>
-                <th scope="col" className="sticky right-0 px-1 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[44px]">
+                <th scope="col" className="sticky right-0 px-1 py-1 bg-gray-50 z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)] w-[44px] min-w-[44px] max-w-[44px]">
                   <span className="sr-only">Ações</span>
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white">
               {filteredDespesas.map((despesa) => (
-                <tr key={despesa.id} className="group even:bg-gray-200 odd:bg-white text-sm divide-x divide-gray-200">
+                <tr key={despesa.id} className="group bg-white hover:bg-gray-50 transition-colors text-sm [&>td]:border-b [&>td]:border-gray-200 [&>td:not(:first-child)]:border-l">
                   <td className="px-3 py-1 font-medium text-gray-900 align-middle">
                     <div className="line-clamp-3 whitespace-normal break-words" title={despesa.descricao}>
                       {despesa.descricao}
@@ -152,11 +158,17 @@ const DespesasVariaveisPage: React.FC = () => {
                   <td className="px-3 py-1 text-center text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela)}
                   </td>
-                  <td className="px-3 py-1 text-center tabular-nums text-gray-900 align-middle">
+                  <td className="px-1 py-1 text-center tabular-nums text-gray-900 align-middle">
                     {despesa.quantidadeParcelas}
                   </td>
                   <td className="px-1 py-1 text-center text-gray-900 tabular-nums whitespace-nowrap align-middle">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valorParcela * despesa.quantidadeParcelas)}
+                  </td>
+                  <td className="px-1 py-1 text-center text-gray-900 tabular-nums align-middle">
+                    {despesa.dataInicio ? new Date(despesa.dataInicio + 'T00:00:00').toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' }) : '-'}
+                  </td>
+                  <td className="px-1 py-1 text-center text-gray-900 tabular-nums align-middle">
+                    {despesa.dataFim ? new Date(despesa.dataFim + 'T00:00:00').toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' }) : '-'}
                   </td>
                   <td className="px-3 py-1 text-center text-gray-900 align-middle">
                     <div className="line-clamp-3 whitespace-normal break-words" title={despesa.categoria?.descricao}>
@@ -173,7 +185,7 @@ const DespesasVariaveisPage: React.FC = () => {
                       {despesa.observacoes || '-'}
                     </div>
                   </td>
-                  <td className="sticky right-0 px-1 py-1 group-even:bg-gray-200 group-odd:bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
+                  <td className="sticky right-0 px-1 py-1 bg-white group-hover:bg-gray-50 transition-colors shadow-[-4px_0_8px_rgba(0,0,0,0.05)] align-middle">
                     <div className="flex justify-center w-full"><ActionMenu onEdit={() => handleEdit(despesa)} onDelete={() => handleDelete(despesa)} /></div>
                   </td>
                 </tr>

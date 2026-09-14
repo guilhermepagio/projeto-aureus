@@ -31,6 +31,14 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
   const hasContas = contas && contas.length > 0;
   const hasCategorias = categorias && categorias.length > 0;
 
+  const isDespesa = location.pathname.includes('despesas');
+  const isReceita = location.pathname.includes('receitas');
+  const themeColorClass = isDespesa
+    ? 'bg-red-600 hover:bg-red-700 focus-visible:outline-red-600'
+    : isReceita
+    ? 'bg-green-600 hover:bg-green-700 focus-visible:outline-green-600'
+    : 'bg-blue-600 hover:bg-blue-700 focus-visible:outline-blue-600';
+
   if ((isErrorContas && !hasContas) || (isErrorCategorias && !hasCategorias)) {
     console.error('Erro ao carregar dependências para os formulários de movimentação');
     return (
@@ -40,7 +48,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
           <p className="mt-1 text-sm text-gray-500 mb-6">Não foi possível carregar contas ou categorias. Por favor, tente novamente.</p>
           <button 
             onClick={() => { refetchContas(); refetchCategorias(); }}
-            className="cursor-pointer inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className={`cursor-pointer inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${themeColorClass}`}
           >
             Tentar novamente
           </button>
@@ -51,10 +59,6 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
 
   if (!hasContas || !hasCategorias) {
     const returnState = { from: location.pathname + location.search + location.hash };
-    const isDespesa = location.pathname.includes('despesas');
-    const buttonColorClass = isDespesa 
-      ? 'bg-red-600 hover:bg-red-700 focus-visible:outline-red-600'
-      : 'bg-primary hover:bg-primary-light focus-visible:outline-primary';
     
     return (
       <div className="p-6 max-w-lg mx-auto">
@@ -81,7 +85,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
               <Link
                 to="/contas"
                 state={returnState}
-                className={`cursor-pointer h-8 px-4 inline-flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
+                className={`cursor-pointer h-8 px-4 inline-flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${themeColorClass}`}
               >
                 <PlusIcon />
                 Cadastrar Conta
@@ -91,7 +95,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
               <Link
                 to="/categorias"
                 state={returnState}
-                className={`cursor-pointer h-8 px-4 inline-flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
+                className={`cursor-pointer h-8 px-4 inline-flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${themeColorClass}`}
               >
                 <PlusIcon />
                 Cadastrar Categoria

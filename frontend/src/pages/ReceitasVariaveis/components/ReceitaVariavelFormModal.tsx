@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { formatCurrency, parseCurrency } from '../../../utils/currencyFormat';
 import Modal from '../../../components/ui/Modal';
+import MonthPicker, { MONTHS } from '../../../components/ui/MonthPicker';
 import { useCreateReceitaVariavel, useUpdateReceitaVariavel, type ReceitaVariavel } from '../../../hooks/useReceitasVariaveis';
 import { useContas } from '../../../hooks/useContas';
 import { useCategorias } from '../../../hooks/useCategorias';
@@ -67,9 +68,10 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
       const [year, month] = dataInicio.split('-');
       const d = new Date(Number(year), Number(month) - 1, 1);
       d.setMonth(d.getMonth() + qtdNum - 1);
-      const monthName = d.toLocaleDateString('pt-BR', { month: 'long' });
-      const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-      return `${capitalizedMonth} de ${d.getFullYear()}`;
+      const mIdx = d.getMonth();
+      const m = String(mIdx + 1).padStart(2, '0');
+      const y = d.getFullYear();
+      return `${MONTHS[mIdx]} ${y} (${m}/${y})`;
     }
     return '-';
   }, [dataInicio, quantidadeParcelas]);
@@ -230,23 +232,24 @@ const ReceitaVariavelFormModal: React.FC<ReceitaVariavelFormModalProps> = ({ isO
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="receita-dataInicio" className="block text-sm font-medium text-gray-700">
-                  Primeira Parcela (Mês) *
+                  Primeira Parcela *
                 </label>
-                <input
-                  type="month"
+                <MonthPicker
                   id="receita-dataInicio"
                   value={dataInicio}
-                  onChange={(e) => setDataInicio(e.target.value)}
+                  onChange={(val) => setDataInicio(val)}
                   disabled={isPending}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.dataInicio ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-primary'}`}
+                  hasError={Boolean(errors.dataInicio)}
+                  theme="green"
+                  placeholder="Selecione o mês"
                 />
                 {errors.dataInicio && <p className="mt-1 text-sm text-red-600">{errors.dataInicio}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Última Parcela (Preview)
+                  Última Parcela
                 </label>
-                <div className="mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border border-gray-300 bg-gray-50 text-gray-500">
+                <div className={`mt-1 flex items-center w-full rounded-md shadow-sm sm:text-sm px-3 py-2 border border-gray-300 bg-gray-50 min-h-[38px] ${ultimaParcelaPreview !== '-' ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
                   {ultimaParcelaPreview}
                 </div>
               </div>

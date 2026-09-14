@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { formatCurrency, parseCurrency } from '../../../utils/currencyFormat';
 import Modal from '../../../components/ui/Modal';
+import MonthPicker, { MONTHS } from '../../../components/ui/MonthPicker';
+import DatePicker from '../../../components/ui/DatePicker';
 import { useCreateDespesaVariavel, useUpdateDespesaVariavel, type DespesaVariavel } from '../../../hooks/useDespesasVariaveis';
 import { useContas } from '../../../hooks/useContas';
 import { useCategorias } from '../../../hooks/useCategorias';
@@ -73,9 +75,10 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
       const [year, month] = dataInicio.split('-');
       const d = new Date(Number(year), Number(month) - 1, 1);
       d.setMonth(d.getMonth() + qtdNum - 1);
-      const monthName = d.toLocaleDateString('pt-BR', { month: 'long' });
-      const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-      return `${capitalizedMonth} de ${d.getFullYear()}`;
+      const mIdx = d.getMonth();
+      const m = String(mIdx + 1).padStart(2, '0');
+      const y = d.getFullYear();
+      return `${MONTHS[mIdx]} ${y} (${m}/${y})`;
     }
     return '-';
   }, [dataInicio, quantidadeParcelas]);
@@ -231,30 +234,31 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
               </div>
             </div>
 
-            <div className="bg-teal-50 border border-teal-200 rounded-md p-3">
-              <p className="text-sm text-teal-800 font-medium">Valor Total: {valorTotalPreview}</p>
+            <div className="bg-red-50 border border-red-200 rounded-md p-3">
+              <p className="text-sm text-red-800 font-medium">Valor Total: {valorTotalPreview}</p>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="despesa-dataInicio" className="block text-sm font-medium text-gray-700">
-                  Primeira Parcela (Mês) *
+                  Primeira Parcela *
                 </label>
-                <input
-                  type="month"
+                <MonthPicker
                   id="despesa-dataInicio"
                   value={dataInicio}
-                  onChange={(e) => setDataInicio(e.target.value)}
+                  onChange={(val) => setDataInicio(val)}
                   disabled={isPending}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${errors.dataInicio ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-primary'}`}
+                  hasError={Boolean(errors.dataInicio)}
+                  theme="red"
+                  placeholder="Selecione o mês"
                 />
                 {errors.dataInicio && <p className="mt-1 text-sm text-red-600">{errors.dataInicio}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Última Parcela (Preview)
+                  Última Parcela
                 </label>
-                <div className="mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border border-gray-300 bg-gray-50 text-gray-500">
+                <div className={`mt-1 flex items-center w-full rounded-md shadow-sm sm:text-sm px-3 py-2 border border-gray-300 bg-gray-50 min-h-[38px] ${ultimaParcelaPreview !== '-' ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
                   {ultimaParcelaPreview}
                 </div>
               </div>
@@ -281,13 +285,13 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
                 <label htmlFor="despesa-dataCompra" className="block text-sm font-medium text-gray-700">
                   Data da Compra
                 </label>
-                <input
-                  type="date"
+                <DatePicker
                   id="despesa-dataCompra"
                   value={dataCompra}
-                  onChange={(e) => setDataCompra(e.target.value)}
+                  onChange={(val) => setDataCompra(val)}
                   disabled={isPending}
-                  className="mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border border-gray-300 disabled:opacity-50 disabled:bg-gray-100 focus:border-primary focus:ring-primary"
+                  theme="red"
+                  placeholder="DD/MM/AAAA"
                 />
               </div>
             </div>
@@ -319,7 +323,7 @@ const DespesaVariavelFormModal: React.FC<DespesaVariavelFormModalProps> = ({ isO
           </button>
           <button
             type="submit"
-            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary-light focus:outline-none"
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none"
             disabled={isPending}
           >
             {isPending ? 'Salvando...' : 'Salvar'}
