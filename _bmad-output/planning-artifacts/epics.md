@@ -54,6 +54,11 @@ FR34: Entrar com Google usando OAuth 2.0 (OpenID Connect).
 FR35: Criar conta local na primeira entrada ou reconhecer conta existente via Identidade Externa.
 FR36: Isolar dados por Usuário para que só acesse seus próprios registros.
 FR37: Encerrar sessão pelo comando "Sair".
+FR38: Testes de Integração e Isolamento Multi-Tenancy no Backend (MockMvc + Testcontainers PostgreSQL).
+FR39: Testes Unitários de Domínio e Cálculos Financeiros no Backend (JUnit 5 + Mockito).
+FR40: Testes de Componentes e Fluxos Críticos no Frontend (Vitest + React Testing Library).
+FR41: Testes End-to-End Cirúrgicos (Playwright - Smoke/Auth e Golden Path Consolidação).
+FR42: Infraestrutura de Testes e Validação Contínua Local / CI Gate.
 
 ### NonFunctional Requirements
 
@@ -134,12 +139,19 @@ FR28: Epic 4 - Bloco Categorias (R$)
 FR29: Epic 4 - Bloco Categorias (%)
 FR30: Epic 4 - Bloco Resumo Geral
 
+FR39: Epic 5 - Testes Unitários de Lógica de Domínio e Cálculos
+FR38: Epic 5 - Testes de Integração e Isolamento Multi-Tenancy
+FR40: Epic 5 - Testes de Componentes Frontend
+FR41: Epic 5 - Testes End-to-End Cirúrgicos (Playwright)
+FR42: Epic 5 - Infraestrutura de Testes e Validação Contínua Local
+
 ## Epic List
 
 * **Epic 1: Autenticação e Navegação Segura (Auth & Shell)** — Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados por usuário, fornecendo a casca visual e navegação principal (Pill Nav Desktop e Bottom Nav Mobile).
 * **Epic 2: Configuração Financeira Básica (Contas e Categorias)** — Permitir que o usuário configure suas origens financeiras e categorias macro com integridade referencial protegida contra exclusões acidentais.
 * **Epic 3: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas e sincronização de filtros.
 * **Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
+* **Epic 5: Testes Automatizados e Qualidade Contínua (Testing Strategy)** — Suíte de testes automatizados com cobertura robusta em 3 camadas (Unitários Backend, Integração/Multitenancy Backend e Componentes Frontend) complementada por 2 testes E2E cirúrgicos com Playwright e pipeline de validação contínua.
 
 ---
 
@@ -393,20 +405,92 @@ So that eu saiba a real evolução patrimonial e a sustentabilidade das minhas f
 
 ---
 
-## Epic 5: Production Readiness & Tech Debt Resolution
+## Epic 5: Testes Automatizados e Qualidade Contínua (Testing Strategy)
 
-Preparar a aplicação para implantação em ambiente produtivo, garantindo que todas as especificações arquiteturais e de estabilidade (como o versionamento de banco) sejam estritamente cumpridas.
+Garantir a confiabilidade, robustez matemática e segurança da V1 através de uma suíte de testes em três camadas (Unitários Backend, Integração/Multitenancy Backend e Componentes Frontend), complementada por 2 testes E2E cirúrgicos com Playwright e um pipeline de validação unificado.
 
-### Story 5.1: Congelamento de Schema e Ativação do Flyway
+### Story 5.1: Testes Unitários de Domínio e Cálculos Financeiros (Backend)
 
-As a Administrador do Sistema,
-I want que o esquema do banco de dados seja versionado e controlado explicitamente via scripts SQL,
-So that implantações em produção sejam seguras, rastreáveis e livres de alterações destrutivas acidentais.
+As a Desenvolvedor / Mantenedor do Sistema,
+I want uma suíte abrangente de testes unitários isolados para as regras de negócio e cálculos do domínio,
+So that possamos garantir a precisão matemática e a estabilidade das fórmulas financeiras sem depender de infraestrutura externa.
 
 **Acceptance Criteria:**
 
-**Given** que a fase de prototipação (Epics 1 a 4) foi finalizada
-**When** o desenvolvedor inicia a preparação para produção
-**Then** um script de migração basilar (`V1__init_schema.sql`) é gerado capturando o estado final de todas as tabelas
-**And** o Hibernate é reconfigurado de `ddl-auto: update` para `ddl-auto: validate`
-**And** a dependência do Flyway é ativada no `pom.xml` para executar as migrações na inicialização do Spring Boot
+**Given** o domínio financeiro do Aureus
+**When** os testes unitários são executados via JUnit 5 e Mockito
+**Then** devem cobrir com precisão:
+- Cálculo de Valor Total (`Valor Parcela × Nº Parcelas`) e de Última Parcela (`Primeira Parcela + (Nº Parcelas - 1) meses`) para movimentações variáveis
+- Regra de parcela única (`Nº Parcelas = 1`): Valor Total = Valor Parcela e Última Parcela = Primeira Parcela
+- Distribuição e projeção de Despesas/Receitas Fixas ao longo dos 24 meses
+- Lógica analítica do `ConsolidacaoService`: agregação por Conta, agrupamento por Categoria (valores absolutos em R$ e proporções em %)
+- Edge cases de cálculo: prevenção de divisão por zero (`NaN`) quando total de despesas do mês for zero, tratamento de saldos negativos e histórico acumulado pré-grade
+**And** todos os testes unitários devem rodar de forma isolada e em milissegundos
+
+### Story 5.2: Testes de Integração REST e Isolamento Multi-Tenancy (Backend)
+
+As a Desenvolvedor / Arquiteto do Sistema,
+I want testes de integração que validem o ciclo de vida das APIs REST, segurança JWT e o isolamento de dados entre usuários,
+So that tenhamos a certeza de que nenhuma falha de segurança, vazamento de dados entre inquilinos ou quebra de integridade referencial ocorra.
+
+**Acceptance Criteria:**
+
+**Given** o backend Spring Boot com segurança e persistência ativas
+**When** os testes de integração forem executados com MockMvc e banco de testes PostgreSQL/Testcontainers
+**Then** devem validar:
+- Rejeição com status `401 Unauthorized` para requisições não autenticadas ou com token inválido/expirado
+- Validação e parsing de claims do JWT (incluindo tenant/usuário)
+- Isolamento estrito de Multi-Tenancy: Usuário A não consegue visualizar, editar nem excluir registros pertencentes ao Usuário B (retornando `404 Not Found` ou `403 Forbidden` sem vazar a existência do recurso)
+- Ciclo completo de CRUD das entidades financeiras (Contas, Categorias, Despesas Fixas/Variáveis, Receitas Fixas/Variáveis)
+- Integridade referencial protegida: tentativa de excluir Conta ou Categoria com movimentações vinculadas deve ser rejeitada com `400 Bad Request` e mensagem explicativa
+- Validações de payload e formato de datas/meses (`YYYY-MM`) nos endpoints REST
+
+### Story 5.3: Testes de Componentes e Fluxos Críticos no Frontend (Frontend)
+
+As a Usuário / Desenvolvedor Frontend,
+I want uma suíte de testes de componentes para os formulários, modais, seletores e tabelas da aplicação,
+So that as interações do usuário, validações de interface e estados visuais funcionem perfeitamente sem regressões visuais ou de usabilidade.
+
+**Acceptance Criteria:**
+
+**Given** os componentes da interface do Aureus
+**When** os testes forem executados via Vitest e React Testing Library
+**Then** devem assegurar:
+- Funcionamento dos formulários de movimentação: cálculo reativo de Valor Total e Última Parcela à medida que o usuário digita
+- Abertura, fechamento (via clique fora, botão X e tecla ESC) e trapping de foco nos modais
+- Componentes seletores personalizados: MonthPicker (navegação entre anos e seleção de mês) e DatePicker (navegação de calendário, atalhos Hoje e Limpar)
+- Alternância de visão do filtro global (mês atual vs histórico total) com reflexo na exibição das listas
+- Confirmação explícita de exclusão via dialog antes de disparar mutações destrutivas
+- Exibição adequada de Empty States e Skeleton Loaders durante estados assíncronos
+
+### Story 5.4: Testes End-to-End Cirúrgicos com Playwright (E2E)
+
+As a Usuário do Aureus,
+I want ter garantia de ponta a ponta de que a aplicação funciona como um todo no navegador real,
+So that eu possa confiar plenamente na integridade dos fluxos críticos de acesso e na consistência dos números consolidados da minha vida financeira.
+
+**Acceptance Criteria:**
+
+**Given** a aplicação completa rodando (frontend + backend)
+**When** a suíte do Playwright for disparada
+**Then** deve executar com sucesso exatamente os 2 cenários cirúrgicos acordados:
+1. **Cenário 1 (Smoke & Auth Flow):** Acesso à página de entrada, fluxo de autenticação mock/token, renderização correta do shell da aplicação (Pill Nav Desktop, título, usuário logado) e logout seguro.
+2. **Cenário 2 (Golden Path da Consolidação):** Criação de uma conta e categoria, lançamento de uma despesa variável parcelada e uma receita fixa, navegação até o Painel de Consolidação e validação de que os valores somados por conta, despesas por categoria e as linhas do Resumo Geral (Total Gasto, Sobra do Mês, Sobra Retroativa Acumulada) coincidem exatamente com o esperado ao longo da grade temporal.
+**And** os testes devem rodar em modo headless por padrão com report HTML gerado em caso de falhas
+
+### Story 5.5: Infraestrutura de Testes e Validação Contínua Local / CI Gate
+
+As a Engenheiro de Software,
+I want scripts unificados e comandos padronizados para execução de todas as camadas de testes e checagens de qualidade,
+So that seja trivial rodar a validação antes de qualquer commit ou pull request com feedback rápido.
+
+**Acceptance Criteria:**
+
+**Given** as camadas de teste implementadas no backend e frontend
+**When** o desenvolvedor executa o comando unificado de checagem
+**Then** o script executa ordenadamente:
+- Backend: compilação, testes unitários e de integração (`mvn test`)
+- Frontend: linting (`npm run lint`), build (`npm run build`) e testes de componentes (`npm test`)
+- E2E: execução opcional dos testes Playwright (`npm run test:e2e`)
+**And** um status consolidado (pass/fail) é reportado com código de saída limpo
+**And** o `README.md` e o `CONTRIBUTING.md` contêm instruções claras e atualizadas de como executar cada suíte de testes individualmente e de forma combinada
