@@ -63,11 +63,10 @@ development_status:
   epic-4-retrospective: done
 
   epic-5: backlog
-  5-1-testes-unitários-de-domínio-e-cálculos-financeiros: backlog
+  5-1-service-layer-dtos-e-testes-unitários-de-domínio: backlog
   5-2-testes-de-integração-rest-e-isolamento-multi-tenancy: backlog
   5-3-testes-de-componentes-e-fluxos-críticos-no-frontend: backlog
-  5-4-testes-end-to-end-cirúrgicos-com-playwright: backlog
-  5-5-infraestrutura-de-testes-e-validação-contínua-local: backlog
+  5-4-infraestrutura-de-validação-contínua-local-e-docs: backlog
   epic-5-retrospective: optional
 action_items:
   - id: "epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave"

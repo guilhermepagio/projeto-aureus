@@ -139,11 +139,10 @@ FR28: Epic 4 - Bloco Categorias (R$)
 FR29: Epic 4 - Bloco Categorias (%)
 FR30: Epic 4 - Bloco Resumo Geral
 
-FR39: Epic 5 - Testes Unitários de Lógica de Domínio e Cálculos
-FR38: Epic 5 - Testes de Integração e Isolamento Multi-Tenancy
+FR39: Epic 5 - Service Layer, DTOs (Records) e Testes Unitários de Domínio
+FR38: Epic 5 - Testes de Integração e Isolamento Multi-Tenancy (Surefire/Failsafe)
 FR40: Epic 5 - Testes de Componentes Frontend
-FR41: Epic 5 - Testes End-to-End Cirúrgicos (Playwright)
-FR42: Epic 5 - Infraestrutura de Testes e Validação Contínua Local
+FR42: Epic 5 - Infraestrutura de Validação Contínua e Documentação Canônica de Testes
 
 ## Epic List
 
@@ -151,7 +150,7 @@ FR42: Epic 5 - Infraestrutura de Testes e Validação Contínua Local
 * **Epic 2: Configuração Financeira Básica (Contas e Categorias)** — Permitir que o usuário configure suas origens financeiras e categorias macro com integridade referencial protegida contra exclusões acidentais.
 * **Epic 3: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas e sincronização de filtros.
 * **Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
-* **Epic 5: Testes Automatizados e Qualidade Contínua (Testing Strategy)** — Suíte de testes automatizados com cobertura robusta em 3 camadas (Unitários Backend, Integração/Multitenancy Backend e Componentes Frontend) complementada por 2 testes E2E cirúrgicos com Playwright e pipeline de validação contínua.
+* **Epic 5: Testes Automatizados e Qualidade Contínua (Testing Strategy)** — Refatoração arquitetural para Service Layer e DTOs (Records), eliminando regras de negócio e entidades dos controllers, complementada por testes em 3 camadas (Unitários Backend sem Docker, Integração/Multitenancy com Testcontainers e Componentes Frontend) e pipeline de validação unificado com documentação canônica.
 
 ---
 
@@ -407,43 +406,43 @@ So that eu saiba a real evolução patrimonial e a sustentabilidade das minhas f
 
 ## Epic 5: Testes Automatizados e Qualidade Contínua (Testing Strategy)
 
-Garantir a confiabilidade, robustez matemática e segurança da V1 através de uma suíte de testes em três camadas (Unitários Backend, Integração/Multitenancy Backend e Componentes Frontend), complementada por 2 testes E2E cirúrgicos com Playwright e um pipeline de validação unificado.
+Garantir a confiabilidade, robustez matemática e segurança da V1 através da consolidação arquitetural do backend (Service Layer e DTOs via Records), suíte de testes em três camadas (Unitários Backend, Integração/Multitenancy Backend com Testcontainers e Componentes Frontend) e pipeline de validação contínua com documentação canônica.
 
-### Story 5.1: Testes Unitários de Domínio e Cálculos Financeiros (Backend)
+### Story 5.1: Service Layer, DTOs (Records) e Testes Unitários de Domínio (Backend)
 
-As a Desenvolvedor / Mantenedor do Sistema,
-I want uma suíte abrangente de testes unitários isolados para as regras de negócio e cálculos do domínio,
-So that possamos garantir a precisão matemática e a estabilidade das fórmulas financeiras sem depender de infraestrutura externa.
+As a Desenvolvedor / Arquiteto do Sistema,
+I want exterminar entidades e regras de negócio dos Controllers legados (DespesaFixa, ReceitaFixa, DespesaVariavel, ReceitaVariavel, Conta, Categoria), criando uma Service Layer dedicada com DTOs imutáveis (Records) e cobertura de testes unitários rápidos,
+So that os controllers atuem estritamente como despachantes de requisições HTTP e toda lógica de negócio e cálculos matemáticos fiquem encapsulados, isolados e validados via testes em milissegundos sem depender de infraestrutura externa.
 
 **Acceptance Criteria:**
 
-**Given** o domínio financeiro do Aureus
-**When** os testes unitários são executados via JUnit 5 e Mockito
-**Then** devem cobrir com precisão:
-- Cálculo de Valor Total (`Valor Parcela × Nº Parcelas`) e de Última Parcela (`Primeira Parcela + (Nº Parcelas - 1) meses`) para movimentações variáveis
-- Regra de parcela única (`Nº Parcelas = 1`): Valor Total = Valor Parcela e Última Parcela = Primeira Parcela
-- Distribuição e projeção de Despesas/Receitas Fixas ao longo dos 24 meses
-- Lógica analítica do `ConsolidacaoService`: agregação por Conta, agrupamento por Categoria (valores absolutos em R$ e proporções em %)
-- Edge cases de cálculo: prevenção de divisão por zero (`NaN`) quando total de despesas do mês for zero, tratamento de saldos negativos e histórico acumulado pré-grade
-**And** todos os testes unitários devem rodar de forma isolada e em milissegundos
+**Given** os Controllers e Repositories das entidades financeiras legadas
+**When** a refatoração arquitetural for implementada
+**Then** deve assegurar:
+- Criação de Service Layer dedicada para cada entidade (`DespesaFixaService`, `ReceitaFixaService`, `DespesaVariavelService`, `ReceitaVariavelService`, `ContaService`, `CategoriaService`), removendo qualquer injeção direta de `Repository` e regras de negócio de dentro dos Controllers
+- Controllers refatorados para atuar exclusivamente como receptadores de requisições HTTP, delegando a execução para os respectivos Services
+- Extermínio do vazamento de entidades `@Entity` JPA nas assinaturas dos Controllers: criação e adoção de DTOs Request/Response implementados como Java `record`
+- Suíte abrangente de testes unitários isolados com JUnit 5 e Mockito para todos os Services criados e para o `ConsolidacaoService`
+- Cobertura completa de cálculos: Valor Total (`Valor Parcela × Nº Parcelas`), Última Parcela (`Primeira Parcela + (Nº Parcelas - 1) meses`), parcela única (`Nº Parcelas = 1`), distribuição nos 24 meses e prevenção de divisão por zero (`NaN`)
+- Todos os testes unitários (`*Test.java`) devem rodar via Maven Surefire (`mvn test`) de forma isolada em milissegundos, sem necessidade de Spring Context ou Docker ativo
 
 ### Story 5.2: Testes de Integração REST e Isolamento Multi-Tenancy (Backend)
 
 As a Desenvolvedor / Arquiteto do Sistema,
-I want testes de integração que validem o ciclo de vida das APIs REST, segurança JWT e o isolamento de dados entre usuários,
-So that tenhamos a certeza de que nenhuma falha de segurança, vazamento de dados entre inquilinos ou quebra de integridade referencial ocorra.
+I want configurar a separação do ciclo de testes no Maven (Surefire vs Failsafe) e implementar testes de integração com MockMvc e Testcontainers (PostgreSQL),
+So that possamos validar o ciclo de vida completo das APIs REST, segurança JWT e o isolamento multi-tenant de dados em um banco real, sem impactar a velocidade dos testes unitários diários.
 
 **Acceptance Criteria:**
 
 **Given** o backend Spring Boot com segurança e persistência ativas
-**When** os testes de integração forem executados com MockMvc e banco de testes PostgreSQL/Testcontainers
-**Then** devem validar:
-- Rejeição com status `401 Unauthorized` para requisições não autenticadas ou com token inválido/expirado
-- Validação e parsing de claims do JWT (incluindo tenant/usuário)
-- Isolamento estrito de Multi-Tenancy: Usuário A não consegue visualizar, editar nem excluir registros pertencentes ao Usuário B (retornando `404 Not Found` ou `403 Forbidden` sem vazar a existência do recurso)
-- Ciclo completo de CRUD das entidades financeiras (Contas, Categorias, Despesas Fixas/Variáveis, Receitas Fixas/Variáveis)
-- Integridade referencial protegida: tentativa de excluir Conta ou Categoria com movimentações vinculadas deve ser rejeitada com `400 Bad Request` e mensagem explicativa
-- Validações de payload e formato de datas/meses (`YYYY-MM`) nos endpoints REST
+**When** os testes de integração forem configurados e executados
+**Then** devem assegurar:
+- Configuração canônica no `pom.xml`: `maven-surefire-plugin` executa `*Test.java` na fase `test` (`mvn test`) e `maven-failsafe-plugin` executa `*IT.java` na fase `verify` (`mvn verify`), garantindo teardown limpo dos containers
+- Testes de integração (`*IT.java`) utilizando MockMvc e banco de dados real gerenciado via Testcontainers (PostgreSQL)
+- Validação de segurança REST: rejeição `401 Unauthorized` para requisições sem token ou com JWT expirado/inválido
+- Validação estrita de Multi-Tenancy: Usuário A não consegue visualizar, alterar ou excluir recursos pertencentes ao Usuário B (retornando `404 Not Found` sem vazar a existência do dado)
+- Validação de contratos REST: testes validam os payloads JSON de entrada e saída dos novos DTOs
+- Proteção de integridade referencial: rejeição de exclusão de Conta ou Categoria que possua movimentações ativas vinculadas (`400 Bad Request`)
 
 ### Story 5.3: Testes de Componentes e Fluxos Críticos no Frontend (Frontend)
 
@@ -454,43 +453,32 @@ So that as interações do usuário, validações de interface e estados visuais
 **Acceptance Criteria:**
 
 **Given** os componentes da interface do Aureus
-**When** os testes forem executados via Vitest e React Testing Library
+**When** os testes forem executados via Vitest e React Testing Library (`npm test`)
 **Then** devem assegurar:
-- Funcionamento dos formulários de movimentação: cálculo reativo de Valor Total e Última Parcela à medida que o usuário digita
-- Abertura, fechamento (via clique fora, botão X e tecla ESC) e trapping de foco nos modais
-- Componentes seletores personalizados: MonthPicker (navegação entre anos e seleção de mês) e DatePicker (navegação de calendário, atalhos Hoje e Limpar)
-- Alternância de visão do filtro global (mês atual vs histórico total) com reflexo na exibição das listas
+- Funcionamento reativo dos formulários de movimentação: recálculo automático de Valor Total e Última Parcela à medida que o usuário digita valores e parcelas
+- Abertura, fechamento (via backdrop, botão fechar e tecla ESC) e trapping de foco nos modais
+- Componentes seletores personalizados: `MonthPicker` (navegação entre anos e seleção de mês) e `DatePicker` (navegação de calendário, atalhos Hoje e Limpar)
+- Alternância de visão do filtro global (mês atual vs histórico total) com reflexo imediato na exibição das listas
 - Confirmação explícita de exclusão via dialog antes de disparar mutações destrutivas
 - Exibição adequada de Empty States e Skeleton Loaders durante estados assíncronos
 
-### Story 5.4: Testes End-to-End Cirúrgicos com Playwright (E2E)
-
-As a Usuário do Aureus,
-I want ter garantia de ponta a ponta de que a aplicação funciona como um todo no navegador real,
-So that eu possa confiar plenamente na integridade dos fluxos críticos de acesso e na consistência dos números consolidados da minha vida financeira.
-
-**Acceptance Criteria:**
-
-**Given** a aplicação completa rodando (frontend + backend)
-**When** a suíte do Playwright for disparada
-**Then** deve executar com sucesso exatamente os 2 cenários cirúrgicos acordados:
-1. **Cenário 1 (Smoke & Auth Flow):** Acesso à página de entrada, fluxo de autenticação mock/token, renderização correta do shell da aplicação (Pill Nav Desktop, título, usuário logado) e logout seguro.
-2. **Cenário 2 (Golden Path da Consolidação):** Criação de uma conta e categoria, lançamento de uma despesa variável parcelada e uma receita fixa, navegação até o Painel de Consolidação e validação de que os valores somados por conta, despesas por categoria e as linhas do Resumo Geral (Total Gasto, Sobra do Mês, Sobra Retroativa Acumulada) coincidem exatamente com o esperado ao longo da grade temporal.
-**And** os testes devem rodar em modo headless por padrão com report HTML gerado em caso de falhas
-
-### Story 5.5: Infraestrutura de Testes e Validação Contínua Local / CI Gate
+### Story 5.4: Infraestrutura de Validação Contínua Local e Documentação Canônica de Testes
 
 As a Engenheiro de Software,
-I want scripts unificados e comandos padronizados para execução de todas as camadas de testes e checagens de qualidade,
-So that seja trivial rodar a validação antes de qualquer commit ou pull request com feedback rápido.
+I want um script unificado de validação local e uma documentação canônica de testes no repositório,
+So that qualquer desenvolvedor compreenda a arquitetura de testes, consiga rodar a suíte completa com um único comando e tenha visibilidade dos débitos e visões futuras.
 
 **Acceptance Criteria:**
 
 **Given** as camadas de teste implementadas no backend e frontend
-**When** o desenvolvedor executa o comando unificado de checagem
-**Then** o script executa ordenadamente:
-- Backend: compilação, testes unitários e de integração (`mvn test`)
-- Frontend: linting (`npm run lint`), build (`npm run build`) e testes de componentes (`npm test`)
-- E2E: execução opcional dos testes Playwright (`npm run test:e2e`)
-**And** um status consolidado (pass/fail) é reportado com código de saída limpo
-**And** o `README.md` e o `CONTRIBUTING.md` contêm instruções claras e atualizadas de como executar cada suíte de testes individualmente e de forma combinada
+**When** o script de checagem unificada for executado
+**Then** deve executar ordenadamente com feedback claro:
+- Backend unitário: `mvn test` (rápido, sem Docker)
+- Frontend: `npm run lint`, `npm run build` e `npm test`
+- Backend integração opcional: `mvn verify` (quando o desenvolvedor desejar subir Testcontainers)
+**And** criação do documento canônico de testes (`docs/architecture/testing.md` ou integrado às docs oficiais) contendo:
+- Estrutura das 3 camadas de teste e responsabilidades de cada uma
+- Matriz qualitativa de testes (regras de negócio, segurança e UX garantidas)
+- Guia de execução de comandos para desenvolvedor solo
+- Registro formal do adiamento do Playwright (E2E) para pós-V1 (após a consolidação do Modo Escuro e da experiência Mobile)
+

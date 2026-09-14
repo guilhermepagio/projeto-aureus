@@ -49,12 +49,12 @@ Este documento preserva contexto técnico, decisões adiadas e profundidade que 
 | Unitário Backend | JUnit 5 + Mockito | Lógica de domínio, cálculos de parcelas, consolidação financeira |
 | Componentes Frontend | Vitest + React Testing Library + jsdom | Formulários, modais, listagens, MonthPicker, DatePicker, filtro global |
 
-### 3.2 Decisões Pendentes para Arquitetura
+### 3.2 Decisões Técnicas Consolidadas para a V1
 
-- Definir se testes E2E de navegador (Playwright/Cypress) entram na V1 ou são deferidos.
-- Definir threshold de cobertura (numérico ou qualitativo).
-- Definir estratégia de fixtures/seeds para cenários de teste do Painel de Consolidação.
-- Definir se haverá CI pipeline (GitHub Actions) na V1 ou se a execução permanece local.
+- **Testes E2E com Playwright:** Deferidos para a V2 (após a implementação do Modo Escuro e da experiência Mobile) para evitar atrito prematuro de orquestração, bypass de autenticação Google e retrabalho de seletores visuais.
+- **Threshold de Cobertura:** Abordagem qualitativa estrita com foco em regras de negócio críticas, cálculos financeiros, integridade referencial, isolamento multi-tenant e usabilidade de componentes visuais (sem imposição de métricas cegas de porcentagem no JaCoCo).
+- **Separação de Ciclo no Maven:** Configuração canônica no `pom.xml` separando testes unitários rápidos via `maven-surefire-plugin` (`*Test.java` no `mvn test` sem necessidade de Docker) e testes de integração com Testcontainers via `maven-failsafe-plugin` (`*IT.java` no `mvn verify`).
+- **Refatoração Arquitetural de Controllers:** Extermínio mandatório de regras de negócio e de entidades JPA nos controllers da aplicação na Story 5.1, estabelecendo Service Layer dedicada e DTOs imutáveis via Java Records.
 
 ## 4. Modo Escuro (Visão V2)
 
