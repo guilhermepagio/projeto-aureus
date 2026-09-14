@@ -139,10 +139,10 @@ FR28: Epic 4 - Bloco Categorias (R$)
 FR29: Epic 4 - Bloco Categorias (%)
 FR30: Epic 4 - Bloco Resumo Geral
 
-FR31: Epic 5 - Service Layer e DTOs (Records) no Backend
-FR32: Epic 5 - Tratamento Global de Erros, Validação de Tenant e Índices
-FR33: Epic 5 - Centralização de Cliente HTTP e Resiliência no Frontend
-FR34: Epic 5 - Abstração e Reuso de Formulários de Movimentação (DRY)
+FR43: Epic 5 - Service Layer e DTOs (Records) no Backend
+FR44: Epic 5 - Tratamento Global de Erros, Validação de Tenant e Índices
+FR45: Epic 5 - Centralização de Cliente HTTP e Resiliência no Frontend
+FR46: Epic 5 - Abstração e Reuso de Formulários de Movimentação (DRY)
 
 FR39: Epic 6 - Testes Unitários de Domínio e Serviços Financeiros
 FR38: Epic 6 - Testes de Integração e Isolamento Multi-Tenancy (Surefire/Failsafe)

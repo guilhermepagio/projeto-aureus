@@ -576,6 +576,24 @@ O sistema possui infraestrutura configurada para execução automatizada dos tes
 - Todos os testes podem ser executados com um único comando por camada (`npm test` para frontend, `./gradlew test` para backend).
 - Nenhum teste depende de estado externo (Google OAuth, rede) — dependências externas são mockadas.
 
+### 4.13 Saneamento Arquitetural e Débitos Técnicos (Hardening)
+
+**Descrição:** O Aureus realiza uma etapa de consolidação arquitetural e saneamento de débitos técnicos antes da suíte final de testes, garantindo que o backend possua uma Service Layer desacoplada e DTOs imutáveis, o tratamento de erros seja padronizado globalmente, a segurança multi-tenant em relacionamentos seja estrita, e o frontend possua um cliente HTTP centralizado com tratamento de erros resiliente e abstrações de formulários sem duplicação (DRY).
+
+**Requisitos Funcionais:**
+
+#### FR-43: Service Layer e DTOs (Records) no Backend
+O backend encapsula toda a lógica de negócio e persistência em classes de serviço dedicadas (`Service Layer`) e utiliza exclusivamente Java Records como DTOs imutáveis para requests e responses, exterminando o vazamento de entidades `@Entity` JPA e injeção direta de Repositories nos Controllers.
+
+#### FR-44: Tratamento Global de Erros, Validação de Tenant em Relacionamentos e Índices
+O backend implementa `@RestControllerAdvice` para padronizar respostas de erro (RFC 7807), valida que todas as entidades vinculadas (Conta e Categoria) pertencem obrigatoriamente ao mesmo usuário autenticado e adiciona índices no banco de dados para otimização de consultas da Consolidação e autenticação.
+
+#### FR-45: Centralização de Cliente HTTP e Resiliência no Frontend
+O frontend adota um cliente de API centralizado com injeção automática de headers CSRF e tratamento de erros estruturados, além de um `ErrorBoundary` global na raiz do React para impedir que falhas de renderização causem tela branca.
+
+#### FR-46: Abstração e Reuso de Formulários de Movimentação (DRY)
+O frontend unifica componentes e lógica de formulários e modais de movimentações financeiras, eliminando código duplicado entre Despesas e Receitas e garantindo acessibilidade com Focus Trap nos modais.
+
 ## 5. Não-Objetivos (Explícito)
 
 - O Aureus **não é** um aplicativo bancário e **não** se integra com bancos ou sistemas financeiros externos.
