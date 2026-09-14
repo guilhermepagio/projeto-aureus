@@ -139,10 +139,15 @@ FR28: Epic 4 - Bloco Categorias (R$)
 FR29: Epic 4 - Bloco Categorias (%)
 FR30: Epic 4 - Bloco Resumo Geral
 
-FR39: Epic 5 - Service Layer, DTOs (Records) e Testes Unitários de Domínio
-FR38: Epic 5 - Testes de Integração e Isolamento Multi-Tenancy (Surefire/Failsafe)
-FR40: Epic 5 - Testes de Componentes Frontend
-FR42: Epic 5 - Infraestrutura de Validação Contínua e Documentação Canônica de Testes
+FR31: Epic 5 - Service Layer e DTOs (Records) no Backend
+FR32: Epic 5 - Tratamento Global de Erros, Validação de Tenant e Índices
+FR33: Epic 5 - Centralização de Cliente HTTP e Resiliência no Frontend
+FR34: Epic 5 - Abstração e Reuso de Formulários de Movimentação (DRY)
+
+FR39: Epic 6 - Testes Unitários de Domínio e Serviços Financeiros
+FR38: Epic 6 - Testes de Integração e Isolamento Multi-Tenancy (Surefire/Failsafe)
+FR40: Epic 6 - Testes de Componentes Frontend (Vitest)
+FR42: Epic 6 - Infraestrutura de Validação Contínua e Documentação Canônica
 
 ## Epic List
 
@@ -150,7 +155,8 @@ FR42: Epic 5 - Infraestrutura de Validação Contínua e Documentação Canônic
 * **Epic 2: Configuração Financeira Básica (Contas e Categorias)** — Permitir que o usuário configure suas origens financeiras e categorias macro com integridade referencial protegida contra exclusões acidentais.
 * **Epic 3: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas e sincronização de filtros.
 * **Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
-* **Epic 5: Testes Automatizados e Qualidade Contínua (Testing Strategy)** — Refatoração arquitetural para Service Layer e DTOs (Records), eliminando regras de negócio e entidades dos controllers, complementada por testes em 3 camadas (Unitários Backend sem Docker, Integração/Multitenancy com Testcontainers e Componentes Frontend) e pipeline de validação unificado com documentação canônica.
+* **Epic 5: Saneamento Arquitetural e Resolução de Débitos Técnicos (Hardening)** — Resolução definitiva dos débitos técnicos acumulados: Service Layer e DTOs Records no backend, `@RestControllerAdvice` global, validação de propriedade multi-tenant em relacionamentos, índices de banco, cliente HTTP centralizado no frontend e abstração compartilhada de formulários (DRY).
+* **Epic 6: Testes Automatizados e Qualidade Contínua (Testing Strategy)** — Suíte robusta de testes em 3 camadas sobre a base saneada (Unitários Backend com JUnit 5/Mockito, Integração com Testcontainers e Failsafe, e Componentes Frontend com Vitest), complementada por pipeline unificado e documentação canônica.
 
 ---
 
@@ -404,29 +410,105 @@ So that eu saiba a real evolução patrimonial e a sustentabilidade das minhas f
 
 ---
 
-## Epic 5: Testes Automatizados e Qualidade Contínua (Testing Strategy)
+## Epic 5: Saneamento Arquitetural e Resolução de Débitos Técnicos (Hardening)
 
-Garantir a confiabilidade, robustez matemática e segurança da V1 através da consolidação arquitetural do backend (Service Layer e DTOs via Records), suíte de testes em três camadas (Unitários Backend, Integração/Multitenancy Backend com Testcontainers e Componentes Frontend) e pipeline de validação contínua com documentação canônica.
+Resolver os débitos técnicos e pendências arquiteturais acumulados ao longo dos Épicos 1 a 4, desacoplando o backend com Service Layer e DTOs Records, estabelecendo tratamento centralizado de erros, garantindo validação estrita de tenant nos relacionamentos, unificando o cliente de API no frontend e eliminando a duplicação dos formulários de movimentações.
 
-### Story 5.1: Service Layer, DTOs (Records) e Testes Unitários de Domínio (Backend)
+### Story 5.1: Backend Service Layer e DTOs (Records) para Entidades Financeiras
 
 As a Desenvolvedor / Arquiteto do Sistema,
-I want exterminar entidades e regras de negócio dos Controllers legados (DespesaFixa, ReceitaFixa, DespesaVariavel, ReceitaVariavel, Conta, Categoria), criando uma Service Layer dedicada com DTOs imutáveis (Records) e cobertura de testes unitários rápidos,
-So that os controllers atuem estritamente como despachantes de requisições HTTP e toda lógica de negócio e cálculos matemáticos fiquem encapsulados, isolados e validados via testes em milissegundos sem depender de infraestrutura externa.
+I want criar uma Service Layer dedicada e DTOs imutáveis (Records) para todas as entidades financeiras legadas (Conta, Categoria, DespesaFixa, ReceitaFixa, DespesaVariavel, ReceitaVariavel),
+So that os controllers atuem estritamente como receptadores e validadores de requisições HTTP, eliminando o acoplamento direto a Repositories e o vazamento de entidades JPA para o frontend.
 
 **Acceptance Criteria:**
 
-**Given** os Controllers e Repositories das entidades financeiras legadas
-**When** a refatoração arquitetural for implementada
+**Given** os controllers e repositories de Contas, Categorias, Despesas e Receitas
+**When** a refatoração for implementada
 **Then** deve assegurar:
-- Criação de Service Layer dedicada para cada entidade (`DespesaFixaService`, `ReceitaFixaService`, `DespesaVariavelService`, `ReceitaVariavelService`, `ContaService`, `CategoriaService`), removendo qualquer injeção direta de `Repository` e regras de negócio de dentro dos Controllers
-- Controllers refatorados para atuar exclusivamente como receptadores de requisições HTTP, delegando a execução para os respectivos Services
-- Extermínio do vazamento de entidades `@Entity` JPA nas assinaturas dos Controllers: criação e adoção de DTOs Request/Response implementados como Java `record`
-- Suíte abrangente de testes unitários isolados com JUnit 5 e Mockito para todos os Services criados e para o `ConsolidacaoService`
-- Cobertura completa de cálculos: Valor Total (`Valor Parcela × Nº Parcelas`), Última Parcela (`Primeira Parcela + (Nº Parcelas - 1) meses`), parcela única (`Nº Parcelas = 1`), distribuição nos 24 meses e prevenção de divisão por zero (`NaN`)
-- Todos os testes unitários (`*Test.java`) devem rodar via Maven Surefire (`mvn test`) de forma isolada em milissegundos, sem necessidade de Spring Context ou Docker ativo
+- Criação de classes de serviço dedicadas (`ContaService`, `CategoriaService`, `DespesaFixaService`, `ReceitaFixaService`, `DespesaVariavelService`, `ReceitaVariavelService`), encapsulando todas as operações de negócio e acesso a dados
+- Remoção completa de injeções diretas de `Repository` de dentro dos Controllers
+- Extermínio de `@Entity` JPA nas assinaturas de métodos (parâmetros de entrada e retornos) de todos os Controllers, adotando Java Records como DTOs imutáveis de Request e Response
+- Validações de entrada via Bean Validation (`@Valid`, `@NotNull`, `@Positive`, etc.) aplicadas diretamente aos Records de Request
+- Todos os endpoints mantêm compatibilidade com o contrato JSON consumido pelo frontend
 
-### Story 5.2: Testes de Integração REST e Isolamento Multi-Tenancy (Backend)
+### Story 5.2: Tratamento Global de Erros, Validação de Tenant em Relacionamentos e Índices
+
+As a Desenvolvedor / Mantenedor do Sistema,
+I want um handler global de exceções, validação de propriedade nos relacionamentos financeiros e criação de índices no banco de dados,
+So that a API retorne erros estruturados padronizados, nenhuma transação viole o isolamento multi-tenant de dados e as consultas críticas de consolidação tenham alta performance.
+
+**Acceptance Criteria:**
+
+**Given** o backend Spring Boot e a base de dados PostgreSQL
+**When** a camada de resiliência e integridade for aplicada
+**Then** deve assegurar:
+- Criação de classe `@RestControllerAdvice` global interceptando:
+  - `DataIntegrityViolationException` (retornando `400 Bad Request` com mensagem explicativa amigável sobre restrição de integridade ou violação de FK)
+  - `MethodArgumentNotValidException` (retornando `400 Bad Request` com mapa detalhado de campos inválidos e mensagens)
+  - `ResourceNotFoundException` / recursos não encontrados (retornando `404 Not Found`)
+  - Erros inesperados genéricos (retornando `500 Internal Server Error` sem vazar stacktrace interna)
+- Validação estrita de Multi-Tenancy em relacionamentos: ao salvar ou atualizar uma Despesa ou Receita vinculada a uma Conta e/ou Categoria, o Service deve validar se a Conta e a Categoria pertencem ao mesmo usuário autenticado, rejeitando tentativas cruzadas com `403 Forbidden` ou `404 Not Found`
+- Padronização da regra de negócio para movimentações sem conta associada na Consolidação (agrupamento consistente sem divergência entre contas e categorias)
+- Migração Flyway adicionando índices de banco de dados para queries de alto impacto: `google_subject_id` em `usuarios`, e `data_inicio`/`data_fim` nas tabelas de movimentações
+
+### Story 5.3: Centralização do Cliente HTTP/API e Resiliência no Frontend
+
+As a Desenvolvedor Frontend,
+I want um cliente de API centralizado com interceptação de erros e um Error Boundary global na aplicação,
+So that o código frontend elimine chamadas raw de fetch duplicadas, gerencie CSRF/headers automaticamente e impeça que erros de renderização quebrem a aplicação inteira em tela branca.
+
+**Acceptance Criteria:**
+
+**Given** a aplicação React e os hooks de consumo de dados
+**When** a infraestrutura de comunicação for refatorada
+**Then** deve assegurar:
+- Criação de um módulo centralizado de cliente de API (`apiClient` / fetcher wrapper) responsável por:
+  - Configuração automática de base URL, headers padrão (`Content-Type: application/json`) e credenciais de sessão
+  - Extração e envio automático do cabeçalho CSRF em todas as mutações (`POST`, `PUT`, `DELETE`)
+  - Interceptação de respostas de erro da API com extração do payload estruturado e suporte a timeout via `AbortSignal`
+- Refatoração de todos os hooks de dados (`useContas`, `useCategorias`, `useDespesasFixas`, `useReceitasFixas`, `useDespesasVariaveis`, `useReceitasVariaveis`, `useConsolidacao`) para consumir exclusivamente o novo cliente de API centralizado
+- Criação de um `ErrorBoundary` global na raiz da aplicação React com UI de fallback limpa e botão "Tentar Novamente", garantindo que falhas em componentes não desmontem toda a interface
+
+### Story 5.4: Abstração e Unificação dos Formulários de Movimentações Financeiras (DRY)
+
+As a Desenvolvedor Frontend,
+I want componentes base reutilizáveis para formulários e modais de movimentações financeiras e acessibilidade aprimorada nos modais,
+So that possamos eliminar centenas de linhas de código duplicadas entre Despesas e Receitas e garantir navegação acessível por teclado.
+
+**Acceptance Criteria:**
+
+**Given** as telas e modais de Despesas Fixas, Receitas Fixas, Despesas Variáveis e Receitas Variáveis
+**When** a refatoração de UI for implementada
+**Then** deve assegurar:
+- Criação de componentes base compartilhados para formulários de movimentações (campos comuns: descrição, valor, conta, categoria, data/mês, observações), reduzindo a duplicação entre as 4 páginas
+- Implementação de `Focus Trap` acessível no componente genérico `Modal` (restringindo o foco do teclado dentro do modal aberto, fechamento com ESC e restauração do foco no elemento acionador ao fechar)
+- Padronização dos atributos semânticos de acessibilidade (`aria-labelledby`, `aria-describedby`, `role="dialog"`) nos modais e seletores
+
+---
+
+## Epic 6: Testes Automatizados e Qualidade Contínua (Testing Strategy)
+
+Garantir a confiabilidade, robustez matemática e segurança da V1 através de uma suíte de testes em três camadas (Unitários Backend, Integração/Multitenancy Backend com Testcontainers e Componentes Frontend) sobre a arquitetura saneada, complementada por um pipeline unificado e documentação canônica.
+
+### Story 6.1: Testes Unitários de Domínio e Serviços Financeiros (Backend)
+
+As a Desenvolvedor / Mantenedor do Sistema,
+I want uma suíte abrangente de testes unitários isolados para os Services criados no Épico 5 e para as regras matemáticas do domínio,
+So that possamos garantir a precisão dos cálculos e a estabilidade das fórmulas financeiras sem depender de banco de dados ou infraestrutura externa.
+
+**Acceptance Criteria:**
+
+**Given** os Services de Contas, Categorias, Despesas, Receitas e Consolidação
+**When** os testes unitários são executados via JUnit 5 e Mockito
+**Then** devem cobrir com precisão:
+- Testes unitários para todos os Services criados (`ContaService`, `CategoriaService`, `DespesaFixaService`, `ReceitaFixaService`, `DespesaVariavelService`, `ReceitaVariavelService`, `ConsolidacaoService`)
+- Cálculo de Valor Total (`Valor Parcela × Nº Parcelas`) e de Última Parcela (`Primeira Parcela + (Nº Parcelas - 1) meses`)
+- Regra de parcela única (`Nº Parcelas = 1`)
+- Lógica analítica do `ConsolidacaoService`: agregação por Conta, agrupamento por Categoria (valores absolutos em R$ e proporções em %)
+- Edge cases de cálculo: prevenção de divisão por zero (`NaN`) quando total de despesas for zero, saldos negativos e histórico acumulado pré-grade
+- Todos os testes unitários (`*Test.java`) devem rodar via Maven Surefire (`mvn test`) de forma isolada em milissegundos, sem necessidade de Docker ativo
+
+### Story 6.2: Testes de Integração REST e Isolamento Multi-Tenancy (Backend)
 
 As a Desenvolvedor / Arquiteto do Sistema,
 I want configurar a separação do ciclo de testes no Maven (Surefire vs Failsafe) e implementar testes de integração com MockMvc e Testcontainers (PostgreSQL),
@@ -437,17 +519,17 @@ So that possamos validar o ciclo de vida completo das APIs REST, segurança JWT 
 **Given** o backend Spring Boot com segurança e persistência ativas
 **When** os testes de integração forem configurados e executados
 **Then** devem assegurar:
-- Configuração canônica no `pom.xml`: `maven-surefire-plugin` executa `*Test.java` na fase `test` (`mvn test`) e `maven-failsafe-plugin` executa `*IT.java` na fase `verify` (`mvn verify`), garantindo teardown limpo dos containers
-- Testes de integração (`*IT.java`) utilizando MockMvc e banco de dados real gerenciado via Testcontainers (PostgreSQL)
+- Configuração canônica no `pom.xml`: `maven-surefire-plugin` executa `*Test.java` na fase `test` (`mvn test`) e `maven-failsafe-plugin` executa `*IT.java` na fase `verify` (`mvn verify`)
+- Testes de integração (`*IT.java`) utilizando MockMvc e banco de dados real via Testcontainers (PostgreSQL)
 - Validação de segurança REST: rejeição `401 Unauthorized` para requisições sem token ou com JWT expirado/inválido
 - Validação estrita de Multi-Tenancy: Usuário A não consegue visualizar, alterar ou excluir recursos pertencentes ao Usuário B (retornando `404 Not Found` sem vazar a existência do dado)
-- Validação de contratos REST: testes validam os payloads JSON de entrada e saída dos novos DTOs
+- Validação dos contratos REST com os novos DTOs Records e respostas estruturadas do `@RestControllerAdvice`
 - Proteção de integridade referencial: rejeição de exclusão de Conta ou Categoria que possua movimentações ativas vinculadas (`400 Bad Request`)
 
-### Story 5.3: Testes de Componentes e Fluxos Críticos no Frontend (Frontend)
+### Story 6.3: Testes de Componentes e Fluxos Críticos no Frontend (Frontend)
 
 As a Usuário / Desenvolvedor Frontend,
-I want uma suíte de testes de componentes para os formulários, modais, seletores e tabelas da aplicação,
+I want uma suíte de testes de componentes para os formulários refatorados, modais, seletores e tabelas da aplicação,
 So that as interações do usuário, validações de interface e estados visuais funcionem perfeitamente sem regressões visuais ou de usabilidade.
 
 **Acceptance Criteria:**
@@ -457,12 +539,12 @@ So that as interações do usuário, validações de interface e estados visuais
 **Then** devem assegurar:
 - Funcionamento reativo dos formulários de movimentação: recálculo automático de Valor Total e Última Parcela à medida que o usuário digita valores e parcelas
 - Abertura, fechamento (via backdrop, botão fechar e tecla ESC) e trapping de foco nos modais
-- Componentes seletores personalizados: `MonthPicker` (navegação entre anos e seleção de mês) e `DatePicker` (navegação de calendário, atalhos Hoje e Limpar)
+- Componentes seletores personalizados: `MonthPicker` e `DatePicker`
 - Alternância de visão do filtro global (mês atual vs histórico total) com reflexo imediato na exibição das listas
 - Confirmação explícita de exclusão via dialog antes de disparar mutações destrutivas
 - Exibição adequada de Empty States e Skeleton Loaders durante estados assíncronos
 
-### Story 5.4: Infraestrutura de Validação Contínua Local e Documentação Canônica de Testes
+### Story 6.4: Infraestrutura de Validação Contínua Local e Documentação Canônica de Testes
 
 As a Engenheiro de Software,
 I want um script unificado de validação local e uma documentação canônica de testes no repositório,
@@ -481,4 +563,5 @@ So that qualquer desenvolvedor compreenda a arquitetura de testes, consiga rodar
 - Matriz qualitativa de testes (regras de negócio, segurança e UX garantidas)
 - Guia de execução de comandos para desenvolvedor solo
 - Registro formal do adiamento do Playwright (E2E) para pós-V1 (após a consolidação do Modo Escuro e da experiência Mobile)
+
 
