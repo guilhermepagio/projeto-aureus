@@ -259,9 +259,9 @@ export default function ConsolidacaoGrid({
                   key={group.year}
                   colSpan={group.count}
                   scope="colgroup"
-                  className="sticky top-0 z-20 bg-slate-100 border-b border-r-2 border-r-slate-300 px-3 py-1 text-center text-[11px] font-bold tracking-wider text-slate-700 uppercase"
+                  className="sticky top-0 z-20 bg-slate-100 border-b border-r-2 border-r-slate-300 px-3.5 py-1 text-left text-[11px] font-bold tracking-wider text-slate-700 uppercase"
                 >
-                  <div className="flex items-center justify-center gap-1.5">
+                  <div className="flex items-center justify-start gap-1.5">
                     <span>{group.year}</span>
                     <span className="text-[10px] font-normal text-slate-500">
                       ({group.count} {group.count === 1 ? 'mês' : 'meses'})

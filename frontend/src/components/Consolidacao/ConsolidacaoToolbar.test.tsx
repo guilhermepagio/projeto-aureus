@@ -96,4 +96,43 @@ describe('ConsolidacaoToolbar', () => {
     );
     expect(switchBtn.getAttribute('aria-checked')).toBe('true');
   });
+
+  it('abre o popover do seletor de datas, navega pelos anos e seleciona um novo mês', () => {
+    render(<ConsolidacaoToolbar />);
+
+    // Popover deve estar inicialmente fechado
+    expect(screen.queryByRole('dialog', { name: 'Seletor de Mês e Ano' })).toBeNull();
+
+    // Clica no botão de selecionar mês e ano
+    const openBtn = screen.getByRole('button', { name: 'Selecionar mês e ano' });
+    fireEvent.click(openBtn);
+
+    // Popover aberto
+    expect(screen.getByRole('dialog', { name: 'Seletor de Mês e Ano' })).toBeDefined();
+    expect(screen.getByText('2026')).toBeDefined();
+
+    // Avança para 2027
+    const nextYearBtn = screen.getByRole('button', { name: 'Próximo ano' });
+    fireEvent.click(nextYearBtn);
+    expect(screen.getByText('2027')).toBeDefined();
+
+    // Clica no mês Dez
+    const dezBtn = screen.getByRole('button', { name: 'Dez' });
+    fireEvent.click(dezBtn);
+
+    // O store deve ser atualizado para 2027-12 e o popover deve ser fechado
+    expect(useMonthStore.getState().selectedMonth).toBe('2027-12');
+    expect(screen.queryByRole('dialog', { name: 'Seletor de Mês e Ano' })).toBeNull();
+  });
+
+  it('fecha o popover ao pressionar a tecla Escape', () => {
+    render(<ConsolidacaoToolbar />);
+
+    const openBtn = screen.getByRole('button', { name: 'Selecionar mês e ano' });
+    fireEvent.click(openBtn);
+    expect(screen.getByRole('dialog', { name: 'Seletor de Mês e Ano' })).toBeDefined();
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.queryByRole('dialog', { name: 'Seletor de Mês e Ano' })).toBeNull();
+  });
 });
