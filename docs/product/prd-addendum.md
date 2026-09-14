@@ -36,25 +36,28 @@ Este documento preserva contexto técnico, decisões adiadas e profundidade que 
 - Definir política de exclusão de conta, desvinculação do Google e retenção de dados financeiros.
 - Definir matriz de testes de segurança: callback inválido, replay, CSRF/state, nonce, token expirado, conta duplicada, isolamento entre usuários e logout.
 
-## 3. Testes Automatizados (Decisões Técnicas)
+## 3. Saneamento Arquitetural e Testes Automatizados (V1)
 
-- **Status:** Confirmado para a V1. Pré-requisito para lançamento.
-- **Contexto:** A V1 exige cobertura robusta de testes antes da adoção pessoal como ferramenta principal. A suíte foi definida em três camadas para isolar responsabilidades e facilitar manutenção.
+- **Status:** Confirmado para a V1 como etapas sequenciais indispensáveis antes do lançamento.
+- **Contexto:** Para garantir que os testes automatizados sejam construídos sobre uma fundação estável, limpa e desacoplada, a V1 divide os esforços em dois épicos dedicados:
+  1. **Épico 5 (Saneamento Arquitetural e Débitos Técnicos):** Resolução dos action items acumulados das retros (Service Layer, DTOs Records, Handler Global de Exceções, validação de propriedade multi-tenant em relacionamentos, índices de banco, cliente HTTP centralizado no frontend e abstração comum de formulários DRY).
+  2. **Épico 6 (Testes Automatizados e Qualidade Contínua):** Suíte de testes em três camadas cobrindo a arquitetura definitiva e saneada.
 
-### 3.1 Estratégia de Camadas
+### 3.1 Estratégia de Camadas de Testes (Épico 6)
 
 | Camada | Framework / Ferramenta | Escopo |
 |---|---|---|
-| Integração Backend | JUnit 5 + Spring Boot Test + TestContainers (PostgreSQL) | Endpoints REST, segurança JWT, multitenancy, integridade referencial |
-| Unitário Backend | JUnit 5 + Mockito | Lógica de domínio, cálculos de parcelas, consolidação financeira |
-| Componentes Frontend | Vitest + React Testing Library + jsdom | Formulários, modais, listagens, MonthPicker, DatePicker, filtro global |
+| Integração Backend | JUnit 5 + Spring Boot Test + Testcontainers (PostgreSQL) + Maven Failsafe | Endpoints REST, segurança JWT, multitenancy, integridade referencial |
+| Unitário Backend | JUnit 5 + Mockito + Maven Surefire | Lógica de domínio, Services desacoplados, cálculos de parcelas e consolidação financeira |
+| Componentes Frontend | Vitest + React Testing Library + jsdom | Formulários abstraídos, modais com focus trap, MonthPicker, DatePicker, filtro global |
 
-### 3.2 Decisões Pendentes para Arquitetura
+### 3.2 Decisões Técnicas Consolidadas para a V1
 
-- Definir se testes E2E de navegador (Playwright/Cypress) entram na V1 ou são deferidos.
-- Definir threshold de cobertura (numérico ou qualitativo).
-- Definir estratégia de fixtures/seeds para cenários de teste do Painel de Consolidação.
-- Definir se haverá CI pipeline (GitHub Actions) na V1 ou se a execução permanece local.
+- **Sequenciamento Obrigatório:** O Épico 5 (Saneamento) precede o Épico 6 (Testes), garantindo que a suíte seja escrita contra contratos finais, DTOs Records e Services, sem risco de quebras por refatoração tardia.
+- **Testes E2E com Playwright:** Deferidos para a V2 (após a implementação do Modo Escuro e da experiência Mobile) para evitar atrito prematuro de orquestração, bypass de autenticação Google e retrabalho de seletores visuais.
+- **Threshold de Cobertura:** Abordagem qualitativa estrita com foco em regras de negócio críticas, cálculos financeiros, integridade referencial, isolamento multi-tenant e usabilidade de componentes visuais (sem imposição de métricas cegas de porcentagem no JaCoCo).
+- **Separação de Ciclo no Maven:** Configuração canônica no `pom.xml` separando testes unitários rápidos via `maven-surefire-plugin` (`*Test.java` no `mvn test` sem necessidade de Docker) e testes de integração com Testcontainers via `maven-failsafe-plugin` (`*IT.java` no `mvn verify`).
+- **Refatoração Arquitetural de Controllers:** Extermínio mandatório de regras de negócio e de entidades JPA nos controllers da aplicação no Épico 5, estabelecendo Service Layer dedicada e DTOs imutáveis via Java Records.
 
 ## 4. Modo Escuro (Visão V2)
 

@@ -54,6 +54,11 @@ FR34: Entrar com Google usando OAuth 2.0 (OpenID Connect).
 FR35: Criar conta local na primeira entrada ou reconhecer conta existente via Identidade Externa.
 FR36: Isolar dados por Usuário para que só acesse seus próprios registros.
 FR37: Encerrar sessão pelo comando "Sair".
+FR38: Testes de Integração e Isolamento Multi-Tenancy no Backend (MockMvc + Testcontainers PostgreSQL).
+FR39: Testes Unitários de Domínio e Cálculos Financeiros no Backend (JUnit 5 + Mockito).
+FR40: Testes de Componentes e Fluxos Críticos no Frontend (Vitest + React Testing Library).
+FR41: Testes End-to-End Cirúrgicos (Playwright - Smoke/Auth e Golden Path Consolidação).
+FR42: Infraestrutura de Testes e Validação Contínua Local / CI Gate.
 
 ### NonFunctional Requirements
 
@@ -134,12 +139,19 @@ FR28: Epic 4 - Bloco Categorias (R$)
 FR29: Epic 4 - Bloco Categorias (%)
 FR30: Epic 4 - Bloco Resumo Geral
 
+FR43: Epic 5 - Service Layer e DTOs (Records) no Backend
+FR44: Epic 5 - Tratamento Global de Erros, Validação de Tenant e Índices
+FR45: Epic 5 - Centralização de Cliente HTTP e Resiliência no Frontend
+FR46: Epic 5 - Abstração e Reuso de Formulários de Movimentação (DRY)
+
 ## Epic List
 
 * **Epic 1: Autenticação e Navegação Segura (Auth & Shell)** — Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados por usuário, fornecendo a casca visual e navegação principal (Pill Nav Desktop e Bottom Nav Mobile).
 * **Epic 2: Configuração Financeira Básica (Contas e Categorias)** — Permitir que o usuário configure suas origens financeiras e categorias macro com integridade referencial protegida contra exclusões acidentais.
 * **Epic 3: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas e sincronização de filtros.
 * **Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
+* **Epic 5: Saneamento Arquitetural e Resolução de Débitos Técnicos (Hardening)** — Resolução definitiva dos débitos técnicos acumulados: Service Layer e DTOs Records no backend, `@RestControllerAdvice` global, validação de propriedade multi-tenant em relacionamentos, índices de banco, cliente HTTP centralizado no frontend e abstração compartilhada de formulários (DRY).
+* **Epic 6: Testes Automatizados e Qualidade Contínua (Testing Strategy)** — Suíte robusta de testes em 3 camadas sobre a base saneada (a ser integrada formalmente via branch `planning/epico-6` após o Épico 5).
 
 ---
 
@@ -393,20 +405,85 @@ So that eu saiba a real evolução patrimonial e a sustentabilidade das minhas f
 
 ---
 
-## Epic 5: Production Readiness & Tech Debt Resolution
+## Epic 5: Saneamento Arquitetural e Resolução de Débitos Técnicos (Hardening)
 
-Preparar a aplicação para implantação em ambiente produtivo, garantindo que todas as especificações arquiteturais e de estabilidade (como o versionamento de banco) sejam estritamente cumpridas.
+Resolver os débitos técnicos e pendências arquiteturais acumulados ao longo dos Épicos 1 a 4, desacoplando o backend com Service Layer e DTOs Records, estabelecendo tratamento centralizado de erros, garantindo validação estrita de tenant nos relacionamentos, unificando o cliente de API no frontend e eliminando a duplicação dos formulários de movimentações.
 
-### Story 5.1: Congelamento de Schema e Ativação do Flyway
+### Story 5.1: Backend Service Layer e DTOs (Records) para Entidades Financeiras
 
-As a Administrador do Sistema,
-I want que o esquema do banco de dados seja versionado e controlado explicitamente via scripts SQL,
-So that implantações em produção sejam seguras, rastreáveis e livres de alterações destrutivas acidentais.
+As a Desenvolvedor / Arquiteto do Sistema,
+I want criar uma Service Layer dedicada e DTOs imutáveis (Records) para todas as entidades financeiras legadas (Conta, Categoria, DespesaFixa, ReceitaFixa, DespesaVariavel, ReceitaVariavel),
+So that os controllers atuem estritamente como receptadores e validadores de requisições HTTP, eliminando o acoplamento direto a Repositories e o vazamento de entidades JPA para o frontend.
 
 **Acceptance Criteria:**
 
-**Given** que a fase de prototipação (Epics 1 a 4) foi finalizada
-**When** o desenvolvedor inicia a preparação para produção
-**Then** um script de migração basilar (`V1__init_schema.sql`) é gerado capturando o estado final de todas as tabelas
-**And** o Hibernate é reconfigurado de `ddl-auto: update` para `ddl-auto: validate`
-**And** a dependência do Flyway é ativada no `pom.xml` para executar as migrações na inicialização do Spring Boot
+**Given** os controllers e repositories de Contas, Categorias, Despesas e Receitas
+**When** a refatoração for implementada
+**Then** deve assegurar:
+- Criação de classes de serviço dedicadas (`ContaService`, `CategoriaService`, `DespesaFixaService`, `ReceitaFixaService`, `DespesaVariavelService`, `ReceitaVariavelService`), encapsulando todas as operações de negócio e acesso a dados
+- Remoção completa de injeções diretas de `Repository` de dentro dos Controllers
+- Extermínio de `@Entity` JPA nas assinaturas de métodos (parâmetros de entrada e retornos) de todos os Controllers, adotando Java Records como DTOs imutáveis de Request e Response
+- Validações de entrada via Bean Validation (`@Valid`, `@NotNull`, `@Positive`, etc.) aplicadas diretamente aos Records de Request
+- Todos os endpoints mantêm compatibilidade com o contrato JSON consumido pelo frontend
+
+### Story 5.2: Tratamento Global de Erros, Validação de Tenant em Relacionamentos e Índices
+
+As a Desenvolvedor / Mantenedor do Sistema,
+I want um handler global de exceções, validação de propriedade nos relacionamentos financeiros e criação de índices no banco de dados,
+So that a API retorne erros estruturados padronizados, nenhuma transação viole o isolamento multi-tenant de dados e as consultas críticas de consolidação tenham alta performance.
+
+**Acceptance Criteria:**
+
+**Given** o backend Spring Boot e a base de dados PostgreSQL
+**When** a camada de resiliência e integridade for aplicada
+**Then** deve assegurar:
+- Criação de classe `@RestControllerAdvice` global interceptando:
+  - `DataIntegrityViolationException` (retornando `400 Bad Request` com mensagem explicativa amigável sobre restrição de integridade ou violação de FK)
+  - `MethodArgumentNotValidException` (retornando `400 Bad Request` com mapa detalhado de campos inválidos e mensagens)
+  - `ResourceNotFoundException` / recursos não encontrados (retornando `404 Not Found`)
+  - Erros inesperados genéricos (retornando `500 Internal Server Error` sem vazar stacktrace interna)
+- Validação estrita de Multi-Tenancy em relacionamentos: ao salvar ou atualizar uma Despesa ou Receita vinculada a uma Conta e/ou Categoria, o Service deve validar se a Conta e a Categoria pertencem ao mesmo usuário autenticado, rejeitando tentativas cruzadas com `403 Forbidden` ou `404 Not Found`
+- Padronização da regra de negócio para movimentações sem conta associada na Consolidação (agrupamento consistente sem divergência entre contas e categorias)
+- Migração Flyway adicionando índices de banco de dados para queries de alto impacto: `google_subject_id` em `usuarios`, e `data_inicio`/`data_fim` nas tabelas de movimentações
+
+### Story 5.3: Centralização do Cliente HTTP/API e Resiliência no Frontend
+
+As a Desenvolvedor Frontend,
+I want um cliente de API centralizado com interceptação de erros e um Error Boundary global na aplicação,
+So that o código frontend elimine chamadas raw de fetch duplicadas, gerencie CSRF/headers automaticamente e impeça que erros de renderização quebrem a aplicação inteira em tela branca.
+
+**Acceptance Criteria:**
+
+**Given** a aplicação React e os hooks de consumo de dados
+**When** a infraestrutura de comunicação for refatorada
+**Then** deve assegurar:
+- Criação de um módulo centralizado de cliente de API (`apiClient` / fetcher wrapper) responsável por:
+  - Configuração automática de base URL, headers padrão (`Content-Type: application/json`) e credenciais de sessão
+  - Extração e envio automático do cabeçalho CSRF em todas as mutações (`POST`, `PUT`, `DELETE`)
+  - Interceptação de respostas de erro da API com extração do payload estruturado e suporte a timeout via `AbortSignal`
+- Refatoração de todos os hooks de dados (`useContas`, `useCategorias`, `useDespesasFixas`, `useReceitasFixas`, `useDespesasVariaveis`, `useReceitasVariaveis`, `useConsolidacao`) para consumir exclusivamente o novo cliente de API centralizado
+- Criação de um `ErrorBoundary` global na raiz da aplicação React com UI de fallback limpa e botão "Tentar Novamente", garantindo que falhas em componentes não desmontem toda a interface
+
+### Story 5.4: Abstração e Unificação dos Formulários de Movimentações Financeiras (DRY)
+
+As a Desenvolvedor Frontend,
+I want componentes base reutilizáveis para formulários e modais de movimentações financeiras e acessibilidade aprimorada nos modais,
+So that possamos eliminar centenas de linhas de código duplicadas entre Despesas e Receitas e garantir navegação acessível por teclado.
+
+**Acceptance Criteria:**
+
+**Given** as telas e modais de Despesas Fixas, Receitas Fixas, Despesas Variáveis e Receitas Variáveis
+**When** a refatoração de UI for implementada
+**Then** deve assegurar:
+- Criação de componentes base compartilhados para formulários de movimentações (campos comuns: descrição, valor, conta, categoria, data/mês, observações), reduzindo a duplicação entre as 4 páginas
+- Implementação de `Focus Trap` acessível no componente genérico `Modal` (restringindo o foco do teclado dentro do modal aberto, fechamento com ESC e restauração do foco no elemento acionador ao fechar)
+- Padronização dos atributos semânticos de acessibilidade (`aria-labelledby`, `aria-describedby`, `role="dialog"`) nos modais e seletores
+
+---
+
+## Epic 6: Testes Automatizados e Qualidade Contínua (Testing Strategy)
+
+*(O detalhamento completo das histórias 6.1 a 6.4, critérios de aceite e camadas de teste está preservado e será integrado via branch dedicada `planning/epico-6` após a conclusão e merge do Épico 5 na `main`).*
+
+
+

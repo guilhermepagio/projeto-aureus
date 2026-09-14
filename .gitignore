@@ -9,3 +9,5 @@ _bmad/
 .opencode/
 
 # _bmad-output/ é versionado (artefatos do projeto)
+
+.vscode/
