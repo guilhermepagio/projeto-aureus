@@ -144,11 +144,6 @@ FR44: Epic 5 - Tratamento Global de Erros, Validação de Tenant e Índices
 FR45: Epic 5 - Centralização de Cliente HTTP e Resiliência no Frontend
 FR46: Epic 5 - Abstração e Reuso de Formulários de Movimentação (DRY)
 
-FR39: Epic 6 - Testes Unitários de Domínio e Serviços Financeiros
-FR38: Epic 6 - Testes de Integração e Isolamento Multi-Tenancy (Surefire/Failsafe)
-FR40: Epic 6 - Testes de Componentes Frontend (Vitest)
-FR42: Epic 6 - Infraestrutura de Validação Contínua e Documentação Canônica
-
 ## Epic List
 
 * **Epic 1: Autenticação e Navegação Segura (Auth & Shell)** — Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados por usuário, fornecendo a casca visual e navegação principal (Pill Nav Desktop e Bottom Nav Mobile).
@@ -156,7 +151,7 @@ FR42: Epic 6 - Infraestrutura de Validação Contínua e Documentação Canônic
 * **Epic 3: Lançamentos Financeiros (Despesas e Receitas)** — Permitir o registro, edição, listagem e exclusão de receitas e despesas (fixas e variáveis), com pré-visualização de parcelas e sincronização de filtros.
 * **Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
 * **Epic 5: Saneamento Arquitetural e Resolução de Débitos Técnicos (Hardening)** — Resolução definitiva dos débitos técnicos acumulados: Service Layer e DTOs Records no backend, `@RestControllerAdvice` global, validação de propriedade multi-tenant em relacionamentos, índices de banco, cliente HTTP centralizado no frontend e abstração compartilhada de formulários (DRY).
-* **Epic 6: Testes Automatizados e Qualidade Contínua (Testing Strategy)** — Suíte robusta de testes em 3 camadas sobre a base saneada (Unitários Backend com JUnit 5/Mockito, Integração com Testcontainers e Failsafe, e Componentes Frontend com Vitest), complementada por pipeline unificado e documentação canônica.
+* **Epic 6: Testes Automatizados e Qualidade Contínua (Testing Strategy)** — Suíte robusta de testes em 3 camadas sobre a base saneada (a ser integrada formalmente via branch `planning/epico-6` após o Épico 5).
 
 ---
 
@@ -488,80 +483,7 @@ So that possamos eliminar centenas de linhas de código duplicadas entre Despesa
 
 ## Epic 6: Testes Automatizados e Qualidade Contínua (Testing Strategy)
 
-Garantir a confiabilidade, robustez matemática e segurança da V1 através de uma suíte de testes em três camadas (Unitários Backend, Integração/Multitenancy Backend com Testcontainers e Componentes Frontend) sobre a arquitetura saneada, complementada por um pipeline unificado e documentação canônica.
+*(O detalhamento completo das histórias 6.1 a 6.4, critérios de aceite e camadas de teste está preservado e será integrado via branch dedicada `planning/epico-6` após a conclusão e merge do Épico 5 na `main`).*
 
-### Story 6.1: Testes Unitários de Domínio e Serviços Financeiros (Backend)
-
-As a Desenvolvedor / Mantenedor do Sistema,
-I want uma suíte abrangente de testes unitários isolados para os Services criados no Épico 5 e para as regras matemáticas do domínio,
-So that possamos garantir a precisão dos cálculos e a estabilidade das fórmulas financeiras sem depender de banco de dados ou infraestrutura externa.
-
-**Acceptance Criteria:**
-
-**Given** os Services de Contas, Categorias, Despesas, Receitas e Consolidação
-**When** os testes unitários são executados via JUnit 5 e Mockito
-**Then** devem cobrir com precisão:
-- Testes unitários para todos os Services criados (`ContaService`, `CategoriaService`, `DespesaFixaService`, `ReceitaFixaService`, `DespesaVariavelService`, `ReceitaVariavelService`, `ConsolidacaoService`)
-- Cálculo de Valor Total (`Valor Parcela × Nº Parcelas`) e de Última Parcela (`Primeira Parcela + (Nº Parcelas - 1) meses`)
-- Regra de parcela única (`Nº Parcelas = 1`)
-- Lógica analítica do `ConsolidacaoService`: agregação por Conta, agrupamento por Categoria (valores absolutos em R$ e proporções em %)
-- Edge cases de cálculo: prevenção de divisão por zero (`NaN`) quando total de despesas for zero, saldos negativos e histórico acumulado pré-grade
-- Todos os testes unitários (`*Test.java`) devem rodar via Maven Surefire (`mvn test`) de forma isolada em milissegundos, sem necessidade de Docker ativo
-
-### Story 6.2: Testes de Integração REST e Isolamento Multi-Tenancy (Backend)
-
-As a Desenvolvedor / Arquiteto do Sistema,
-I want configurar a separação do ciclo de testes no Maven (Surefire vs Failsafe) e implementar testes de integração com MockMvc e Testcontainers (PostgreSQL),
-So that possamos validar o ciclo de vida completo das APIs REST, segurança JWT e o isolamento multi-tenant de dados em um banco real, sem impactar a velocidade dos testes unitários diários.
-
-**Acceptance Criteria:**
-
-**Given** o backend Spring Boot com segurança e persistência ativas
-**When** os testes de integração forem configurados e executados
-**Then** devem assegurar:
-- Configuração canônica no `pom.xml`: `maven-surefire-plugin` executa `*Test.java` na fase `test` (`mvn test`) e `maven-failsafe-plugin` executa `*IT.java` na fase `verify` (`mvn verify`)
-- Testes de integração (`*IT.java`) utilizando MockMvc e banco de dados real via Testcontainers (PostgreSQL)
-- Validação de segurança REST: rejeição `401 Unauthorized` para requisições sem token ou com JWT expirado/inválido
-- Validação estrita de Multi-Tenancy: Usuário A não consegue visualizar, alterar ou excluir recursos pertencentes ao Usuário B (retornando `404 Not Found` sem vazar a existência do dado)
-- Validação dos contratos REST com os novos DTOs Records e respostas estruturadas do `@RestControllerAdvice`
-- Proteção de integridade referencial: rejeição de exclusão de Conta ou Categoria que possua movimentações ativas vinculadas (`400 Bad Request`)
-
-### Story 6.3: Testes de Componentes e Fluxos Críticos no Frontend (Frontend)
-
-As a Usuário / Desenvolvedor Frontend,
-I want uma suíte de testes de componentes para os formulários refatorados, modais, seletores e tabelas da aplicação,
-So that as interações do usuário, validações de interface e estados visuais funcionem perfeitamente sem regressões visuais ou de usabilidade.
-
-**Acceptance Criteria:**
-
-**Given** os componentes da interface do Aureus
-**When** os testes forem executados via Vitest e React Testing Library (`npm test`)
-**Then** devem assegurar:
-- Funcionamento reativo dos formulários de movimentação: recálculo automático de Valor Total e Última Parcela à medida que o usuário digita valores e parcelas
-- Abertura, fechamento (via backdrop, botão fechar e tecla ESC) e trapping de foco nos modais
-- Componentes seletores personalizados: `MonthPicker` e `DatePicker`
-- Alternância de visão do filtro global (mês atual vs histórico total) com reflexo imediato na exibição das listas
-- Confirmação explícita de exclusão via dialog antes de disparar mutações destrutivas
-- Exibição adequada de Empty States e Skeleton Loaders durante estados assíncronos
-
-### Story 6.4: Infraestrutura de Validação Contínua Local e Documentação Canônica de Testes
-
-As a Engenheiro de Software,
-I want um script unificado de validação local e uma documentação canônica de testes no repositório,
-So that qualquer desenvolvedor compreenda a arquitetura de testes, consiga rodar a suíte completa com um único comando e tenha visibilidade dos débitos e visões futuras.
-
-**Acceptance Criteria:**
-
-**Given** as camadas de teste implementadas no backend e frontend
-**When** o script de checagem unificada for executado
-**Then** deve executar ordenadamente com feedback claro:
-- Backend unitário: `mvn test` (rápido, sem Docker)
-- Frontend: `npm run lint`, `npm run build` e `npm test`
-- Backend integração opcional: `mvn verify` (quando o desenvolvedor desejar subir Testcontainers)
-**And** criação do documento canônico de testes (`docs/architecture/testing.md` ou integrado às docs oficiais) contendo:
-- Estrutura das 3 camadas de teste e responsabilidades de cada uma
-- Matriz qualitativa de testes (regras de negócio, segurança e UX garantidas)
-- Guia de execução de comandos para desenvolvedor solo
-- Registro formal do adiamento do Playwright (E2E) para pós-V1 (após a consolidação do Modo Escuro e da experiência Mobile)
 
 
