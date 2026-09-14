@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 09-10-2026 22:53
+last_updated: 09-14-2026 01:11
 project: projeto-aureus
 project_key: NOKEY
 tracking_system: file-system
@@ -60,14 +60,14 @@ development_status:
   4-2-bloco-de-consolidação-por-conta-receitas-e-despesas: done
   4-3-bloco-analítico-de-categorias-valores-e-percentuais-com-prot: done
   4-4-bloco-de-resumo-geral-com-sobra-histórica-acumulada: done
-  epic-4-retrospective: optional
+  epic-4-retrospective: done
 action_items:
   - id: "epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave"
     epic: 1
     action: "Corrigir ordem das abas na barra de navegacao (Receitas Variaveis antes
       de Receitas Fixas)"
     owner: "Guilherme"
-    status: open
+    status: done
     ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-1/epic-1-retro-08-19-2026.md"
   - id: "epic-1-retro-item-2-criar-testes-automatizados-para-o-pacote"
     epic: 1
@@ -110,3 +110,29 @@ action_items:
     owner: "Desenvolvedor Backend"
     status: open
     ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"
+  - id: "epic-4-retro-item-8-centralizar-cliente-http-api-no-frontend"
+    epic: 4
+    action: "Centralizar cliente HTTP/API no Frontend para padronizar chamadas e tratamento
+      de erros"
+    owner: "Desenvolvedor Frontend"
+    status: open
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-4-retro-2026-09-14.md"
+  - id: "epic-4-retro-item-9-padronizar-regra-de-negócio-para-movimen"
+    epic: 4
+    action: "Padronizar regra de negócio para movimentações sem conta associada"
+    owner: "Arquiteto / Desenvolvedor Backend"
+    status: open
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-4-retro-2026-09-14.md"
+  - id: "epic-4-retro-item-10-otimizar-agregação-de-transações-no-back"
+    epic: 4
+    action: "Otimizar agregação de transações no Backend substituindo carregamento
+      em memória por queries SQL e índices"
+    owner: "Desenvolvedor Backend"
+    status: open
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-4-retro-2026-09-14.md"
+  - id: "epic-4-retro-item-11-implementar-suíte-de-testes-e2e-automati"
+    epic: 4
+    action: "Implementar suíte de testes E2E automatizados para o Painel de Consolidação"
+    owner: "QA / Desenvolvedor"
+    status: open
+    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/epic-4-retro-2026-09-14.md"
