@@ -2,7 +2,7 @@
 title: "PRD: Aureus"
 status: final
 created: 2026-08-02
-updated: 2026-08-13
+updated: 2026-09-13
 ---
 
 # PRD: Aureus
@@ -513,6 +513,69 @@ O Usuário pode selecionar “Sair” para invalidar a sessão local e retornar 
 - O encerramento local não é tratado como revogação global da conta Google.
 
 
+### 4.12 Testes Automatizados
+
+**Descrição:** O Aureus implementa uma suíte de testes automatizados com cobertura robusta para garantir a confiabilidade da V1 antes da adoção como ferramenta principal de controle financeiro. A suíte abrange três camadas: testes de integração no backend (segurança, JWT, multitenancy, endpoints REST), testes unitários para lógica de domínio e cálculos financeiros, e testes de componentes no frontend para fluxos CRUD, modais e interações críticas. A cobertura de testes é pré-requisito para o lançamento da V1 (SM-1).
+
+**Requisitos Funcionais:**
+
+#### FR-38: Testes de Integração Backend
+
+O sistema possui testes de integração que validam o comportamento end-to-end dos endpoints REST, incluindo autenticação, autorização e isolamento de dados por Usuário.
+
+**Consequências (testáveis):**
+- Testes validam que requisições sem autenticação retornam 401.
+- Testes validam que o token JWT é verificado corretamente (assinatura, expiração, claims).
+- Testes validam que um Usuário autenticado só acessa seus próprios dados (multitenancy lógico).
+- Testes validam que tentativas de acessar IDs de outro Usuário retornam 403 ou 404 sem revelar existência do registro.
+- Testes cobrem o ciclo completo de CRUD para cada entidade (Conta, Categoria, Despesa Fixa, Despesa Variável, Receita Fixa, Receita Variável).
+- Testes validam regras de integridade referencial (ex: impedir exclusão de Conta/Categoria com Movimentações vinculadas).
+
+#### FR-39: Testes Unitários de Lógica de Domínio
+
+O sistema possui testes unitários que validam toda a lógica de negócio e cálculos financeiros do domínio, isolados de infraestrutura.
+
+**Consequências (testáveis):**
+- Testes validam o cálculo de Valor Total (`Valor Parcela × Nº Parcelas`) para Movimentações Variáveis.
+- Testes validam o cálculo de Última Parcela (`Primeira Parcela + (Nº Parcelas − 1) meses`).
+- Testes validam os cálculos do Painel de Consolidação: soma por Conta, soma por Categoria (R$ e %), Sobra do Mês e Sobra Retroativa Acumulada.
+- Testes validam a distribuição temporal de parcelas na grade de 24 meses.
+- Testes validam o caso de parcela única (Nº Parcelas = 1): Valor Total = Valor Parcela, Última Parcela = Primeira Parcela.
+- Testes validam que Movimentações Fixas se repetem em todos os 24 meses e Variáveis apenas nos meses das parcelas.
+- Testes validam edge cases: divisão por zero em percentuais quando Total de Despesas é zero, valores negativos, meses de fronteira.
+
+#### FR-40: Testes de Componentes Frontend
+
+O sistema possui testes de componentes que validam os fluxos de interação do Usuário no frontend, incluindo formulários, modais, listagens e cálculos em tempo real.
+
+**Consequências (testáveis):**
+- Testes validam o fluxo completo de criação, edição e exclusão em cada formulário de Movimentação.
+- Testes validam que campos calculados (Valor Total, Última Parcela) atualizam em tempo real ao alterar inputs.
+- Testes validam que o Modal abre, recebe dados para edição (modo edit) e fecha corretamente (botão fechar, Escape, click fora).
+- Testes validam que a confirmação de exclusão exige interação explícita (dialog de confirmação).
+- Testes validam que o filtro global (mês atual vs. visão total) altera corretamente os dados exibidos nas listagens.
+- Testes validam os componentes de seleção de data (MonthPicker e DatePicker): navegação, seleção, temas, posicionamento.
+- Testes validam estados vazios (Empty State) quando não há registros.
+
+#### FR-41: Testes de Consolidação End-to-End
+
+O sistema possui testes que validam a integração entre dados registrados e a projeção correta no Painel de Consolidação, garantindo que os números da grade são matematicamente consistentes com as Movimentações cadastradas.
+
+**Consequências (testáveis):**
+- Um cenário de teste reproduz o dataset da planilha de controle existente e verifica que os valores do Painel de Consolidação são idênticos (valida SM-3).
+- Testes validam que alterações em Movimentações Fixas refletem imediatamente em todos os 24 meses.
+- Testes validam que exclusão de Movimentação remove o impacto da grade.
+
+#### FR-42: Infraestrutura de Testes e CI
+
+O sistema possui infraestrutura configurada para execução automatizada dos testes.
+
+**Consequências (testáveis):**
+- Testes backend executam com banco de dados de teste isolado (não afetam dados de desenvolvimento).
+- Testes frontend executam com mocks/stubs adequados para independência do backend.
+- Todos os testes podem ser executados com um único comando por camada (`npm test` para frontend, `./gradlew test` para backend).
+- Nenhum teste depende de estado externo (Google OAuth, rede) — dependências externas são mockadas.
+
 ## 5. Não-Objetivos (Explícito)
 
 - O Aureus **não é** um aplicativo bancário e **não** se integra com bancos ou sistemas financeiros externos.
@@ -522,7 +585,8 @@ O Usuário pode selecionar “Sair” para invalidar a sessão local e retornar 
 - O Aureus **não** possui subcategorias na V1 — Categorias são flat/macro.
 - O Aureus **não** gera relatórios exportáveis (PDF, Excel) na V1.
 - O Aureus **não** possui notificações, alertas ou lembretes.
-- O Aureus **não** possui Dark Mode ou temas visuais na V1.
+- O Aureus **não** possui Dark Mode ou temas visuais na V1 — deferido para V2.
+- O Aureus **não** possui layout responsivo para mobile na V1 — a experiência mobile (Bottom Navigation, swipe gestures, Bottom Sheet modals) é deferida para V2.
 
 ## 6. Escopo MVP
 
@@ -542,11 +606,13 @@ O Usuário pode selecionar “Sair” para invalidar a sessão local e retornar 
 - Autenticação por Google via OAuth 2.0/OpenID Connect e sessão protegida.
 - Isolamento de todos os dados financeiros por Usuário autenticado.
 - Execução local (backend via código-fonte, PostgreSQL via Docker).
+- Suíte de testes automatizados: integração backend (segurança, JWT, multitenancy), unitários (domínio e cálculos), componentes frontend (CRUD, modais, interações).
 
 ### 6.2 Fora do Escopo para MVP
 
 - **Autorização avançada** (perfis, papéis e compartilhamento entre usuários) — deferida para versão futura.
-- **Dark Mode e temas visuais** — deferido para V2. Ver `addendum.md` do Brief.
+- **Dark Mode e temas visuais** — deferido para V2.
+- **Experiência Mobile e Responsividade** — Bottom Navigation, swipe gestures, Bottom Sheet modals — deferida para V2.
 - **Subcategorias** — deferido para versão futura. Categorias V1 são macro/flat. Ver `addendum.md` do PRD.
 - **Deploy em nuvem** — deferido para fases avançadas de portfólio.
 - **Docker Compose fullstack e Kubernetes** — deferido para demonstração DevOps em portfólio.
@@ -563,16 +629,20 @@ Dado que a V1 é um projeto de portfólio/estudo pessoal com um único Usuário 
 - **SM-1:** Adoção pessoal — Guilherme utiliza o Aureus como ferramenta principal de controle financeiro por pelo menos 3 meses consecutivos, substituindo a planilha. Valida FR-9 a FR-37.
 
 **Secundárias**
-- **SM-2:** Completude funcional — login Google, isolamento de dados, todas as 4 abas de registro e o Painel de Consolidação estão operacionais e corretos matematicamente. Valida FR-1 a FR-37.
+- **SM-2:** Completude funcional — login Google, isolamento de dados, todas as 4 abas de registro e o Painel de Consolidação estão operacionais e corretos matematicamente. Valida FR-1 a FR-42.
 - **SM-3:** Fidelidade ao controle existente — os resultados do Painel de Consolidação reproduzem com exatidão os mesmos números que a planilha produziria para o mesmo conjunto de dados. Valida FR-26 a FR-30.
+- **SM-4:** Confiança no código — a suíte de testes automatizados executa com sucesso em todas as camadas (backend integração, backend unitário, frontend componentes) sem falhas, e os cenários de teste reproduzem o dataset da planilha com resultados idênticos. Valida FR-38 a FR-42.
 
 **Contra-métricas (não otimizar)**
 - **SM-C1:** Complexidade de interface — a adição de funcionalidades não deve aumentar o número de cliques para registrar uma Movimentação além do estritamente necessário. Contrabalança SM-1.
 - **SM-C2:** Dependência externa — a indisponibilidade do Google não deve corromper ou expor dados; login novo pode ficar indisponível, mas sessões e dados existentes devem falhar de forma segura.
+- **SM-C3:** Overhead de manutenção de testes — a suíte de testes não deve ser tão acoplada à implementação que mudanças triviais de UI ou refatoração quebrem dezenas de testes. Testes devem validar comportamento, não detalhes de implementação. Contrabalança SM-4.
 
 ## 8. Questões em Aberto
 
-As decisões de produto estão fechadas para o MVP. A arquitetura deve detalhar os valores de expiração/renovação de sessão, estratégia de armazenamento de sessão e política de exclusão/desvinculação da conta Google antes da implementação.
+As decisões de produto dos épicos 1-4 estão fechadas. Para o novo Épico 5 (Testes), permanece aberta:
+
+- **Épico 5 (Testes):** Definir thresholds mínimos de cobertura de código (ex: 80% de linhas no backend, 70% no frontend) ou adotar abordagem qualitativa (cobertura de caminhos críticos sem meta numérica). A decisão será tomada durante a arquitetura de testes.
 
 ## 9. Índice de Assumptions
 
