@@ -68,6 +68,13 @@ development_status:
   5-3-centralizacao-cliente-http-api-e-resiliencia-frontend: backlog
   5-4-abstracao-e-unificacao-formularios-movimentacoes-dry: backlog
   epic-5-retrospective: optional
+
+  epic-6: backlog
+  6-1-testes-unitarios-de-dominio-e-servicos-financeiros: backlog
+  6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy: backlog
+  6-3-testes-de-componentes-e-fluxos-criticos-no-frontend: backlog
+  6-4-infraestrutura-de-validacao-continua-local-e-docs: backlog
+  epic-6-retrospective: optional
 action_items:
   - id: "epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave"
     epic: 1
