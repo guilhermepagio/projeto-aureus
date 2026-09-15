@@ -13,51 +13,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.guilhermepagio.aureus.backend.domain.Conta;
-import com.guilhermepagio.aureus.backend.repository.ContaRepository;
+import com.guilhermepagio.aureus.backend.domain.dto.ContaRequestDTO;
+import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
+import com.guilhermepagio.aureus.backend.service.ContaService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/contas")
-@RequiredArgsConstructor
 public class ContaController {
 
-    private final ContaRepository contaRepository;
+    private final ContaService contaService;
+
+    public ContaController(ContaService contaService) {
+        this.contaService = contaService;
+    }
 
     @GetMapping
-    public List<Conta> listar() {
-        return contaRepository.findAll();
+    public List<ContaResponseDTO> listar() {
+        return contaService.listar();
     }
 
     @PostMapping
-    public Conta criar(final @Valid @RequestBody Conta conta) {
-        return contaRepository.save(conta);
+    public ContaResponseDTO criar(final @Valid @RequestBody ContaRequestDTO dto) {
+        return contaService.criar(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Conta> atualizar(final @PathVariable Long id, final @Valid @RequestBody Conta contaAtualizada) {
-        return contaRepository.findById(id)
-                .map(conta -> {
-                    conta.setDescricao(contaAtualizada.getDescricao());
-                    conta.setObservacoes(contaAtualizada.getObservacoes());
-                    return ResponseEntity.ok(contaRepository.save(conta));
-                })
+    public ResponseEntity<ContaResponseDTO> atualizar(final @PathVariable Long id, final @Valid @RequestBody ContaRequestDTO dto) {
+        return contaService.atualizar(id, dto)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        if (!contaRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         try {
-            contaRepository.deleteById(id);
+            boolean excluido = contaService.excluir(id);
+            if (!excluido) {
+                return ResponseEntity.notFound().build();
+            }
             return ResponseEntity.noContent().build();
         } catch (final DataIntegrityViolationException e) {
-            // Future-proofing for FK violations (count will be added in Epic 3 when Movimentacao exists)
-            return ResponseEntity.badRequest().body(null); // returning empty for now to match current frontend
+            return ResponseEntity.badRequest().build();
         }
     }
 }

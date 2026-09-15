@@ -13,51 +13,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.guilhermepagio.aureus.backend.domain.Categoria;
-import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
+import com.guilhermepagio.aureus.backend.domain.dto.CategoriaRequestDTO;
+import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
+import com.guilhermepagio.aureus.backend.service.CategoriaService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/categorias")
-@RequiredArgsConstructor
 public class CategoriaController {
 
-    private final CategoriaRepository categoriaRepository;
+    private final CategoriaService categoriaService;
+
+    public CategoriaController(CategoriaService categoriaService) {
+        this.categoriaService = categoriaService;
+    }
 
     @GetMapping
-    public List<Categoria> listar() {
-        return categoriaRepository.findAll();
+    public List<CategoriaResponseDTO> listar() {
+        return categoriaService.listar();
     }
 
     @PostMapping
-    public Categoria criar(final @Valid @RequestBody Categoria categoria) {
-        categoria.setId(null);
-        return categoriaRepository.save(categoria);
+    public CategoriaResponseDTO criar(final @Valid @RequestBody CategoriaRequestDTO dto) {
+        return categoriaService.criar(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Categoria> atualizar(final @PathVariable Long id, final @Valid @RequestBody Categoria categoriaAtualizada) {
-        return categoriaRepository.findById(id)
-                .map(categoria -> {
-                    categoria.setDescricao(categoriaAtualizada.getDescricao());
-                    categoria.setObservacoes(categoriaAtualizada.getObservacoes());
-                    return ResponseEntity.ok(categoriaRepository.save(categoria));
-                })
+    public ResponseEntity<CategoriaResponseDTO> atualizar(final @PathVariable Long id, final @Valid @RequestBody CategoriaRequestDTO dto) {
+        return categoriaService.atualizar(id, dto)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        return categoriaRepository.findById(id).map(categoria -> {
-            try {
-                categoriaRepository.delete(categoria);
-                return ResponseEntity.noContent().<Void>build();
-            } catch (final DataIntegrityViolationException e) {
-                // Future-proofing for FK violations (count will be added in Epic 3 when Movimentacao exists)
-                return ResponseEntity.badRequest().<Void>build();
+        try {
+            boolean excluido = categoriaService.excluir(id);
+            if (!excluido) {
+                return ResponseEntity.notFound().build();
             }
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+            return ResponseEntity.noContent().build();
+        } catch (final DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

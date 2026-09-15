@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,71 +14,55 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.guilhermepagio.aureus.backend.domain.ReceitaVariavel;
-import com.guilhermepagio.aureus.backend.repository.ReceitaVariavelRepository;
+import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelRequestDTO;
+import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelResponseDTO;
+import com.guilhermepagio.aureus.backend.service.ReceitaVariavelService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/receitas-variaveis")
-@RequiredArgsConstructor
 public class ReceitaVariavelController {
 
-    private final ReceitaVariavelRepository repository;
+    private final ReceitaVariavelService receitaVariavelService;
 
-    @GetMapping
-    public List<ReceitaVariavel> listar() {
-        return repository.findAll(Sort.by("descricao"));
+    public ReceitaVariavelController(ReceitaVariavelService receitaVariavelService) {
+        this.receitaVariavelService = receitaVariavelService;
     }
 
-    private void preencherDataFim(ReceitaVariavel receitaVariavel) {
-        if (receitaVariavel.getDataInicio() != null && receitaVariavel.getQuantidadeParcelas() != null && receitaVariavel.getQuantidadeParcelas() > 0) {
-            receitaVariavel.setDataInicio(receitaVariavel.getDataInicio().withDayOfMonth(1));
-            receitaVariavel.setDataFim(receitaVariavel.getDataInicio().plusMonths(receitaVariavel.getQuantidadeParcelas() - 1));
-        }
+    @GetMapping
+    public List<ReceitaVariavelResponseDTO> listar() {
+        return receitaVariavelService.listar();
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(final @Valid @RequestBody ReceitaVariavel receitaVariavel) {
+    public ResponseEntity<?> criar(final @Valid @RequestBody ReceitaVariavelRequestDTO dto) {
         try {
-            receitaVariavel.setId(null);
-            preencherDataFim(receitaVariavel);
-            return ResponseEntity.ok(repository.saveAndFlush(receitaVariavel));
+            return ResponseEntity.ok(receitaVariavelService.criar(dto));
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(final @PathVariable Long id, final @Valid @RequestBody ReceitaVariavel atualizada) {
-        return repository.findById(id)
-                .map(existente -> {
-                    existente.setDescricao(atualizada.getDescricao());
-                    existente.setValorParcela(atualizada.getValorParcela());
-                    existente.setQuantidadeParcelas(atualizada.getQuantidadeParcelas());
-                    existente.setDataInicio(atualizada.getDataInicio());
-                    preencherDataFim(existente);
-                    existente.setConta(atualizada.getConta());
-                    existente.setCategoria(atualizada.getCategoria());
-                    existente.setObservacoes(atualizada.getObservacoes());
-                    try {
-                        return ResponseEntity.ok(repository.saveAndFlush(existente));
-                    } catch (DataIntegrityViolationException e) {
-                        return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
-                    }
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> atualizar(final @PathVariable Long id, final @Valid @RequestBody ReceitaVariavelRequestDTO dto) {
+        try {
+            return receitaVariavelService.atualizar(id, dto)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(final @PathVariable Long id) {
-        if (!repository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         try {
-            repository.deleteById(id);
-            repository.flush(); // ensure deletion triggers exception here if violated
+            boolean excluido = receitaVariavelService.excluir(id);
+            if (!excluido) {
+                return ResponseEntity.notFound().build();
+            }
             return ResponseEntity.noContent().build();
         } catch (final DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Erro ao excluir o registro."));

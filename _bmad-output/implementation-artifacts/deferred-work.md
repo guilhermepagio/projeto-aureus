@@ -379,3 +379,10 @@
 ## Deferred from: code review of spec-4-4-bloco-de-resumo-geral-com-sobra-historica-acumulada.md (2026-09-06)
 - Divergência na agregação entre contas e categorias para lançamentos com conta nula [backend/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:140] — pre-existing logic in category consolidation where null accounts are assigned to synthetic 'Sem Categoria'.
 
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-1-backend-service-layer-e-dtos-records-para-entidades.md`
+  summary: Otimizar consultas de listagem com carregamento antecipado (eager fetching/JOIN) para evitar consultas N+1 na conversão de DTOs
+  evidence: Identificado no code review da Story 5.1 pelo Blind Hunter; os métodos listar() de DespesaFixa, ReceitaFixa, DespesaVariavel e ReceitaVariavel disparam queries adicionais para carregar Conta e Categoria por falta de @EntityGraph ou fetch join.
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-1-backend-service-layer-e-dtos-records-para-entidades.md`
+  summary: Extrair cálculo de vigência temporal de parcelas em helper de domínio compartilhado entre DespesaVariavel e ReceitaVariavel
+  evidence: Identificado no code review da Story 5.1 pelo Blind Hunter; a lógica preencherDataFim está duplicada em DespesaVariavelService e ReceitaVariavelService.
+

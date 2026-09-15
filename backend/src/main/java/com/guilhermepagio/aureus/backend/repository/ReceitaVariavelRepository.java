@@ -7,5 +7,6 @@ import java.util.List;
 import com.guilhermepagio.aureus.backend.domain.ReceitaVariavel;
 
 public interface ReceitaVariavelRepository extends JpaRepository<ReceitaVariavel, Long> {
+    List<ReceitaVariavel> findAllByOrderByDescricaoAsc();
     List<ReceitaVariavel> findByUsuarioId(String usuarioId);
 }

@@ -7,5 +7,6 @@ import java.util.List;
 import com.guilhermepagio.aureus.backend.domain.DespesaVariavel;
 
 public interface DespesaVariavelRepository extends JpaRepository<DespesaVariavel, Long> {
+    List<DespesaVariavel> findAllByOrderByDescricaoAsc();
     List<DespesaVariavel> findByUsuarioId(String usuarioId);
 }

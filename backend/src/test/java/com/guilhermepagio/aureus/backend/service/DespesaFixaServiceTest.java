@@ -1,0 +1,224 @@
+package com.guilhermepagio.aureus.backend.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import com.guilhermepagio.aureus.backend.domain.Categoria;
+import com.guilhermepagio.aureus.backend.domain.Conta;
+import com.guilhermepagio.aureus.backend.domain.DespesaFixa;
+import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaRequestDTO;
+import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaResponseDTO;
+import com.guilhermepagio.aureus.backend.domain.dto.IdReferenceDTO;
+import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
+import com.guilhermepagio.aureus.backend.repository.ContaRepository;
+import com.guilhermepagio.aureus.backend.repository.DespesaFixaRepository;
+
+@ExtendWith(MockitoExtension.class)
+public class DespesaFixaServiceTest {
+
+    @Mock
+    private DespesaFixaRepository despesaFixaRepository;
+
+    @Mock
+    private ContaRepository contaRepository;
+
+    @Mock
+    private CategoriaRepository categoriaRepository;
+
+    @InjectMocks
+    private DespesaFixaService despesaFixaService;
+
+    @Test
+    public void deveListarDespesasFixasOrdenadas() {
+        Conta conta = new Conta(1L, "Nubank", "Principal");
+        Categoria categoria = new Categoria(2L, "Moradia", "Aluguel");
+        DespesaFixa despesa = new DespesaFixa(10L, "Aluguel", new BigDecimal("1200.00"), conta, categoria, "Obs", LocalDate.of(2024, 1, 1));
+
+        when(despesaFixaRepository.findAllByOrderByDescricaoAsc()).thenReturn(List.of(despesa));
+
+        List<DespesaFixaResponseDTO> resultado = despesaFixaService.listar();
+
+        assertEquals(1, resultado.size());
+        assertEquals(10L, resultado.get(0).id());
+        assertEquals("Aluguel", resultado.get(0).descricao());
+        assertEquals(new BigDecimal("1200.00"), resultado.get(0).valor());
+        assertEquals(1L, resultado.get(0).conta().id());
+        assertEquals(2L, resultado.get(0).categoria().id());
+        verify(despesaFixaRepository).findAllByOrderByDescricaoAsc();
+    }
+
+    @Test
+    public void deveBuscarDespesaFixaPorId() {
+        Conta conta = new Conta(1L, "Nubank", "Principal");
+        Categoria categoria = new Categoria(2L, "Moradia", "Aluguel");
+        DespesaFixa despesa = new DespesaFixa(10L, "Aluguel", new BigDecimal("1200.00"), conta, categoria, "Obs", LocalDate.of(2024, 1, 1));
+
+        when(despesaFixaRepository.findById(10L)).thenReturn(Optional.of(despesa));
+
+        Optional<DespesaFixaResponseDTO> resultado = despesaFixaService.buscarPorId(10L);
+
+        assertTrue(resultado.isPresent());
+        assertEquals(10L, resultado.get().id());
+        assertEquals("Aluguel", resultado.get().descricao());
+    }
+
+    @Test
+    public void deveCriarDespesaFixaComSucesso() {
+        DespesaFixaRequestDTO dto = new DespesaFixaRequestDTO(
+            "Internet",
+            new BigDecimal("150.00"),
+            new IdReferenceDTO(1L),
+            new IdReferenceDTO(2L),
+            "Vivo Fibra",
+            LocalDate.of(2024, 1, 1)
+        );
+
+        Conta conta = new Conta(1L, "Nubank", "Principal");
+        Categoria categoria = new Categoria(2L, "Serviços", "Internet");
+        DespesaFixa salva = new DespesaFixa(100L, "Internet", new BigDecimal("150.00"), conta, categoria, "Vivo Fibra", LocalDate.of(2024, 1, 1));
+
+        when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
+        when(categoriaRepository.findById(2L)).thenReturn(Optional.of(categoria));
+        when(despesaFixaRepository.saveAndFlush(any(DespesaFixa.class))).thenAnswer(invocation -> {
+            DespesaFixa d = invocation.getArgument(0);
+            d.setId(100L);
+            return d;
+        });
+
+        DespesaFixaResponseDTO response = despesaFixaService.criar(dto);
+
+        assertNotNull(response);
+        assertEquals(100L, response.id());
+        assertEquals("Internet", response.descricao());
+        assertEquals(new BigDecimal("150.00"), response.valor());
+        assertEquals(1L, response.conta().id());
+        assertEquals("Nubank", response.conta().descricao());
+        assertEquals(2L, response.categoria().id());
+        assertEquals("Serviços", response.categoria().descricao());
+        assertEquals("Vivo Fibra", response.observacoes());
+        assertEquals(LocalDate.of(2024, 1, 1), response.dataInicio());
+    }
+
+    @Test
+    public void deveLancarExcecaoAoCriarComContaInexistente() {
+        DespesaFixaRequestDTO dto = new DespesaFixaRequestDTO(
+            "Internet",
+            new BigDecimal("150.00"),
+            new IdReferenceDTO(999L),
+            new IdReferenceDTO(2L),
+            "Vivo Fibra",
+            LocalDate.of(2024, 1, 1)
+        );
+
+        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(DataIntegrityViolationException.class, () -> despesaFixaService.criar(dto));
+    }
+
+    @Test
+    public void deveLancarExcecaoAoCriarComCategoriaInexistente() {
+        DespesaFixaRequestDTO dto = new DespesaFixaRequestDTO(
+            "Internet",
+            new BigDecimal("150.00"),
+            new IdReferenceDTO(1L),
+            new IdReferenceDTO(999L),
+            "Vivo Fibra",
+            LocalDate.of(2024, 1, 1)
+        );
+
+        Conta conta = new Conta(1L, "Nubank", "Principal");
+        when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
+        when(categoriaRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(DataIntegrityViolationException.class, () -> despesaFixaService.criar(dto));
+    }
+
+    @Test
+    public void deveAtualizarDespesaFixaComSucesso() {
+        Conta contaAntiga = new Conta(1L, "Nubank", "Principal");
+        Categoria categoriaAntiga = new Categoria(2L, "Serviços", "Internet");
+        DespesaFixa existente = new DespesaFixa(100L, "Internet", new BigDecimal("150.00"), contaAntiga, categoriaAntiga, "Obs", LocalDate.of(2024, 1, 1));
+
+        Conta contaNova = new Conta(3L, "Inter", "Secundária");
+        Categoria categoriaNova = new Categoria(4L, "Tecnologia", "Internet");
+        DespesaFixaRequestDTO dto = new DespesaFixaRequestDTO(
+            "Internet 500MB",
+            new BigDecimal("170.00"),
+            new IdReferenceDTO(3L),
+            new IdReferenceDTO(4L),
+            "Upgrade",
+            LocalDate.of(2024, 2, 1)
+        );
+
+        when(despesaFixaRepository.findById(100L)).thenReturn(Optional.of(existente));
+        when(contaRepository.findById(3L)).thenReturn(Optional.of(contaNova));
+        when(categoriaRepository.findById(4L)).thenReturn(Optional.of(categoriaNova));
+        when(despesaFixaRepository.saveAndFlush(any(DespesaFixa.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Optional<DespesaFixaResponseDTO> response = despesaFixaService.atualizar(100L, dto);
+
+        assertTrue(response.isPresent());
+        assertEquals("Internet 500MB", response.get().descricao());
+        assertEquals(new BigDecimal("170.00"), response.get().valor());
+        assertEquals(3L, response.get().conta().id());
+        assertEquals(4L, response.get().categoria().id());
+        assertEquals("Upgrade", response.get().observacoes());
+        assertEquals(LocalDate.of(2024, 2, 1), response.get().dataInicio());
+    }
+
+    @Test
+    public void deveRetornarVazioAoAtualizarDespesaFixaInexistente() {
+        DespesaFixaRequestDTO dto = new DespesaFixaRequestDTO(
+            "Inexistente",
+            new BigDecimal("100.00"),
+            new IdReferenceDTO(1L),
+            new IdReferenceDTO(2L),
+            "Obs",
+            LocalDate.of(2024, 1, 1)
+        );
+
+        when(despesaFixaRepository.findById(999L)).thenReturn(Optional.empty());
+
+        Optional<DespesaFixaResponseDTO> response = despesaFixaService.atualizar(999L, dto);
+
+        assertTrue(response.isEmpty());
+    }
+
+    @Test
+    public void deveExcluirDespesaFixaExistente() {
+        when(despesaFixaRepository.existsById(10L)).thenReturn(true);
+
+        boolean excluido = despesaFixaService.excluir(10L);
+
+        assertTrue(excluido);
+        verify(despesaFixaRepository).deleteById(10L);
+        verify(despesaFixaRepository).flush();
+    }
+
+    @Test
+    public void deveRetornarFalsoAoExcluirDespesaFixaInexistente() {
+        when(despesaFixaRepository.existsById(999L)).thenReturn(false);
+
+        boolean excluido = despesaFixaService.excluir(999L);
+
+        assertFalse(excluido);
+    }
+}
