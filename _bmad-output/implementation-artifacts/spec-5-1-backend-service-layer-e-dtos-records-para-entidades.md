@@ -110,6 +110,18 @@ context:
 - [x] `backend/src/main/java/com/guilhermepagio/aureus/backend/controller/ReceitaVariavelController.java` -- Refatorar controller para delegar a ReceitaVariavelService usando DTOs records -- Remove acoplamento ao repository e regras de cálculo
 - [x] `backend/src/test/java/com/guilhermepagio/aureus/backend/service/*Test.java` -- Criar testes unitários para os 6 novos Services -- Garante cobertura das regras e validações isoladas
 
+### Review Findings
+
+- [x] [Review][Patch] Remoção de imports não utilizados de RequiredArgsConstructor e IdReferenceDTO [backend/src/main/java/com/guilhermepagio/aureus/backend/controller/ContaController.java:21]
+- [x] [Review][Patch] Padronização da estratégia de exclusão em CategoriaService com existsById e deleteById [backend/src/main/java/com/guilhermepagio/aureus/backend/service/CategoriaService.java:58]
+- [x] [Review][Patch] Adição de testes para rejeição de Bean Validation (@Valid) em requisições PUT nos 6 controllers [backend/src/test/java/com/guilhermepagio/aureus/backend/controller/ContaControllerTest.java:86]
+- [x] [Review][Patch] Adição de testes para violação de integridade relacional (DataIntegrityViolationException) em atualizações (PUT) nos controllers e services de movimentações [backend/src/test/java/com/guilhermepagio/aureus/backend/controller/DespesaFixaControllerTest.java:128]
+- [x] [Review][Defer] Otimizar consultas de listagem com carregamento antecipado (JOIN FETCH) para evitar consultas N+1 [backend/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaFixaService.java:35] — deferred, pre-existing
+- [x] [Review][Defer] Extrair cálculo de vigência temporal de parcelas em helper compartilhado [backend/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:46] — deferred, pre-existing
+- [x] [Review][Defer] Normalizar retorno genérico ResponseEntity<?> para ResponseEntity<*ResponseDTO> via RestControllerAdvice na Story 5.2 [backend/src/main/java/com/guilhermepagio/aureus/backend/controller/DespesaFixaController.java:40] — deferred, pre-existing
+- [x] [Review][Defer] Alinhar anotação de valor máximo @Max(9999999) na entidade JPA com @DecimalMax(9999999.99) do DTO [backend/src/main/java/com/guilhermepagio/aureus/backend/domain/DespesaFixa.java:46] — deferred, pre-existing
+- [x] [Review][Defer] Adicionar ordenação alfabética (OrderByDescricaoAsc) na listagem de Contas e Categorias [backend/src/main/java/com/guilhermepagio/aureus/backend/service/ContaService.java:28] — deferred, pre-existing
+
 **Acceptance Criteria:**
 - Given os controllers e repositories de Contas, Categorias, Despesas e Receitas, when a refatoração for concluída, then nenhuma classe de Controller injeta diretamente nenhum `Repository`.
 - Given qualquer método em qualquer um dos 6 controllers, when inspecionada a assinatura do método (parâmetros de entrada e retornos), then nenhuma classe anotada com `@Entity` está presente, utilizando estritamente Java Records imutáveis nomeados com o sufixo `*DTO.java`.
