@@ -107,6 +107,16 @@ public class CategoriaControllerTest {
     }
 
     @Test
+    public void deveRejeitarAtualizarCategoriaInvalida() throws Exception {
+        String json = "{\"descricao\":\"\",\"observacoes\":\"\"}";
+
+        mockMvc.perform(put("/api/categorias/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void deveExcluirCategoriaComSucesso() throws Exception {
         when(categoriaService.excluir(1L)).thenReturn(true);
 

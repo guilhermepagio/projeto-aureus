@@ -19,7 +19,6 @@ import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelResponseDTO;
 import com.guilhermepagio.aureus.backend.service.ReceitaVariavelService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/receitas-variaveis")

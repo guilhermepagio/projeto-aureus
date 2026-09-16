@@ -171,6 +171,47 @@ public class ReceitaFixaControllerTest {
     }
 
     @Test
+    public void deveRejeitarAtualizarReceitaFixaInvalida() throws Exception {
+        String json = """
+        {
+            "descricao": "",
+            "valor": -10.00,
+            "conta": null,
+            "categoria": null,
+            "dataInicio": null
+        }
+        """;
+
+        mockMvc.perform(put("/api/receitas-fixas/10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void deveRetornar400QuandoViolacaoIntegridadeAoAtualizar() throws Exception {
+        String json = """
+        {
+            "descricao": "Salário",
+            "valor": 5500.00,
+            "conta": { "id": 999 },
+            "categoria": { "id": 999 },
+            "observacoes": "Obs",
+            "dataInicio": "2024-01-01"
+        }
+        """;
+
+        when(receitaFixaService.atualizar(eq(10L), any(ReceitaFixaRequestDTO.class)))
+                .thenThrow(new DataIntegrityViolationException("FK"));
+
+        mockMvc.perform(put("/api/receitas-fixas/10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+    }
+
+    @Test
     public void deveExcluirReceitaFixaComSucesso() throws Exception {
         when(receitaFixaService.excluir(10L)).thenReturn(true);
 

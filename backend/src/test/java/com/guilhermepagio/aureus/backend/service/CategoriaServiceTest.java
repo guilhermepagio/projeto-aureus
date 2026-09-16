@@ -111,19 +111,18 @@ public class CategoriaServiceTest {
 
     @Test
     public void deveExcluirCategoriaExistente() {
-        Categoria categoria = new Categoria(1L, "Alimentação", "Obs");
-        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
+        when(categoriaRepository.existsById(1L)).thenReturn(true);
 
         boolean excluido = categoriaService.excluir(1L);
 
         assertTrue(excluido);
-        verify(categoriaRepository).delete(categoria);
+        verify(categoriaRepository).deleteById(1L);
         verify(categoriaRepository).flush();
     }
 
     @Test
     public void deveRetornarFalsoAoExcluirCategoriaInexistente() {
-        when(categoriaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(categoriaRepository.existsById(999L)).thenReturn(false);
 
         boolean excluido = categoriaService.excluir(999L);
 

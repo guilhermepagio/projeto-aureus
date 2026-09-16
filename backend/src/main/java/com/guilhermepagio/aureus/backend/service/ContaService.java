@@ -11,8 +11,6 @@ import com.guilhermepagio.aureus.backend.domain.dto.ContaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
 import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 public class ContaService {
 

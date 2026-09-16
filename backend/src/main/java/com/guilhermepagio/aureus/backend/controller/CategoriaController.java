@@ -18,7 +18,6 @@ import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
 import com.guilhermepagio.aureus.backend.service.CategoriaService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/categorias")

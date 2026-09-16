@@ -11,8 +11,6 @@ import com.guilhermepagio.aureus.backend.domain.dto.CategoriaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
 import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 public class CategoriaService {
 
@@ -55,11 +53,10 @@ public class CategoriaService {
 
     @Transactional
     public boolean excluir(Long id) {
-        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
-        if (categoriaOpt.isEmpty()) {
+        if (!categoriaRepository.existsById(id)) {
             return false;
         }
-        categoriaRepository.delete(categoriaOpt.get());
+        categoriaRepository.deleteById(id);
         categoriaRepository.flush();
         return true;
     }

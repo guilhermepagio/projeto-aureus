@@ -29,7 +29,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
-import com.guilhermepagio.aureus.backend.domain.dto.IdReferenceDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelResponseDTO;
 import com.guilhermepagio.aureus.backend.service.ReceitaVariavelService;
@@ -186,6 +185,49 @@ public class ReceitaVariavelControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deveRejeitarAtualizarReceitaVariavelInvalida() throws Exception {
+        String json = """
+        {
+            "descricao": "",
+            "valorParcela": -10.00,
+            "quantidadeParcelas": 0,
+            "dataInicio": null,
+            "conta": null,
+            "categoria": null
+        }
+        """;
+
+        mockMvc.perform(put("/api/receitas-variaveis/10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void deveRetornar400QuandoViolacaoIntegridadeAoAtualizar() throws Exception {
+        String json = """
+        {
+            "descricao": "Freelance",
+            "valorParcela": 2000.00,
+            "quantidadeParcelas": 4,
+            "dataInicio": "2024-01-15",
+            "conta": { "id": 999 },
+            "categoria": { "id": 999 },
+            "observacoes": "Obs"
+        }
+        """;
+
+        when(receitaVariavelService.atualizar(eq(10L), any(ReceitaVariavelRequestDTO.class)))
+                .thenThrow(new DataIntegrityViolationException("FK"));
+
+        mockMvc.perform(put("/api/receitas-variaveis/10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
     }
 
     @Test

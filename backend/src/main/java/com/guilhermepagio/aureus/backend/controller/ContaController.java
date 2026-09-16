@@ -18,7 +18,6 @@ import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
 import com.guilhermepagio.aureus.backend.service.ContaService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/contas")

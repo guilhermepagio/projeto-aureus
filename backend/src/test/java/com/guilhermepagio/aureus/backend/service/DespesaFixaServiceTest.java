@@ -203,6 +203,24 @@ public class DespesaFixaServiceTest {
     }
 
     @Test
+    public void deveLancarExcecaoAoAtualizarComContaOuCategoriaInexistente() {
+        DespesaFixa existente = new DespesaFixa(100L, "Internet", new BigDecimal("150.00"), null, null, "Obs", LocalDate.of(2024, 1, 1));
+        DespesaFixaRequestDTO dto = new DespesaFixaRequestDTO(
+            "Internet",
+            new BigDecimal("150.00"),
+            new IdReferenceDTO(999L),
+            new IdReferenceDTO(2L),
+            "Obs",
+            LocalDate.of(2024, 1, 1)
+        );
+
+        when(despesaFixaRepository.findById(100L)).thenReturn(Optional.of(existente));
+        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(DataIntegrityViolationException.class, () -> despesaFixaService.atualizar(100L, dto));
+    }
+
+    @Test
     public void deveExcluirDespesaFixaExistente() {
         when(despesaFixaRepository.existsById(10L)).thenReturn(true);
 

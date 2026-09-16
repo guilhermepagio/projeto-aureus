@@ -197,6 +197,52 @@ public class DespesaVariavelControllerTest {
     }
 
     @Test
+    public void deveRejeitarAtualizarDespesaVariavelInvalida() throws Exception {
+        String json = """
+        {
+            "descricao": "",
+            "localCompra": "",
+            "valorParcela": -10.00,
+            "quantidadeParcelas": 0,
+            "dataInicio": null,
+            "conta": null,
+            "categoria": null
+        }
+        """;
+
+        mockMvc.perform(put("/api/despesas-variaveis/10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void deveRetornar400QuandoViolacaoIntegridadeAoAtualizar() throws Exception {
+        String json = """
+        {
+            "descricao": "Notebook",
+            "localCompra": "Kabum",
+            "dataCompra": "2024-01-10",
+            "valorParcela": 1200.00,
+            "quantidadeParcelas": 4,
+            "dataInicio": "2024-01-15",
+            "conta": { "id": 999 },
+            "categoria": { "id": 999 },
+            "observacoes": "Obs"
+        }
+        """;
+
+        when(despesaVariavelService.atualizar(eq(10L), any(DespesaVariavelRequestDTO.class)))
+                .thenThrow(new DataIntegrityViolationException("FK"));
+
+        mockMvc.perform(put("/api/despesas-variaveis/10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+    }
+
+    @Test
     public void deveExcluirDespesaVariavelComSucesso() throws Exception {
         when(despesaVariavelService.excluir(10L)).thenReturn(true);
 

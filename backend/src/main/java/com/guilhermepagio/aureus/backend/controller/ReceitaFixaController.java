@@ -19,7 +19,6 @@ import com.guilhermepagio.aureus.backend.domain.dto.ReceitaFixaResponseDTO;
 import com.guilhermepagio.aureus.backend.service.ReceitaFixaService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/receitas-fixas")

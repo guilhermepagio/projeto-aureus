@@ -238,6 +238,25 @@ public class ReceitaVariavelServiceTest {
     }
 
     @Test
+    public void deveLancarExcecaoAoAtualizarComContaOuCategoriaInexistente() {
+        ReceitaVariavel existente = new ReceitaVariavel(
+            100L, "Projeto", new BigDecimal("1000.00"), 2,
+            LocalDate.of(2024, 1, 1), LocalDate.of(2024, 2, 1),
+            null, null, "Obs"
+        );
+        ReceitaVariavelRequestDTO dto = new ReceitaVariavelRequestDTO(
+            "Projeto", new BigDecimal("1000.00"), 2,
+            LocalDate.of(2024, 1, 1),
+            new IdReferenceDTO(999L), new IdReferenceDTO(2L), "Obs"
+        );
+
+        when(receitaVariavelRepository.findById(100L)).thenReturn(Optional.of(existente));
+        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(DataIntegrityViolationException.class, () -> receitaVariavelService.atualizar(100L, dto));
+    }
+
+    @Test
     public void deveExcluirReceitaVariavelExistente() {
         when(receitaVariavelRepository.existsById(10L)).thenReturn(true);
 

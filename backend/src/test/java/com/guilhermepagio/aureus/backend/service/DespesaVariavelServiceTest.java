@@ -248,6 +248,25 @@ public class DespesaVariavelServiceTest {
     }
 
     @Test
+    public void deveLancarExcecaoAoAtualizarComContaOuCategoriaInexistente() {
+        DespesaVariavel existente = new DespesaVariavel(
+            100L, "Notebook", "Kabum", LocalDate.of(2024, 1, 10),
+            new BigDecimal("1500.00"), 3, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 3, 1),
+            null, null, "Obs"
+        );
+        DespesaVariavelRequestDTO dto = new DespesaVariavelRequestDTO(
+            "Notebook", "Kabum", LocalDate.of(2024, 1, 10),
+            new BigDecimal("1500.00"), 3, LocalDate.of(2024, 1, 1),
+            new IdReferenceDTO(999L), new IdReferenceDTO(2L), "Obs"
+        );
+
+        when(despesaVariavelRepository.findById(100L)).thenReturn(Optional.of(existente));
+        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(DataIntegrityViolationException.class, () -> despesaVariavelService.atualizar(100L, dto));
+    }
+
+    @Test
     public void deveExcluirDespesaVariavelExistente() {
         when(despesaVariavelRepository.existsById(10L)).thenReturn(true);
 

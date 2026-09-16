@@ -203,6 +203,24 @@ public class ReceitaFixaServiceTest {
     }
 
     @Test
+    public void deveLancarExcecaoAoAtualizarComContaOuCategoriaInexistente() {
+        ReceitaFixa existente = new ReceitaFixa(100L, "Salário", new BigDecimal("5000.00"), null, null, "Obs", LocalDate.of(2024, 1, 1));
+        ReceitaFixaRequestDTO dto = new ReceitaFixaRequestDTO(
+            "Salário",
+            new BigDecimal("5000.00"),
+            new IdReferenceDTO(999L),
+            new IdReferenceDTO(2L),
+            "Obs",
+            LocalDate.of(2024, 1, 1)
+        );
+
+        when(receitaFixaRepository.findById(100L)).thenReturn(Optional.of(existente));
+        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(DataIntegrityViolationException.class, () -> receitaFixaService.atualizar(100L, dto));
+    }
+
+    @Test
     public void deveExcluirReceitaFixaExistente() {
         when(receitaFixaRepository.existsById(10L)).thenReturn(true);
 

@@ -19,7 +19,6 @@ import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaResponseDTO;
 import com.guilhermepagio.aureus.backend.service.DespesaFixaService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/despesas-fixas")

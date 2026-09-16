@@ -107,6 +107,16 @@ public class ContaControllerTest {
     }
 
     @Test
+    public void deveRejeitarAtualizarContaInvalida() throws Exception {
+        String json = "{\"descricao\":\"\",\"observacoes\":\"\"}";
+
+        mockMvc.perform(put("/api/contas/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void deveExcluirContaComSucesso() throws Exception {
         when(contaService.excluir(1L)).thenReturn(true);
 

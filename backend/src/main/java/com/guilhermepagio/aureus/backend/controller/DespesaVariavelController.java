@@ -19,7 +19,6 @@ import com.guilhermepagio.aureus.backend.domain.dto.DespesaVariavelResponseDTO;
 import com.guilhermepagio.aureus.backend.service.DespesaVariavelService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/despesas-variaveis")
