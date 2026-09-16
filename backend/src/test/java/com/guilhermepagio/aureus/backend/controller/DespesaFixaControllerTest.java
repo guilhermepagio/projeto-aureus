@@ -46,7 +46,9 @@ public class DespesaFixaControllerTest {
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(despesaFixaController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(despesaFixaController)
+                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -121,7 +123,7 @@ public class DespesaFixaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
@@ -140,7 +142,7 @@ public class DespesaFixaControllerTest {
         CategoriaResponseDTO categoria = new CategoriaResponseDTO(2L, "Moradia", "Aluguel");
         DespesaFixaResponseDTO response = new DespesaFixaResponseDTO(10L, "Aluguel", new BigDecimal("1300.00"), conta, categoria, "Obs", LocalDate.of(2024, 1, 1));
 
-        when(despesaFixaService.atualizar(eq(10L), any(DespesaFixaRequestDTO.class))).thenReturn(Optional.of(response));
+        when(despesaFixaService.atualizar(eq(10L), any(DespesaFixaRequestDTO.class))).thenReturn(response);
 
         mockMvc.perform(put("/api/despesas-fixas/10")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -162,7 +164,8 @@ public class DespesaFixaControllerTest {
         }
         """;
 
-        when(despesaFixaService.atualizar(eq(999L), any(DespesaFixaRequestDTO.class))).thenReturn(Optional.empty());
+        when(despesaFixaService.atualizar(eq(999L), any(DespesaFixaRequestDTO.class)))
+                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Despesa fixa não encontrada: 999"));
 
         mockMvc.perform(put("/api/despesas-fixas/999")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -208,7 +211,7 @@ public class DespesaFixaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
@@ -235,6 +238,6 @@ public class DespesaFixaControllerTest {
 
         mockMvc.perform(delete("/api/despesas-fixas/10"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Não é possível excluir esta despesa porque ela está em uso."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 }

@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.domain.Categoria;
 import com.guilhermepagio.aureus.backend.domain.Conta;
 import com.guilhermepagio.aureus.backend.domain.ReceitaFixa;
@@ -45,6 +46,16 @@ public class ReceitaFixaServiceTest {
 
     @InjectMocks
     private ReceitaFixaService receitaFixaService;
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setUp() {
+        com.guilhermepagio.aureus.backend.security.TenantContext.setTenantId("user1");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void tearDown() {
+        com.guilhermepagio.aureus.backend.security.TenantContext.clear();
+    }
 
     @Test
     public void deveListarReceitasFixasOrdenadas() {
@@ -95,7 +106,9 @@ public class ReceitaFixaServiceTest {
         Categoria categoria = new Categoria(2L, "Trabalho", "Salário");
         ReceitaFixa salva = new ReceitaFixa(100L, "Salário", new BigDecimal("5000.00"), conta, categoria, "Mensal", LocalDate.of(2024, 1, 1));
 
+        when(contaRepository.findOwnerUsuarioId(1L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
+        when(categoriaRepository.findOwnerUsuarioId(2L)).thenReturn(Optional.of("user1"));
         when(categoriaRepository.findById(2L)).thenReturn(Optional.of(categoria));
         when(receitaFixaRepository.saveAndFlush(any(ReceitaFixa.class))).thenAnswer(invocation -> {
             ReceitaFixa r = invocation.getArgument(0);
@@ -128,9 +141,9 @@ public class ReceitaFixaServiceTest {
             LocalDate.of(2024, 1, 1)
         );
 
-        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(contaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> receitaFixaService.criar(dto));
+        assertThrows(ResourceNotFoundException.class, () -> receitaFixaService.criar(dto));
     }
 
     @Test
@@ -145,10 +158,11 @@ public class ReceitaFixaServiceTest {
         );
 
         Conta conta = new Conta(1L, "Nubank", "Principal");
+        when(contaRepository.findOwnerUsuarioId(1L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
-        when(categoriaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(categoriaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> receitaFixaService.criar(dto));
+        assertThrows(ResourceNotFoundException.class, () -> receitaFixaService.criar(dto));
     }
 
     @Test
@@ -169,23 +183,25 @@ public class ReceitaFixaServiceTest {
         );
 
         when(receitaFixaRepository.findById(100L)).thenReturn(Optional.of(existente));
+        when(contaRepository.findOwnerUsuarioId(3L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(3L)).thenReturn(Optional.of(contaNova));
+        when(categoriaRepository.findOwnerUsuarioId(4L)).thenReturn(Optional.of("user1"));
         when(categoriaRepository.findById(4L)).thenReturn(Optional.of(categoriaNova));
         when(receitaFixaRepository.saveAndFlush(any(ReceitaFixa.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<ReceitaFixaResponseDTO> response = receitaFixaService.atualizar(100L, dto);
+        ReceitaFixaResponseDTO response = receitaFixaService.atualizar(100L, dto);
 
-        assertTrue(response.isPresent());
-        assertEquals("Consultoria", response.get().descricao());
-        assertEquals(new BigDecimal("6000.00"), response.get().valor());
-        assertEquals(3L, response.get().conta().id());
-        assertEquals(4L, response.get().categoria().id());
-        assertEquals("Novo contrato", response.get().observacoes());
-        assertEquals(LocalDate.of(2024, 2, 1), response.get().dataInicio());
+        assertNotNull(response);
+        assertEquals("Consultoria", response.descricao());
+        assertEquals(new BigDecimal("6000.00"), response.valor());
+        assertEquals(3L, response.conta().id());
+        assertEquals(4L, response.categoria().id());
+        assertEquals("Novo contrato", response.observacoes());
+        assertEquals(LocalDate.of(2024, 2, 1), response.dataInicio());
     }
 
     @Test
-    public void deveRetornarVazioAoAtualizarReceitaFixaInexistente() {
+    public void deveLancarExcecaoAoAtualizarReceitaFixaInexistente() {
         ReceitaFixaRequestDTO dto = new ReceitaFixaRequestDTO(
             "Inexistente",
             new BigDecimal("100.00"),
@@ -197,9 +213,7 @@ public class ReceitaFixaServiceTest {
 
         when(receitaFixaRepository.findById(999L)).thenReturn(Optional.empty());
 
-        Optional<ReceitaFixaResponseDTO> response = receitaFixaService.atualizar(999L, dto);
-
-        assertTrue(response.isEmpty());
+        assertThrows(ResourceNotFoundException.class, () -> receitaFixaService.atualizar(999L, dto));
     }
 
     @Test
@@ -215,9 +229,9 @@ public class ReceitaFixaServiceTest {
         );
 
         when(receitaFixaRepository.findById(100L)).thenReturn(Optional.of(existente));
-        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(contaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> receitaFixaService.atualizar(100L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> receitaFixaService.atualizar(100L, dto));
     }
 
     @Test

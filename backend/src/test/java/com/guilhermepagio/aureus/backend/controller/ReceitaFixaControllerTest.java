@@ -46,7 +46,9 @@ public class ReceitaFixaControllerTest {
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(receitaFixaController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(receitaFixaController)
+                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -121,7 +123,7 @@ public class ReceitaFixaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
@@ -140,7 +142,7 @@ public class ReceitaFixaControllerTest {
         CategoriaResponseDTO categoria = new CategoriaResponseDTO(2L, "Trabalho", "Salário");
         ReceitaFixaResponseDTO response = new ReceitaFixaResponseDTO(10L, "Salário", new BigDecimal("5500.00"), conta, categoria, "Obs", LocalDate.of(2024, 1, 1));
 
-        when(receitaFixaService.atualizar(eq(10L), any(ReceitaFixaRequestDTO.class))).thenReturn(Optional.of(response));
+        when(receitaFixaService.atualizar(eq(10L), any(ReceitaFixaRequestDTO.class))).thenReturn(response);
 
         mockMvc.perform(put("/api/receitas-fixas/10")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -162,7 +164,8 @@ public class ReceitaFixaControllerTest {
         }
         """;
 
-        when(receitaFixaService.atualizar(eq(999L), any(ReceitaFixaRequestDTO.class))).thenReturn(Optional.empty());
+        when(receitaFixaService.atualizar(eq(999L), any(ReceitaFixaRequestDTO.class)))
+                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Receita fixa não encontrada: 999"));
 
         mockMvc.perform(put("/api/receitas-fixas/999")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -208,7 +211,7 @@ public class ReceitaFixaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
@@ -235,6 +238,6 @@ public class ReceitaFixaControllerTest {
 
         mockMvc.perform(delete("/api/receitas-fixas/10"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Não é possível excluir esta receita porque ela está em uso."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 }

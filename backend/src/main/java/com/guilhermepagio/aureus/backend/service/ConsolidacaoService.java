@@ -35,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class ConsolidacaoService {
 
     public static final Long SEM_CATEGORIA_ID = -1L;
+    public static final Long SEM_CONTA_ID = -1L;
 
     private final ContaRepository contaRepository;
     private final CategoriaRepository categoriaRepository;
@@ -59,9 +60,13 @@ public class ConsolidacaoService {
         Map<Long, LinhaConsolidacaoDTO> despesasMap = new LinkedHashMap<>();
         
         for (Conta c : contas) {
-            receitasMap.put(c.getId(), criarLinha(c));
-            despesasMap.put(c.getId(), criarLinha(c));
+            receitasMap.put(c.getId(), criarLinha(c.getId(), c.getDescricao()));
+            despesasMap.put(c.getId(), criarLinha(c.getId(), c.getDescricao()));
         }
+
+        // Linha sintética para "Sem Conta"
+        receitasMap.put(SEM_CONTA_ID, criarLinha(SEM_CONTA_ID, "Sem Conta"));
+        despesasMap.put(SEM_CONTA_ID, criarLinha(SEM_CONTA_ID, "Sem Conta"));
 
         List<ReceitaFixa> receitasFixas = receitaFixaRepository.findByUsuarioId(usuarioId);
         List<ReceitaVariavel> receitasVariaveis = receitaVariavelRepository.findByUsuarioId(usuarioId);
@@ -107,36 +112,36 @@ public class ConsolidacaoService {
             YearMonth currentMonth = startMonth.plusMonths(i);
 
             for (ReceitaFixa rf : receitasFixas) {
-                if (rf.getConta() == null) continue;
+                Long contaId = rf.getConta() != null ? rf.getConta().getId() : SEM_CONTA_ID;
                 YearMonth inicio = inicioReceitaFixa.get(rf.getId());
                 if (inicio == null || !inicio.isAfter(currentMonth)) {
-                    somarValor(receitasMap, rf.getConta().getId(), i, rf.getValor());
+                    somarValor(receitasMap, contaId, i, rf.getValor());
                 }
             }
 
             for (ReceitaVariavel rv : receitasVariaveis) {
-                if (rv.getConta() == null) continue;
+                Long contaId = rv.getConta() != null ? rv.getConta().getId() : SEM_CONTA_ID;
                 YearMonth inicio = inicioReceitaVariavel.get(rv.getId());
                 YearMonth fim = fimReceitaVariavel.get(rv.getId());
                 if (inicio != null && fim != null && !currentMonth.isBefore(inicio) && !currentMonth.isAfter(fim)) {
-                    somarValor(receitasMap, rv.getConta().getId(), i, rv.getValorParcela());
+                    somarValor(receitasMap, contaId, i, rv.getValorParcela());
                 }
             }
 
             for (DespesaFixa df : despesasFixas) {
-                if (df.getConta() == null) continue;
+                Long contaId = df.getConta() != null ? df.getConta().getId() : SEM_CONTA_ID;
                 YearMonth inicio = inicioDespesaFixa.get(df.getId());
                 if (inicio == null || !inicio.isAfter(currentMonth)) {
-                    somarValor(despesasMap, df.getConta().getId(), i, df.getValor());
+                    somarValor(despesasMap, contaId, i, df.getValor());
                 }
             }
 
             for (DespesaVariavel dv : despesasVariaveis) {
-                if (dv.getConta() == null) continue;
+                Long contaId = dv.getConta() != null ? dv.getConta().getId() : SEM_CONTA_ID;
                 YearMonth inicio = inicioDespesaVariavel.get(dv.getId());
                 YearMonth fim = fimDespesaVariavel.get(dv.getId());
                 if (inicio != null && fim != null && !currentMonth.isBefore(inicio) && !currentMonth.isAfter(fim)) {
-                    somarValor(despesasMap, dv.getConta().getId(), i, dv.getValorParcela());
+                    somarValor(despesasMap, contaId, i, dv.getValorParcela());
                 }
             }
         }
@@ -145,7 +150,6 @@ public class ConsolidacaoService {
         BigDecimal totalDespesasHistoricas = BigDecimal.ZERO;
 
         for (ReceitaFixa rf : receitasFixas) {
-            if (rf.getConta() == null || !receitasMap.containsKey(rf.getConta().getId())) continue;
             if (rf.getDataInicio() != null && rf.getValor() != null) {
                 YearMonth inicio = YearMonth.from(rf.getDataInicio());
                 if (inicio.isBefore(startMonth)) {
@@ -156,7 +160,6 @@ public class ConsolidacaoService {
         }
 
         for (ReceitaVariavel rv : receitasVariaveis) {
-            if (rv.getConta() == null || !receitasMap.containsKey(rv.getConta().getId())) continue;
             if (rv.getDataInicio() != null && rv.getQuantidadeParcelas() != null && rv.getQuantidadeParcelas() > 0 && rv.getValorParcela() != null) {
                 YearMonth inicio = YearMonth.from(rv.getDataInicio());
                 if (inicio.isBefore(startMonth)) {
@@ -169,7 +172,6 @@ public class ConsolidacaoService {
         }
 
         for (DespesaFixa df : despesasFixas) {
-            if (df.getConta() == null || !despesasMap.containsKey(df.getConta().getId())) continue;
             if (df.getDataInicio() != null && df.getValor() != null) {
                 YearMonth inicio = YearMonth.from(df.getDataInicio());
                 if (inicio.isBefore(startMonth)) {
@@ -180,7 +182,6 @@ public class ConsolidacaoService {
         }
 
         for (DespesaVariavel dv : despesasVariaveis) {
-            if (dv.getConta() == null || !despesasMap.containsKey(dv.getConta().getId())) continue;
             if (dv.getDataInicio() != null && dv.getQuantidadeParcelas() != null && dv.getQuantidadeParcelas() > 0 && dv.getValorParcela() != null) {
                 YearMonth inicio = YearMonth.from(dv.getDataInicio());
                 if (inicio.isBefore(startMonth)) {
@@ -230,16 +231,19 @@ public class ConsolidacaoService {
         );
     }
 
-    private LinhaConsolidacaoDTO criarLinha(Conta conta) {
+    private LinhaConsolidacaoDTO criarLinha(Long id, String descricao) {
         List<BigDecimal> valores = new ArrayList<>(24);
         for (int i = 0; i < 24; i++) {
             valores.add(BigDecimal.ZERO);
         }
-        return new LinhaConsolidacaoDTO(conta.getId(), conta.getDescricao(), valores);
+        return new LinhaConsolidacaoDTO(id, descricao, valores);
     }
 
     private void somarValor(Map<Long, LinhaConsolidacaoDTO> map, Long contaId, int index, BigDecimal valor) {
         LinhaConsolidacaoDTO linha = map.get(contaId);
+        if (linha == null) {
+            linha = map.get(SEM_CONTA_ID);
+        }
         if (linha != null && valor != null) {
             BigDecimal atual = linha.getValoresMensais().get(index);
             linha.getValoresMensais().set(index, atual.add(valor));

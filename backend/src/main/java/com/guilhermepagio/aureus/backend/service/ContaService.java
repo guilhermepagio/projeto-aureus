@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.guilhermepagio.aureus.backend.domain.Conta;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 
 @Service
@@ -42,13 +43,13 @@ public class ContaService {
     }
 
     @Transactional
-    public Optional<ContaResponseDTO> atualizar(Long id, ContaRequestDTO dto) {
-        return contaRepository.findById(id)
-                .map(conta -> {
-                    conta.setDescricao(dto.descricao());
-                    conta.setObservacoes(dto.observacoes());
-                    return ContaResponseDTO.fromEntity(contaRepository.save(conta));
-                });
+    public ContaResponseDTO atualizar(Long id, ContaRequestDTO dto) {
+        Conta conta = contaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + id));
+        conta.setDescricao(dto.descricao());
+        conta.setObservacoes(dto.observacoes());
+        Conta salva = contaRepository.save(conta);
+        return ContaResponseDTO.fromEntity(salva);
     }
 
     @Transactional

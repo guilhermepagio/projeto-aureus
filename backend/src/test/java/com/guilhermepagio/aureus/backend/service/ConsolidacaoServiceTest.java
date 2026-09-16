@@ -419,4 +419,183 @@ public class ConsolidacaoServiceTest {
         assertTrue(dto.getDespesas().stream().noneMatch(d -> d.getContaId().equals(2L)));
         assertTrue(dto.getDespesas().stream().noneMatch(d -> d.getContaId().equals(3L)));
     }
+
+    @Test
+    void testMovimentacoesSemContaAgrupadasSobLinhaSinteticaSemConta() {
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        // Receita Fixa sem conta
+        ReceitaFixa rf = new ReceitaFixa();
+        rf.setId(1L);
+        rf.setConta(null);
+        rf.setDataInicio(LocalDate.of(2024, 1, 1));
+        rf.setValor(new BigDecimal("250.00"));
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(rf));
+
+        // Despesa Fixa sem conta
+        DespesaFixa df = new DespesaFixa();
+        df.setId(2L);
+        df.setConta(null);
+        df.setDataInicio(LocalDate.of(2024, 1, 1));
+        df.setValor(new BigDecimal("100.00"));
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(df));
+
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-01");
+
+        // Receitas deve conter a linha "Sem Conta" com id -1
+        assertEquals(1, dto.getReceitas().size());
+        LinhaConsolidacaoDTO linhaRecSemConta = dto.getReceitas().get(0);
+        assertEquals(ConsolidacaoService.SEM_CONTA_ID, linhaRecSemConta.getContaId());
+        assertEquals("Sem Conta", linhaRecSemConta.getContaDescricao());
+        assertEquals(0, new BigDecimal("250.00").compareTo(linhaRecSemConta.getValoresMensais().get(0)));
+
+        // Despesas deve conter a linha "Sem Conta" com id -1
+        assertEquals(1, dto.getDespesas().size());
+        LinhaConsolidacaoDTO linhaDespSemConta = dto.getDespesas().get(0);
+        assertEquals(ConsolidacaoService.SEM_CONTA_ID, linhaDespSemConta.getContaId());
+        assertEquals("Sem Conta", linhaDespSemConta.getContaDescricao());
+        assertEquals(0, new BigDecimal("100.00").compareTo(linhaDespSemConta.getValoresMensais().get(0)));
+    }
+
+    @Test
+    void testSaldoHistoricoPreGradeComputaMovimentacoesSemConta() {
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        // Receita Fixa retroativa sem conta: 2 meses antes de 2024-03 = 2 * 300.00 = 600.00
+        ReceitaFixa rf = new ReceitaFixa();
+        rf.setId(1L);
+        rf.setConta(null);
+        rf.setDataInicio(LocalDate.of(2024, 1, 1));
+        rf.setValor(new BigDecimal("300.00"));
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(rf));
+
+        // Despesa Fixa retroativa sem conta: 2 meses antes de 2024-03 = 2 * 100.00 = 200.00
+        DespesaFixa df = new DespesaFixa();
+        df.setId(2L);
+        df.setConta(null);
+        df.setDataInicio(LocalDate.of(2024, 1, 1));
+        df.setValor(new BigDecimal("100.00"));
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(df));
+
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-03");
+
+        // 600.00 - 200.00 = 400.00
+        assertEquals(0, new BigDecimal("400.00").compareTo(dto.getSaldoHistoricoPreGrade()));
+    }
+
+    @Test
+    void testConsistenciaTotalDespesasEntreContaECategoriaComLancamentoSemContaESemCategoria() {
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(categoriaRepository.findByUsuarioIdOrderByDescricaoAsc("user1")).thenReturn(Collections.emptyList());
+
+        DespesaFixa df = new DespesaFixa();
+        df.setId(1L);
+        df.setConta(null);
+        df.setCategoria(null);
+        df.setDataInicio(LocalDate.of(2024, 1, 1));
+        df.setValor(new BigDecimal("150.00"));
+
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(List.of(df));
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO porConta = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-01");
+        ConsolidacaoPorCategoriaDTO porCategoria = consolidacaoService.calcularConsolidacaoPorCategoria("user1", "2024-01");
+
+        // Ambas devem ter exatamente 1 linha ("Sem Conta" e "Sem Categoria") com os mesmos totais mensais
+        assertEquals(1, porConta.getDespesas().size());
+        assertEquals(1, porCategoria.getDespesas().size());
+
+        for (int i = 0; i < 24; i++) {
+            BigDecimal valorConta = porConta.getDespesas().get(0).getValoresMensais().get(i);
+            BigDecimal valorCategoria = porCategoria.getDespesas().get(0).getValoresMensais().get(i);
+            assertEquals(0, valorConta.compareTo(valorCategoria));
+        }
+    }
+
+    @Test
+    void testMovimentacoesVariaveisSemContaAgrupadasNaGrade24Meses() {
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        // Receita Variável de 3 parcelas de 200.00 sem conta (2024-01, 2024-02, 2024-03)
+        ReceitaVariavel rv = new ReceitaVariavel();
+        rv.setId(10L);
+        rv.setConta(null);
+        rv.setDataInicio(LocalDate.of(2024, 1, 15));
+        rv.setQuantidadeParcelas(3);
+        rv.setValorParcela(new BigDecimal("200.00"));
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(rv));
+
+        // Despesa Variável de 2 parcelas de 75.00 sem conta (2024-02, 2024-03)
+        DespesaVariavel dv = new DespesaVariavel();
+        dv.setId(20L);
+        dv.setConta(null);
+        dv.setDataInicio(LocalDate.of(2024, 2, 10));
+        dv.setQuantidadeParcelas(2);
+        dv.setValorParcela(new BigDecimal("75.00"));
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(dv));
+
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-01");
+
+        // Receitas: linha "Sem Conta" presente com 200.00 nos meses 0, 1, 2
+        assertEquals(1, dto.getReceitas().size());
+        LinhaConsolidacaoDTO recSemConta = dto.getReceitas().get(0);
+        assertEquals(ConsolidacaoService.SEM_CONTA_ID, recSemConta.getContaId());
+        assertEquals("Sem Conta", recSemConta.getContaDescricao());
+        assertEquals(0, new BigDecimal("200.00").compareTo(recSemConta.getValoresMensais().get(0))); // 2024-01
+        assertEquals(0, new BigDecimal("200.00").compareTo(recSemConta.getValoresMensais().get(1))); // 2024-02
+        assertEquals(0, new BigDecimal("200.00").compareTo(recSemConta.getValoresMensais().get(2))); // 2024-03
+        assertEquals(0, BigDecimal.ZERO.compareTo(recSemConta.getValoresMensais().get(3))); // 2024-04
+
+        // Despesas: linha "Sem Conta" presente com 75.00 nos meses 1, 2
+        assertEquals(1, dto.getDespesas().size());
+        LinhaConsolidacaoDTO despSemConta = dto.getDespesas().get(0);
+        assertEquals(ConsolidacaoService.SEM_CONTA_ID, despSemConta.getContaId());
+        assertEquals("Sem Conta", despSemConta.getContaDescricao());
+        assertEquals(0, BigDecimal.ZERO.compareTo(despSemConta.getValoresMensais().get(0))); // 2024-01
+        assertEquals(0, new BigDecimal("75.00").compareTo(despSemConta.getValoresMensais().get(1))); // 2024-02
+        assertEquals(0, new BigDecimal("75.00").compareTo(despSemConta.getValoresMensais().get(2))); // 2024-03
+        assertEquals(0, BigDecimal.ZERO.compareTo(despSemConta.getValoresMensais().get(3))); // 2024-04
+    }
+
+    @Test
+    void testSaldoHistoricoPreGradeComMovimentacoesVariaveisSemConta() {
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        // Receita Variável de 3 parcelas de 100.00 iniciando em 2024-01: todas antes de 2024-05 = 300.00
+        ReceitaVariavel rv = new ReceitaVariavel();
+        rv.setId(10L);
+        rv.setConta(null);
+        rv.setDataInicio(LocalDate.of(2024, 1, 1));
+        rv.setQuantidadeParcelas(3);
+        rv.setValorParcela(new BigDecimal("100.00"));
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(rv));
+
+        // Despesa Variável de 2 parcelas de 60.00 iniciando em 2024-01: todas antes de 2024-05 = 120.00
+        DespesaVariavel dv = new DespesaVariavel();
+        dv.setId(20L);
+        dv.setConta(null);
+        dv.setDataInicio(LocalDate.of(2024, 1, 1));
+        dv.setQuantidadeParcelas(2);
+        dv.setValorParcela(new BigDecimal("60.00"));
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(List.of(dv));
+
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-05");
+
+        // 300.00 - 120.00 = 180.00
+        assertEquals(0, new BigDecimal("180.00").compareTo(dto.getSaldoHistoricoPreGrade()));
+    }
 }

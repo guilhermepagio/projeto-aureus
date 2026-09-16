@@ -46,7 +46,9 @@ public class DespesaVariavelControllerTest {
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(despesaVariavelController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(despesaVariavelController)
+                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -137,7 +139,7 @@ public class DespesaVariavelControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
@@ -163,7 +165,7 @@ public class DespesaVariavelControllerTest {
             conta, categoria, "Obs"
         );
 
-        when(despesaVariavelService.atualizar(eq(10L), any(DespesaVariavelRequestDTO.class))).thenReturn(Optional.of(response));
+        when(despesaVariavelService.atualizar(eq(10L), any(DespesaVariavelRequestDTO.class))).thenReturn(response);
 
         mockMvc.perform(put("/api/despesas-variaveis/10")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -188,7 +190,8 @@ public class DespesaVariavelControllerTest {
         }
         """;
 
-        when(despesaVariavelService.atualizar(eq(999L), any(DespesaVariavelRequestDTO.class))).thenReturn(Optional.empty());
+        when(despesaVariavelService.atualizar(eq(999L), any(DespesaVariavelRequestDTO.class)))
+                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Despesa variável não encontrada: 999"));
 
         mockMvc.perform(put("/api/despesas-variaveis/999")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -239,7 +242,7 @@ public class DespesaVariavelControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
@@ -266,6 +269,6 @@ public class DespesaVariavelControllerTest {
 
         mockMvc.perform(delete("/api/despesas-variaveis/10"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro ao excluir o registro."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 }

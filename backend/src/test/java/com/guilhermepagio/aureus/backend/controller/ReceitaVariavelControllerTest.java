@@ -46,7 +46,9 @@ public class ReceitaVariavelControllerTest {
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(receitaVariavelController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(receitaVariavelController)
+                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -132,7 +134,7 @@ public class ReceitaVariavelControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
@@ -156,7 +158,7 @@ public class ReceitaVariavelControllerTest {
             conta, categoria, "Obs"
         );
 
-        when(receitaVariavelService.atualizar(eq(10L), any(ReceitaVariavelRequestDTO.class))).thenReturn(Optional.of(response));
+        when(receitaVariavelService.atualizar(eq(10L), any(ReceitaVariavelRequestDTO.class))).thenReturn(response);
 
         mockMvc.perform(put("/api/receitas-variaveis/10")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -179,7 +181,8 @@ public class ReceitaVariavelControllerTest {
         }
         """;
 
-        when(receitaVariavelService.atualizar(eq(999L), any(ReceitaVariavelRequestDTO.class))).thenReturn(Optional.empty());
+        when(receitaVariavelService.atualizar(eq(999L), any(ReceitaVariavelRequestDTO.class)))
+                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Receita variável não encontrada: 999"));
 
         mockMvc.perform(put("/api/receitas-variaveis/999")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -227,7 +230,7 @@ public class ReceitaVariavelControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro de integridade relacional. Verifique os vínculos informados."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
@@ -254,6 +257,6 @@ public class ReceitaVariavelControllerTest {
 
         mockMvc.perform(delete("/api/receitas-variaveis/10"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Erro ao excluir o registro."));
+                .andExpect(jsonPath("$.status").value(400));
     }
 }

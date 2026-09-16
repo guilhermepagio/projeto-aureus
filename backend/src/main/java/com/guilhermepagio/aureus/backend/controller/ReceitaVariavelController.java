@@ -1,9 +1,7 @@
 package com.guilhermepagio.aureus.backend.controller;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,35 +34,21 @@ public class ReceitaVariavelController {
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(final @Valid @RequestBody ReceitaVariavelRequestDTO dto) {
-        try {
-            return ResponseEntity.ok(receitaVariavelService.criar(dto));
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
-        }
+    public ResponseEntity<ReceitaVariavelResponseDTO> criar(final @Valid @RequestBody ReceitaVariavelRequestDTO dto) {
+        return ResponseEntity.ok(receitaVariavelService.criar(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(final @PathVariable Long id, final @Valid @RequestBody ReceitaVariavelRequestDTO dto) {
-        try {
-            return receitaVariavelService.atualizar(id, dto)
-                    .map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
-        }
+    public ResponseEntity<ReceitaVariavelResponseDTO> atualizar(final @PathVariable Long id, final @Valid @RequestBody ReceitaVariavelRequestDTO dto) {
+        return ResponseEntity.ok(receitaVariavelService.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> excluir(final @PathVariable Long id) {
-        try {
-            boolean excluido = receitaVariavelService.excluir(id);
-            if (!excluido) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.noContent().build();
-        } catch (final DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Erro ao excluir o registro."));
+    public ResponseEntity<Void> excluir(final @PathVariable Long id) {
+        boolean excluido = receitaVariavelService.excluir(id);
+        if (!excluido) {
+            return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.noContent().build();
     }
 }

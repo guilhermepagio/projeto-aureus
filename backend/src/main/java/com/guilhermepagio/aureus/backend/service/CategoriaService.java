@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.guilhermepagio.aureus.backend.domain.Categoria;
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
 
 @Service
@@ -42,13 +43,13 @@ public class CategoriaService {
     }
 
     @Transactional
-    public Optional<CategoriaResponseDTO> atualizar(Long id, CategoriaRequestDTO dto) {
-        return categoriaRepository.findById(id)
-                .map(categoria -> {
-                    categoria.setDescricao(dto.descricao());
-                    categoria.setObservacoes(dto.observacoes());
-                    return CategoriaResponseDTO.fromEntity(categoriaRepository.save(categoria));
-                });
+    public CategoriaResponseDTO atualizar(Long id, CategoriaRequestDTO dto) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + id));
+        categoria.setDescricao(dto.descricao());
+        categoria.setObservacoes(dto.observacoes());
+        Categoria salva = categoriaRepository.save(categoria);
+        return CategoriaResponseDTO.fromEntity(salva);
     }
 
     @Transactional

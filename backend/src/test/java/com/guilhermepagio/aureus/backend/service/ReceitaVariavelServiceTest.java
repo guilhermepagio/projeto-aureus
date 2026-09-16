@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.domain.Categoria;
 import com.guilhermepagio.aureus.backend.domain.Conta;
 import com.guilhermepagio.aureus.backend.domain.ReceitaVariavel;
@@ -45,6 +46,16 @@ public class ReceitaVariavelServiceTest {
 
     @InjectMocks
     private ReceitaVariavelService receitaVariavelService;
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setUp() {
+        com.guilhermepagio.aureus.backend.security.TenantContext.setTenantId("user1");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void tearDown() {
+        com.guilhermepagio.aureus.backend.security.TenantContext.clear();
+    }
 
     @Test
     public void deveListarReceitasVariaveisOrdenadas() {
@@ -105,7 +116,9 @@ public class ReceitaVariavelServiceTest {
         Conta conta = new Conta(1L, "Nubank", "Principal");
         Categoria categoria = new Categoria(2L, "Vendas", "Bens");
 
+        when(contaRepository.findOwnerUsuarioId(1L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
+        when(categoriaRepository.findOwnerUsuarioId(2L)).thenReturn(Optional.of("user1"));
         when(categoriaRepository.findById(2L)).thenReturn(Optional.of(categoria));
         when(receitaVariavelRepository.saveAndFlush(any(ReceitaVariavel.class))).thenAnswer(invocation -> {
             ReceitaVariavel r = invocation.getArgument(0);
@@ -142,7 +155,9 @@ public class ReceitaVariavelServiceTest {
         Conta conta = new Conta(1L, "Nubank", "Principal");
         Categoria categoria = new Categoria(2L, "Renda", "Extra");
 
+        when(contaRepository.findOwnerUsuarioId(1L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
+        when(categoriaRepository.findOwnerUsuarioId(2L)).thenReturn(Optional.of("user1"));
         when(categoriaRepository.findById(2L)).thenReturn(Optional.of(categoria));
         when(receitaVariavelRepository.saveAndFlush(any(ReceitaVariavel.class))).thenAnswer(invocation -> {
             ReceitaVariavel r = invocation.getArgument(0);
@@ -164,9 +179,9 @@ public class ReceitaVariavelServiceTest {
             new IdReferenceDTO(999L), new IdReferenceDTO(2L), null
         );
 
-        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(contaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> receitaVariavelService.criar(dto));
+        assertThrows(ResourceNotFoundException.class, () -> receitaVariavelService.criar(dto));
     }
 
     @Test
@@ -177,10 +192,11 @@ public class ReceitaVariavelServiceTest {
         );
 
         Conta conta = new Conta(1L, "Nubank", "Principal");
+        when(contaRepository.findOwnerUsuarioId(1L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
-        when(categoriaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(categoriaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> receitaVariavelService.criar(dto));
+        assertThrows(ResourceNotFoundException.class, () -> receitaVariavelService.criar(dto));
     }
 
     @Test
@@ -206,25 +222,27 @@ public class ReceitaVariavelServiceTest {
         );
 
         when(receitaVariavelRepository.findById(50L)).thenReturn(Optional.of(existente));
+        when(contaRepository.findOwnerUsuarioId(3L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(3L)).thenReturn(Optional.of(contaNova));
+        when(categoriaRepository.findOwnerUsuarioId(4L)).thenReturn(Optional.of("user1"));
         when(categoriaRepository.findById(4L)).thenReturn(Optional.of(categoriaNova));
         when(receitaVariavelRepository.saveAndFlush(any(ReceitaVariavel.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<ReceitaVariavelResponseDTO> response = receitaVariavelService.atualizar(50L, dto);
+        ReceitaVariavelResponseDTO response = receitaVariavelService.atualizar(50L, dto);
 
-        assertTrue(response.isPresent());
-        assertEquals("Projeto Renovado", response.get().descricao());
-        assertEquals(LocalDate.of(2024, 3, 1), response.get().dataInicio());
-        assertEquals(LocalDate.of(2024, 6, 1), response.get().dataFim()); // 2024-03-01 + (4 - 1) = 2024-06-01
-        assertEquals(3L, response.get().conta().id());
-        assertEquals(4L, response.get().categoria().id());
-        assertEquals(new BigDecimal("1500.00"), response.get().valorParcela());
-        assertEquals(4, response.get().quantidadeParcelas());
-        assertEquals("Aditivo contratual", response.get().observacoes());
+        assertNotNull(response);
+        assertEquals("Projeto Renovado", response.descricao());
+        assertEquals(LocalDate.of(2024, 3, 1), response.dataInicio());
+        assertEquals(LocalDate.of(2024, 6, 1), response.dataFim()); // 2024-03-01 + (4 - 1) = 2024-06-01
+        assertEquals(3L, response.conta().id());
+        assertEquals(4L, response.categoria().id());
+        assertEquals(new BigDecimal("1500.00"), response.valorParcela());
+        assertEquals(4, response.quantidadeParcelas());
+        assertEquals("Aditivo contratual", response.observacoes());
     }
 
     @Test
-    public void deveRetornarVazioAoAtualizarReceitaVariavelInexistente() {
+    public void deveLancarExcecaoAoAtualizarReceitaVariavelInexistente() {
         ReceitaVariavelRequestDTO dto = new ReceitaVariavelRequestDTO(
             "Renda", new BigDecimal("100.00"), 1, LocalDate.of(2024, 1, 1),
             new IdReferenceDTO(1L), new IdReferenceDTO(2L), null
@@ -232,9 +250,7 @@ public class ReceitaVariavelServiceTest {
 
         when(receitaVariavelRepository.findById(999L)).thenReturn(Optional.empty());
 
-        Optional<ReceitaVariavelResponseDTO> response = receitaVariavelService.atualizar(999L, dto);
-
-        assertTrue(response.isEmpty());
+        assertThrows(ResourceNotFoundException.class, () -> receitaVariavelService.atualizar(999L, dto));
     }
 
     @Test
@@ -251,9 +267,9 @@ public class ReceitaVariavelServiceTest {
         );
 
         when(receitaVariavelRepository.findById(100L)).thenReturn(Optional.of(existente));
-        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(contaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> receitaVariavelService.atualizar(100L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> receitaVariavelService.atualizar(100L, dto));
     }
 
     @Test

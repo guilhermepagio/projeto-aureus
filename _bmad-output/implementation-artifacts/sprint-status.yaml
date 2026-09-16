@@ -29,9 +29,8 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 09-16-2026 01:42
+last_updated: 09-16-2026 10:55
 project: projeto-aureus
-project_key: NOKEY
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
 development_status:
@@ -64,7 +63,7 @@ development_status:
 
   epic-5: in-progress
   5-1-backend-service-layer-e-dtos-records-para-entidades: done
-  5-2-tratamento-global-erros-validacao-tenant-e-indices: backlog
+  5-2-tratamento-global-erros-validacao-tenant-e-indices: done
   5-3-centralizacao-cliente-http-api-e-resiliencia-frontend: backlog
   5-4-abstracao-e-unificacao-formularios-movimentacoes-dry: backlog
   epic-5-retrospective: optional
@@ -135,14 +134,14 @@ action_items:
     epic: 4
     action: "Padronizar regra de negócio para movimentações sem conta associada"
     owner: "Arquiteto / Desenvolvedor Backend"
-    status: open
+    status: done
     ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md"
   - id: "epic-4-retro-item-10-otimizar-agregação-de-transações-no-back"
     epic: 4
     action: "Otimizar agregação de transações no Backend substituindo carregamento
       em memória por queries SQL e índices"
     owner: "Desenvolvedor Backend"
-    status: open
+    status: done
     ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md"
   - id: "epic-4-retro-item-11-implementar-suíte-de-testes-e2e-automati"
     epic: 4

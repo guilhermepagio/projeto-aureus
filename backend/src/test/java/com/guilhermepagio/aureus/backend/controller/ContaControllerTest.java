@@ -44,7 +44,9 @@ public class ContaControllerTest {
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(contaController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(contaController)
+                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -86,7 +88,7 @@ public class ContaControllerTest {
     public void deveAtualizarContaExistente() throws Exception {
         ContaRequestDTO request = new ContaRequestDTO("Nubank PJ", "Atualizada");
         ContaResponseDTO response = new ContaResponseDTO(1L, "Nubank PJ", "Atualizada");
-        when(contaService.atualizar(eq(1L), any(ContaRequestDTO.class))).thenReturn(Optional.of(response));
+        when(contaService.atualizar(eq(1L), any(ContaRequestDTO.class))).thenReturn(response);
 
         mockMvc.perform(put("/api/contas/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +100,8 @@ public class ContaControllerTest {
     @Test
     public void deveRetornar404AoAtualizarContaInexistente() throws Exception {
         ContaRequestDTO request = new ContaRequestDTO("Nova", "");
-        when(contaService.atualizar(eq(999L), any(ContaRequestDTO.class))).thenReturn(Optional.empty());
+        when(contaService.atualizar(eq(999L), any(ContaRequestDTO.class)))
+                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Conta não encontrada: 999"));
 
         mockMvc.perform(put("/api/contas/999")
                 .contentType(MediaType.APPLICATION_JSON)

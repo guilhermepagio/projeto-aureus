@@ -46,6 +46,16 @@ public class DespesaFixaServiceTest {
     @InjectMocks
     private DespesaFixaService despesaFixaService;
 
+    @org.junit.jupiter.api.BeforeEach
+    public void setUp() {
+        com.guilhermepagio.aureus.backend.security.TenantContext.setTenantId("user1");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void tearDown() {
+        com.guilhermepagio.aureus.backend.security.TenantContext.clear();
+    }
+
     @Test
     public void deveListarDespesasFixasOrdenadas() {
         Conta conta = new Conta(1L, "Nubank", "Principal");
@@ -95,7 +105,9 @@ public class DespesaFixaServiceTest {
         Categoria categoria = new Categoria(2L, "Serviços", "Internet");
         DespesaFixa salva = new DespesaFixa(100L, "Internet", new BigDecimal("150.00"), conta, categoria, "Vivo Fibra", LocalDate.of(2024, 1, 1));
 
+        when(contaRepository.findOwnerUsuarioId(1L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
+        when(categoriaRepository.findOwnerUsuarioId(2L)).thenReturn(Optional.of("user1"));
         when(categoriaRepository.findById(2L)).thenReturn(Optional.of(categoria));
         when(despesaFixaRepository.saveAndFlush(any(DespesaFixa.class))).thenAnswer(invocation -> {
             DespesaFixa d = invocation.getArgument(0);
@@ -128,9 +140,9 @@ public class DespesaFixaServiceTest {
             LocalDate.of(2024, 1, 1)
         );
 
-        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(contaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> despesaFixaService.criar(dto));
+        assertThrows(com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class, () -> despesaFixaService.criar(dto));
     }
 
     @Test
@@ -145,10 +157,11 @@ public class DespesaFixaServiceTest {
         );
 
         Conta conta = new Conta(1L, "Nubank", "Principal");
+        when(contaRepository.findOwnerUsuarioId(1L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
-        when(categoriaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(categoriaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> despesaFixaService.criar(dto));
+        assertThrows(com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class, () -> despesaFixaService.criar(dto));
     }
 
     @Test
@@ -169,23 +182,25 @@ public class DespesaFixaServiceTest {
         );
 
         when(despesaFixaRepository.findById(100L)).thenReturn(Optional.of(existente));
+        when(contaRepository.findOwnerUsuarioId(3L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(3L)).thenReturn(Optional.of(contaNova));
+        when(categoriaRepository.findOwnerUsuarioId(4L)).thenReturn(Optional.of("user1"));
         when(categoriaRepository.findById(4L)).thenReturn(Optional.of(categoriaNova));
         when(despesaFixaRepository.saveAndFlush(any(DespesaFixa.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<DespesaFixaResponseDTO> response = despesaFixaService.atualizar(100L, dto);
+        DespesaFixaResponseDTO response = despesaFixaService.atualizar(100L, dto);
 
-        assertTrue(response.isPresent());
-        assertEquals("Internet 500MB", response.get().descricao());
-        assertEquals(new BigDecimal("170.00"), response.get().valor());
-        assertEquals(3L, response.get().conta().id());
-        assertEquals(4L, response.get().categoria().id());
-        assertEquals("Upgrade", response.get().observacoes());
-        assertEquals(LocalDate.of(2024, 2, 1), response.get().dataInicio());
+        assertNotNull(response);
+        assertEquals("Internet 500MB", response.descricao());
+        assertEquals(new BigDecimal("170.00"), response.valor());
+        assertEquals(3L, response.conta().id());
+        assertEquals(4L, response.categoria().id());
+        assertEquals("Upgrade", response.observacoes());
+        assertEquals(LocalDate.of(2024, 2, 1), response.dataInicio());
     }
 
     @Test
-    public void deveRetornarVazioAoAtualizarDespesaFixaInexistente() {
+    public void deveLancarExcecaoAoAtualizarDespesaFixaInexistente() {
         DespesaFixaRequestDTO dto = new DespesaFixaRequestDTO(
             "Inexistente",
             new BigDecimal("100.00"),
@@ -197,9 +212,7 @@ public class DespesaFixaServiceTest {
 
         when(despesaFixaRepository.findById(999L)).thenReturn(Optional.empty());
 
-        Optional<DespesaFixaResponseDTO> response = despesaFixaService.atualizar(999L, dto);
-
-        assertTrue(response.isEmpty());
+        assertThrows(com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class, () -> despesaFixaService.atualizar(999L, dto));
     }
 
     @Test
@@ -215,9 +228,9 @@ public class DespesaFixaServiceTest {
         );
 
         when(despesaFixaRepository.findById(100L)).thenReturn(Optional.of(existente));
-        when(contaRepository.findById(999L)).thenReturn(Optional.empty());
+        when(contaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> despesaFixaService.atualizar(100L, dto));
+        assertThrows(com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class, () -> despesaFixaService.atualizar(100L, dto));
     }
 
     @Test

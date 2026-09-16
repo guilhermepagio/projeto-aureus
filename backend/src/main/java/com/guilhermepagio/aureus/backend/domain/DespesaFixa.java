@@ -11,6 +11,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -25,7 +26,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "despesas_fixas")
+@Table(name = "despesas_fixas", indexes = {
+    @Index(name = "idx_despesas_fixas_usuario_data_inicio", columnList = "usuario_id, data_inicio"),
+    @Index(name = "idx_despesas_fixas_data_inicio", columnList = "data_inicio")
+})
 @Getter
 @Setter
 @NoArgsConstructor

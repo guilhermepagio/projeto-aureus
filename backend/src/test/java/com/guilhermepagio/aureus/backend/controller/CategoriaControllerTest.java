@@ -44,7 +44,9 @@ public class CategoriaControllerTest {
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(categoriaController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoriaController)
+                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -86,7 +88,7 @@ public class CategoriaControllerTest {
     public void deveAtualizarCategoriaExistente() throws Exception {
         CategoriaRequestDTO request = new CategoriaRequestDTO("Mercado", "Atualizada");
         CategoriaResponseDTO response = new CategoriaResponseDTO(1L, "Mercado", "Atualizada");
-        when(categoriaService.atualizar(eq(1L), any(CategoriaRequestDTO.class))).thenReturn(Optional.of(response));
+        when(categoriaService.atualizar(eq(1L), any(CategoriaRequestDTO.class))).thenReturn(response);
 
         mockMvc.perform(put("/api/categorias/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +100,8 @@ public class CategoriaControllerTest {
     @Test
     public void deveRetornar404AoAtualizarCategoriaInexistente() throws Exception {
         CategoriaRequestDTO request = new CategoriaRequestDTO("Nova", "");
-        when(categoriaService.atualizar(eq(999L), any(CategoriaRequestDTO.class))).thenReturn(Optional.empty());
+        when(categoriaService.atualizar(eq(999L), any(CategoriaRequestDTO.class)))
+                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Categoria não encontrada: 999"));
 
         mockMvc.perform(put("/api/categorias/999")
                 .contentType(MediaType.APPLICATION_JSON)

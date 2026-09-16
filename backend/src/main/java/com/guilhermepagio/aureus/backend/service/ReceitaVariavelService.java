@@ -3,7 +3,7 @@ package com.guilhermepagio.aureus.backend.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +12,11 @@ import com.guilhermepagio.aureus.backend.domain.Conta;
 import com.guilhermepagio.aureus.backend.domain.ReceitaVariavel;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
 import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 import com.guilhermepagio.aureus.backend.repository.ReceitaVariavelRepository;
+import com.guilhermepagio.aureus.backend.security.TenantContext;
 
 @Service
 public class ReceitaVariavelService {
@@ -47,15 +49,43 @@ public class ReceitaVariavelService {
         if (receitaVariavel.getDataInicio() != null && receitaVariavel.getQuantidadeParcelas() != null && receitaVariavel.getQuantidadeParcelas() > 0) {
             receitaVariavel.setDataInicio(receitaVariavel.getDataInicio().withDayOfMonth(1));
             receitaVariavel.setDataFim(receitaVariavel.getDataInicio().plusMonths(receitaVariavel.getQuantidadeParcelas() - 1));
+        } else {
+            receitaVariavel.setDataFim(null);
         }
+    }
+
+    private Conta validarEObterConta(Long contaId) {
+        if (contaId == null) {
+            throw new ResourceNotFoundException("Conta não encontrada: null");
+        }
+        String ownerUsuarioId = contaRepository.findOwnerUsuarioId(contaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
+        String currentTenant = TenantContext.getTenantId();
+        if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
+            throw new AccessDeniedException("Acesso negado: a conta informada não pertence ao usuário autenticado");
+        }
+        return contaRepository.findById(contaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
+    }
+
+    private Categoria validarEObterCategoria(Long categoriaId) {
+        if (categoriaId == null) {
+            throw new ResourceNotFoundException("Categoria não encontrada: null");
+        }
+        String ownerUsuarioId = categoriaRepository.findOwnerUsuarioId(categoriaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + categoriaId));
+        String currentTenant = TenantContext.getTenantId();
+        if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
+            throw new AccessDeniedException("Acesso negado: a categoria informada não pertence ao usuário autenticado");
+        }
+        return categoriaRepository.findById(categoriaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + categoriaId));
     }
 
     @Transactional
     public ReceitaVariavelResponseDTO criar(ReceitaVariavelRequestDTO dto) {
-        Conta conta = contaRepository.findById(dto.conta().id())
-                .orElseThrow(() -> new DataIntegrityViolationException("Conta não encontrada: " + dto.conta().id()));
-        Categoria categoria = categoriaRepository.findById(dto.categoria().id())
-                .orElseThrow(() -> new DataIntegrityViolationException("Categoria não encontrada: " + dto.categoria().id()));
+        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
         ReceitaVariavel receita = new ReceitaVariavel();
         receita.setDescricao(dto.descricao());
@@ -72,26 +102,24 @@ public class ReceitaVariavelService {
     }
 
     @Transactional
-    public Optional<ReceitaVariavelResponseDTO> atualizar(Long id, ReceitaVariavelRequestDTO dto) {
-        return receitaVariavelRepository.findById(id)
-                .map(existente -> {
-                    Conta conta = contaRepository.findById(dto.conta().id())
-                            .orElseThrow(() -> new DataIntegrityViolationException("Conta não encontrada: " + dto.conta().id()));
-                    Categoria categoria = categoriaRepository.findById(dto.categoria().id())
-                            .orElseThrow(() -> new DataIntegrityViolationException("Categoria não encontrada: " + dto.categoria().id()));
+    public ReceitaVariavelResponseDTO atualizar(Long id, ReceitaVariavelRequestDTO dto) {
+        ReceitaVariavel existente = receitaVariavelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Receita variável não encontrada: " + id));
 
-                    existente.setDescricao(dto.descricao());
-                    existente.setValorParcela(dto.valorParcela());
-                    existente.setQuantidadeParcelas(dto.quantidadeParcelas());
-                    existente.setDataInicio(dto.dataInicio());
-                    preencherDataFim(existente);
-                    existente.setConta(conta);
-                    existente.setCategoria(categoria);
-                    existente.setObservacoes(dto.observacoes());
+        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
-                    ReceitaVariavel salva = receitaVariavelRepository.saveAndFlush(existente);
-                    return ReceitaVariavelResponseDTO.fromEntity(salva);
-                });
+        existente.setDescricao(dto.descricao());
+        existente.setValorParcela(dto.valorParcela());
+        existente.setQuantidadeParcelas(dto.quantidadeParcelas());
+        existente.setDataInicio(dto.dataInicio());
+        preencherDataFim(existente);
+        existente.setConta(conta);
+        existente.setCategoria(categoria);
+        existente.setObservacoes(dto.observacoes());
+
+        ReceitaVariavel salva = receitaVariavelRepository.saveAndFlush(existente);
+        return ReceitaVariavelResponseDTO.fromEntity(salva);
     }
 
     @Transactional

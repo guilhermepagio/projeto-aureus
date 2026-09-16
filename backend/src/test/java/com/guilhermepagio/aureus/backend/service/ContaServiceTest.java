@@ -91,22 +91,23 @@ public class ContaServiceTest {
         when(contaRepository.findById(1L)).thenReturn(Optional.of(existente));
         when(contaRepository.save(any(Conta.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<ContaResponseDTO> response = contaService.atualizar(1L, dto);
+        ContaResponseDTO response = contaService.atualizar(1L, dto);
 
-        assertTrue(response.isPresent());
-        assertEquals(1L, response.get().id());
-        assertEquals("Nubank PJ", response.get().descricao());
-        assertEquals("Atualizada", response.get().observacoes());
+        assertNotNull(response);
+        assertEquals(1L, response.id());
+        assertEquals("Nubank PJ", response.descricao());
+        assertEquals("Atualizada", response.observacoes());
     }
 
     @Test
-    public void deveRetornarVazioAoAtualizarContaInexistente() {
+    public void deveLancarExcecaoAoAtualizarContaInexistente() {
         ContaRequestDTO dto = new ContaRequestDTO("Nova", "Obs");
         when(contaRepository.findById(999L)).thenReturn(Optional.empty());
 
-        Optional<ContaResponseDTO> response = contaService.atualizar(999L, dto);
-
-        assertTrue(response.isEmpty());
+        org.junit.jupiter.api.Assertions.assertThrows(
+            com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class,
+            () -> contaService.atualizar(999L, dto)
+        );
     }
 
     @Test

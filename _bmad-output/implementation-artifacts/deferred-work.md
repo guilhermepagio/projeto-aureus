@@ -386,3 +386,12 @@
 - Alinhar anotação de valor máximo @Max(9999999) na entidade JPA com @DecimalMax(9999999.99) do DTO [backend/src/main/java/com/guilhermepagio/aureus/backend/domain/DespesaFixa.java:46] — pre-existing entity annotation.
 - Adicionar ordenação alfabética (OrderByDescricaoAsc) na listagem de Contas e Categorias [backend/src/main/java/com/guilhermepagio/aureus/backend/service/ContaService.java:28] — pre-existing query pattern.
 
+## Deferred from: code review of spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md (2026-09-16)
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Centralize duplicate validarEObterConta and validarEObterCategoria across transaction services into shared validation component
+  evidence: Review surfaced identical helper methods across all 4 transaction services
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Optimize foreign key validation queries in transaction services to avoid two roundtrips (findOwnerUsuarioId + findById)
+  evidence: Currently performs native check then findById, which could be combined
+
+

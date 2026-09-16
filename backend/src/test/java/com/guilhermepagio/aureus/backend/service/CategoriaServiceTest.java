@@ -91,22 +91,23 @@ public class CategoriaServiceTest {
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(existente));
         when(categoriaRepository.save(any(Categoria.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<CategoriaResponseDTO> response = categoriaService.atualizar(1L, dto);
+        CategoriaResponseDTO response = categoriaService.atualizar(1L, dto);
 
-        assertTrue(response.isPresent());
-        assertEquals(1L, response.get().id());
-        assertEquals("Supermercado", response.get().descricao());
-        assertEquals("Atualizada", response.get().observacoes());
+        assertNotNull(response);
+        assertEquals(1L, response.id());
+        assertEquals("Supermercado", response.descricao());
+        assertEquals("Atualizada", response.observacoes());
     }
 
     @Test
-    public void deveRetornarVazioAoAtualizarCategoriaInexistente() {
+    public void deveLancarExcecaoAoAtualizarCategoriaInexistente() {
         CategoriaRequestDTO dto = new CategoriaRequestDTO("Nova", "Obs");
         when(categoriaRepository.findById(999L)).thenReturn(Optional.empty());
 
-        Optional<CategoriaResponseDTO> response = categoriaService.atualizar(999L, dto);
-
-        assertTrue(response.isEmpty());
+        org.junit.jupiter.api.Assertions.assertThrows(
+            com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class,
+            () -> categoriaService.atualizar(999L, dto)
+        );
     }
 
     @Test

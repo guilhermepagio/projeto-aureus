@@ -3,7 +3,7 @@ package com.guilhermepagio.aureus.backend.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +12,11 @@ import com.guilhermepagio.aureus.backend.domain.Conta;
 import com.guilhermepagio.aureus.backend.domain.ReceitaFixa;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaFixaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaFixaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
 import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 import com.guilhermepagio.aureus.backend.repository.ReceitaFixaRepository;
+import com.guilhermepagio.aureus.backend.security.TenantContext;
 
 @Service
 public class ReceitaFixaService {
@@ -43,12 +45,38 @@ public class ReceitaFixaService {
         return receitaFixaRepository.findById(id).map(ReceitaFixaResponseDTO::fromEntity);
     }
 
+    private Conta validarEObterConta(Long contaId) {
+        if (contaId == null) {
+            throw new ResourceNotFoundException("Conta não encontrada: null");
+        }
+        String ownerUsuarioId = contaRepository.findOwnerUsuarioId(contaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
+        String currentTenant = TenantContext.getTenantId();
+        if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
+            throw new AccessDeniedException("Acesso negado: a conta informada não pertence ao usuário autenticado");
+        }
+        return contaRepository.findById(contaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
+    }
+
+    private Categoria validarEObterCategoria(Long categoriaId) {
+        if (categoriaId == null) {
+            throw new ResourceNotFoundException("Categoria não encontrada: null");
+        }
+        String ownerUsuarioId = categoriaRepository.findOwnerUsuarioId(categoriaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + categoriaId));
+        String currentTenant = TenantContext.getTenantId();
+        if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
+            throw new AccessDeniedException("Acesso negado: a categoria informada não pertence ao usuário autenticado");
+        }
+        return categoriaRepository.findById(categoriaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + categoriaId));
+    }
+
     @Transactional
     public ReceitaFixaResponseDTO criar(ReceitaFixaRequestDTO dto) {
-        Conta conta = contaRepository.findById(dto.conta().id())
-                .orElseThrow(() -> new DataIntegrityViolationException("Conta não encontrada: " + dto.conta().id()));
-        Categoria categoria = categoriaRepository.findById(dto.categoria().id())
-                .orElseThrow(() -> new DataIntegrityViolationException("Categoria não encontrada: " + dto.categoria().id()));
+        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
         ReceitaFixa receita = new ReceitaFixa();
         receita.setDescricao(dto.descricao());
@@ -63,24 +91,22 @@ public class ReceitaFixaService {
     }
 
     @Transactional
-    public Optional<ReceitaFixaResponseDTO> atualizar(Long id, ReceitaFixaRequestDTO dto) {
-        return receitaFixaRepository.findById(id)
-                .map(existente -> {
-                    Conta conta = contaRepository.findById(dto.conta().id())
-                            .orElseThrow(() -> new DataIntegrityViolationException("Conta não encontrada: " + dto.conta().id()));
-                    Categoria categoria = categoriaRepository.findById(dto.categoria().id())
-                            .orElseThrow(() -> new DataIntegrityViolationException("Categoria não encontrada: " + dto.categoria().id()));
+    public ReceitaFixaResponseDTO atualizar(Long id, ReceitaFixaRequestDTO dto) {
+        ReceitaFixa existente = receitaFixaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Receita fixa não encontrada: " + id));
 
-                    existente.setDescricao(dto.descricao());
-                    existente.setValor(dto.valor());
-                    existente.setConta(conta);
-                    existente.setCategoria(categoria);
-                    existente.setObservacoes(dto.observacoes());
-                    existente.setDataInicio(dto.dataInicio());
+        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
-                    ReceitaFixa salva = receitaFixaRepository.saveAndFlush(existente);
-                    return ReceitaFixaResponseDTO.fromEntity(salva);
-                });
+        existente.setDescricao(dto.descricao());
+        existente.setValor(dto.valor());
+        existente.setConta(conta);
+        existente.setCategoria(categoria);
+        existente.setObservacoes(dto.observacoes());
+        existente.setDataInicio(dto.dataInicio());
+
+        ReceitaFixa salva = receitaFixaRepository.saveAndFlush(existente);
+        return ReceitaFixaResponseDTO.fromEntity(salva);
     }
 
     @Transactional
