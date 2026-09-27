@@ -4,7 +4,7 @@ type: 'refactor'
 created: '2026-09-16'
 status: 'done'
 baseline_commit: 'c87a3e12ab9e0089dc46e99a4c3b1f427cb64c4e'
-review_loop_iteration: 0
+review_loop_iteration: 2
 context:
   - '_bmad-output/implementation-artifacts/epic-5-context.md'
 ---
@@ -89,6 +89,38 @@ context:
 - [x] `backend/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java` -- Adicionar suporte a linha sintética "Sem Conta" (`SEM_CONTA_ID = -1L`) em `calcularConsolidacaoPorConta` e cômputo no saldo histórico, equiparando com o tratamento de categorias -- Elimina divergência entre consolidação por conta e por categoria
 - [x] `backend/src/test/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandlerTest.java` -- Implementar testes unitários para o `GlobalExceptionHandler` -- Cobertura dos status 400, 403, 404 e 500
 - [x] `backend/src/test/java/com/guilhermepagio/aureus/backend/service/TenantValidationTest.java` e `ConsolidacaoServiceTest.java` -- Adicionar testes unitários para validação de tenant cruzado e para consolidação com movimentações sem conta associada -- Garantia de isolamento e consistência matemática
+
+### Review Findings
+
+<!-- Populated by step-04 during review loops. -->
+- [x] [Review][Patch] Tratar HandlerMethodValidationException no GlobalExceptionHandler retornando HTTP 400 com erros de validação padronizados [backend/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java:100]
+- [x] [Review][Patch] Tratar HttpMediaTypeNotSupportedException (415) e HttpMediaTypeNotAcceptableException (406) no GlobalExceptionHandler [backend/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java:230]
+- [x] [Review][Patch] Adicionar header Allow com métodos suportados na resposta HTTP 405 em handleMethodNotSupported [backend/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java:216]
+- [x] [Review][Patch] Adicionar verificação de nulo em ex.getConstraintViolations() no handleConstraintViolation [backend/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java:103]
+- [x] [Review][Patch] Tratar DateTimeParseException no GlobalExceptionHandler retornando HTTP 400 [backend/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java:171]
+- [x] [Review][Patch] Adicionar starter do Flyway para auto-configuração no Spring Boot 4.1.0 [backend/pom.xml:100]
+- [x] [Review][Patch] Tratar NoResourceFoundException e HttpRequestMethodNotSupportedException no GlobalExceptionHandler retornando 404/405 padronizados [backend/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java:163]
+- [x] [Review][Patch] Tratar ConstraintViolationException no GlobalExceptionHandler e remover handler local duplicado de ConsolidacaoController [backend/src/main/java/com/guilhermepagio/aureus/backend/controller/ConsolidacaoController.java:39]
+- [x] [Review][Patch] Sanitizar mensagens de erro em handleTypeMismatchAndMissingParam para evitar vazamento de classes internas [backend/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java:79]
+- [x] [Review][Patch] Adicionar verificação de inicialização e migração do Flyway no teste de contexto da aplicação [backend/src/test/java/com/guilhermepagio/aureus/backend/BackendApplicationTests.java:9]
+- [x] [Review][Defer] Consolidar índice B-tree duplicado em usuarios(google_subject_id) na migração Flyway [backend/src/main/resources/db/migration/V1__create_performance_indexes.sql:75] — deferred, pre-existing
+- [x] [Review][Defer] Otimizar consultas do ConsolidacaoService para utilizar os índices compostos de data diretamente no banco ao invés de carga em memória [backend/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:71] — deferred, pre-existing
+- [x] [Review][Defer] Padronizar payload de erro com ApiErrorResponse na exclusão de recurso inexistente (DELETE /{id}) [backend/src/main/java/com/guilhermepagio/aureus/backend/controller/ContaController.java:49] — deferred, pre-existing
+- [x] [Review][Defer] Centralizar validação de tenant em relacionamentos (validarEObterConta/validarEObterCategoria) em validador compartilhado [backend/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaFixaService.java:48] — deferred, pre-existing
+- [x] [Review][Defer] Criar índices adicionais no banco para chaves estrangeiras (conta_id, categoria_id) e usuario_id em contas/categorias [backend/src/main/resources/db/migration/V1__create_performance_indexes.sql:1] — deferred, pre-existing
+- [x] [Review][Defer] Alinhar consistência de cálculo histórico no ConsolidacaoService para movimentações sem dataInicio [backend/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:153] — deferred, pre-existing
+- [x] [Review][Defer] Padronizar tratamento de erros dos filtros de segurança (Spring Security) no formato ApiErrorResponse [backend/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:1] — deferred, pre-existing
+- [x] [Review][Defer] Aplicar ordenação alfabética (OrderByDescricaoAsc) em CategoriaService.listar() [backend/src/main/java/com/guilhermepagio/aureus/backend/service/CategoriaService.java:26] — deferred, pre-existing
+- [x] [Review][Defer] Padronizar retorno dos métodos criar entre controllers (ResponseEntity vs DTO direto) [backend/src/main/java/com/guilhermepagio/aureus/backend/controller/ContaController.java:36] — deferred, pre-existing
+- [x] [Review][Defer] Tratar fail-closed estrito para tenant não autenticado no CurrentTenantIdentifierResolverImpl [backend/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:1] — deferred, pre-existing
+- [x] [Review][Patch] Tratar fallback de mensagem nula em handleIllegalArgument no GlobalExceptionHandler [backend/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java:218]
+- [x] [Review][Patch] Extrair nome do nó folha (leaf parameter) no handleConstraintViolation do GlobalExceptionHandler para evitar prefixo de método [backend/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java:110]
+- [x] [Review][Patch] Configurar GlobalExceptionHandler no setup de ConsolidacaoControllerTest e validar rejeição de mesAno inválido via MockMvc [backend/src/test/java/com/guilhermepagio/aureus/backend/controller/ConsolidacaoControllerTest.java:47]
+- [x] [Review][Defer] Configurar isolamento de banco de dados/Testcontainers ou profile específico para BackendApplicationTests sem exigir container Postgres ativo na porta 5432 [backend/src/test/java/com/guilhermepagio/aureus/backend/BackendApplicationTests.java:10] — deferred, pre-existing
+- [x] [Review][Defer] Adicionar testes MockMvc verificando HTTP 403 Forbidden nos controllers de movimentação quando tenant for inválido [backend/src/test/java/com/guilhermepagio/aureus/backend/controller/DespesaFixaControllerTest.java:37] — deferred, pre-existing
+- [x] [Review][Defer] Eliminar checagem manual de autenticação (usuarioId == null) em ConsolidacaoController delegando para o filtro Spring Security [backend/src/main/java/com/guilhermepagio/aureus/backend/controller/ConsolidacaoController.java:32] — deferred, pre-existing
+- [x] [Review][Defer] Utilizar a coluna persistida dataFim no ConsolidacaoService ao invés de recalcular a data final das parcelas em memória [backend/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:79] — deferred, pre-existing
+- [x] [Review][Defer] Coexistência de hibernate.ddl-auto: update e migrações Flyway em application.yaml [backend/src/main/resources/application.yaml:10] — deferred, pre-existing
 
 **Acceptance Criteria:**
 - Given um payload inválido enviado a qualquer endpoint REST, when a requisição for processada, then a API deve responder HTTP 400 com estrutura `ApiErrorResponse` contendo lista/mapa de erros de validação

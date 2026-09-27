@@ -393,5 +393,51 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
   summary: Optimize foreign key validation queries in transaction services to avoid two roundtrips (findOwnerUsuarioId + findById)
   evidence: Currently performs native check then findById, which could be combined
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Padronizar payload de erro com ApiErrorResponse na exclusão de recurso inexistente (DELETE /{id})
+  evidence: service.excluir(id) retorna false e controller responde ResponseEntity.notFound().build() sem body
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Criar índices adicionais no banco para chaves estrangeiras (conta_id, categoria_id) e usuario_id em contas/categorias
+  evidence: V1__create_performance_indexes.sql foca em datas e google_subject_id; chaves estrangeiras não indexadas causam seq scan em deletes
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Alinhar consistência de cálculo histórico no ConsolidacaoService para movimentações sem dataInicio
+  evidence: Transações sem dataInicio são incluídas na projeção futura de 24 meses mas ignoradas no saldo histórico pré-grade
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Padronizar tratamento de erros dos filtros de segurança (Spring Security) no formato ApiErrorResponse
+  evidence: 401 Unauthorized e 403 CSRF nos filtros de segurança são gerados antes do RestControllerAdvice
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Aplicar ordenação alfabética (OrderByDescricaoAsc) em CategoriaService.listar()
+  evidence: CategoriaService executa findAll() em vez do método ordenado do repositório
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Padronizar retorno dos métodos criar entre controllers (ResponseEntity vs DTO direto)
+  evidence: Movimentações retornam ResponseEntity<T> enquanto Conta e Categoria retornam DTO puro
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Tratar fail-closed estrito para tenant não autenticado no CurrentTenantIdentifierResolverImpl
+  evidence: Resolver retorna string 'public' quando contexto é nulo, com risco de persistência inadvertida se não autenticado
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Consolidar índice B-tree duplicado em usuarios(google_subject_id)
+  evidence: A coluna google_subject_id possui constraint UNIQUE na tabela usuarios (criando índice único automaticamente); um índice secundário não-único idx_usuarios_google_subject_id foi criado na migração V1.
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Otimizar consultas do ConsolidacaoService para utilizar os índices de data diretamente no banco via JPQL/SQL ao invés de carga em memória
+  evidence: findByUsuarioId carrega todo o histórico e calcula vigência de datas em laços Java na memória da aplicação, sem usar índices compostos para corte por data no banco.
 
 
+
+
+
+## Deferred from: code review of spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md (2026-09-27)
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Configurar isolamento de banco de dados/Testcontainers ou profile específico para BackendApplicationTests sem exigir container Postgres ativo na porta 5432
+  evidence: Teste @SpringBootTest falha com conexão recusada se Postgres local não estiver ativo; alocado para infraestrutura de testes no Épico 6 (Story 6.2/6.4)
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Adicionar testes MockMvc verificando HTTP 403 Forbidden nos controllers de movimentação quando tenant for inválido
+  evidence: Isolamento de tenant testado na Service Layer e no ExceptionHandler; cobertura de integração REST de endpoints alocada na Story 6.2
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Eliminar checagem manual de autenticação (usuarioId == null) em ConsolidacaoController delegando para o filtro Spring Security
+  evidence: Padrão manual pré-existente do Épico 4 que retorna 401 vazio
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Utilizar a coluna persistida dataFim no ConsolidacaoService ao invés de recalcular a data final das parcelas em memória
+  evidence: ConsolidacaoService calcula data final em memória com plusMonths() em vez de ler a coluna dataFim indexada
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
+  summary: Coexistência de hibernate.ddl-auto: update e migrações Flyway em application.yaml
+  evidence: Configuração de desenvolvimento permissiva que deve ser ajustada para validate em ambientes de produção/CI

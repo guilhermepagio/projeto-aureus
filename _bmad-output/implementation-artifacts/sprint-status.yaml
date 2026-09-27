@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 09-16-2026 10:55
+last_updated: 09-27-2026 11:35
 project: projeto-aureus
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
@@ -49,8 +49,8 @@ development_status:
 
   epic-3: done
   3-1-lançamentos-fixos-despesas-e-receitas-com-vigência: done
-  3-2-lançamentos-variáveis-e-parcelados-com-arredondamento-de-cen: done
-  3-3-lançamentos-variáveis-à-vista-parcela-única: done # Absorvida pela story 3-2 (lançamentos com 1 parcela)
+  3-2-lançamentos-variáveis-e-parcelados: done
+  3-3-lançamentos-variáveis-à-vista-parcela-única-descartada-absor: done
   3-4-sincronização-de-visão-mensal-invalidação-de-cache-e-filtro: done
   epic-3-retrospective: done
 
@@ -62,17 +62,17 @@ development_status:
   epic-4-retrospective: done
 
   epic-5: in-progress
-  5-1-backend-service-layer-e-dtos-records-para-entidades: done
-  5-2-tratamento-global-erros-validacao-tenant-e-indices: done
-  5-3-centralizacao-cliente-http-api-e-resiliencia-frontend: backlog
-  5-4-abstracao-e-unificacao-formularios-movimentacoes-dry: backlog
+  5-1-backend-service-layer-e-dtos-records-para-entidades-financei: done
+  5-2-tratamento-global-de-erros-validação-de-tenant-em-relacionam: done
+  5-3-centralização-do-cliente-http-api-e-resiliência-no-frontend: backlog
+  5-4-abstração-e-unificação-dos-formulários-de-movimentações-fina: backlog
   epic-5-retrospective: optional
 
   epic-6: backlog
-  6-1-testes-unitarios-de-dominio-e-servicos-financeiros: backlog
-  6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy: backlog
-  6-3-testes-de-componentes-e-fluxos-criticos-no-frontend: backlog
-  6-4-infraestrutura-de-validacao-continua-local-e-docs: backlog
+  6-1-testes-unitários-de-domínio-e-serviços-financeiros-backend: backlog
+  6-2-testes-de-integração-rest-e-isolamento-multi-tenancy-backend: backlog
+  6-3-testes-de-componentes-e-fluxos-críticos-no-frontend-frontend: backlog
+  6-4-infraestrutura-de-validação-contínua-local-e-documentação-ca: backlog
   epic-6-retrospective: optional
 action_items:
   - id: "epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave"
@@ -149,3 +149,4 @@ action_items:
     owner: "QA / Desenvolvedor"
     status: open
     ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md"
+project_key: NOKEY
