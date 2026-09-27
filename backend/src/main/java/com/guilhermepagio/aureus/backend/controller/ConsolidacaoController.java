@@ -36,11 +36,6 @@ public class ConsolidacaoController {
         return ResponseEntity.ok(dto);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
-    public ResponseEntity<String> handleConstraintViolation(jakarta.validation.ConstraintViolationException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
     @GetMapping("/por-categoria")
     public ResponseEntity<ConsolidacaoPorCategoriaDTO> getPorCategoria(
             @RequestParam @Pattern(regexp = MES_ANO_REGEX, message = "Formato de data inválido. Use YYYY-MM") String mesAno,

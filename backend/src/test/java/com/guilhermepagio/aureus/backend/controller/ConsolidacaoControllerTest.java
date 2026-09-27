@@ -46,6 +46,7 @@ public class ConsolidacaoControllerTest {
 
         mockMvc = MockMvcBuilders.standaloneSetup(consolidacaoController)
             .setValidator(validator)
+            .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
             .setCustomArgumentResolvers(new HandlerMethodArgumentResolver() {
                 @Override
                 public boolean supportsParameter(MethodParameter parameter) {

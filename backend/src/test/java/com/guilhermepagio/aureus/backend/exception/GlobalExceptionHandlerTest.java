@@ -102,7 +102,8 @@ public class GlobalExceptionHandlerTest {
         assertNotNull(body);
         assertEquals(400, body.status());
         assertEquals("Bad Request", body.error());
-        assertTrue(body.message().contains("Parâmetro de requisição inválido ou ausente"));
+        assertEquals("O parâmetro 'id' possui formato ou tipo inválido.", body.message());
+        assertFalse(body.message().contains("java.lang"));
         assertEquals("/api/test", body.path());
     }
 
@@ -119,7 +120,71 @@ public class GlobalExceptionHandlerTest {
         assertNotNull(body);
         assertEquals(400, body.status());
         assertEquals("Bad Request", body.error());
-        assertTrue(body.message().contains("Parâmetro de requisição inválido ou ausente"));
+        assertEquals("O parâmetro obrigatório 'mesAno' não foi informado.", body.message());
+        assertEquals("/api/test", body.path());
+    }
+
+    @Test
+    public void deveTratarConstraintViolationExceptionComStatus400() {
+        jakarta.validation.ConstraintViolation<?> violation = mock(jakarta.validation.ConstraintViolation.class);
+        jakarta.validation.Path path = mock(jakarta.validation.Path.class);
+        when(path.toString()).thenReturn("mesAno");
+        when(violation.getPropertyPath()).thenReturn(path);
+        when(violation.getMessage()).thenReturn("Formato de data inválido. Use YYYY-MM");
+
+        jakarta.validation.ConstraintViolationException ex =
+            new jakarta.validation.ConstraintViolationException("Erro de validação", java.util.Set.of(violation));
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleConstraintViolation(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(400, body.status());
+        assertEquals("Bad Request", body.error());
+        assertEquals("Erro de validação nos parâmetros informados", body.message());
+        assertEquals("/api/test", body.path());
+        assertNotNull(body.fieldErrors());
+        assertEquals("Formato de data inválido. Use YYYY-MM", body.fieldErrors().get("mesAno"));
+        assertNotNull(body.errors());
+        assertEquals(1, body.errors().size());
+        assertEquals("mesAno", body.errors().get(0).field());
+    }
+
+    @Test
+    public void deveTratarNoResourceFoundExceptionComStatus404() {
+        org.springframework.web.servlet.resource.NoResourceFoundException ex =
+            new org.springframework.web.servlet.resource.NoResourceFoundException(org.springframework.http.HttpMethod.GET, "/api/contas/99999", "No static resource");
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleNoResourceFound(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(404, body.status());
+        assertEquals("Not Found", body.error());
+        assertEquals("Recurso não encontrado: /api/test", body.message());
+        assertEquals("/api/test", body.path());
+    }
+
+    @Test
+    public void deveTratarHttpRequestMethodNotSupportedExceptionComStatus405EHeaderAllow() {
+        org.springframework.web.HttpRequestMethodNotSupportedException ex =
+            new org.springframework.web.HttpRequestMethodNotSupportedException("POST", java.util.List.of("GET", "OPTIONS"));
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleMethodNotSupported(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.METHOD_NOT_ALLOWED, response.getStatusCode());
+        assertNotNull(response.getHeaders().getAllow());
+        assertTrue(response.getHeaders().getAllow().contains(org.springframework.http.HttpMethod.GET));
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(405, body.status());
+        assertEquals("Method Not Allowed", body.error());
+        assertEquals("Método HTTP não suportado para este endpoint.", body.message());
         assertEquals("/api/test", body.path());
     }
 
@@ -192,6 +257,45 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
+    public void deveTratarIllegalArgumentExceptionComMensagemNulaUsandoFallback() {
+        IllegalArgumentException ex = new IllegalArgumentException();
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleIllegalArgument(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(400, body.status());
+        assertEquals("Bad Request", body.error());
+        assertEquals("Argumento ou parâmetro inválido.", body.message());
+        assertEquals("/api/test", body.path());
+    }
+
+    @Test
+    public void deveExtrairNomeFolhaEmConstraintViolationComPrefixoDeMetodo() {
+        jakarta.validation.ConstraintViolation<?> violation = mock(jakarta.validation.ConstraintViolation.class);
+        jakarta.validation.Path path = mock(jakarta.validation.Path.class);
+        when(path.toString()).thenReturn("getPorConta.mesAno");
+        when(violation.getPropertyPath()).thenReturn(path);
+        when(violation.getMessage()).thenReturn("Formato de data inválido. Use YYYY-MM");
+
+        jakarta.validation.ConstraintViolationException ex =
+            new jakarta.validation.ConstraintViolationException("Erro de validação", java.util.Set.of(violation));
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleConstraintViolation(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertNotNull(body.fieldErrors());
+        assertEquals("Formato de data inválido. Use YYYY-MM", body.fieldErrors().get("mesAno"));
+        assertFalse(body.fieldErrors().containsKey("getPorConta.mesAno"));
+        assertEquals("mesAno", body.errors().get(0).field());
+    }
+
+    @Test
     public void deveTratarExceptionGenericaComStatus500ESemExporStacktrace() {
         NullPointerException ex = new NullPointerException("Null reference at internal layer");
 
@@ -207,5 +311,93 @@ public class GlobalExceptionHandlerTest {
         assertFalse(body.message().contains("NullPointerException"));
         assertEquals("Ocorreu um erro interno inesperado no servidor.", body.message());
         assertEquals("/api/test", body.path());
+    }
+
+    @Test
+    public void deveTratarConstraintViolationExceptionComListaNulaSemLancarNpe() {
+        jakarta.validation.ConstraintViolationException ex =
+            new jakarta.validation.ConstraintViolationException("Violação", null);
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleConstraintViolation(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    public void deveTratarHandlerMethodValidationExceptionComStatus400EItensDeValidacao() {
+        org.springframework.web.method.annotation.HandlerMethodValidationException ex =
+            mock(org.springframework.web.method.annotation.HandlerMethodValidationException.class);
+        org.springframework.validation.method.ParameterValidationResult paramResult =
+            mock(org.springframework.validation.method.ParameterValidationResult.class);
+        org.springframework.core.MethodParameter methodParam = mock(org.springframework.core.MethodParameter.class);
+        when(methodParam.getParameterName()).thenReturn("mesAno");
+        when(paramResult.getMethodParameter()).thenReturn(methodParam);
+
+        org.springframework.context.MessageSourceResolvable resolvable = mock(org.springframework.context.MessageSourceResolvable.class);
+        when(resolvable.getDefaultMessage()).thenReturn("Formato de data inválido. Use YYYY-MM");
+        when(paramResult.getResolvableErrors()).thenReturn(java.util.List.of(resolvable));
+        when(ex.getParameterValidationResults()).thenReturn(java.util.List.of(paramResult));
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleHandlerMethodValidation(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(400, body.status());
+        assertEquals("mesAno", body.errors().get(0).field());
+        assertEquals("Formato de data inválido. Use YYYY-MM", body.errors().get(0).defaultMessage());
+        assertEquals("Formato de data inválido. Use YYYY-MM", body.fieldErrors().get("mesAno"));
+    }
+
+    @Test
+    public void deveTratarDateTimeParseExceptionComStatus400() {
+        java.time.format.DateTimeParseException ex =
+            new java.time.format.DateTimeParseException("Text '2024-13' could not be parsed", "2024-13", 5);
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleIllegalArgument(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(400, body.status());
+        assertTrue(body.message().contains("Formato de data inválido"));
+    }
+
+    @Test
+    public void deveTratarHttpMediaTypeNotSupportedExceptionComStatus415() {
+        org.springframework.web.HttpMediaTypeNotSupportedException ex =
+            new org.springframework.web.HttpMediaTypeNotSupportedException(
+                org.springframework.http.MediaType.TEXT_PLAIN,
+                java.util.List.of(org.springframework.http.MediaType.APPLICATION_JSON)
+            );
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleMediaTypeNotSupported(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, response.getStatusCode());
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(415, body.status());
+        assertEquals("Unsupported Media Type", body.error());
+        assertTrue(body.message().contains("text/plain"));
+    }
+
+    @Test
+    public void deveTratarHttpMediaTypeNotAcceptableExceptionComStatus406() {
+        org.springframework.web.HttpMediaTypeNotAcceptableException ex =
+            new org.springframework.web.HttpMediaTypeNotAcceptableException("No acceptable representation");
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleMediaTypeNotAcceptable(ex, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(406, body.status());
+        assertEquals("Not Acceptable", body.error());
     }
 }
