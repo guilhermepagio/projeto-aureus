@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { apiClient } from '../services/apiClient';
 
 export interface Conta {
   id: number;
@@ -9,57 +10,21 @@ export interface Conta {
 
 const API_URL = '/api/contas';
 
-const getCsrfToken = () => {
-  const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
-  return match ? decodeURIComponent(match[2]) : '';
-};
-
 // Fetchers
 const fetchContas = async (): Promise<Conta[]> => {
-  const response = await fetch(API_URL);
-  if (!response.ok) throw new Error('Erro ao carregar contas');
-  return response.json();
+  return apiClient.get<Conta[]>(API_URL);
 };
 
 const createConta = async (conta: Omit<Conta, 'id'>): Promise<Conta> => {
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': getCsrfToken()
-    },
-    body: JSON.stringify(conta),
-  });
-  if (!response.ok) throw new Error('Erro ao criar conta');
-  return response.json();
+  return apiClient.post<Conta>(API_URL, conta);
 };
 
 const updateConta = async (conta: Conta): Promise<Conta> => {
-  const response = await fetch(`${API_URL}/${conta.id}`, {
-    method: 'PUT',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': getCsrfToken()
-    },
-    body: JSON.stringify(conta),
-  });
-  if (!response.ok) throw new Error('Erro ao atualizar conta');
-  return response.json();
+  return apiClient.put<Conta>(`${API_URL}/${conta.id}`, conta);
 };
 
 const deleteConta = async (id: number): Promise<void> => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'X-XSRF-TOKEN': getCsrfToken()
-    }
-  });
-  if (!response.ok) {
-    if (response.status === 400) {
-       throw new Error('Não é possível excluir esta conta pois ela possui vínculos ativos.');
-    }
-    throw new Error('Erro ao excluir conta');
-  }
+  await apiClient.delete(`${API_URL}/${id}`);
 };
 
 // Hooks

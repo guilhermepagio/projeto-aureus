@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 09-27-2026 11:35
+last_updated: 09-27-2026 14:22
 project: projeto-aureus
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
@@ -64,7 +64,7 @@ development_status:
   epic-5: in-progress
   5-1-backend-service-layer-e-dtos-records-para-entidades-financei: done
   5-2-tratamento-global-de-erros-validação-de-tenant-em-relacionam: done
-  5-3-centralização-do-cliente-http-api-e-resiliência-no-frontend: backlog
+  5-3-centralização-do-cliente-http-api-e-resiliência-no-frontend: review
   5-4-abstração-e-unificação-dos-formulários-de-movimentações-fina: backlog
   epic-5-retrospective: optional
 
@@ -128,7 +128,7 @@ action_items:
     action: "Centralizar cliente HTTP/API no Frontend para padronizar chamadas e tratamento
       de erros"
     owner: "Desenvolvedor Frontend"
-    status: open
+    status: done
     ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md"
   - id: "epic-4-retro-item-9-padronizar-regra-de-negócio-para-movimen"
     epic: 4

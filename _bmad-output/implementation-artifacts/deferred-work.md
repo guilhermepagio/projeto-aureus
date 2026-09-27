@@ -441,3 +441,6 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md`
   summary: Coexistência de hibernate.ddl-auto: update e migrações Flyway em application.yaml
   evidence: Configuração de desenvolvimento permissiva que deve ser ajustada para validate em ambientes de produção/CI
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-3-centralizacao-cliente-http-api-e-resiliencia-no-frontend.md`
+  summary: Integrar ErrorBoundary com QueryErrorResetBoundary do TanStack Query para limpeza automática de queries em cache no retry
+  evidence: Caso um erro de renderização seja provocado por dados inválidos em cache, o reset do ErrorBoundary sem reset de query pode reexecutar a renderização com o mesmo dado com erro.

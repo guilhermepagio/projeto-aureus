@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../store/authStore';
+import { apiClient } from '../services/apiClient';
 
 export interface LinhaConsolidacaoDTO {
   contaId: number;
@@ -13,19 +14,8 @@ export interface ConsolidacaoPorContaDTO {
   saldoHistoricoPreGrade?: number;
 }
 
-const getCsrfToken = () => {
-  const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
-  return match ? decodeURIComponent(match[2]) : '';
-};
-
 export const fetchConsolidacao = async (mesAno: string): Promise<ConsolidacaoPorContaDTO> => {
-  const response = await fetch(`/api/consolidacao/por-conta?mesAno=${mesAno}`, {
-    headers: {
-      'X-XSRF-TOKEN': getCsrfToken()
-    }
-  });
-  if (!response.ok) throw new Error('Erro ao buscar consolidação');
-  return response.json();
+  return apiClient.get<ConsolidacaoPorContaDTO>(`/api/consolidacao/por-conta?mesAno=${mesAno}`);
 };
 
 export const useConsolidacao = (mesAno: string | null) => {

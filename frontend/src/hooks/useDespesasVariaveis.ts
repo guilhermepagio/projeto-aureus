@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { apiClient } from '../services/apiClient';
 import type { Conta } from './useContas';
 import type { Categoria } from './useCategorias';
 
@@ -32,70 +33,21 @@ export interface DespesaVariavelInput {
 
 const API_URL = '/api/despesas-variaveis';
 
-const getCsrfToken = () => {
-  const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
-  return match ? decodeURIComponent(match[2]) : '';
-};
-
 const fetchDespesasVariaveis = async (): Promise<DespesaVariavel[]> => {
-  const response = await fetch(API_URL);
-  if (!response.ok) throw new Error('Erro ao carregar despesas variáveis');
-  return response.json();
+  return apiClient.get<DespesaVariavel[]>(API_URL);
 };
 
 const createDespesaVariavel = async (despesa: DespesaVariavelInput): Promise<DespesaVariavel> => {
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': getCsrfToken()
-    },
-    body: JSON.stringify(despesa),
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (errorData.errors && errorData.errors.length > 0) {
-      throw new Error(errorData.errors[0].defaultMessage);
-    }
-    throw new Error(errorData.message || 'Erro ao criar despesa variável');
-  }
-  return response.json();
+  return apiClient.post<DespesaVariavel>(API_URL, despesa);
 };
 
 const updateDespesaVariavel = async (despesa: DespesaVariavelInput): Promise<DespesaVariavel> => {
   if (!despesa.id) throw new Error('ID da despesa variável é obrigatório para atualização');
-  const response = await fetch(`${API_URL}/${despesa.id}`, {
-    method: 'PUT',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': getCsrfToken()
-    },
-    body: JSON.stringify(despesa),
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (errorData.errors && errorData.errors.length > 0) {
-      throw new Error(errorData.errors[0].defaultMessage);
-    }
-    throw new Error(errorData.message || 'Erro ao atualizar despesa variável');
-  }
-  return response.json();
+  return apiClient.put<DespesaVariavel>(`${API_URL}/${despesa.id}`, despesa);
 };
 
 const deleteDespesaVariavel = async (id: number): Promise<void> => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'X-XSRF-TOKEN': getCsrfToken()
-    }
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (errorData.message) {
-      throw new Error(errorData.message);
-    }
-    throw new Error('Erro ao excluir despesa variável');
-  }
+  await apiClient.delete(`${API_URL}/${id}`);
 };
 
 export const useDespesasVariaveis = () => {
