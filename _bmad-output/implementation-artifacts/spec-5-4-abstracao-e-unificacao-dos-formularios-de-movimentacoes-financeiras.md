@@ -79,18 +79,21 @@ context:
 
 ### Review Findings
 
-- [x] [Review][Patch] Confinamento de foco no Shift+Tab tratando foco no modalRef.current ou externo [frontend/src/components/ui/Modal.tsx:135]
-- [x] [Review][Patch] Proteção contra roubo indevido de foco em portais aninhados com role="dialog" [frontend/src/components/ui/Modal.tsx:125]
-- [x] [Review][Patch] Restauração segura de foco checando document.contains antes de chamar focus [frontend/src/components/ui/Modal.tsx:158]
-- [x] [Review][Patch] Suporte a initialFocusRef opcional e filtro de fieldset[disabled] e hidden em getFocusableElements [frontend/src/components/ui/Modal.tsx:18]
-- [x] [Review][Patch] event.stopPropagation no Escape de MonthPicker e DatePicker evitando fechamento do modal pai [frontend/src/components/ui/MonthPicker.tsx:112]
-- [x] [Review][Patch] Validação defensiva em calculateUltimaParcela para formatos e meses inválidos [frontend/src/components/MovimentacaoForm/parcelamentoUtils.ts:16]
-- [x] [Review][Patch] Repasse de required e ariaRequired no helper de FormField [frontend/src/components/MovimentacaoForm/FormField.tsx:43]
-- [x] [Review][Patch] Envelopamento de MonthPicker, localCompra e dataCompra em FormField [frontend/src/components/MovimentacaoForm/ParcelamentoFields.tsx:110]
-- [x] [Review][Patch] Adição de focus-visible:ring-2 nos botões e role="alert" no container de erros [frontend/src/components/MovimentacaoForm/MovimentacaoFixaFormModal.tsx:142]
-- [x] [Review][Patch] Limpeza reativa de erro individual de campo em onChange [frontend/src/components/MovimentacaoForm/MovimentacaoFixaFormModal.tsx:50]
-- [x] [Review][Patch] Expansão de testes cobrindo wrappers das páginas e cálculos defensivos (110 testes passando) [frontend/src/components/MovimentacaoForm/MovimentacaoForm.test.tsx:280]
-- [x] [Review][Defer] Tratar parsing de selectedMonth com formato não numérico em ConsolidacaoToolbar [frontend/src/components/Consolidacao/ConsolidacaoToolbar.tsx:27] — deferred, pre-existing
+- [x] [Review][Patch] Isolar evento Escape em pickers aninhados evitando fechamento indevido do Modal pai [frontend/src/components/ui/Modal.tsx:125]
+- [x] [Review][Patch] Validar quantidade de parcelas como número inteiro positivo evitando erro 400 da API [frontend/src/components/MovimentacaoForm/MovimentacaoVariavelFormModal.tsx:154]
+- [x] [Review][Patch] Adicionar testes de delegação de mutação para DespesaVariavelFormModal e ReceitaVariavelFormModal [frontend/src/components/MovimentacaoForm/MovimentacaoForm.test.tsx:532]
+- [x] [Review][Patch] Filtrar elementos com tabindex="-1" no Focus Trap do Modal [frontend/src/components/ui/Modal.tsx:28]
+- [x] [Review][Patch] Adicionar type="button", aria-label em pt-BR e anel de foco visível no botão Fechar do Modal [frontend/src/components/ui/Modal.tsx:210]
+- [x] [Review][Patch] Repassar aria-required="true" nos inputs e seletores de ValorInput e ContaCategoriaFields [frontend/src/components/MovimentacaoForm/ValorInput.tsx:37]
+- [x] [Review][Patch] Limpar erro de submissão (errors.submit) na alteração de campos do formulário [frontend/src/components/MovimentacaoForm/MovimentacaoFixaFormModal.tsx:78]
+- [x] [Review][Patch] Proteger calculateUltimaParcela contra valores infinitos ou estouro de data [frontend/src/components/MovimentacaoForm/parcelamentoUtils.ts:15]
+- [x] [Review][Patch] Tratar parsing seguro de selectedMonth contra NaN em ConsolidacaoToolbar [frontend/src/components/Consolidacao/ConsolidacaoToolbar.tsx:27]
+- [x] [Review][Patch] Reutilizar formatCurrency em calculateValorTotal evitando recriação de Intl.NumberFormat [frontend/src/components/MovimentacaoForm/parcelamentoUtils.ts:9]
+- [x] [Review][Patch] Aplicar estilos de borda de erro em ObservacoesField quando error for informado [frontend/src/components/MovimentacaoForm/ObservacoesField.tsx:37]
+- [x] [Review][Patch] Suportar idPrefix customizável em MovimentacaoFixaFormModal para prevenir colisão no DOM [frontend/src/components/MovimentacaoForm/MovimentacaoFixaFormModal.tsx:40]
+- [x] [Review][Patch] Adicionar aria-live="polite" nos previews dinâmicos de parcelamento [frontend/src/components/MovimentacaoForm/ParcelamentoFields.tsx:100]
+- [x] [Review][Defer] Exibir estado de loading/erro para contas e categorias em ContaCategoriaFields [frontend/src/components/MovimentacaoForm/ContaCategoriaFields.tsx:30] — deferred, pre-existing
+- [x] [Review][Defer] Adicionar contador visual de caracteres (0/300) em ObservacoesField [frontend/src/components/MovimentacaoForm/ObservacoesField.tsx:37] — deferred, pre-existing
 
 **Acceptance Criteria:**
 - Given qualquer componente `Modal` aberto, when o usuário navegar usando `Tab` ou `Shift+Tab`, then o foco deve permanecer confinado dentro do modal em ciclo fechado

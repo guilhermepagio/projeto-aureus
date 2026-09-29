@@ -97,7 +97,11 @@ export const ParcelamentoFields: React.FC<ParcelamentoFieldsProps> = ({
           isRed ? 'bg-red-50 border-red-200' : 'bg-teal-50 border-teal-200'
         }`}
       >
-        <p className={`text-sm font-medium ${isRed ? 'text-red-800' : 'text-teal-800'}`}>
+        <p
+          role="status"
+          aria-live="polite"
+          className={`text-sm font-medium ${isRed ? 'text-red-800' : 'text-teal-800'}`}
+        >
           Valor Total: {valorTotalPreview}
         </p>
       </div>
@@ -109,13 +113,14 @@ export const ParcelamentoFields: React.FC<ParcelamentoFieldsProps> = ({
           required
           error={errors?.dataInicio}
         >
-          {({ id, hasError }) => (
+          {({ id, hasError, errorId }) => (
             <MonthPicker
               id={id}
               value={dataInicio}
               onChange={onChangeDataInicio}
               disabled={disabled}
               hasError={hasError}
+              ariaDescribedBy={errorId}
               theme={isRed ? 'red' : 'green'}
               placeholder="Selecione o mês"
             />
@@ -123,10 +128,16 @@ export const ParcelamentoFields: React.FC<ParcelamentoFieldsProps> = ({
         </FormField>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label
+            id={`${idPrefix ? idPrefix + '-' : ''}ultima-parcela-label`}
+            className="block text-sm font-medium text-gray-700"
+          >
             Última Parcela
           </label>
           <div
+            role="status"
+            aria-live="polite"
+            aria-labelledby={`${idPrefix ? idPrefix + '-' : ''}ultima-parcela-label`}
             className={`mt-1 flex items-center w-full rounded-md shadow-sm sm:text-sm px-3 py-2 border border-gray-300 bg-gray-50 min-h-[38px] ${
               ultimaParcelaPreview !== '-' ? 'text-gray-900 font-medium' : 'text-gray-400'
             }`}

@@ -246,6 +246,8 @@ describe('MovimentacaoForm - Componentes Compartilhados', () => {
       expect(calculateUltimaParcela('2026-00', 3)).toBe('-');
       expect(calculateUltimaParcela('2026-05', 0)).toBe('-');
       expect(calculateUltimaParcela('2026-05', -1)).toBe('-');
+      expect(calculateUltimaParcela('2026-05', Infinity)).toBe('-');
+      expect(calculateValorTotal('100,00', Infinity)).toBe('-');
     });
 
     it('renderiza os campos de parcelamento com preview dinâmico', () => {
@@ -308,6 +310,37 @@ describe('MovimentacaoForm - Componentes Compartilhados', () => {
       fireEvent.change(input, { target: { value: 'Internet' } });
 
       expect(screen.queryByText('A descrição é obrigatória')).toBeNull();
+    });
+
+    it('limpa erro de submissão (submit) ao alterar qualquer campo', () => {
+      const handleSubmit = vi.fn((_data, callbacks) => {
+        callbacks.onError(new Error('Erro interno ao salvar despesa'));
+      });
+
+      render(
+        <MovimentacaoFixaFormModal
+          isOpen={true}
+          onClose={vi.fn()}
+          tipo="despesa"
+          itemToEdit={{
+            id: 1,
+            descricao: 'Internet',
+            valor: 100,
+            conta: { id: 1 },
+            categoria: { id: 10 },
+          }}
+          onSubmit={handleSubmit}
+          isPending={false}
+        />
+      );
+
+      fireEvent.click(screen.getByRole('button', { name: 'Salvar' }));
+      expect(screen.getByText('Erro interno ao salvar despesa')).toBeDefined();
+
+      const input = screen.getByRole('textbox', { name: /Descrição/ });
+      fireEvent.change(input, { target: { value: 'Internet Fibra' } });
+
+      expect(screen.queryByText('Erro interno ao salvar despesa')).toBeNull();
     });
 
     it('preenche campos existentes ao receber itemToEdit e submete com payload correto', () => {
@@ -427,6 +460,30 @@ describe('MovimentacaoForm - Componentes Compartilhados', () => {
       expect(screen.queryByText('A descrição é obrigatória')).toBeNull();
     });
 
+    it('rejeita quantidade de parcelas decimal/fracionária com mensagem de erro', () => {
+      render(
+        <MovimentacaoVariavelFormModal
+          isOpen={true}
+          onClose={vi.fn()}
+          tipo="despesa"
+          itemToEdit={{
+            id: 1,
+            descricao: 'Curso',
+            valorParcela: 100,
+            quantidadeParcelas: 2.5,
+            dataInicio: '2026-05-01',
+            conta: { id: 1 },
+            categoria: { id: 10 },
+          }}
+          onSubmit={vi.fn()}
+          isPending={false}
+        />
+      );
+
+      fireEvent.click(screen.getByRole('button', { name: 'Salvar' }));
+      expect(screen.getByText('A quantidade de parcelas deve ser um número inteiro')).toBeDefined();
+    });
+
     it('submete dados de movimentação variável com parcelamento e datas formatadas', () => {
       const handleSubmit = vi.fn();
 
@@ -529,7 +586,7 @@ describe('MovimentacaoForm - Componentes Compartilhados', () => {
       );
     });
 
-    it('renderiza DespesaVariavelFormModal e delega criação com campos de compra', () => {
+    it('renderiza DespesaVariavelFormModal e submete delegação de criação com campos de compra', () => {
       render(
         <DespesaVariavelFormModal
           isOpen={true}
@@ -541,20 +598,68 @@ describe('MovimentacaoForm - Componentes Compartilhados', () => {
       expect(screen.getByRole('heading', { name: 'Nova Despesa Variável' })).toBeDefined();
       expect(screen.getByLabelText('Local da Compra')).toBeDefined();
       expect(screen.getByLabelText('Data da Compra')).toBeDefined();
+
+      fireEvent.change(screen.getByLabelText(/Descrição/), { target: { value: 'Notebook Novo' } });
+      fireEvent.change(screen.getByLabelText(/Local da Compra/), { target: { value: 'Amazon' } });
+      fireEvent.change(screen.getByLabelText(/Valor Parcela/), { target: { value: '400,00' } });
+      fireEvent.change(screen.getByLabelText(/Qtd\. Parcelas/), { target: { value: '5' } });
+      fireEvent.change(screen.getByLabelText(/Conta/), { target: { value: '2' } });
+      fireEvent.change(screen.getByLabelText(/Categoria/), { target: { value: '20' } });
+
+      const monthPickerBtn = screen.getByRole('button', { name: 'Selecione o mês' });
+      fireEvent.click(monthPickerBtn);
+      fireEvent.click(screen.getByRole('button', { name: 'Mai' }));
+
+      fireEvent.click(screen.getByRole('button', { name: 'Salvar' }));
+
+      expect(mockMutateDespesaVariavelCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          descricao: 'Notebook Novo',
+          localCompra: 'Amazon',
+          valorParcela: 400,
+          quantidadeParcelas: 5,
+          conta: { id: 2 },
+          categoria: { id: 20 },
+        }),
+        expect.any(Object)
+      );
     });
 
-    it('renderiza ReceitaVariavelFormModal sem campos de compra', () => {
+    it('renderiza ReceitaVariavelFormModal sem campos de compra e submete delegação de edição', () => {
       render(
         <ReceitaVariavelFormModal
           isOpen={true}
           onClose={vi.fn()}
-          receitaToEdit={null}
+          receitaToEdit={{
+            id: 88,
+            descricao: 'Projeto Freelance',
+            valorParcela: 1500,
+            quantidadeParcelas: 3,
+            dataInicio: '2026-06-01',
+            conta: { id: 1, descricao: 'Nubank' },
+            categoria: { id: 10, descricao: 'Alimentação' },
+            observacoes: 'Etapa 1',
+          }}
         />
       );
 
-      expect(screen.getByRole('heading', { name: 'Nova Receita Variável' })).toBeDefined();
+      expect(screen.getByRole('heading', { name: 'Editar Receita Variável' })).toBeDefined();
       expect(screen.queryByLabelText('Local da Compra')).toBeNull();
       expect(screen.queryByLabelText('Data da Compra')).toBeNull();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Salvar' }));
+
+      expect(mockMutateReceitaVariavelUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 88,
+          descricao: 'Projeto Freelance',
+          valorParcela: 1500,
+          quantidadeParcelas: 3,
+          conta: { id: 1 },
+          categoria: { id: 10 },
+        }),
+        expect.any(Object)
+      );
     });
   });
 });

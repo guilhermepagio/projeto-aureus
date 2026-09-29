@@ -35,6 +35,7 @@ export interface MovimentacaoFixaFormModalProps {
   isPending: boolean;
   title?: string;
   initialFocusRef?: React.RefObject<HTMLElement | null>;
+  idPrefix?: string;
 }
 
 export const MovimentacaoFixaFormModal: React.FC<MovimentacaoFixaFormModalProps> = ({
@@ -46,6 +47,7 @@ export const MovimentacaoFixaFormModal: React.FC<MovimentacaoFixaFormModalProps>
   isPending,
   title,
   initialFocusRef,
+  idPrefix: customIdPrefix,
 }) => {
   const [descricao, setDescricao] = useState('');
   const [valor, setValor] = useState<string>('');
@@ -55,6 +57,7 @@ export const MovimentacaoFixaFormModal: React.FC<MovimentacaoFixaFormModalProps>
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const isDespesa = tipo === 'despesa';
+  const idPrefix = customIdPrefix || (isDespesa ? 'despesa-fixa' : 'receita-fixa');
 
   useEffect(() => {
     if (isOpen) {
@@ -76,10 +79,11 @@ export const MovimentacaoFixaFormModal: React.FC<MovimentacaoFixaFormModalProps>
   }, [isOpen, itemToEdit]);
 
   const clearFieldError = (field: string) => {
-    if (errors[field]) {
+    if (errors[field] || errors.submit) {
       setErrors((prev) => {
         const updated = { ...prev };
         delete updated[field];
+        delete updated.submit;
         return updated;
       });
     }
@@ -156,7 +160,7 @@ export const MovimentacaoFixaFormModal: React.FC<MovimentacaoFixaFormModalProps>
       maxWidth="max-w-4xl"
       initialFocusRef={initialFocusRef}
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         {errors.submit && (
           <div role="alert" className="text-red-600 text-sm mb-4">
             {errors.submit}
@@ -166,7 +170,7 @@ export const MovimentacaoFixaFormModal: React.FC<MovimentacaoFixaFormModalProps>
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left Column */}
           <div className="w-full md:w-1/2 space-y-4">
-            <FormField id="descricao" label="Descrição" required error={errors.descricao}>
+            <FormField id={`${idPrefix}-descricao`} label="Descrição" required error={errors.descricao}>
               {({ id, hasError, errorId, ariaRequired }) => (
                 <input
                   type="text"
@@ -190,7 +194,7 @@ export const MovimentacaoFixaFormModal: React.FC<MovimentacaoFixaFormModalProps>
             </FormField>
 
             <ValorInput
-              id="valor"
+              id={`${idPrefix}-valor`}
               label="Valor"
               value={valor}
               onChange={handleValorChange}
@@ -200,6 +204,7 @@ export const MovimentacaoFixaFormModal: React.FC<MovimentacaoFixaFormModalProps>
             />
 
             <ContaCategoriaFields
+              idPrefix={idPrefix}
               contaId={contaId}
               categoriaId={categoriaId}
               onChangeConta={handleContaChange}
@@ -213,7 +218,7 @@ export const MovimentacaoFixaFormModal: React.FC<MovimentacaoFixaFormModalProps>
           {/* Right Column */}
           <div className="w-full md:w-1/2 flex flex-col min-h-0">
             <ObservacoesField
-              id="observacoes"
+              id={`${idPrefix}-observacoes`}
               value={observacoes}
               onChange={setObservacoes}
               disabled={isPending}

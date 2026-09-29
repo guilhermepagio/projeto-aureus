@@ -96,7 +96,7 @@ describe('Modal component', () => {
       </Modal>
     );
 
-    const closeBtn = screen.getByLabelText('Close modal');
+    const closeBtn = screen.getByRole('button', { name: /fechar modal|close modal/i });
     const salvarBtn = screen.getByTestId('botao-salvar');
 
     // Foca o último elemento do modal (botao-salvar)
@@ -120,7 +120,7 @@ describe('Modal component', () => {
       </Modal>
     );
 
-    const closeBtn = screen.getByLabelText('Close modal');
+    const closeBtn = screen.getByRole('button', { name: /fechar modal|close modal/i });
     const salvarBtn = screen.getByTestId('botao-salvar');
 
     // Foca o primeiro elemento do modal (closeBtn)
@@ -258,5 +258,54 @@ describe('Modal component', () => {
 
     // O modal pai não deve prevenir o evento nem alterar o activeElement
     expect(event.defaultPrevented).toBe(false);
+  });
+
+  it('não fecha o modal pai no Escape quando o foco estiver em outro role="dialog" aninhado', () => {
+    const handleClose = vi.fn();
+    render(
+      <Modal isOpen={true} onClose={handleClose} title="Modal Pai">
+        <div>
+          <button data-testid="btn-modal">Botão Modal</button>
+          <div role="dialog" aria-label="DatePicker Aninhado">
+            <button data-testid="btn-picker">Dia 15</button>
+          </div>
+        </div>
+      </Modal>
+    );
+
+    const btnPicker = screen.getByTestId('btn-picker');
+    btnPicker.focus();
+    expect(document.activeElement).toBe(btnPicker);
+
+    fireEvent.keyDown(btnPicker, { key: 'Escape', bubbles: true });
+
+    expect(handleClose).not.toHaveBeenCalled();
+  });
+
+  it('ignora elementos com tabindex="-1" no Focus Trap cíclico', () => {
+    render(
+      <Modal isOpen={true} onClose={vi.fn()} title="Modal TabIndex -1">
+        <div>
+          <button data-testid="btn-focavel-1">Focável 1</button>
+          <button data-testid="btn-focavel-2">Focável 2</button>
+          <button data-testid="btn-ignorado" tabIndex={-1}>Ignorado</button>
+        </div>
+      </Modal>
+    );
+
+    const btn2 = screen.getByTestId('btn-focavel-2');
+    const closeBtn = screen.getByRole('button', { name: /fechar modal|close modal/i });
+
+    // Como btn-ignorado tem tabIndex={-1}, o último elemento focável é btn2
+    btn2.focus();
+    expect(document.activeElement).toBe(btn2);
+
+    // Tab no último elemento cicla para o primeiro (closeBtn)
+    fireEvent.keyDown(btn2, { key: 'Tab' });
+    expect(document.activeElement).toBe(closeBtn);
+
+    // Shift+Tab no primeiro elemento cicla para o último focável (btn2)
+    fireEvent.keyDown(closeBtn, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(btn2);
   });
 });

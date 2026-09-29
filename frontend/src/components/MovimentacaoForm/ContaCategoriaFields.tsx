@@ -46,6 +46,7 @@ export const ContaCategoriaFields: React.FC<ContaCategoriaFieldsProps> = ({
           value={categoriaId}
           onChange={(e) => onChangeCategoria(e.target.value ? Number(e.target.value) : '')}
           disabled={disabled}
+          aria-required="true"
           aria-invalid={hasError}
           aria-describedby={errorId}
           className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${
@@ -78,6 +79,7 @@ export const ContaCategoriaFields: React.FC<ContaCategoriaFieldsProps> = ({
           value={contaId}
           onChange={(e) => onChangeConta(e.target.value ? Number(e.target.value) : '')}
           disabled={disabled}
+          aria-required="true"
           aria-invalid={hasError}
           aria-describedby={errorId}
           className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${

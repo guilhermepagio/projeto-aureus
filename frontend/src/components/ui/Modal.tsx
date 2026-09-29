@@ -30,6 +30,9 @@ const getFocusableElements = (container: HTMLElement): HTMLElement[] => {
     if (el.hasAttribute('disabled') || el.getAttribute('aria-hidden') === 'true') {
       return false;
     }
+    if (el.getAttribute('tabindex') === '-1' || el.tabIndex === -1) {
+      return false;
+    }
     if (el.closest('fieldset[disabled]')) {
       return false;
     }
@@ -124,6 +127,14 @@ const Modal: React.FC<ModalProps> = ({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (!modalRef.current) return;
+
+        // Se o elemento ativo estiver dentro de outro role="dialog" diferente do nosso modal (ex: popover de date/month picker), não fecha o modal
+        const activeDialog = (document.activeElement as HTMLElement | null)?.closest('[role="dialog"]');
+        if (activeDialog && activeDialog !== modalRef.current) {
+          return;
+        }
+
         if (!disableCloseRef.current) {
           e.preventDefault();
           onCloseRef.current();
@@ -207,12 +218,13 @@ const Modal: React.FC<ModalProps> = ({
             {title}
           </h2>
           <button
+            type="button"
             onClick={onClose}
             disabled={disableClose}
-            className={`cursor-pointer focus:outline-none ${
+            className={`cursor-pointer rounded p-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
               disableClose ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:text-gray-700'
             }`}
-            aria-label="Close modal"
+            aria-label="Fechar modal"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />

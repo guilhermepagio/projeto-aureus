@@ -37,11 +37,13 @@ export const ValorInput: React.FC<ValorInputProps> = ({
         <input
           type="text"
           id={inputId}
+          inputMode="numeric"
           autoFocus={autoFocus}
           value={value}
           onChange={handleChange}
           disabled={disabled}
           placeholder={placeholder}
+          aria-required={required ? true : undefined}
           aria-invalid={hasError}
           aria-describedby={errorId}
           className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 ${

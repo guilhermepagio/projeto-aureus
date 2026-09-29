@@ -34,7 +34,11 @@ export const ObservacoesField: React.FC<ObservacoesFieldProps> = ({
         maxLength={maxLength}
         aria-invalid={Boolean(error)}
         aria-describedby={errorId}
-        className="mt-1 block w-full flex-1 min-h-[160px] rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
+        className={`mt-1 block w-full flex-1 min-h-[160px] rounded-md shadow-sm sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto ${
+          error
+            ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+            : 'border-gray-300 focus:border-primary focus:ring-primary'
+        }`}
       />
       {error && (
         <p id={errorId} className="mt-1 text-sm text-red-600" role="alert">

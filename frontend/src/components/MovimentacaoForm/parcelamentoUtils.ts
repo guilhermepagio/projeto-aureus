@@ -1,19 +1,25 @@
 import { MONTHS } from '../ui/dateConstants';
-import { parseCurrency } from '../../utils/currencyFormat';
+import { formatCurrency, parseCurrency } from '../../utils/currencyFormat';
 
 export function calculateValorTotal(valorParcela: string, quantidadeParcelas: number | ''): string {
   const valorNum = parseCurrency(valorParcela);
   const qtdNum = Number(quantidadeParcelas);
-  if (valorNum > 0 && qtdNum > 0) {
+  if (valorNum > 0 && qtdNum > 0 && Number.isFinite(qtdNum)) {
     const totalSafe = Math.round(valorNum * qtdNum * 100) / 100;
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSafe);
+    return formatCurrency(totalSafe);
   }
   return '-';
 }
 
 export function calculateUltimaParcela(dataInicio: string, quantidadeParcelas: number | ''): string {
   const qtdNum = Number(quantidadeParcelas);
-  if (!dataInicio || !dataInicio.includes('-') || !qtdNum || qtdNum < 1 || isNaN(qtdNum)) {
+  if (
+    !dataInicio ||
+    !dataInicio.includes('-') ||
+    !qtdNum ||
+    qtdNum < 1 ||
+    !Number.isFinite(qtdNum)
+  ) {
     return '-';
   }
 
@@ -31,6 +37,9 @@ export function calculateUltimaParcela(dataInicio: string, quantidadeParcelas: n
 
   const d = new Date(yearNum, monthNum - 1, 1);
   d.setMonth(d.getMonth() + qtdNum - 1);
+  if (isNaN(d.getTime())) {
+    return '-';
+  }
   const mIdx = d.getMonth();
   const m = String(mIdx + 1).padStart(2, '0');
   const y = d.getFullYear();

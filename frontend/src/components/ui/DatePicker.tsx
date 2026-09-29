@@ -115,6 +115,7 @@ export default function DatePicker({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.stopPropagation();
+        event.stopImmediatePropagation();
         setIsOpen(false);
       }
     };

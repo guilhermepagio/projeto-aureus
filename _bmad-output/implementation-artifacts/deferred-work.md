@@ -447,3 +447,8 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-4-abstracao-e-unificacao-dos-formularios-de-movimentacoes-financeiras.md`
   summary: Tratar entrada com formato inválido de ano e mês no parsing de selectedMonth em ConsolidacaoToolbar
   evidence: ConsolidacaoToolbar assume formato numérico válido ao quebrar a string selectedMonth por hífen sem validação de NaN
+
+
+## Deferred from: code review of spec-5-4-abstracao-e-unificacao-dos-formularios-de-movimentacoes-financeiras.md (2026-09-29)
+- Exibir estado de loading/erro para contas e categorias em ContaCategoriaFields [frontend/src/components/MovimentacaoForm/ContaCategoriaFields.tsx:30] — deferred, pre-existing
+- Adicionar contador visual de caracteres (0/300) em ObservacoesField [frontend/src/components/MovimentacaoForm/ObservacoesField.tsx:37] — deferred, pre-existing

@@ -104,10 +104,11 @@ export const MovimentacaoVariavelFormModal: React.FC<MovimentacaoVariavelFormMod
   }, [isOpen, itemToEdit]);
 
   const clearFieldError = (field: string) => {
-    if (errors[field]) {
+    if (errors[field] || errors.submit) {
       setErrors((prev) => {
         const updated = { ...prev };
         delete updated[field];
+        delete updated.submit;
         return updated;
       });
     }
@@ -151,8 +152,11 @@ export const MovimentacaoVariavelFormModal: React.FC<MovimentacaoVariavelFormMod
     if (!valorParcela || parseCurrency(valorParcela) <= 0) {
       newErrors.valorParcela = 'O valor da parcela deve ser maior que zero';
     }
-    if (!quantidadeParcelas || Number(quantidadeParcelas) < 1) {
+    const qtdNum = Number(quantidadeParcelas);
+    if (!quantidadeParcelas || isNaN(qtdNum) || qtdNum < 1) {
       newErrors.quantidadeParcelas = 'Mínimo de 1 parcela';
+    } else if (!Number.isInteger(qtdNum)) {
+      newErrors.quantidadeParcelas = 'A quantidade de parcelas deve ser um número inteiro';
     }
     if (!dataInicio) newErrors.dataInicio = 'Data da 1ª parcela é obrigatória';
     if (!contaId) newErrors.contaId = 'Selecione uma conta';
@@ -207,7 +211,7 @@ export const MovimentacaoVariavelFormModal: React.FC<MovimentacaoVariavelFormMod
       maxWidth="max-w-4xl"
       initialFocusRef={initialFocusRef}
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         {errors.submit && (
           <div role="alert" className="text-red-600 text-sm mb-4">
             {errors.submit}
