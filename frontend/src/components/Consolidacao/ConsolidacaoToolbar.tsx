@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, RotateCcw, Calendar, ChevronDown } from 'lucide-react';
 import { useMonthStore } from '../../store/monthStore';
 
@@ -19,11 +19,14 @@ export default function ConsolidacaoToolbar({
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  if (!selectedMonth || !selectedMonth.includes('-')) return null;
-
-  const [yearStr, monthStr] = selectedMonth.split('-');
-  const year = parseInt(yearStr, 10);
-  const monthIndex = parseInt(monthStr, 10) - 1;
+  const [year, monthIndex] = useMemo(() => {
+    if (!selectedMonth || !selectedMonth.includes('-')) {
+      const now = new Date();
+      return [now.getFullYear(), now.getMonth()];
+    }
+    const [yearStr, monthStr] = selectedMonth.split('-');
+    return [parseInt(yearStr, 10), parseInt(monthStr, 10) - 1];
+  }, [selectedMonth]);
 
   const [pickerYear, setPickerYear] = useState(year);
 
@@ -56,6 +59,8 @@ export default function ConsolidacaoToolbar({
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isPickerOpen]);
+
+  if (!selectedMonth || !selectedMonth.includes('-')) return null;
 
   const handlePrevMonth = () => {
     const newMonthIndex = monthIndex - 1;
@@ -158,7 +163,7 @@ export default function ConsolidacaoToolbar({
               <div className="flex items-center justify-between mb-3 px-1">
                 <button
                   type="button"
-                  onClick={() => setPickerYear(prev => prev - 1)}
+                  onClick={() => setPickerYear((prev: number) => prev - 1)}
                   className="w-7 h-7 flex items-center justify-center rounded hover:bg-blue-50 hover:text-blue-600 text-[#4B5563] transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                   aria-label="Ano anterior"
                 >
@@ -167,7 +172,7 @@ export default function ConsolidacaoToolbar({
                 <span className="font-bold text-sm text-[#1A1A2E] tracking-tight">{pickerYear}</span>
                 <button
                   type="button"
-                  onClick={() => setPickerYear(prev => prev + 1)}
+                  onClick={() => setPickerYear((prev: number) => prev + 1)}
                   className="w-7 h-7 flex items-center justify-center rounded hover:bg-blue-50 hover:text-blue-600 text-[#4B5563] transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                   aria-label="Próximo ano"
                 >

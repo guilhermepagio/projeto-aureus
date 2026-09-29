@@ -444,3 +444,6 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-3-centralizacao-cliente-http-api-e-resiliencia-no-frontend.md`
   summary: Integrar ErrorBoundary com QueryErrorResetBoundary do TanStack Query para limpeza automática de queries em cache no retry
   evidence: Caso um erro de renderização seja provocado por dados inválidos em cache, o reset do ErrorBoundary sem reset de query pode reexecutar a renderização com o mesmo dado com erro.
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-4-abstracao-e-unificacao-dos-formularios-de-movimentacoes-financeiras.md`
+  summary: Tratar entrada com formato inválido de ano e mês no parsing de selectedMonth em ConsolidacaoToolbar
+  evidence: ConsolidacaoToolbar assume formato numérico válido ao quebrar a string selectedMonth por hífen sem validação de NaN

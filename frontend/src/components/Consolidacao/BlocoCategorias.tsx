@@ -29,10 +29,9 @@ export function BlocoCategorias({
 
   const isCollapsedPct = propsCollapsedPct !== undefined ? propsCollapsedPct : internalCollapsedPct;
   const togglePct = propsOnTogglePct ?? (() => setInternalCollapsedPct(p => !p));
+  const { data, isLoading, isError } = useConsolidacaoCategoria(selectedMonth || '') || {};
 
   if (!selectedMonth) return null;
-
-  const { data, isLoading, isError } = useConsolidacaoCategoria(selectedMonth);
 
   if (isLoading) {
     return (

@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Calendar, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
-
-export const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-
+import { MONTHS } from './dateConstants';
 export interface MonthPickerProps {
   id?: string;
   value: string; // 'YYYY-MM' ou ''
@@ -108,6 +106,7 @@ export default function MonthPicker({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        event.stopPropagation();
         setIsOpen(false);
       }
     };

@@ -172,8 +172,6 @@ export default function ConsolidacaoGrid({
   const { data: contaData, isLoading: loadingConta, isError: errorConta } = useConsolidacao(selectedMonth);
   
 
-  if (months.length === 0) return null;
-
   const isLoading = loadingConta;
   const isError = errorConta;
 
@@ -231,6 +229,8 @@ export default function ConsolidacaoGrid({
     );
   }, [contaData?.despesas]);
   
+  if (months.length === 0) return null;
+
   return (
     <div
       className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden h-full flex flex-col"
