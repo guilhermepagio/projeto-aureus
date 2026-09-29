@@ -139,4 +139,37 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText('Ops! Algo deu errado')).toBeDefined();
     expect(screen.getByText('Erro em formato de string literal')).toBeDefined();
   });
+
+  it('deve resetar o estado quando o tamanho do array resetKeys diminuir', () => {
+    const TestComponent = ({ keys }: { keys: number[] }) => {
+      return (
+        <ErrorBoundary resetKeys={keys}>
+          <ProblemChild shouldThrow={keys.length > 1} />
+        </ErrorBoundary>
+      );
+    };
+
+    const { rerender } = render(<TestComponent keys={[1, 2]} />);
+    expect(screen.getByText('Ops! Algo deu errado')).toBeDefined();
+
+    // Reduz comprimento mantendo prefixo [1]
+    rerender(<TestComponent keys={[1]} />);
+    expect(screen.getByText('Conteúdo renderizado com sucesso')).toBeDefined();
+    expect(screen.queryByText('Ops! Algo deu errado')).toBeNull();
+  });
+
+  it('deve renderizar fallback mesmo se o callback onError lançar uma exceção', () => {
+    const throwingOnError = vi.fn().mockImplementation(() => {
+      throw new Error('Falha no serviço de telemetria externa');
+    });
+
+    render(
+      <ErrorBoundary onError={throwingOnError}>
+        <ProblemChild shouldThrow={true} />
+      </ErrorBoundary>
+    );
+
+    expect(throwingOnError).toHaveBeenCalled();
+    expect(screen.getByText('Ops! Algo deu errado')).toBeDefined();
+  });
 });

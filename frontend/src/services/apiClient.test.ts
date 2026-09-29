@@ -344,6 +344,102 @@ describe('apiClient', () => {
     const promise = apiClient.get('/api/contas', { signal: controller.signal, timeout: 10000 });
     controller.abort();
 
-    await expect(promise).rejects.toThrow();
+    await expect(promise).rejects.toMatchObject({ name: 'AbortError' });
+    await expect(promise).rejects.not.toBeInstanceOf(ApiError);
+  });
+
+  it('deve preservar motivo customizado de cancelamento no AbortSignal', async () => {
+    const controller = new AbortController();
+    const customReason = new Error('Operação cancelada pelo usuário');
+
+    globalThis.fetch = vi.fn().mockImplementation((_url, options) => {
+      return new Promise((_resolve, reject) => {
+        if (options?.signal) {
+          options.signal.addEventListener('abort', () => {
+            reject(options.signal.reason);
+          });
+        }
+      });
+    });
+
+    const promise = apiClient.get('/api/contas', { signal: controller.signal, timeout: 10000 });
+    controller.abort(customReason);
+
+    await expect(promise).rejects.toThrow('Operação cancelada pelo usuário');
+    await expect(promise).rejects.not.toBeInstanceOf(ApiError);
+  });
+
+  it('deve suportar método PATCH com serialização de corpo e cabeçalhos', async () => {
+    document.cookie = 'XSRF-TOKEN=patch-token-val; path=/';
+    const mockResponse = { id: 1, descricao: 'Atualizado' };
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify(mockResponse)),
+    } as unknown as Response);
+
+    const result = await apiClient.patch('/api/contas/1', { descricao: 'Atualizado' });
+
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      '/api/contas/1',
+      expect.objectContaining({
+        method: 'PATCH',
+        body: JSON.stringify({ descricao: 'Atualizado' }),
+        headers: expect.any(Headers),
+      })
+    );
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('não deve enviar cabeçalho X-XSRF-TOKEN para URLs externas absolutas', async () => {
+    document.cookie = 'XSRF-TOKEN=secret-csrf; path=/';
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue('{}'),
+    } as unknown as Response);
+
+    await apiClient.post('https://external-service.com/api/webhook', { data: 1 });
+
+    const fetchHeaders = (globalThis.fetch as any).mock.calls[0][1].headers as Headers;
+    expect(fetchHeaders.has('X-XSRF-TOKEN')).toBe(false);
+  });
+
+  it('deve preservar âncora/hash e limpar separadores residuais na URL', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue('[]'),
+    } as unknown as Response);
+
+    await apiClient.get('/api/relatorio?#secao1', { params: { mesAno: '2026-09' } });
+
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      '/api/relatorio?mesAno=2026-09#secao1',
+      expect.anything()
+    );
+  });
+
+  it('deve extrair primeira mensagem de erro quando fieldErrors contiver array de strings', async () => {
+    const errorBody = {
+      fieldErrors: {
+        descricao: ['Descrição é obrigatória', 'Descrição deve ter no mínimo 3 caracteres'],
+      },
+    };
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      statusText: 'Bad Request',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify(errorBody)),
+    } as unknown as Response);
+
+    await expect(apiClient.get('/api/contas')).rejects.toThrow('Descrição é obrigatória');
   });
 });

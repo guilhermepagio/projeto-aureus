@@ -13,7 +13,9 @@ export interface ConsolidacaoPorCategoriaDTO {
 }
 
 const fetchConsolidacaoPorCategoria = async (mesAno: string): Promise<ConsolidacaoPorCategoriaDTO> => {
-  return apiClient.get<ConsolidacaoPorCategoriaDTO>(`/api/consolidacao/por-categoria?mesAno=${mesAno}`);
+  return apiClient.get<ConsolidacaoPorCategoriaDTO>('/api/consolidacao/por-categoria', {
+    params: { mesAno },
+  });
 };
 
 export function useConsolidacaoCategoria(mesAno: string | null) {

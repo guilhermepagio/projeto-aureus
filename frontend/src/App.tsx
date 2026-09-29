@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Header from './components/Header/Header';
 import Navigation from './components/Navigation/Navigation';
@@ -39,6 +39,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   const { setAuth, setLoading } = useAuthStore();
+  const location = useLocation();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -56,7 +57,9 @@ function App() {
         setAuth(false, null, null);
       })
       .finally(() => {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       });
 
     return () => {
@@ -67,7 +70,7 @@ function App() {
   return (
     <>
       <Toaster position="top-right" />
-      <ErrorBoundary>
+      <ErrorBoundary resetKeys={[location.pathname]}>
         <Routes>
           <Route path="/login" element={<Login />} />
           

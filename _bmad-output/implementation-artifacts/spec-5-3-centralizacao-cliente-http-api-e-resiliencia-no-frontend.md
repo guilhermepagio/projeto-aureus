@@ -4,7 +4,7 @@ type: 'refactor'
 created: '2026-09-27'
 status: 'done'
 baseline_commit: 'bc68d4bb12936ebf8e9577abdc78bddb664644e6'
-review_loop_iteration: 0
+review_loop_iteration: 1
 context:
   - '_bmad-output/implementation-artifacts/epic-5-context.md'
 ---
@@ -79,14 +79,16 @@ context:
 - [x] `frontend/src/services/apiClient.test.ts` -- Implementar testes unitários para o `apiClient` cobrindo CSRF, extração de erros, status HTTP e timeout -- Validação automatizada do cliente HTTP
 ### Review Findings
 
-- [x] [Review][Patch] Tratamento de parsing JSON em status 2xx com corpo em branco ou malformado lançando ApiError com status real [frontend/src/services/apiClient.ts:153]
-- [x] [Review][Patch] Extração de erros a partir de fieldErrors e sanitização de respostas de erro contendo HTML bruto [frontend/src/services/apiClient.ts:133]
-- [x] [Review][Patch] Regex robusta para getCsrfToken com suporte a delimitador sem espaço e decoding seguro [frontend/src/services/apiClient.ts:34]
-- [x] [Review][Patch] Suporte a query params e cabeçalho padrão Accept: application/json [frontend/src/services/apiClient.ts:43]
-- [x] [Review][Patch] Repasse de AbortReason externo e validação de range de timeout para evitar overflow [frontend/src/services/apiClient.ts:89]
-- [x] [Review][Patch] ErrorBoundary com garantia de reset de estado via try/finally e suporte a erros primitivos e resetKeys [frontend/src/components/ErrorBoundary/ErrorBoundary.tsx:31]
-- [x] [Review][Patch] Isolamento do Toaster fora do ErrorBoundary e tratamento de cancelamento por desmontagem no useEffect do App [frontend/src/App.tsx:44]
-- [x] [Review][Patch] Teste dedicado para apiClient.put validando método, body serializado e cabeçalhos CSRF/Content-Type [frontend/src/services/apiClient.test.ts:98]
+- [x] [Review][Patch] Prevenir race condition e logout acidental no check de autenticação ao desmontar [frontend/src/App.tsx:58]
+- [x] [Review][Patch] Corrigir validação de alteração de resetKeys no ErrorBoundary quando tamanho do array diminui [frontend/src/components/ErrorBoundary/ErrorBoundary.tsx:34]
+- [x] [Review][Patch] Configurar resetKeys com location.pathname no ErrorBoundary raiz de App.tsx para transições de rotas [frontend/src/App.tsx:70]
+- [x] [Review][Patch] Preservar AbortError e reason em cancelamento externo e fortalecer asserção no teste unitário [frontend/src/services/apiClient.ts:241]
+- [x] [Review][Patch] Adicionar teste de integração garantindo captura de falha de renderização pelo ErrorBoundary no App.test.tsx [frontend/src/App.test.tsx:43]
+- [x] [Review][Patch] Tratar fragmento hash (#) e separadores residuais na construção de query string em buildUrl [frontend/src/services/apiClient.ts:75]
+- [x] [Review][Patch] Envolver callback onError do ErrorBoundary em bloco defensivo try/catch [frontend/src/components/ErrorBoundary/ErrorBoundary.tsx:29]
+- [x] [Review][Patch] Restringir injeção de cabeçalho CSRF a requisições de mesma origem ou relativas [frontend/src/services/apiClient.ts:100]
+- [x] [Review][Patch] Migrar interpolação manual de mesAno nos hooks de consolidação para a propriedade params do apiClient [frontend/src/hooks/useConsolidacao.ts:18]
+- [x] [Review][Patch] Extração defensiva de mensagens em fieldErrors com arrays e conversão estrita de message para string [frontend/src/services/apiClient.ts:195]
 - [x] [Review][Defer] Integrar ErrorBoundary com QueryErrorResetBoundary do TanStack Query para limpeza de cache [frontend/src/components/ErrorBoundary/ErrorBoundary.tsx:31] — deferred, pre-existing
 
 **Acceptance Criteria:**

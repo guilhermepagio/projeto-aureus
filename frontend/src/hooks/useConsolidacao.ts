@@ -15,7 +15,9 @@ export interface ConsolidacaoPorContaDTO {
 }
 
 export const fetchConsolidacao = async (mesAno: string): Promise<ConsolidacaoPorContaDTO> => {
-  return apiClient.get<ConsolidacaoPorContaDTO>(`/api/consolidacao/por-conta?mesAno=${mesAno}`);
+  return apiClient.get<ConsolidacaoPorContaDTO>('/api/consolidacao/por-conta', {
+    params: { mesAno },
+  });
 };
 
 export const useConsolidacao = (mesAno: string | null) => {

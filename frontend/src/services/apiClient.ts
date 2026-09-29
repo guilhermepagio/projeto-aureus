@@ -10,7 +10,7 @@ export interface ApiErrorResponse {
   error?: string;
   message?: string;
   path?: string;
-  fieldErrors?: Record<string, string>;
+  fieldErrors?: Record<string, string | string[]>;
   errors?: (ApiValidationErrorItem | string)[];
 }
 
@@ -72,8 +72,11 @@ function buildUrl(url: string, params?: Record<string, unknown> | URLSearchParam
   const queryString = searchParams.toString();
   if (!queryString) return url;
 
-  const separator = url.includes('?') ? '&' : '?';
-  return `${url}${separator}${queryString}`;
+  const [base, hash] = url.split('#');
+  const cleanBase = base.replace(/[?&]$/, '');
+  const separator = cleanBase.includes('?') ? '&' : '?';
+  const combined = `${cleanBase}${separator}${queryString}`;
+  return hash !== undefined ? `${combined}#${hash}` : combined;
 }
 
 export async function request<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
@@ -98,9 +101,15 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
   // Auto-inject CSRF token for state-mutating HTTP methods
   const mutationMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
   if (mutationMethods.includes(upperMethod)) {
-    const csrfToken = getCsrfToken();
-    if (csrfToken && !headers.has('X-XSRF-TOKEN')) {
-      headers.set('X-XSRF-TOKEN', csrfToken);
+    const isRelativeOrSameOrigin =
+      (!url.startsWith('http://') && !url.startsWith('https://')) ||
+      (typeof window !== 'undefined' && url.startsWith(window.location.origin));
+
+    if (isRelativeOrSameOrigin) {
+      const csrfToken = getCsrfToken();
+      if (csrfToken && !headers.has('X-XSRF-TOKEN')) {
+        headers.set('X-XSRF-TOKEN', csrfToken);
+      }
     }
   }
 
@@ -194,16 +203,21 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
 
       if (!errorMessage && errorData?.fieldErrors && typeof errorData.fieldErrors === 'object') {
         const fieldValues = Object.values(errorData.fieldErrors);
-        if (fieldValues.length > 0 && typeof fieldValues[0] === 'string') {
-          errorMessage = fieldValues[0];
+        if (fieldValues.length > 0) {
+          const firstVal = fieldValues[0];
+          if (typeof firstVal === 'string') {
+            errorMessage = firstVal;
+          } else if (Array.isArray(firstVal) && firstVal.length > 0 && typeof firstVal[0] === 'string') {
+            errorMessage = firstVal[0];
+          }
         }
       }
 
       if (!errorMessage && errorData?.message) {
-        errorMessage = errorData.message;
+        errorMessage = typeof errorData.message === 'string' ? errorData.message : String(errorData.message);
       }
       if (!errorMessage && errorData?.error) {
-        errorMessage = errorData.error;
+        errorMessage = typeof errorData.error === 'string' ? errorData.error : String(errorData.error);
       }
       if (!errorMessage) {
         errorMessage = `Erro na requisição (${response.status}${response.statusText ? ': ' + response.statusText : ''})`;
@@ -237,6 +251,17 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
     }
     if (error instanceof ApiError) {
       throw error;
+    }
+    if ((controller.signal.aborted || externalSignal?.aborted) && !isTimeoutAborted) {
+      if (externalSignal?.aborted && externalSignal.reason !== undefined) {
+        throw externalSignal.reason instanceof Error
+          ? externalSignal.reason
+          : new DOMException(String(externalSignal.reason), 'AbortError');
+      }
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw error;
+      }
+      throw new DOMException('The operation was aborted', 'AbortError');
     }
     if (error instanceof Error && error.name === 'AbortError') {
       throw error;

@@ -26,14 +26,19 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     console.error('ErrorBoundary capturou uma falha de renderização:', error, errorInfo);
-    this.props.onError?.(error, errorInfo);
+    try {
+      this.props.onError?.(error, errorInfo);
+    } catch (callbackError) {
+      console.error('Falha ao executar callback onError no ErrorBoundary:', callbackError);
+    }
   }
 
   public override componentDidUpdate(prevProps: ErrorBoundaryProps): void {
     if (this.state.hasError && this.props.resetKeys) {
-      const hasChanged = this.props.resetKeys.some(
-        (key, idx) => !prevProps.resetKeys || key !== prevProps.resetKeys[idx]
-      );
+      const hasChanged =
+        !prevProps.resetKeys ||
+        prevProps.resetKeys.length !== this.props.resetKeys.length ||
+        this.props.resetKeys.some((key, idx) => key !== prevProps.resetKeys?.[idx]);
       if (hasChanged) {
         this.resetErrorBoundary();
       }
