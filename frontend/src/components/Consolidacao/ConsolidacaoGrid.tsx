@@ -1,5 +1,5 @@
 import { formatCurrency } from "../../utils/currencyFormat";
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useMonthStore } from '../../store/monthStore';
 import { useConsolidacao, type LinhaConsolidacaoDTO } from '../../hooks/useConsolidacao';
@@ -229,28 +229,99 @@ export default function ConsolidacaoGrid({
     );
   }, [contaData?.despesas]);
   
+  const horizontalScrollRef = useRef<HTMLDivElement>(null);
+  const internalScrollRef = useRef<HTMLDivElement>(null);
+  const effectiveScrollRef = scrollContainerRef || internalScrollRef;
+  const scrollSource = useRef<'horizontal' | 'body' | null>(null);
+  const clearSourceTimer = useRef<number | null>(null);
+
+  const setSource = (src: 'horizontal' | 'body') => {
+    scrollSource.current = src;
+    if (clearSourceTimer.current) {
+      window.clearTimeout(clearSourceTimer.current);
+    }
+    clearSourceTimer.current = window.setTimeout(() => {
+      scrollSource.current = null;
+    }, 60);
+  };
+
+  const handleHorizontalScroll = () => {
+    if (scrollSource.current === 'body') return;
+    setSource('horizontal');
+
+    if (effectiveScrollRef.current && horizontalScrollRef.current) {
+      effectiveScrollRef.current.scrollLeft = horizontalScrollRef.current.scrollLeft;
+    }
+  };
+
+  const handleBodyScroll = () => {
+    if (scrollSource.current === 'horizontal') return;
+    setSource('body');
+
+    if (horizontalScrollRef.current && effectiveScrollRef.current) {
+      horizontalScrollRef.current.scrollLeft = effectiveScrollRef.current.scrollLeft;
+    }
+  };
+
+  const isMouseDown = useRef(false);
+  const startX = useRef(0);
+  const startScrollLeft = useRef(0);
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('button, input, a, select')) return;
+
+    isMouseDown.current = true;
+    startX.current = e.pageX;
+    startScrollLeft.current = effectiveScrollRef.current?.scrollLeft ?? 0;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isMouseDown.current || !effectiveScrollRef.current) return;
+    const walk = e.pageX - startX.current;
+    effectiveScrollRef.current.scrollLeft = startScrollLeft.current - walk;
+    if (horizontalScrollRef.current) {
+      horizontalScrollRef.current.scrollLeft = effectiveScrollRef.current.scrollLeft;
+    }
+  };
+
+  const handleMouseUpOrLeave = () => {
+    isMouseDown.current = false;
+  };
+
+  const totalMonthsWidth = months.length * 110;
+  const totalGridWidth = 220 + totalMonthsWidth;
+
   if (months.length === 0) return null;
 
   return (
     <div
-      className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden h-full flex flex-col"
+      className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden h-fit max-h-full flex flex-col"
     >
       <div
-        ref={scrollContainerRef}
+        ref={effectiveScrollRef}
         id="consolidacao-scroll-container"
-        className="overflow-x-auto overflow-y-auto flex-1 scroll-smooth"
+        className="overflow-x-auto overflow-y-auto max-h-full scroll-smooth no-scrollbar-x [&::-webkit-scrollbar:horizontal]:hidden [scrollbar-width:none]"
+        style={{ scrollbarWidth: 'none', scrollbarColor: 'transparent transparent', msOverflowStyle: 'none' }}
+        onScroll={handleBodyScroll}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
       >
         <table
-          className="border-separate border-spacing-0"
-          style={{ minWidth: 1400 }}
+          className="border-separate border-spacing-0 [&_tbody_tr:last-child_td]:border-b-0"
+          style={{ width: totalGridWidth, minWidth: totalGridWidth }}
         >
           {/* ── CABEÇALHO DE MESES COM SUPERCABEÇALHO DE ANO ── */}
           <thead>
-            {/* Linha 1: Supercabeçalho de Ano */}
+            {/* Linha 1: Supercabeçalho de Ano com bloco único de Exercício */}
             <tr className="h-7">
               <th
+                rowSpan={2}
                 scope="col"
-                className="sticky left-0 top-0 z-30 bg-slate-100 px-3.5 py-1 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider border-b border-r border-[#E5E7EB] shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)] w-[220px] min-w-[220px] max-w-[220px]"
+                className="sticky left-0 top-0 z-30 bg-slate-100 px-3.5 py-1 text-center align-middle text-[11px] font-bold text-slate-600 uppercase tracking-wider border-b-2 border-r border-[#E5E7EB] shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)] w-[220px] min-w-[220px] max-w-[220px]"
               >
                 Exercício
               </th>
@@ -273,12 +344,6 @@ export default function ConsolidacaoGrid({
 
             {/* Linha 2: Cabeçalho de Meses */}
             <tr>
-              <th
-                scope="col"
-                className="sticky left-0 top-[28px] z-30 bg-white px-3.5 py-2.5 text-left text-[11px] font-bold text-slate-600 uppercase tracking-wider border-b-2 border-[#E5E7EB] border-r border-[#E5E7EB] shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)] w-[220px] min-w-[220px] max-w-[220px]"
-              >
-                Contas & Categorias
-              </th>
               {months.map((m, i) => {
                 const isYearBoundary = isYearEnd(i);
                 return (
@@ -297,7 +362,6 @@ export default function ConsolidacaoGrid({
               })}
             </tr>
           </thead>
-
           <tbody>
             {isLoading && (
               <tr>
@@ -399,6 +463,23 @@ export default function ConsolidacaoGrid({
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* ── BARRA DE ROLAGEM HORIZONTAL ÚNICA ACOPLADA ÀS COLUNAS DE MESES (ABAIXO DA SOBRA RETROATIVA ACUMULADA) ── */}
+      <div className="flex bg-white shrink-0 h-[10px] items-center">
+        {/* Bloco fixo sob a coluna de Exercício/Grupos (sem barra de rolagem e em branco) */}
+        <div className="w-[220px] min-w-[220px] max-w-[220px] bg-white border-r border-[#E5E7EB] h-full shrink-0 shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)]" />
+        {/* Barra de rolagem horizontal única que se estende APENAS na largura dos meses */}
+        <div
+          ref={horizontalScrollRef}
+          id="consolidacao-horizontal-scrollbar"
+          aria-label="Rolagem horizontal dos meses"
+          className="overflow-x-auto overflow-y-hidden flex-1 h-full cursor-ew-resize select-none bg-white [&::-webkit-scrollbar-track]:bg-white"
+          style={{ scrollbarWidth: 'thin', scrollbarColor: '#CBD5E1 #FFFFFF' }}
+          onScroll={handleHorizontalScroll}
+        >
+          <div style={{ width: totalMonthsWidth, height: 1 }} />
+        </div>
       </div>
     </div>
   );

@@ -25,7 +25,13 @@ export default function ConsolidacaoToolbar({
       return [now.getFullYear(), now.getMonth()];
     }
     const [yearStr, monthStr] = selectedMonth.split('-');
-    return [parseInt(yearStr, 10), parseInt(monthStr, 10) - 1];
+    const y = parseInt(yearStr, 10);
+    const m = parseInt(monthStr, 10) - 1;
+    if (isNaN(y) || isNaN(m) || m < 0 || m > 11) {
+      const now = new Date();
+      return [now.getFullYear(), now.getMonth()];
+    }
+    return [y, m];
   }, [selectedMonth]);
 
   const [pickerYear, setPickerYear] = useState(year);

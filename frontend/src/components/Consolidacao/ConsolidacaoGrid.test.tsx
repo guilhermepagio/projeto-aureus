@@ -93,11 +93,11 @@ describe('ConsolidacaoGrid', () => {
     expect(screen.queryByText('Conta Inativa')).toBeNull();
   });
 
-  it('renderiza o supercabeçalho de exercício com os anos agrupados', () => {
+  it('renderiza o supercabeçalho de exercício unificado com os anos agrupados', () => {
     render(<ConsolidacaoGrid />);
 
     expect(screen.getByText('Exercício')).toBeDefined();
-    expect(screen.getByText('Contas & Categorias')).toBeDefined();
+    expect(screen.queryByText('Contas & Categorias')).toBeNull();
     expect(screen.getByText('2026')).toBeDefined();
     expect(screen.getByText('2027')).toBeDefined();
     expect(screen.getByText('2028')).toBeDefined();
