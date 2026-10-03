@@ -155,19 +155,19 @@ action_items:
       BackendApplicationTests"
     owner: "Desenvolvedor Backend / DevOps"
     status: open
-    ref: "_bmad-output/implementation-artifacts/epic-5-retro-2026-10-03.md"
+    ref: "_bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md"
   - id: "epic-5-retro-item-13-criar-migração-flyway-v2-para-limpeza-de"
     epic: 5
     action: "Criar migração Flyway V2 para limpeza de índice redundante em usuarios
       e adição de índices em FKs de movimentações"
     owner: "Arquiteto / DBA"
     status: open
-    ref: "_bmad-output/implementation-artifacts/epic-5-retro-2026-10-03.md"
+    ref: "_bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md"
   - id: "epic-5-retro-item-14-integrar-errorboundary-com-queryerrorres"
     epic: 5
     action: "Integrar ErrorBoundary com QueryErrorResetBoundary do TanStack Query
       para reset de cache em retentativas"
     owner: "Desenvolvedor Frontend"
     status: open
-    ref: "_bmad-output/implementation-artifacts/epic-5-retro-2026-10-03.md"
+    ref: "_bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md"
 project_key: NOKEY
