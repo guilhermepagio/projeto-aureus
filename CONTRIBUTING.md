@@ -11,6 +11,7 @@ O Aureus é um projeto de portfólio pessoal, sem fins comerciais no momento, de
 
 Como o projeto tem um único mantenedor, não há SLA, equipe de revisão ou promessa de integração automática.
 O repositório adota proteção na branch `main`, de modo que todas as alterações passam obrigatoriamente por Pull Request.
+O título do Pull Request acompanha o próprio nome da branch (ex.: `feature/epico-5`, `planning/epico-6`). Para detalhamento do escopo e requisitos de cada épico, consulte a documentação correspondente em `docs/` e `_bmad-output/`.
 
 ## Nomenclatura de branches
 
