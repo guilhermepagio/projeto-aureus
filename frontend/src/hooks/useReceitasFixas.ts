@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { apiClient } from '../services/apiClient';
 import type { Conta } from './useContas';
 import type { Categoria } from './useCategorias';
 
@@ -23,70 +24,21 @@ export interface ReceitaFixaInput {
 
 const API_URL = '/api/receitas-fixas';
 
-const getCsrfToken = () => {
-  const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
-  return match ? decodeURIComponent(match[2]) : '';
-};
-
 const fetchReceitasFixas = async (): Promise<ReceitaFixa[]> => {
-  const response = await fetch(API_URL);
-  if (!response.ok) throw new Error('Erro ao carregar receitas fixas');
-  return response.json();
+  return apiClient.get<ReceitaFixa[]>(API_URL);
 };
 
 const createReceitaFixa = async (receita: ReceitaFixaInput): Promise<ReceitaFixa> => {
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': getCsrfToken()
-    },
-    body: JSON.stringify(receita),
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (errorData.errors && errorData.errors.length > 0) {
-      throw new Error(errorData.errors[0].defaultMessage);
-    }
-    throw new Error(errorData.message || 'Erro ao criar receita fixa');
-  }
-  return response.json();
+  return apiClient.post<ReceitaFixa>(API_URL, receita);
 };
 
 const updateReceitaFixa = async (receita: ReceitaFixaInput): Promise<ReceitaFixa> => {
   if (!receita.id) throw new Error('ID da receita fixa é obrigatório para atualização');
-  const response = await fetch(`${API_URL}/${receita.id}`, {
-    method: 'PUT',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': getCsrfToken()
-    },
-    body: JSON.stringify(receita),
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (errorData.errors && errorData.errors.length > 0) {
-      throw new Error(errorData.errors[0].defaultMessage);
-    }
-    throw new Error(errorData.message || 'Erro ao atualizar receita fixa');
-  }
-  return response.json();
+  return apiClient.put<ReceitaFixa>(`${API_URL}/${receita.id}`, receita);
 };
 
 const deleteReceitaFixa = async (id: number): Promise<void> => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'X-XSRF-TOKEN': getCsrfToken()
-    }
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (errorData.message) {
-      throw new Error(errorData.message);
-    }
-    throw new Error('Erro ao excluir receita fixa');
-  }
+  await apiClient.delete(`${API_URL}/${id}`);
 };
 
 export const useReceitasFixas = () => {

@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
 import { Landmark, Tags, LogOut } from 'lucide-react';
+import { apiClient } from '../../services/apiClient';
 
 interface HeaderProps {
   children?: React.ReactNode;
@@ -22,14 +23,8 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
   const handleLogout = async () => {
     if (isLoggingOut) return;
     setIsLoggingOut(true);
-    const csrfToken = document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN='))?.substring('XSRF-TOKEN='.length);
-    
     try {
-      const response = await fetch('/api/auth/logout', { 
-        method: 'POST',
-        headers: csrfToken ? { 'X-XSRF-TOKEN': csrfToken } : undefined
-      });
-      if (!response.ok) throw new Error('Logout failed');
+      await apiClient.post('/api/auth/logout');
     } catch (error) {
       toast.error('Sessão encerrada localmente. (Erro de rede)');
     } finally {

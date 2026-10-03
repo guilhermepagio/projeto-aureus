@@ -184,7 +184,7 @@ export function BlocoResumo({
 
           {/* Linha 3: Sobra Retroativa Acumulada */}
           <tr className="group hover:bg-[#FAFAFA] transition-colors">
-            <td className="px-3.5 py-2 text-[13px] font-semibold text-[#1A1A2E] sticky left-0 z-10 bg-white group-hover:bg-[#FAFAFA] border-b border-r border-[#E5E7EB] shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)] w-[220px] min-w-[220px] max-w-[220px] truncate transition-colors">
+            <td className="px-3.5 py-2 text-[13px] font-semibold text-[#1A1A2E] sticky left-0 z-10 bg-white group-hover:bg-[#FAFAFA] border-b-0 border-r border-[#E5E7EB] shadow-[inset_-1px_0_0_#E5E7EB,2px_0_5px_-1px_rgba(0,0,0,0.07)] w-[220px] min-w-[220px] max-w-[220px] truncate transition-colors">
               <span>Sobra Retroativa Acumulada</span>
             </td>
             {sobraRetroativa.map((val, i) => {
@@ -192,7 +192,7 @@ export function BlocoResumo({
               return (
                 <td
                   key={i}
-                  className={`px-3.5 py-2 text-[13px] text-right tabular-nums whitespace-nowrap border-b border-b-[#F3F4F6] transition-colors ${
+                  className={`px-3.5 py-2 text-[13px] text-right tabular-nums whitespace-nowrap border-b-0 transition-colors ${
                     isYearBoundary ? 'border-r-2 border-r-slate-300' : 'border-r border-r-[#F3F4F6]'
                   } ${getSemanticColorClass(val)}`}
                   style={{ minWidth: 110 }}

@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Header from './components/Header/Header';
 import Navigation from './components/Navigation/Navigation';
@@ -8,6 +8,8 @@ import { useEffect } from 'react';
 import ContasPage from './pages/Contas/ContasPage';
 import CategoriasPage from './pages/Categorias/CategoriasPage';
 import RequiresDependencies from './components/RequiresDependencies';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import { apiClient } from './services/apiClient';
 
 import DespesasFixasPage from './pages/DespesasFixas/DespesasFixasPage';
 import ReceitasFixasPage from './pages/ReceitasFixas/ReceitasFixasPage';
@@ -37,31 +39,30 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   const { setAuth, setLoading } = useAuthStore();
+  const location = useLocation();
 
   useEffect(() => {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-    fetch('/api/auth/me', { signal: controller.signal })
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        throw new Error('Não autorizado');
+    apiClient
+      .get<{ subjectId: string; fotoPerfil?: string }>('/api/auth/me', {
+        signal: controller.signal,
+        timeout: 5000,
       })
-      .then(data => {
+      .then((data) => {
         setAuth(true, data.subjectId, data.fotoPerfil);
       })
-      .catch((_err) => {
+      .catch((err: any) => {
+        if (err?.name === 'AbortError' || err?.message === 'AbortError') return;
         setAuth(false, null, null);
       })
       .finally(() => {
-        clearTimeout(timeoutId);
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       });
 
     return () => {
-      clearTimeout(timeoutId);
       controller.abort();
     };
   }, [setAuth, setLoading]);
@@ -69,19 +70,21 @@ function App() {
   return (
     <>
       <Toaster position="top-right" />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        
-        <Route path="/" element={<ProtectedRoute><RequiresDependencies><ConsolidacaoPage /></RequiresDependencies></ProtectedRoute>} />
-        <Route path="/despesas-variaveis" element={<ProtectedRoute><RequiresDependencies><DespesasVariaveisPage /></RequiresDependencies></ProtectedRoute>} />
-        <Route path="/despesas-fixas" element={<ProtectedRoute><RequiresDependencies><DespesasFixasPage /></RequiresDependencies></ProtectedRoute>} />
-        <Route path="/receitas-variaveis" element={<ProtectedRoute><RequiresDependencies><ReceitasVariaveisPage /></RequiresDependencies></ProtectedRoute>} />
-        <Route path="/receitas-fixas" element={<ProtectedRoute><RequiresDependencies><ReceitasFixasPage /></RequiresDependencies></ProtectedRoute>} />
-        <Route path="/contas" element={<ProtectedRoute><ContasPage /></ProtectedRoute>} />
-        <Route path="/categorias" element={<ProtectedRoute><CategoriasPage /></ProtectedRoute>} />
-        
-        <Route path="*" element={<ProtectedRoute><div style={{ padding: '24px' }}><h2>404 - Página não encontrada</h2></div></ProtectedRoute>} />
-      </Routes>
+      <ErrorBoundary resetKeys={[location.pathname]}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          
+          <Route path="/" element={<ProtectedRoute><RequiresDependencies><ConsolidacaoPage /></RequiresDependencies></ProtectedRoute>} />
+          <Route path="/despesas-variaveis" element={<ProtectedRoute><RequiresDependencies><DespesasVariaveisPage /></RequiresDependencies></ProtectedRoute>} />
+          <Route path="/despesas-fixas" element={<ProtectedRoute><RequiresDependencies><DespesasFixasPage /></RequiresDependencies></ProtectedRoute>} />
+          <Route path="/receitas-variaveis" element={<ProtectedRoute><RequiresDependencies><ReceitasVariaveisPage /></RequiresDependencies></ProtectedRoute>} />
+          <Route path="/receitas-fixas" element={<ProtectedRoute><RequiresDependencies><ReceitasFixasPage /></RequiresDependencies></ProtectedRoute>} />
+          <Route path="/contas" element={<ProtectedRoute><ContasPage /></ProtectedRoute>} />
+          <Route path="/categorias" element={<ProtectedRoute><CategoriasPage /></ProtectedRoute>} />
+          
+          <Route path="*" element={<ProtectedRoute><div style={{ padding: '24px' }}><h2>404 - Página não encontrada</h2></div></ProtectedRoute>} />
+        </Routes>
+      </ErrorBoundary>
     </>
   );
 }

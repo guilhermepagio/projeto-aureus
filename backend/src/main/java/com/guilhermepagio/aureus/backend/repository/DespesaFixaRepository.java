@@ -7,5 +7,6 @@ import java.util.List;
 import com.guilhermepagio.aureus.backend.domain.DespesaFixa;
 
 public interface DespesaFixaRepository extends JpaRepository<DespesaFixa, Long> {
+    List<DespesaFixa> findAllByOrderByDescricaoAsc();
     List<DespesaFixa> findByUsuarioId(String usuarioId);
 }

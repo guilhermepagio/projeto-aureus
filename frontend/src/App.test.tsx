@@ -39,6 +39,23 @@ const queryClient = new QueryClient({
   },
 });
 
+import { beforeEach } from 'vitest';
+
+vi.mock('./pages/Categorias/CategoriasPage', () => ({
+  default: () => {
+    throw new Error('Falha simulada na página de categorias');
+  },
+}));
+
+beforeEach(() => {
+  globalThis.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    headers: new Headers({ 'content-type': 'application/json' }),
+    text: vi.fn().mockResolvedValue('[]'),
+  } as unknown as Response);
+});
+
 describe('App Routing', () => {
   it('renders navigation and navigates correctly', async () => {
     render(
@@ -51,5 +68,23 @@ describe('App Routing', () => {
     
     // Check if initial route renders correctly
     expect(screen.getByText('Consolidação')).toBeDefined();
+  });
+
+  it('captura falhas de renderização em rotas com o ErrorBoundary global', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/categorias']}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    expect(screen.getByRole('alert')).toBeDefined();
+    expect(screen.getByText('Ops! Algo deu errado')).toBeDefined();
+    expect(screen.getByText(/Falha simulada na página de categorias/)).toBeDefined();
+
+    consoleErrorSpy.mockRestore();
   });
 });

@@ -2,7 +2,6 @@ package com.guilhermepagio.aureus.backend.controller;
 
 import java.util.List;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,51 +12,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.guilhermepagio.aureus.backend.domain.Conta;
-import com.guilhermepagio.aureus.backend.repository.ContaRepository;
+import com.guilhermepagio.aureus.backend.domain.dto.ContaRequestDTO;
+import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
+import com.guilhermepagio.aureus.backend.service.ContaService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/contas")
-@RequiredArgsConstructor
 public class ContaController {
 
-    private final ContaRepository contaRepository;
+    private final ContaService contaService;
+
+    public ContaController(ContaService contaService) {
+        this.contaService = contaService;
+    }
 
     @GetMapping
-    public List<Conta> listar() {
-        return contaRepository.findAll();
+    public List<ContaResponseDTO> listar() {
+        return contaService.listar();
     }
 
     @PostMapping
-    public Conta criar(final @Valid @RequestBody Conta conta) {
-        return contaRepository.save(conta);
+    public ContaResponseDTO criar(final @Valid @RequestBody ContaRequestDTO dto) {
+        return contaService.criar(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Conta> atualizar(final @PathVariable Long id, final @Valid @RequestBody Conta contaAtualizada) {
-        return contaRepository.findById(id)
-                .map(conta -> {
-                    conta.setDescricao(contaAtualizada.getDescricao());
-                    conta.setObservacoes(contaAtualizada.getObservacoes());
-                    return ResponseEntity.ok(contaRepository.save(conta));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ContaResponseDTO> atualizar(final @PathVariable Long id, final @Valid @RequestBody ContaRequestDTO dto) {
+        return ResponseEntity.ok(contaService.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        if (!contaRepository.existsById(id)) {
+        boolean excluido = contaService.excluir(id);
+        if (!excluido) {
             return ResponseEntity.notFound().build();
         }
-        try {
-            contaRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } catch (final DataIntegrityViolationException e) {
-            // Future-proofing for FK violations (count will be added in Epic 3 when Movimentacao exists)
-            return ResponseEntity.badRequest().body(null); // returning empty for now to match current frontend
-        }
+        return ResponseEntity.noContent().build();
     }
 }

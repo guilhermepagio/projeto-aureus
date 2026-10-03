@@ -7,5 +7,6 @@ import java.util.List;
 import com.guilhermepagio.aureus.backend.domain.ReceitaFixa;
 
 public interface ReceitaFixaRepository extends JpaRepository<ReceitaFixa, Long> {
+    List<ReceitaFixa> findAllByOrderByDescricaoAsc();
     List<ReceitaFixa> findByUsuarioId(String usuarioId);
 }

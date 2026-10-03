@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { apiClient } from '../services/apiClient';
 import type { Conta } from './useContas';
 import type { Categoria } from './useCategorias';
 
@@ -23,70 +24,21 @@ export interface DespesaFixaInput {
 
 const API_URL = '/api/despesas-fixas';
 
-const getCsrfToken = () => {
-  const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
-  return match ? decodeURIComponent(match[2]) : '';
-};
-
 const fetchDespesasFixas = async (): Promise<DespesaFixa[]> => {
-  const response = await fetch(API_URL);
-  if (!response.ok) throw new Error('Erro ao carregar despesas fixas');
-  return response.json();
+  return apiClient.get<DespesaFixa[]>(API_URL);
 };
 
 const createDespesaFixa = async (despesa: DespesaFixaInput): Promise<DespesaFixa> => {
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': getCsrfToken()
-    },
-    body: JSON.stringify(despesa),
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (errorData.errors && errorData.errors.length > 0) {
-      throw new Error(errorData.errors[0].defaultMessage);
-    }
-    throw new Error(errorData.message || 'Erro ao criar despesa fixa');
-  }
-  return response.json();
+  return apiClient.post<DespesaFixa>(API_URL, despesa);
 };
 
 const updateDespesaFixa = async (despesa: DespesaFixaInput): Promise<DespesaFixa> => {
   if (!despesa.id) throw new Error('ID da despesa fixa é obrigatório para atualização');
-  const response = await fetch(`${API_URL}/${despesa.id}`, {
-    method: 'PUT',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': getCsrfToken()
-    },
-    body: JSON.stringify(despesa),
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (errorData.errors && errorData.errors.length > 0) {
-      throw new Error(errorData.errors[0].defaultMessage);
-    }
-    throw new Error(errorData.message || 'Erro ao atualizar despesa fixa');
-  }
-  return response.json();
+  return apiClient.put<DespesaFixa>(`${API_URL}/${despesa.id}`, despesa);
 };
 
 const deleteDespesaFixa = async (id: number): Promise<void> => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'X-XSRF-TOKEN': getCsrfToken()
-    }
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    if (errorData.message) {
-      throw new Error(errorData.message);
-    }
-    throw new Error('Erro ao excluir despesa fixa');
-  }
+  await apiClient.delete(`${API_URL}/${id}`);
 };
 
 export const useDespesasFixas = () => {

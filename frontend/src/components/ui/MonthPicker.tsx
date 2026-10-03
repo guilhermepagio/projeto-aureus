@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Calendar, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
-
-export const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-
+import { MONTHS } from './dateConstants';
 export interface MonthPickerProps {
   id?: string;
   value: string; // 'YYYY-MM' ou ''
@@ -13,6 +11,8 @@ export interface MonthPickerProps {
   hasError?: boolean;
   placeholder?: string;
   className?: string;
+  ariaDescribedBy?: string;
+  'aria-describedby'?: string;
 }
 
 export default function MonthPicker({
@@ -24,6 +24,8 @@ export default function MonthPicker({
   hasError = false,
   placeholder = 'MM/AAAA',
   className = '',
+  ariaDescribedBy,
+  'aria-describedby': ariaDescribedByHyphen,
 }: MonthPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -108,6 +110,8 @@ export default function MonthPicker({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
         setIsOpen(false);
       }
     };
@@ -187,6 +191,8 @@ export default function MonthPicker({
         aria-haspopup="dialog"
         aria-expanded={isOpen}
         aria-label={displayLabel || placeholder}
+        aria-invalid={hasError}
+        aria-describedby={ariaDescribedBy || ariaDescribedByHyphen}
         className={`mt-1 relative w-full flex items-center justify-between rounded-md shadow-sm sm:text-sm px-3 py-2 border text-left cursor-pointer transition-colors min-h-[38px] disabled:opacity-50 disabled:bg-gray-100 disabled:cursor-not-allowed ${
           hasError ? 'border-red-500' : 'border-gray-300'
         } ${themeStyles.inputFocus} ${disabled ? 'bg-gray-100' : 'bg-white'}`}

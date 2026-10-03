@@ -1,10 +1,7 @@
 package com.guilhermepagio.aureus.backend.controller;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,63 +12,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.guilhermepagio.aureus.backend.domain.DespesaFixa;
-import com.guilhermepagio.aureus.backend.repository.DespesaFixaRepository;
+import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaRequestDTO;
+import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaResponseDTO;
+import com.guilhermepagio.aureus.backend.service.DespesaFixaService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/despesas-fixas")
-@RequiredArgsConstructor
 public class DespesaFixaController {
 
-    private final DespesaFixaRepository repository;
+    private final DespesaFixaService despesaFixaService;
+
+    public DespesaFixaController(DespesaFixaService despesaFixaService) {
+        this.despesaFixaService = despesaFixaService;
+    }
 
     @GetMapping
-    public List<DespesaFixa> listar() {
-        return repository.findAll(Sort.by("descricao"));
+    public List<DespesaFixaResponseDTO> listar() {
+        return despesaFixaService.listar();
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(final @Valid @RequestBody DespesaFixa despesaFixa) {
-        try {
-            despesaFixa.setId(null);
-            return ResponseEntity.ok(repository.save(despesaFixa));
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
-        }
+    public ResponseEntity<DespesaFixaResponseDTO> criar(final @Valid @RequestBody DespesaFixaRequestDTO dto) {
+        return ResponseEntity.ok(despesaFixaService.criar(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(final @PathVariable Long id, final @Valid @RequestBody DespesaFixa atualizada) {
-        return repository.findById(id)
-                .map(existente -> {
-                    existente.setDescricao(atualizada.getDescricao());
-                    existente.setValor(atualizada.getValor());
-                    existente.setConta(atualizada.getConta());
-                    existente.setCategoria(atualizada.getCategoria());
-                    existente.setObservacoes(atualizada.getObservacoes());
-                    try {
-                        return ResponseEntity.ok(repository.saveAndFlush(existente));
-                    } catch (DataIntegrityViolationException e) {
-                        return ResponseEntity.badRequest().body(Map.of("message", "Erro de integridade relacional. Verifique os vínculos informados."));
-                    }
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DespesaFixaResponseDTO> atualizar(final @PathVariable Long id, final @Valid @RequestBody DespesaFixaRequestDTO dto) {
+        return ResponseEntity.ok(despesaFixaService.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> excluir(final @PathVariable Long id) {
-        if (!repository.existsById(id)) {
+    public ResponseEntity<Void> excluir(final @PathVariable Long id) {
+        boolean excluido = despesaFixaService.excluir(id);
+        if (!excluido) {
             return ResponseEntity.notFound().build();
         }
-        try {
-            repository.deleteById(id);
-            repository.flush(); // ensure deletion triggers exception here if violated
-            return ResponseEntity.noContent().build();
-        } catch (final DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Não é possível excluir esta despesa porque ela está em uso."));
-        }
+        return ResponseEntity.noContent().build();
     }
 }

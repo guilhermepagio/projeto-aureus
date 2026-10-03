@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../store/authStore';
+import { apiClient } from '../services/apiClient';
 
 export interface LinhaConsolidacaoCategoriaDTO {
   categoriaId: number;
@@ -12,9 +13,9 @@ export interface ConsolidacaoPorCategoriaDTO {
 }
 
 const fetchConsolidacaoPorCategoria = async (mesAno: string): Promise<ConsolidacaoPorCategoriaDTO> => {
-  const response = await fetch(`/api/consolidacao/por-categoria?mesAno=${mesAno}`);
-  if (!response.ok) throw new Error('Erro ao buscar consolidação por categoria');
-  return response.json();
+  return apiClient.get<ConsolidacaoPorCategoriaDTO>('/api/consolidacao/por-categoria', {
+    params: { mesAno },
+  });
 };
 
 export function useConsolidacaoCategoria(mesAno: string | null) {
