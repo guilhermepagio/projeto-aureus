@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 09-29-2026 13:02
+last_updated: 10-03-2026 15:32
 project: projeto-aureus
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
@@ -66,7 +66,7 @@ development_status:
   5-2-tratamento-global-de-erros-validação-de-tenant-em-relacionam: done
   5-3-centralização-do-cliente-http-api-e-resiliência-no-frontend: done
   5-4-abstração-e-unificação-dos-formulários-de-movimentações-fina: done
-  epic-5-retrospective: optional
+  epic-5-retrospective: done
 
   epic-6: backlog
   6-1-testes-unitários-de-domínio-e-serviços-financeiros-backend: backlog
@@ -100,7 +100,7 @@ action_items:
       (tanto fixas quanto variáveis) para utilizar abstrações comuns, reduzindo duplicação
       de código."
     owner: "Desenvolvedor"
-    status: open
+    status: done
     ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"
   - id: "epic-3-retro-item-5-adicionar-cobertura-de-testes-unitários"
     epic: 3
@@ -149,4 +149,25 @@ action_items:
     owner: "QA / Desenvolvedor"
     status: open
     ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md"
+  - id: "epic-5-retro-item-12-configurar-testcontainers-e-isolamento-d"
+    epic: 5
+    action: "Configurar Testcontainers e isolamento de banco de dados para a suíte
+      BackendApplicationTests"
+    owner: "Desenvolvedor Backend / DevOps"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-5-retro-2026-10-03.md"
+  - id: "epic-5-retro-item-13-criar-migração-flyway-v2-para-limpeza-de"
+    epic: 5
+    action: "Criar migração Flyway V2 para limpeza de índice redundante em usuarios
+      e adição de índices em FKs de movimentações"
+    owner: "Arquiteto / DBA"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-5-retro-2026-10-03.md"
+  - id: "epic-5-retro-item-14-integrar-errorboundary-com-queryerrorres"
+    epic: 5
+    action: "Integrar ErrorBoundary com QueryErrorResetBoundary do TanStack Query
+      para reset de cache em retentativas"
+    owner: "Desenvolvedor Frontend"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-5-retro-2026-10-03.md"
 project_key: NOKEY
