@@ -27,7 +27,8 @@ Abaixo está a organização da estrutura do projeto. Por aqui é possível nave
 
 | Disponível | Componente (Hiperlink) | Descrição | O que você vai encontrar |
 | :--- | :--- | :--- | :--- |
-| 🟢 | **[📂 /docs](./docs/)** | **Documentação** | A documentação do projeto. |
-| 🟢 | **[📂 /backend](./backend/)** | **Backend** | O código fonte da API Rest do projeto. |
+| 🟢 | **[📂 /backend-api](./backend-api/)** | **Backend API** | O código-fonte da API Rest do projeto (Spring Boot). |
+| 🟢 | **[📂 /frontend-web](./frontend-web/)** | **Frontend Web** | Código-fonte da aplicação web (React + Vite + Tailwind). |
+| 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus) | **Frontend App** | App multiplataforma (Flutter para Mobile e Desktop). |
+| 🟢 | **[📂 /_bmad-output](./_bmad-output/)** | **Artefatos BMad** | Planejamento, requisitos, PRD, arquitetura e UX gerados por IA. |
 | 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus-docs) | **Coleções Postman** | Coleções do Postman. |
-| 🟢 | **[📂 /frontend](./frontend/)** | **Frontend** | Código fonte do frontend do projeto. |
