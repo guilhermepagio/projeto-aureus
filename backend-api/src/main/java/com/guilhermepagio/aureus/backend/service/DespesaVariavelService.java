@@ -48,7 +48,7 @@ public class DespesaVariavelService {
     private void preencherDataFim(DespesaVariavel despesaVariavel) {
         if (despesaVariavel.getDataInicio() != null && despesaVariavel.getQuantidadeParcelas() != null && despesaVariavel.getQuantidadeParcelas() > 0) {
             despesaVariavel.setDataInicio(despesaVariavel.getDataInicio().withDayOfMonth(1));
-            despesaVariavel.setDataFim(despesaVariavel.getDataInicio().plusMonths(despesaVariavel.getQuantidadeParcelas() - 1));
+            despesaVariavel.setDataFim(despesaVariavel.getUltimaParcela());
         } else {
             despesaVariavel.setDataFim(null);
         }

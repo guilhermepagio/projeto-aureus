@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-class BackendApplicationTests {
+class BackendApplicationIT {
 
     private final Flyway flyway;
 
-    BackendApplicationTests(Flyway flyway) {
+    BackendApplicationIT(Flyway flyway) {
         this.flyway = flyway;
     }
 

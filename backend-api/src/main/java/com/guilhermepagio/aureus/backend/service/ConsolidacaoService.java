@@ -1,6 +1,7 @@
 package com.guilhermepagio.aureus.backend.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -341,5 +342,22 @@ public class ConsolidacaoService {
             BigDecimal atual = linha.getValoresMensais().get(index);
             linha.getValoresMensais().set(index, atual.add(valor));
         }
+    }
+
+    /**
+     * Calcula o percentual de uma categoria em relação ao total de despesas.
+     * Previne divisão por zero retornando 0.00 quando o total ou valor for nulo ou menor/igual a zero.
+     *
+     * @param valorCategoria Valor gasto na categoria
+     * @param totalDespesas Total consolidado de despesas
+     * @return Percentual calculado com escala 2 e arredondamento HALF_UP
+     */
+    public static BigDecimal calcularPercentual(BigDecimal valorCategoria, BigDecimal totalDespesas) {
+        if (totalDespesas == null || totalDespesas.compareTo(BigDecimal.ZERO) <= 0 
+                || valorCategoria == null || valorCategoria.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        }
+        return valorCategoria.multiply(BigDecimal.valueOf(100))
+                .divide(totalDespesas, 2, RoundingMode.HALF_UP);
     }
 }
