@@ -454,11 +454,11 @@
 - Adicionar contador visual de caracteres (0/300) em ObservacoesField [frontend/src/components/MovimentacaoForm/ObservacoesField.tsx:37] — deferred, pre-existing
 
 ## Deferred from: code review of spec-6-1-testes-unitarios-de-dominio-e-servicos-financeiros-backend.md (2026-10-04)
-- Configuração do maven-failsafe-plugin e execução de testes de integração com Testcontainers [backend-api/pom.xml:149] — deferred, pre-existing (planejado para Story 6.2)
+- Configuração do maven-failsafe-plugin e execução de testes de integração com Testcontainers [backend-api/pom.xml:149] — resolved in Story 6.2
 - Extração de abstração/interface comum de parcelamento para DespesaVariavel e ReceitaVariavel [backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/] — deferred, pre-existing
-- source_spec: `_bmad-output/implementation-artifacts/spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md`
-  summary: Padronizar retorno de 404 em ContaController.excluir para retornar ApiErrorResponse estruturado via ResourceNotFoundException
-  evidence: No ContaController atual, excluir retorna ResponseEntity.notFound().build() com corpo vazio enquanto buscarPorId lança ResourceNotFoundException tratado com ApiErrorResponse
-- source_spec: `_bmad-output/implementation-artifacts/spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md`
-  summary: Implementar endpoints REST de busca por ID (GET /{id}) para as demais entidades de domínio (Categoria, Despesa e Receita)
-  evidence: Apenas ContaController possui atualmente o endpoint GET /{id}, mantendo assimetria nos contratos de leitura individual da API REST
+
+## Deferred from: code review of spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md (2026-10-05)
+- Padronizar retorno de 404 em ContaController.excluir para retornar ApiErrorResponse estruturado via ResourceNotFoundException [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/ContaController.java:58] — deferred, pre-existing
+- Implementar endpoints REST de busca por ID (GET /{id}) para as demais entidades de domínio (Categoria, Despesa e Receita) [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/] — deferred, pre-existing
+- Expansão exaustiva de testes de DTOs, CSRF em verbos PUT/DELETE e integridade com outras entidades financeiras [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/] — deferred, pre-existing
+

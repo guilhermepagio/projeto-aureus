@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 10-05-2026 09:36
+last_updated: 10-05-2026 17:44
 project: projeto-aureus
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
@@ -70,7 +70,7 @@ development_status:
 
   epic-6: in-progress
   6-1-testes-unitários-de-domínio-e-serviços-financeiros-backend: done
-  6-2-testes-de-integração-rest-e-isolamento-multi-tenancy-backend: review
+  6-2-testes-de-integração-rest-e-isolamento-multi-tenancy-backend: done
   6-3-testes-de-componentes-e-fluxos-críticos-no-frontend-frontend: backlog
   6-4-infraestrutura-de-validação-contínua-local-e-documentação-ca: backlog
   epic-6-retrospective: optional

@@ -222,6 +222,8 @@ public class RestContractAndIntegrityIT extends AbstractIntegrationTest {
                 .cookie(authCookie(tenant))
                 .with(csrf()))
                 .andExpect(status().isMethodNotAllowed())
-                .andExpect(header().exists("Allow"));
+                .andExpect(header().exists("Allow"))
+                .andExpect(jsonPath("$.status").value(405))
+                .andExpect(jsonPath("$.message", containsString("Método HTTP não suportado")));
     }
 }

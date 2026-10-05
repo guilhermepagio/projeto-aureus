@@ -372,4 +372,50 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .with(csrf()))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Atualização e exclusão de Despesa Fixa de outro tenant deve retornar 404 Not Found")
+    void deveRetornar404AoAtualizarOuExcluirDespesaFixaDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaAId = criarConta(tenantA, "ContaA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
+
+        // A cria despesa legítima
+        DespesaFixaRequestDTO despA = new DespesaFixaRequestDTO(
+                "Desp A", new BigDecimal("100.00"),
+                new IdReferenceDTO(contaAId), new IdReferenceDTO(catAId),
+                "Obs", LocalDate.of(2026, 1, 1)
+        );
+        MvcResult res = mockMvc.perform(post("/api/despesas-fixas")
+                .cookie(authCookie(tenantA))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(despA)))
+                .andExpect(status().isOk())
+                .andReturn();
+        Long despesaAId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
+
+        // B tenta alterar a despesa de A -> 404 Not Found
+        DespesaFixaRequestDTO despAlterada = new DespesaFixaRequestDTO(
+                "Invasor Desp", new BigDecimal("999.00"),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId),
+                "Hack", LocalDate.of(2026, 1, 1)
+        );
+        mockMvc.perform(put("/api/despesas-fixas/" + despesaAId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(despAlterada)))
+                .andExpect(status().isNotFound());
+
+        // B tenta excluir a despesa de A -> 404 Not Found
+        mockMvc.perform(delete("/api/despesas-fixas/" + despesaAId)
+                .cookie(authCookie(tenantB))
+                .with(csrf()))
+                .andExpect(status().isNotFound());
+    }
 }

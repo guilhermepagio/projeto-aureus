@@ -81,8 +81,18 @@ context:
 - Given o Usuário B tentando criar uma movimentação referenciando uma Conta ou Categoria do Usuário A, when a requisição for processada, then a resposta deve ser `403 Forbidden`.
 - Given uma Conta ou Categoria vinculada a movimentações financeiras ativas, when houver tentativa de exclusão, then o banco de dados deve barrar a exclusão e a API deve retornar `400 Bad Request` com resposta estruturada de integridade relacional.
 
+### Review Findings
+
+- [x] [Review][Patch] Alinhar status inicial da spec para 'review' [_bmad-output/implementation-artifacts/spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md:5]
+- [x] [Review][Patch] Atualizar contagem no Spec Change Log de 18 para 23 testes de integração via Testcontainers [_bmad-output/implementation-artifacts/spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md:85]
+- [x] [Review][Patch] Organizar seções da Story 6.2 e marcar como resolvido o item de failsafe no ledger de trabalho postergado [_bmad-output/implementation-artifacts/deferred-work.md:457-464]
+- [x] [Review][Patch] Adicionar teste de isolamento multi-tenant para edição (PUT) e exclusão (DELETE) cross-tenant em movimentação financeira [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:692]
+- [x] [Review][Patch] Enriquecer asserção do teste 405 Method Not Allowed validando estrutura de erro ApiErrorResponse [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/RestContractAndIntegrityIT.java:1106]
+- [x] [Review][Defer] Expansão exaustiva de testes de DTOs, CSRF em verbos PUT/DELETE e integridade com outras entidades financeiras [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/] — deferred, pre-existing
+- [x] [Review][Defer] Padronizar retorno de 404 em ContaController.excluir para retornar ApiErrorResponse estruturado via ResourceNotFoundException [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/ContaController.java:58] — deferred, pre-existing
+
 ## Spec Change Log
-- 2026-10-05: Implementação concluída com 18 testes de integração via Testcontainers e separação estrita surefire/failsafe.
+- 2026-10-05: Implementação concluída com 23 testes de integração via Testcontainers e separação estrita surefire/failsafe.
 
 ## Design Notes
 
