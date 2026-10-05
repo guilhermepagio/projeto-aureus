@@ -61,6 +61,25 @@ public class ContaControllerTest {
     }
 
     @Test
+    public void deveBuscarContaPorIdExistente() throws Exception {
+        when(contaService.buscarPorId(1L)).thenReturn(Optional.of(new ContaResponseDTO(1L, "Nubank", "Principal")));
+
+        mockMvc.perform(get("/api/contas/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.descricao").value("Nubank"))
+                .andExpect(jsonPath("$.observacoes").value("Principal"));
+    }
+
+    @Test
+    public void deveRetornar404AoBuscarContaPorIdInexistente() throws Exception {
+        when(contaService.buscarPorId(999L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/contas/999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void deveCriarContaValida() throws Exception {
         ContaRequestDTO request = new ContaRequestDTO("Nubank", "Principal");
         ContaResponseDTO response = new ContaResponseDTO(1L, "Nubank", "Principal");

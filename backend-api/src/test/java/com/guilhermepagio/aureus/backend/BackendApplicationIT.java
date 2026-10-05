@@ -2,24 +2,23 @@ package com.guilhermepagio.aureus.backend;
 
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-class BackendApplicationIT {
+class BackendApplicationIT extends AbstractIntegrationTest {
 
-    private final Flyway flyway;
+    @Autowired
+    private Flyway flyway;
 
-    BackendApplicationIT(Flyway flyway) {
-        this.flyway = flyway;
-    }
-
-	@Test
-	void contextLoads() {
+    @Test
+    void contextLoads() {
         assertNotNull(flyway, "O bean do Flyway deve ser carregado e configurado no contexto");
-	}
+        assertNotNull(flyway.info().current(), "As migrações Flyway devem estar aplicadas");
+        assertTrue(flyway.info().current().getState().isApplied(), "O estado da migração deve ser aplicado");
+        assertEquals(0, flyway.info().pending().length, "Não devem existir migrações pendentes");
+    }
 
 }

@@ -456,3 +456,9 @@
 ## Deferred from: code review of spec-6-1-testes-unitarios-de-dominio-e-servicos-financeiros-backend.md (2026-10-04)
 - Configuração do maven-failsafe-plugin e execução de testes de integração com Testcontainers [backend-api/pom.xml:149] — deferred, pre-existing (planejado para Story 6.2)
 - Extração de abstração/interface comum de parcelamento para DespesaVariavel e ReceitaVariavel [backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/] — deferred, pre-existing
+- source_spec: `_bmad-output/implementation-artifacts/spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md`
+  summary: Padronizar retorno de 404 em ContaController.excluir para retornar ApiErrorResponse estruturado via ResourceNotFoundException
+  evidence: No ContaController atual, excluir retorna ResponseEntity.notFound().build() com corpo vazio enquanto buscarPorId lança ResourceNotFoundException tratado com ApiErrorResponse
+- source_spec: `_bmad-output/implementation-artifacts/spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md`
+  summary: Implementar endpoints REST de busca por ID (GET /{id}) para as demais entidades de domínio (Categoria, Despesa e Receita)
+  evidence: Apenas ContaController possui atualmente o endpoint GET /{id}, mantendo assimetria nos contratos de leitura individual da API REST

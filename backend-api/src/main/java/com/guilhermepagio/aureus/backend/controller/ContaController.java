@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.guilhermepagio.aureus.backend.domain.dto.ContaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.service.ContaService;
 
 import jakarta.validation.Valid;
@@ -31,6 +32,13 @@ public class ContaController {
     @GetMapping
     public List<ContaResponseDTO> listar() {
         return contaService.listar();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ContaResponseDTO> buscarPorId(final @PathVariable Long id) {
+        return contaService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + id));
     }
 
     @PostMapping
