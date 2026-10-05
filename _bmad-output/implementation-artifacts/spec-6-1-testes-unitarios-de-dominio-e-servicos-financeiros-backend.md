@@ -78,6 +78,11 @@ context:
 - [x] `backend-api/src/test/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoServiceTest.java` -- Adicionar testes de percentuais de categoria e divisão por zero -- Cobrir todos os cenários da matriz analítica de consolidação
 - [x] `backend-api/src/test/java/com/guilhermepagio/aureus/backend/BackendApplicationIT.java` -- Garantir renomeação da classe e arquivo de integração -- Desacoplar do ciclo `mvn test`
 
+### Review Findings
+
+- [x] [Review][Defer] Configuração do maven-failsafe-plugin e execução de testes de integração com Testcontainers [`backend-api/pom.xml:149`](file:///home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/pom.xml#L149) — deferred, pre-existing (planejado para Story 6.2)
+- [x] [Review][Defer] Extração de abstração/interface comum de parcelamento para DespesaVariavel e ReceitaVariavel [`backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/`](file:///home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/) — deferred, pre-existing
+
 **Acceptance Criteria:**
 - Given os Services de Contas, Categorias, Despesas, Receitas e Consolidação, when os testes unitários são executados via JUnit 5 e Mockito, then todos os 7 services e entidades de domínio devem possuir cobertura de testes unitários isolados sem depender de infraestrutura externa.
 - Given uma movimentação variável, when calculados o valor total e a data final, then o valor total deve ser `valorParcela × quantidadeParcelas` e a última parcela deve ser `dataInicio + (quantidadeParcelas - 1) meses`.
