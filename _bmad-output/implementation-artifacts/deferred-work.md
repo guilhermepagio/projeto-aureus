@@ -462,3 +462,8 @@
 - Implementar endpoints REST de busca por ID (GET /{id}) para as demais entidades de domínio (Categoria, Despesa e Receita) [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/] — deferred, pre-existing
 - Expansão exaustiva de testes de DTOs, CSRF em verbos PUT/DELETE e integridade com outras entidades financeiras [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/] — deferred, pre-existing
 
+## Deferred from: code review of spec-6-3-testes-de-componentes-e-fluxos-criticos-no-frontend.md (2026-10-05)
+- Suporte a tecla Escape e semântica WAI-ARIA (aria-haspopup, role="menu", role="menuitem") no componente ActionMenu [frontend-web/src/components/ui/ActionMenu.tsx:45] — deferred, pre-existing
+- Unificação do componente DeleteConfirmModal compartilhado entre as páginas em vez de implementações duplicadas [frontend-web/src/pages/] — deferred, pre-existing
+- Ajuste das dependências do useEffect (deleteMutation) em DeleteConfirmModal para eliminar warning do linter react-hooks/exhaustive-deps [frontend-web/src/pages/DespesasVariaveis/components/DeleteConfirmModal.tsx:18] — deferred, pre-existing
+
