@@ -470,3 +470,7 @@
 ## Deferred from: code review of spec-6-3-testes-de-componentes-e-fluxos-criticos-no-frontend.md (2026-10-06)
 - Suíte de testes unitários para ContaFormModal e submissão em ContasPage [frontend-web/src/pages/Contas/components/ContaFormModal.tsx:1] — deferred, pre-existing
 
+## Deferred from: code review of spec-6-4-infraestrutura-de-validacao-continua-local-e-documentacao-canonica-de-testes.md (2026-10-06)
+- Suporte a flags para validação seletiva/modular (--frontend e --backend) no script de validação [scripts/validate.sh:65] — deferred, improvement
+- Configuração de ferramenta de análise estática e linter no backend (Checkstyle, Spotless ou SpotBugs no Maven) [backend-api/pom.xml:153] — deferred, pre-existing
+

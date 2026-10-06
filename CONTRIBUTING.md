@@ -5,6 +5,25 @@ O Aureus é um projeto de portfólio pessoal, sem fins comerciais no momento, de
 ## Fonte de verdade
 
 - `_bmad-output/` centraliza a documentação viva, planejamento, requisitos e artefatos de trabalho do BMad.
+- `docs/architecture/testing.md` formaliza a arquitetura canônica de testes automatizados, matriz de cobertura e decisões de engenharia de qualidade.
+
+## Validação local contínua (Pré-PR)
+
+Antes de abrir um Pull Request para a branch `main`, execute sempre a validação contínua local para garantir que os testes unitários, linter, tipagem e build estejam 100% íntegros:
+
+```bash
+# Validação padrão e rápida (~20-25s, sem dependência de Docker):
+./scripts/validate.sh
+```
+
+Caso a alteração envolva regras de persistência relacional, migrações Flyway, entidades JPA ou filtros de segurança, execute também a suíte de integração com Testcontainers (requer o serviço do Docker ativo):
+
+```bash
+# Validação completa com testes de integração:
+./scripts/validate.sh --with-integration
+```
+
+Para mais detalhes sobre a arquitetura de 3 camadas, comandos pontuais e matriz de cobertura, consulte [`docs/architecture/testing.md`](./docs/architecture/testing.md).
 
 ## Fluxo de mudança
 
