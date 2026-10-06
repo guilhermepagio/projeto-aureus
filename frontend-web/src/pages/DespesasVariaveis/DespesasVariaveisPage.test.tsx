@@ -11,11 +11,12 @@ let mockDespesasQuery = {
   isError: false,
 };
 
+const mockDeleteDespesaMutate = vi.fn();
 vi.mock('../../hooks/useDespesasVariaveis', () => ({
   useDespesasVariaveis: () => mockDespesasQuery,
   useCreateDespesaVariavel: () => ({ mutate: vi.fn(), isPending: false }),
   useUpdateDespesaVariavel: () => ({ mutate: vi.fn(), isPending: false }),
-  useDeleteDespesaVariavel: () => ({ mutate: vi.fn(), reset: vi.fn(), isPending: false, isError: false }),
+  useDeleteDespesaVariavel: () => ({ mutate: mockDeleteDespesaMutate, reset: vi.fn(), isPending: false, isError: false }),
 }));
 
 vi.mock('../../hooks/useContas', () => ({
@@ -199,6 +200,22 @@ describe('DespesasVariaveisPage', () => {
     expect(within(dialog).getByText('Tênis Esportivo')).toBeDefined();
   });
 
+  it('dispara mutação de exclusão ao confirmar a exclusão no modal', () => {
+    render(<DespesasVariaveisPage />);
+
+    const actionBtn = screen.getByRole('button', { name: 'Ações' });
+    fireEvent.click(actionBtn);
+
+    const deleteOption = screen.getByRole('button', { name: 'Excluir' });
+    fireEvent.click(deleteOption);
+
+    const dialog = screen.getByRole('dialog');
+    const confirmDeleteBtn = within(dialog).getByRole('button', { name: 'Excluir' });
+    fireEvent.click(confirmDeleteBtn);
+
+    expect(mockDeleteDespesaMutate).toHaveBeenCalledWith(1, expect.any(Object));
+  });
+
   it('abre o modal de edição ao clicar em Editar no ActionMenu da linha', () => {
     render(<DespesasVariaveisPage />);
 
@@ -214,7 +231,7 @@ describe('DespesasVariaveisPage', () => {
     expect(screen.getByDisplayValue('Tênis Esportivo')).toBeDefined();
   });
 
-  it('reage à alteração de selectedMonth filtrando itens dinamicamente', () => {
+  it('reage à alteração de selectedMonth filtrando itens dinamicamente incluindo limites de vigência', () => {
     const { rerender } = render(<DespesasVariaveisPage />);
 
     expect(screen.getByText('Tênis Esportivo')).toBeDefined();
@@ -226,9 +243,19 @@ describe('DespesasVariaveisPage', () => {
 
     expect(screen.queryByText('Tênis Esportivo')).toBeNull();
     expect(screen.getByText('Livros Didáticos')).toBeDefined();
+
+    // Testa limite de vigência de Tênis Esportivo: 2026-08 (mês final de vigência - deve aparecer)
+    useMonthStore.getState().setSelectedMonth('2026-08');
+    rerender(<DespesasVariaveisPage />);
+    expect(screen.getByText('Tênis Esportivo')).toBeDefined();
+
+    // Testa mês imediatamente seguinte: 2026-09 (fora da vigência - não deve aparecer)
+    useMonthStore.getState().setSelectedMonth('2026-09');
+    rerender(<DespesasVariaveisPage />);
+    expect(screen.queryByText('Tênis Esportivo')).toBeNull();
   });
 
-  it('renderiza colunas formatadas de valores e parcelas na tabela', () => {
+  it('renderiza colunas formatadas de valores, datas e parcelas na tabela', () => {
     render(<DespesasVariaveisPage />);
 
     // Valor da parcela R$ 150,00 e valor total 150 * 4 = R$ 600,00
@@ -236,5 +263,10 @@ describe('DespesasVariaveisPage', () => {
     expect(screen.getByText('R$ 600,00')).toBeDefined();
     expect(screen.getByText('Centauro')).toBeDefined();
     expect(screen.getByText('Parcelado 4x')).toBeDefined();
+
+    // Datas formatadas
+    expect(screen.getByText('10/05/2026')).toBeDefined();
+    expect(screen.getByText('05/2026')).toBeDefined();
+    expect(screen.getByText('08/2026')).toBeDefined();
   });
 });

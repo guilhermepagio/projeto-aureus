@@ -35,7 +35,7 @@ describe('EmptyState component', () => {
   });
 
   it('renderiza ícone customizado quando prop icon é fornecida', () => {
-    render(
+    const { container } = render(
       <EmptyState
         title="Com ícone"
         description="Descrição qualquer"
@@ -45,6 +45,7 @@ describe('EmptyState component', () => {
 
     expect(screen.getByTestId('custom-icon')).toBeDefined();
     expect(screen.getByText('★')).toBeDefined();
+    expect(container.querySelector('svg')).toBeNull();
   });
 
   it('não renderiza botão de ação quando a prop action for omitida', () => {

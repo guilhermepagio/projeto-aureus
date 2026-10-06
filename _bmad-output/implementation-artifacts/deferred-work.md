@@ -465,5 +465,8 @@
 ## Deferred from: code review of spec-6-3-testes-de-componentes-e-fluxos-criticos-no-frontend.md (2026-10-05)
 - Suporte a tecla Escape e semântica WAI-ARIA (aria-haspopup, role="menu", role="menuitem") no componente ActionMenu [frontend-web/src/components/ui/ActionMenu.tsx:45] — deferred, pre-existing
 - Unificação do componente DeleteConfirmModal compartilhado entre as páginas em vez de implementações duplicadas [frontend-web/src/pages/] — deferred, pre-existing
-- Ajuste das dependências do useEffect (deleteMutation) em DeleteConfirmModal para eliminar warning do linter react-hooks/exhaustive-deps [frontend-web/src/pages/DespesasVariaveis/components/DeleteConfirmModal.tsx:18] — deferred, pre-existing
+- Ajuste das dependências do useEffect (deleteMutation) em DeleteConfirmModal para eliminar warning do linter react-hooks/exhaustive-deps [frontend-web/src/pages/DespesasVariaveis/components/DeleteConfirmModal.tsx:18 e frontend-web/src/pages/ReceitasVariaveis/components/DeleteConfirmModal.tsx:14] — deferred, pre-existing
+
+## Deferred from: code review of spec-6-3-testes-de-componentes-e-fluxos-criticos-no-frontend.md (2026-10-06)
+- Suíte de testes unitários para ContaFormModal e submissão em ContasPage [frontend-web/src/pages/Contas/components/ContaFormModal.tsx:1] — deferred, pre-existing
 

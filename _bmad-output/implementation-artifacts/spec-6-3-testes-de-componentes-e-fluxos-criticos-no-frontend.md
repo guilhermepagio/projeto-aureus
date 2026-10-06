@@ -71,17 +71,22 @@ context:
 - Given um registro na tabela de movimentações ou contas, when o usuário aciona o botão de exclusão no menu de ações, then um modal de confirmação explícita é apresentado e a mutação de exclusão só é disparada mediante confirmação do usuário.
 ### Review Findings
 
-- [x] [Review][Patch] Refinar asserções de recálculo dinâmico, cobrir transição de ano (Nov/26 + 4 parcelas -> Fev/27) e valores 0/negativos [frontend-web/src/components/MovimentacaoForm/MovimentacaoForm.test.tsx:550]
-- [x] [Review][Patch] Adicionar teste para variante padrão (primary) com prop color omitida [frontend-web/src/components/ui/EmptyState.test.tsx:99]
-- [x] [Review][Patch] Validar bloqueio de fechamento via Escape quando isPending=true em DeleteConfirmModal [frontend-web/src/pages/DespesasVariaveis/components/DeleteConfirmModal.test.tsx:135]
-- [x] [Review][Patch] Adicionar restauração do store useMonthStore no afterEach e testes de alteração de mês e valores formatados [frontend-web/src/pages/DespesasVariaveis/DespesasVariaveisPage.test.tsx:216]
-- [x] [Review][Patch] Adicionar restauração do store useMonthStore no afterEach e testes de alteração de mês e formatação [frontend-web/src/pages/ReceitasVariaveis/ReceitasVariaveisPage.test.tsx:210]
-- [x] [Review][Patch] Adicionar teste de confirmação e disparo de mutação de exclusão de conta [frontend-web/src/pages/Contas/ContasPage.test.tsx:147]
+- [x] [Review][Patch] Sincronizar frontmatter status da spec com sprint-status ('review') [_bmad-output/implementation-artifacts/spec-6-3-testes-de-componentes-e-fluxos-criticos-no-frontend.md:5]
+- [x] [Review][Patch] Adicionar teste de confirmação de exclusão e disparo de mutate em ReceitasVariaveisPage [frontend-web/src/pages/ReceitasVariaveis/ReceitasVariaveisPage.test.tsx:173]
+- [x] [Review][Patch] Adicionar teste de confirmação de exclusão e disparo de mutate em DespesasVariaveisPage [frontend-web/src/pages/DespesasVariaveis/DespesasVariaveisPage.test.tsx:848]
+- [x] [Review][Patch] Adicionar asserção explícita de valor negativo (-1) em parcelas no MovimentacaoForm [frontend-web/src/components/MovimentacaoForm/MovimentacaoForm.test.tsx:216]
+- [x] [Review][Patch] Adicionar asserções de exibição de datas formatadas e vigência nas tabelas [frontend-web/src/pages/DespesasVariaveis/DespesasVariaveisPage.test.tsx:893]
+- [x] [Review][Patch] Cobrir mês limite de vigência (dataFim) e mês subsequente nos testes de filtro temporal [frontend-web/src/pages/DespesasVariaveis/DespesasVariaveisPage.test.tsx:879]
+- [x] [Review][Patch] Criar suíte de testes unitários isolada para parcelamentoUtils.ts [frontend-web/src/components/MovimentacaoForm/parcelamentoUtils.test.ts:1]
+- [x] [Review][Patch] Adicionar referência a ReceitasVariaveis no item de dependência useEffect em deferred-work.md [_bmad-output/implementation-artifacts/deferred-work.md:12]
+- [x] [Review][Patch] Validar ausência do SVG padrão quando ícone customizado é fornecido em EmptyState [frontend-web/src/components/ui/EmptyState.test.tsx:374]
+- [x] [Review][Defer] Suíte de testes unitários para ContaFormModal e submissão em ContasPage [frontend-web/src/pages/Contas/components/ContaFormModal.tsx:1] — deferred, pre-existing
 - [x] [Review][Defer] Suporte a tecla Escape e semântica WAI-ARIA no ActionMenu [frontend-web/src/components/ui/ActionMenu.tsx:45] — deferred, pre-existing
 - [x] [Review][Defer] Unificação do DeleteConfirmModal compartilhado entre páginas [frontend-web/src/pages/] — deferred, pre-existing
 - [x] [Review][Defer] Ajuste de dependência useEffect (deleteMutation) em DeleteConfirmModal [frontend-web/src/pages/DespesasVariaveis/components/DeleteConfirmModal.tsx:18] — deferred, pre-existing
 
 ## Spec Change Log
+- 2026-10-06: Code review finalizado com 9 patches aplicados (testes de mutate de exclusão, boundary temporal, datas formatadas, parcelas negativas, testes unitários em parcelamentoUtils e assertions no EmptyState). Total de 19 arquivos e 180 testes aprovados.
 - 2026-10-05: Implementação concluída com 18 arquivos de teste e 168 testes aprovados no frontend via Vitest e Testing Library.
 
 ## Design Notes

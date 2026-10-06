@@ -569,6 +569,10 @@ describe('MovimentacaoForm - Componentes Compartilhados', () => {
       expect(screen.getByText('Valor Total: -')).toBeDefined();
       expect(ultimaParcelaStatus.textContent).toBe('-');
 
+      fireEvent.change(parcelasInput, { target: { value: '-1' } });
+      expect(screen.getByText('Valor Total: -')).toBeDefined();
+      expect(ultimaParcelaStatus.textContent).toBe('-');
+
       // Inputs vazios redefinem para '-' sem lançar erro
       fireEvent.change(parcelasInput, { target: { value: '' } });
       expect(screen.getByText('Valor Total: -')).toBeDefined();

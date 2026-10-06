@@ -11,11 +11,12 @@ let mockReceitasQuery = {
   isError: false,
 };
 
+const mockDeleteReceitaMutate = vi.fn();
 vi.mock('../../hooks/useReceitasVariaveis', () => ({
   useReceitasVariaveis: () => mockReceitasQuery,
   useCreateReceitaVariavel: () => ({ mutate: vi.fn(), isPending: false }),
   useUpdateReceitaVariavel: () => ({ mutate: vi.fn(), isPending: false }),
-  useDeleteReceitaVariavel: () => ({ mutate: vi.fn(), reset: vi.fn(), isPending: false, isError: false }),
+  useDeleteReceitaVariavel: () => ({ mutate: mockDeleteReceitaMutate, reset: vi.fn(), isPending: false, isError: false }),
 }));
 
 vi.mock('../../hooks/useContas', () => ({
@@ -191,6 +192,22 @@ describe('ReceitasVariaveisPage', () => {
     expect(dialog).toBeDefined();
     expect(screen.getByRole('heading', { name: 'Excluir Receita Variável' })).toBeDefined();
     expect(within(dialog).getByText('Freelance Frontend')).toBeDefined();
+  });
+
+  it('dispara mutação de exclusão ao confirmar a exclusão no modal', () => {
+    render(<ReceitasVariaveisPage />);
+
+    const actionBtn = screen.getByRole('button', { name: 'Ações' });
+    fireEvent.click(actionBtn);
+
+    const deleteOption = screen.getByRole('button', { name: 'Excluir' });
+    fireEvent.click(deleteOption);
+
+    const dialog = screen.getByRole('dialog');
+    const confirmDeleteBtn = within(dialog).getByRole('button', { name: 'Excluir' });
+    fireEvent.click(confirmDeleteBtn);
+
+    expect(mockDeleteReceitaMutate).toHaveBeenCalledWith(1, expect.any(Object));
   });
 
   it('abre o modal de edição ao clicar em Editar no ActionMenu da linha', () => {
