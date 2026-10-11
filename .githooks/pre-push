@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Aureus - Git Pre-Push Hook
+# ==============================================================================
+# Executa a validação contínua local antes de permitir o envio para o remoto.
+# Para ignorar em casos excepcionais e de emergência: git push --no-verify
+# ==============================================================================
+
+set -eo pipefail
+
+echo -e "\n🔍 [pre-push] Executando validação canônica local antes do push..."
+
+# Localiza dinamicamente a raiz do repositório
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Executa o script canônico de validação
+exec "${REPO_ROOT}/scripts/validate.sh"

@@ -25,6 +25,16 @@ Caso a alteração envolva regras de persistência relacional, migrações Flywa
 
 Para mais detalhes sobre a arquitetura de 3 camadas, comandos pontuais e matriz de cobertura, consulte [`docs/architecture/testing.md`](./docs/architecture/testing.md).
 
+### Automação via Git Hook (`pre-push`)
+
+Para automatizar a execução da validação e evitar esquecimentos antes de enviar código para o repositório remoto, o projeto inclui um hook configurado em `.githooks/pre-push`. Para ativá-lo no seu clone local:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Com essa configuração ativa, o comando `git push` executará automaticamente o `./scripts/validate.sh` (modo rápido ~20s) e bloqueará o push caso qualquer etapa falhe. Em emergências pontuais, o hook pode ser ignorado com `git push --no-verify`.
+
 ## Fluxo de mudança
 
 Como o projeto tem um único mantenedor, não há SLA, equipe de revisão ou promessa de integração automática.
