@@ -473,4 +473,7 @@
 ## Deferred from: code review of spec-6-4-infraestrutura-de-validacao-continua-local-e-documentacao-canonica-de-testes.md (2026-10-06)
 - Suporte a flags para validação seletiva/modular (--frontend e --backend) no script de validação [scripts/validate.sh:65] — deferred, improvement
 - Configuração de ferramenta de análise estática e linter no backend (Checkstyle, Spotless ou SpotBugs no Maven) [backend-api/pom.xml:153] — deferred, pre-existing
+- Otimizar execução do modo --with-integration no script de validação para evitar execução duplicada da suíte unitária [scripts/validate.sh:172] — deferred, improvement
+- Avaliar introdução de ferramentas de cobertura quantitativa de testes (JaCoCo no Maven e cobertura Vitest no frontend) pós-V1 [docs/architecture/testing.md:120] — deferred, future
+
 

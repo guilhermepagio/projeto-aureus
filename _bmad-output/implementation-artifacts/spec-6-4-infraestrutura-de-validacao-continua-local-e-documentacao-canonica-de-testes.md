@@ -63,16 +63,22 @@ context:
 
 ### Review Findings
 
-- [x] [Review][Patch] Adicionar captura de sinais INT e TERM ao trap de saída do validate.sh [scripts/validate.sh:123]
-- [x] [Review][Patch] Adicionar checagem prévia de ferramentas (node, npm, ./mvnw executável) [scripts/validate.sh:95]
-- [x] [Review][Patch] Inverter ordem das etapas no frontend (npm test antes de npm run build) para fail-fast imediato [scripts/validate.sh:174]
-- [x] [Review][Patch] Sincronizar ordem das etapas no guia de testes docs/architecture/testing.md [docs/architecture/testing.md:204]
-- [x] [Review][Defer] Suporte a flags modulares (--frontend e --backend) no validate.sh [scripts/validate.sh:65]
-- [x] [Review][Defer] Configuração de linter e ferramenta de análise estática no backend Maven [backend-api/pom.xml:153]
+- [x] [Review][Decision] Ordem de execução das etapas do frontend — Mantida a ordem 'npm test' antes de 'npm run build' visando fail-fast ágil (Decisão do usuário: Opção 1)
+- [x] [Review][Patch] Adicionar exit 130 e exit 143 explícitos aos traps de sinais INT e TERM no validate.sh [scripts/validate.sh:140]
+- [x] [Review][Patch] Adicionar checagem da presença do binário java nos pré-requisitos do validate.sh [scripts/validate.sh:96]
+- [x] [Review][Patch] Adicionar checagem da presença de frontend-web/node_modules nos pré-requisitos do validate.sh [scripts/validate.sh:105]
+- [x] [Review][Patch] Incluir flag batch mode (-B) nas chamadas do ./mvnw no validate.sh [scripts/validate.sh:172]
+- [x] [Review][Patch] Documentar comandos para testes individuais/granulares no guia de testes [docs/architecture/testing.md:175]
+- [x] [Review][Patch] Esclarecer isolamento de dados de teste (tenants únicos) e execução in-memory do MockMvc [docs/architecture/testing.md:71]
+- [x] [Review][Patch] Sincronizar status da story no frontmatter para done após resolução de todos os achados [_bmad-output/implementation-artifacts/spec-6-4-infraestrutura-de-validacao-continua-local-e-documentacao-canonica-de-testes.md:5]
+- [x] [Review][Defer] Otimizar execução do modo --with-integration para evitar repetição da suíte unitária [scripts/validate.sh:172] — deferred, improvement
+- [x] [Review][Defer] Avaliar introdução de ferramentas de cobertura quantitativa (JaCoCo e Vitest coverage) [docs/architecture/testing.md:120] — deferred, future
+- [x] [Review][Defer] Suporte a flags modulares (--frontend e --backend) no validate.sh [scripts/validate.sh:65] — deferred, improvement
+- [x] [Review][Defer] Configuração de linter e ferramenta de análise estática no backend Maven [backend-api/pom.xml:153] — deferred, pre-existing
 
 ## Spec Change Log
 
-- 2026-10-06: Code review finalizado com 4 patches aplicados (trap de sinais INT/TERM, checagem prévia de ferramentas no PATH e executabilidade do mvnw, inversão de ordem dos testes frontend para fail-fast anterior ao build) e 2 itens registrados em deferred-work.md. Todas as 4 etapas locais concluídas com sucesso em 20s.
+- 2026-10-11: Code review concluído com 1 decisão confirmada pelo usuário (manutenção da ordem fail-fast de npm test antes de npm run build), 7 patches aplicados (traps específicos de sinais INT 130 e TERM 143 no validate.sh, validações de pré-requisitos para java e node_modules, inclusão da flag batch mode -B no Maven, documentação de comandos granulares/individuais e detalhamento do MockMvc in-memory e isolamento multi-tenant dinâmico em testing.md, sincronização de status para done), 4 itens deferidos e 3 dismiss.
 - 2026-10-06: Implementação completa da Story 6.4 — criação de scripts/validate.sh (suporte a -i e -h, fail-fast, tempo), documentação canônica docs/architecture/testing.md, atualização do README.md e CONTRIBUTING.md, e sincronização do sprint-status.yaml.
 
 ## Design Notes

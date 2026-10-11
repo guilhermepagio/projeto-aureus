@@ -93,6 +93,11 @@ if [ ! -d "${BACKEND_DIR}" ] || [ ! -d "${FRONTEND_DIR}" ]; then
 fi
 
 # Verificação de pré-requisitos de ferramentas locais
+if ! command -v java >/dev/null 2>&1; then
+  echo -e "${RED}${BOLD}❌ Erro: 'java' não encontrado no PATH.${NC}" >&2
+  exit 1
+fi
+
 if ! command -v node >/dev/null 2>&1; then
   echo -e "${RED}${BOLD}❌ Erro: 'node' não encontrado no PATH.${NC}" >&2
   exit 1
@@ -100,6 +105,12 @@ fi
 
 if ! command -v npm >/dev/null 2>&1; then
   echo -e "${RED}${BOLD}❌ Erro: 'npm' não encontrado no PATH.${NC}" >&2
+  exit 1
+fi
+
+if [ ! -d "${FRONTEND_DIR}/node_modules" ]; then
+  echo -e "${RED}${BOLD}❌ Erro: 'node_modules' não encontrado em '${FRONTEND_DIR}'.${NC}" >&2
+  echo -e "${YELLOW}Dica: Execute 'npm install' no diretório '${FRONTEND_DIR}' antes de validar.${NC}" >&2
   exit 1
 fi
 
@@ -137,7 +148,9 @@ on_exit() {
     echo -e "${RED}${BOLD}======================================================================${NC}\n"
   fi
 }
-trap on_exit EXIT INT TERM
+trap on_exit EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 # Definição das etapas
 TOTAL_STEPS=4
@@ -169,13 +182,13 @@ echo -e "${CYAN}Raiz do Projeto:${NC} ${PROJECT_ROOT}"
 echo -e "${BOLD}${CYAN}======================================================================${NC}"
 
 # Execução das etapas sequenciais
-run_step 1 "Backend: Testes Unitários de Domínio e Serviços" "${BACKEND_DIR}" ./mvnw test
+run_step 1 "Backend: Testes Unitários de Domínio e Serviços" "${BACKEND_DIR}" ./mvnw -B test
 run_step 2 "Frontend: Análise Estática e Linter" "${FRONTEND_DIR}" npm run lint
 run_step 3 "Frontend: Testes Unitários e Componentes" "${FRONTEND_DIR}" npm test
 run_step 4 "Frontend: Checagem de Tipos e Build" "${FRONTEND_DIR}" npm run build
 
 if [ "${RUN_INTEGRATION}" = true ]; then
-  run_step 5 "Backend: Testes de Integração e Isolamento Multi-Tenant" "${BACKEND_DIR}" ./mvnw verify
+  run_step 5 "Backend: Testes de Integração e Isolamento Multi-Tenant" "${BACKEND_DIR}" ./mvnw -B verify
 fi
 
 # Cálculo do tempo decorrido

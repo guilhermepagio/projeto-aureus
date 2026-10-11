@@ -75,6 +75,8 @@ A pirâmide de testes do Aureus V1 é distribuída em três camadas complementar
 * **Características Técnicas:**
   * Herança da classe base `AbstractIntegrationTest`, que inicializa um contêiner PostgreSQL efêmero compartilhado para a suíte.
   * As migrações do Flyway são aplicadas em um esquema real de banco de dados no contêiner.
+  * **Execução in-memory do MockMvc** (`webEnvironment = SpringBootTest.WebEnvironment.MOCK`): as requisições HTTP REST são despachadas diretamente através da cadeia de filtros do Spring Security e dos controllers sem a sobrecarga de vinculação a portas de rede físicas (`RANDOM_PORT`), garantindo testes herméticos, determinísticos e rápidos.
+  * **Isolamento de Dados Zero-Leakage (Multi-Tenancy Dinâmico)**: o isolamento entre testes não depende de truncamento lento do banco de dados, mas da geração de inquilinos com identificadores únicos (UUIDs/e-mails distintos) para cada cenário (`Tenant A`, `Tenant B`), eliminando colisões de estado e vazamentos de dados entre execuções concorrentes ou sequenciais.
   * Executado de forma isolada do fluxo diário rápido via comando dedicado (`./mvnw verify` ou `./scripts/validate.sh --with-integration`).
 * **Suítes de Integração Implementadas:**
   * `MultiTenancyIT`:
@@ -184,6 +186,18 @@ Para manter a produtividade máxima durante o desenvolvimento iterativo, execute
 | **Frontend Linter** | `npm run lint` | `frontend-web/` | < 1s |
 | **Frontend Build/Tipos** | `npm run build` | `frontend-web/` | ~2-3s |
 
+#### Execução Granular de Testes Individuais
+
+Durante ciclos de TDD, desenvolvimento focado ou depuração pontual, execute apenas o teste ou classe de interesse para reduzir o tempo de feedback para poucos segundos:
+
+| Cenário | Comando | Diretório de Execução |
+| :--- | :--- | :--- |
+| **Classe de Teste Unitário (Backend)** | `./mvnw test -Dtest=ContaServiceTest` | `backend-api/` |
+| **Método Específico de Teste (Backend)** | `./mvnw test -Dtest=ContaServiceTest#deveValidarTitularidadeDaConta` | `backend-api/` |
+| **Classe de Teste de Integração (Backend)** | `./mvnw verify -Dit.test=MultiTenancyIT` | `backend-api/` |
+| **Arquivo Específico de Componente (Frontend)** | `npx vitest run src/pages/Contas/components/ContaFormModal.test.tsx` | `frontend-web/` |
+| **Modo Interativo com Hot Reload (Frontend)** | `npx vitest` | `frontend-web/` |
+
 ---
 
 ### O Script de Validação Contínua Local (`scripts/validate.sh`)
@@ -224,6 +238,16 @@ Para consultar os parâmetros e exemplos disponíveis:
 ```bash
 ./scripts/validate.sh --help
 ```
+
+#### 4. Automação com Git Hook (`pre-push`)
+
+Para automatizar a execução da validação local e eliminar o risco de esquecimento antes de subir código para o repositório remoto, o repositório versiona o hook em `.githooks/pre-push`. Para ativá-lo:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Quando ativo, todo `git push` disparará automaticamente a validação rápida (`./scripts/validate.sh`). Em caso de falha, o push é cancelado com código diferente de zero. Para contornar em casos excepcionais: `git push --no-verify`.
 
 ---
 

@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 10-06-2026 08:00
+last_updated: 10-11-2026 18:25
 project: projeto-aureus
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
@@ -68,11 +68,11 @@ development_status:
   5-4-abstração-e-unificação-dos-formulários-de-movimentações-fina: done
   epic-5-retrospective: done
 
-  epic-6: in-progress
+  epic-6: done
   6-1-testes-unitários-de-domínio-e-serviços-financeiros-backend: done
   6-2-testes-de-integração-rest-e-isolamento-multi-tenancy-backend: done
   6-3-testes-de-componentes-e-fluxos-críticos-no-frontend-frontend: done
-  6-4-infraestrutura-de-validação-contínua-local-e-documentação-ca: review
+  6-4-infraestrutura-de-validação-contínua-local-e-documentação-ca: done
   epic-6-retrospective: optional
 action_items:
   - id: "epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave"
