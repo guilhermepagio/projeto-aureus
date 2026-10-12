@@ -452,3 +452,28 @@
 ## Deferred from: code review of spec-5-4-abstracao-e-unificacao-dos-formularios-de-movimentacoes-financeiras.md (2026-09-29)
 - Exibir estado de loading/erro para contas e categorias em ContaCategoriaFields [frontend/src/components/MovimentacaoForm/ContaCategoriaFields.tsx:30] — deferred, pre-existing
 - Adicionar contador visual de caracteres (0/300) em ObservacoesField [frontend/src/components/MovimentacaoForm/ObservacoesField.tsx:37] — deferred, pre-existing
+
+## Deferred from: code review of spec-6-1-testes-unitarios-de-dominio-e-servicos-financeiros-backend.md (2026-10-04)
+- Configuração do maven-failsafe-plugin e execução de testes de integração com Testcontainers [backend-api/pom.xml:149] — resolved in Story 6.2
+- Extração de abstração/interface comum de parcelamento para DespesaVariavel e ReceitaVariavel [backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/] — deferred, pre-existing
+
+## Deferred from: code review of spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md (2026-10-05)
+- Padronizar retorno de 404 em ContaController.excluir para retornar ApiErrorResponse estruturado via ResourceNotFoundException [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/ContaController.java:58] — deferred, pre-existing
+- Implementar endpoints REST de busca por ID (GET /{id}) para as demais entidades de domínio (Categoria, Despesa e Receita) [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/] — deferred, pre-existing
+- Expansão exaustiva de testes de DTOs, CSRF em verbos PUT/DELETE e integridade com outras entidades financeiras [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/] — deferred, pre-existing
+
+## Deferred from: code review of spec-6-3-testes-de-componentes-e-fluxos-criticos-no-frontend.md (2026-10-05)
+- Suporte a tecla Escape e semântica WAI-ARIA (aria-haspopup, role="menu", role="menuitem") no componente ActionMenu [frontend-web/src/components/ui/ActionMenu.tsx:45] — deferred, pre-existing
+- Unificação do componente DeleteConfirmModal compartilhado entre as páginas em vez de implementações duplicadas [frontend-web/src/pages/] — deferred, pre-existing
+- Ajuste das dependências do useEffect (deleteMutation) em DeleteConfirmModal para eliminar warning do linter react-hooks/exhaustive-deps [frontend-web/src/pages/DespesasVariaveis/components/DeleteConfirmModal.tsx:18 e frontend-web/src/pages/ReceitasVariaveis/components/DeleteConfirmModal.tsx:14] — deferred, pre-existing
+
+## Deferred from: code review of spec-6-3-testes-de-componentes-e-fluxos-criticos-no-frontend.md (2026-10-06)
+- Suíte de testes unitários para ContaFormModal e submissão em ContasPage [frontend-web/src/pages/Contas/components/ContaFormModal.tsx:1] — deferred, pre-existing
+
+## Deferred from: code review of spec-6-4-infraestrutura-de-validacao-continua-local-e-documentacao-canonica-de-testes.md (2026-10-06)
+- Suporte a flags para validação seletiva/modular (--frontend e --backend) no script de validação [scripts/validate.sh:65] — deferred, improvement
+- Configuração de ferramenta de análise estática e linter no backend (Checkstyle, Spotless ou SpotBugs no Maven) [backend-api/pom.xml:153] — deferred, pre-existing
+- Otimizar execução do modo --with-integration no script de validação para evitar execução duplicada da suíte unitária [scripts/validate.sh:172] — deferred, improvement
+- Avaliar introdução de ferramentas de cobertura quantitativa de testes (JaCoCo no Maven e cobertura Vitest no frontend) pós-V1 [docs/architecture/testing.md:120] — deferred, future
+
+

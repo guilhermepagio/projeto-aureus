@@ -598,4 +598,87 @@ public class ConsolidacaoServiceTest {
         // 300.00 - 120.00 = 180.00
         assertEquals(0, new BigDecimal("180.00").compareTo(dto.getSaldoHistoricoPreGrade()));
     }
+
+    @Test
+    void testCalcularPercentualComDespesas() {
+        BigDecimal valorCategoria = new BigDecimal("250.00");
+        BigDecimal totalDespesas = new BigDecimal("1000.00");
+
+        BigDecimal percentual = ConsolidacaoService.calcularPercentual(valorCategoria, totalDespesas);
+
+        assertEquals(0, new BigDecimal("25.00").compareTo(percentual));
+    }
+
+    @Test
+    void testCalcularPercentualDivisaoPorZero() {
+        BigDecimal percentualZero = ConsolidacaoService.calcularPercentual(BigDecimal.ZERO, BigDecimal.ZERO);
+        assertEquals(0, new BigDecimal("0.00").compareTo(percentualZero));
+
+        BigDecimal percentualTotalZero = ConsolidacaoService.calcularPercentual(new BigDecimal("100.00"), BigDecimal.ZERO);
+        assertEquals(0, new BigDecimal("0.00").compareTo(percentualTotalZero));
+    }
+
+    @Test
+    void testCalcularPercentualTotalNuloOuNegativo() {
+        BigDecimal percentualNull = ConsolidacaoService.calcularPercentual(new BigDecimal("50.00"), null);
+        assertEquals(0, new BigDecimal("0.00").compareTo(percentualNull));
+
+        BigDecimal percentualNegativo = ConsolidacaoService.calcularPercentual(new BigDecimal("50.00"), new BigDecimal("-100.00"));
+        assertEquals(0, new BigDecimal("0.00").compareTo(percentualNegativo));
+    }
+
+    @Test
+    void testCalcularPercentualValorCategoriaNuloOuNegativo() {
+        BigDecimal percentualNull = ConsolidacaoService.calcularPercentual(null, new BigDecimal("1000.00"));
+        assertEquals(0, new BigDecimal("0.00").compareTo(percentualNull));
+
+        BigDecimal percentualNegativo = ConsolidacaoService.calcularPercentual(new BigDecimal("-50.00"), new BigDecimal("1000.00"));
+        assertEquals(0, new BigDecimal("0.00").compareTo(percentualNegativo));
+    }
+
+    @Test
+    void testCalcularPercentualArredondamentoHalfUp() {
+        BigDecimal valorCategoria = new BigDecimal("100.00");
+        BigDecimal totalDespesas = new BigDecimal("300.00");
+
+        BigDecimal percentual = ConsolidacaoService.calcularPercentual(valorCategoria, totalDespesas);
+
+        assertEquals(0, new BigDecimal("33.33").compareTo(percentual));
+    }
+
+    @Test
+    void testGrade24MesesSemMovimentacoesRetornaListasVaziasESaldoZero() {
+        when(contaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(receitaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta("user1", "2024-01");
+
+        assertTrue(dto.getReceitas().isEmpty());
+        assertTrue(dto.getDespesas().isEmpty());
+        assertEquals(0, new BigDecimal("0.00").compareTo(dto.getSaldoHistoricoPreGrade()));
+    }
+
+    @Test
+    void testGrade24MesesSemMovimentacoesCategoriaRetornaListaVazia() {
+        when(categoriaRepository.findByUsuarioIdOrderByDescricaoAsc("user1")).thenReturn(Collections.emptyList());
+        when(despesaFixaRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+        when(despesaVariavelRepository.findByUsuarioId("user1")).thenReturn(Collections.emptyList());
+
+        ConsolidacaoPorCategoriaDTO dto = consolidacaoService.calcularConsolidacaoPorCategoria("user1", "2024-01");
+
+        assertTrue(dto.getDespesas().isEmpty());
+    }
+
+    @Test
+    void testCalcularPercentualValorMaiorQueTotal() {
+        BigDecimal valorCategoria = new BigDecimal("150.00");
+        BigDecimal totalDespesas = new BigDecimal("100.00");
+
+        BigDecimal percentual = ConsolidacaoService.calcularPercentual(valorCategoria, totalDespesas);
+
+        assertEquals(0, new BigDecimal("150.00").compareTo(percentual));
+    }
 }

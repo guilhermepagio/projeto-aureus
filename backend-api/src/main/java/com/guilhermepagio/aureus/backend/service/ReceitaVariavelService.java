@@ -48,7 +48,7 @@ public class ReceitaVariavelService {
     private void preencherDataFim(ReceitaVariavel receitaVariavel) {
         if (receitaVariavel.getDataInicio() != null && receitaVariavel.getQuantidadeParcelas() != null && receitaVariavel.getQuantidadeParcelas() > 0) {
             receitaVariavel.setDataInicio(receitaVariavel.getDataInicio().withDayOfMonth(1));
-            receitaVariavel.setDataFim(receitaVariavel.getDataInicio().plusMonths(receitaVariavel.getQuantidadeParcelas() - 1));
+            receitaVariavel.setDataFim(receitaVariavel.getUltimaParcela());
         } else {
             receitaVariavel.setDataFim(null);
         }

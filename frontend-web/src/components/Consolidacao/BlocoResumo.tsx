@@ -30,14 +30,14 @@ export function BlocoResumo({
   const hasProps = Boolean(propsReceitas && propsDespesas);
   const queryResult = useConsolidacao(hasProps || !selectedMonth ? null : selectedMonth);
 
-  const receitas = propsReceitas ?? queryResult.data?.receitas ?? [];
-  const despesas = propsDespesas ?? queryResult.data?.despesas ?? [];
+  const receitas = propsReceitas ?? queryResult.data?.receitas;
+  const despesas = propsDespesas ?? queryResult.data?.despesas;
   const saldoHistoricoPreGrade = Number(propsSaldoHistorico ?? queryResult.data?.saldoHistoricoPreGrade ?? 0) || 0;
 
   // Compute monthly total expenses (Total Gasto no Mês)
   const totalDespesas = useMemo(() => {
     const arr = Array(24).fill(0);
-    despesas.forEach(d => {
+    (despesas || []).forEach(d => {
       (d?.valoresMensais || []).forEach((val, i) => {
         if (i < 24) {
           arr[i] = Math.round((arr[i] + (Number(val) || 0)) * 100) / 100;
@@ -50,7 +50,7 @@ export function BlocoResumo({
   // Compute monthly total revenues
   const totalReceitas = useMemo(() => {
     const arr = Array(24).fill(0);
-    receitas.forEach(r => {
+    (receitas || []).forEach(r => {
       (r?.valoresMensais || []).forEach((val, i) => {
         if (i < 24) {
           arr[i] = Math.round((arr[i] + (Number(val) || 0)) * 100) / 100;

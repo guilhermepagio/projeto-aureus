@@ -1,0 +1,8 @@
+# ==============================================================================
+# Aureus - Git Attributes Configuration
+# ==============================================================================
+# Garante que scripts shell e git hooks mantenham terminação de linha LF (Unix)
+# mesmo em sistemas operacionais Windows (evita o erro /bin/bash^M no Git Bash).
+
+*.sh text eol=lf
+.githooks/* text eol=lf

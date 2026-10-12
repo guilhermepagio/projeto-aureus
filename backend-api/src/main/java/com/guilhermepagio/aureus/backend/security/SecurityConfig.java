@@ -2,13 +2,16 @@ package com.guilhermepagio.aureus.backend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +35,12 @@ public class SecurityConfig {
                 .csrfTokenRequestHandler(requestHandler)
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(exceptions -> exceptions
+                .defaultAuthenticationEntryPointFor(
+                    new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                    PathPatternRequestMatcher.pathPattern("/api/**")
+                )
+            )
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/api/auth/me", "/api/auth/logout", "/api/oauth2/**", "/login**", "/").permitAll()
                 .requestMatchers("/api/**").authenticated()

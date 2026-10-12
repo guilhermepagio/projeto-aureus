@@ -1,9 +1,12 @@
 package com.guilhermepagio.aureus.backend.domain;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.Transient;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -176,5 +179,31 @@ public class DespesaVariavel extends TenantAwareEntity {
 
     public void setObservacoes(String observacoes) {
         this.observacoes = observacoes;
+    }
+
+    /**
+     * Calcula o valor total do parcelamento (valorParcela * quantidadeParcelas).
+     * Retorna 0.00 se qualquer campo for nulo ou quantidade for não-positiva.
+     */
+    @Transient
+    @JsonIgnore
+    public BigDecimal getValorTotal() {
+        if (valorParcela == null || quantidadeParcelas == null || quantidadeParcelas <= 0) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        }
+        return valorParcela.multiply(BigDecimal.valueOf(quantidadeParcelas)).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Calcula a data correspondente à última parcela (mês final projetado no dia 1).
+     * Retorna null se dataInicio ou quantidadeParcelas forem inválidos.
+     */
+    @Transient
+    @JsonIgnore
+    public LocalDate getUltimaParcela() {
+        if (dataInicio == null || quantidadeParcelas == null || quantidadeParcelas <= 0) {
+            return null;
+        }
+        return dataInicio.withDayOfMonth(1).plusMonths(quantidadeParcelas - 1);
     }
 }

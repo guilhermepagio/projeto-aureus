@@ -524,6 +524,63 @@ describe('MovimentacaoForm - Componentes Compartilhados', () => {
         observacoes: 'Parcelado sem juros',
       });
     });
+
+    it('recalcula em tempo real Valor Total e Última Parcela durante digitação interativa', () => {
+      render(
+        <MovimentacaoVariavelFormModal
+          isOpen={true}
+          onClose={vi.fn()}
+          tipo="despesa"
+          onSubmit={vi.fn()}
+          isPending={false}
+        />
+      );
+
+      // Previews iniciais exibem '-'
+      const valorTotalStatus = screen.getByText('Valor Total: -');
+      const ultimaParcelaStatus = screen.getByLabelText(/Última Parcela/i);
+      expect(valorTotalStatus).toBeDefined();
+      expect(ultimaParcelaStatus.textContent).toBe('-');
+
+      // Digita valor da parcela: R$ 150,00
+      const valorInput = screen.getByRole('textbox', { name: /Valor Parcela/i });
+      fireEvent.change(valorInput, { target: { value: '15000' } });
+
+      // Digita quantidade de parcelas: 4
+      const parcelasInput = screen.getByRole('spinbutton', { name: /Qtd\. Parcelas/i });
+      fireEvent.change(parcelasInput, { target: { value: '4' } });
+
+      // Seleciona mês de início: Mai (2026-05)
+      const monthPickerBtn = screen.getByRole('button', { name: 'Selecione o mês' });
+      fireEvent.click(monthPickerBtn);
+      fireEvent.click(screen.getByRole('button', { name: 'Mai' }));
+
+      // Valor Total exibe R$ 600,00 e Última Parcela exibe Ago 2026 (08/2026)
+      expect(screen.getByText(/Valor Total:.*600,00/)).toBeDefined();
+      expect(ultimaParcelaStatus.textContent).toBe('Ago 2026 (08/2026)');
+
+      // Testa transição de ano: Novembro 2026 com 4 parcelas -> Fev 2027 (02/2027)
+      fireEvent.click(screen.getByRole('button', { name: /Mai 2026/ }));
+      fireEvent.click(screen.getByRole('button', { name: 'Nov' }));
+      expect(ultimaParcelaStatus.textContent).toBe('Fev 2027 (02/2027)');
+
+      // Inputs com 0 ou negativos redefinem preview para '-' defensivamente
+      fireEvent.change(parcelasInput, { target: { value: '0' } });
+      expect(screen.getByText('Valor Total: -')).toBeDefined();
+      expect(ultimaParcelaStatus.textContent).toBe('-');
+
+      fireEvent.change(parcelasInput, { target: { value: '-1' } });
+      expect(screen.getByText('Valor Total: -')).toBeDefined();
+      expect(ultimaParcelaStatus.textContent).toBe('-');
+
+      // Inputs vazios redefinem para '-' sem lançar erro
+      fireEvent.change(parcelasInput, { target: { value: '' } });
+      expect(screen.getByText('Valor Total: -')).toBeDefined();
+      expect(ultimaParcelaStatus.textContent).toBe('-');
+
+      fireEvent.change(valorInput, { target: { value: '' } });
+      expect(screen.getByText('Valor Total: -')).toBeDefined();
+    });
   });
 
   describe('Page Modal Wrappers', () => {

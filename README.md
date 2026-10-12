@@ -31,4 +31,24 @@ Abaixo está a organização da estrutura do projeto. Por aqui é possível nave
 | 🟢 | **[📂 /frontend-web](./frontend-web/)** | **Frontend Web** | Código-fonte da aplicação web (React + Vite + Tailwind). |
 | 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus) | **Frontend App** | App multiplataforma (Flutter para Mobile e Desktop). |
 | 🟢 | **[📂 /_bmad-output](./_bmad-output/)** | **Artefatos BMad** | Planejamento, requisitos, PRD, arquitetura e UX gerados por IA. |
+| 🟢 | **[📂 /docs/architecture](./docs/architecture/testing.md)** | **Arquitetura de Testes** | Documentação canônica das 3 camadas de teste e matriz de qualidade. |
+| 🟢 | **[📂 /scripts](./scripts/validate.sh)** | **Automação Local** | Script unificado de validação contínua local (`validate.sh`). |
 | 🔴 | [![GitHub](https://img.shields.io/badge/🚧_(Em_breve)-black?style=for-the-badge)](https://github.com/guilhermepagio/projeto-aureus-docs) | **Coleções Postman** | Coleções do Postman. |
+
+## 🧪 Testes e Validação Contínua Local
+
+O projeto adota uma estratégia de testes robusta em três camadas (Unitários de Domínio/Serviços no Backend, Integração e Multi-Tenancy com Testcontainers PostgreSQL, e Componentes/UX no Frontend com Vitest e Testing Library).
+
+Para executar toda a validação de qualidade de rotina de forma rápida e sequencial (sem dependência de Docker):
+
+```bash
+./scripts/validate.sh
+```
+
+Para executar a validação completa incluindo os testes de integração com banco de dados real via Testcontainers (requer o serviço do Docker ativo):
+
+```bash
+./scripts/validate.sh --with-integration
+```
+
+Consulte os detalhes técnicos, a matriz qualitativa de cobertura e o registro formal de decisões de teste no documento [**`docs/architecture/testing.md`**](./docs/architecture/testing.md).
