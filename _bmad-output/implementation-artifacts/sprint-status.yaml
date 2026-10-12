@@ -175,5 +175,5 @@ action_items:
     action: "Configurar GitHub Actions Workflow para Validação Contínua"
     owner: "DevOps / Mantenedor"
     status: open
-    ref: "_bmad-output/implementation-artifacts/epic-6-retro-2026-10-11.md"
+    ref: "_bmad-output/implementation-artifacts/archive/epic-6/epic-6-retro-2026-10-11.md"
 project_key: NOKEY
