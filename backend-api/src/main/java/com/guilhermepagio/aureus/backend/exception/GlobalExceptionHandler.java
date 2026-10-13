@@ -81,11 +81,13 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<ApiErrorResponse> handleTypeMismatchAndMissingParam(final Exception ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
-        String message = "Parâmetro de requisição inválido ou ausente.";
+        final String message;
         if (ex instanceof MethodArgumentTypeMismatchException mismatch) {
             message = String.format("O parâmetro '%s' possui formato ou tipo inválido.", mismatch.getName());
         } else if (ex instanceof MissingServletRequestParameterException missing) {
             message = String.format("O parâmetro obrigatório '%s' não foi informado.", missing.getParameterName());
+        } else {
+            message = "Parâmetro de requisição inválido ou ausente.";
         }
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
@@ -107,13 +109,13 @@ public class GlobalExceptionHandler {
 
         if (ex.getConstraintViolations() != null) {
             for (final ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-                String propertyPath = "param";
-                if (violation.getPropertyPath() != null) {
+                final String propertyPath;
+                if (violation.getPropertyPath() != null && !violation.getPropertyPath().toString().isBlank()) {
                     final String fullPath = violation.getPropertyPath().toString();
-                    if (fullPath != null && !fullPath.isBlank()) {
-                        final int lastDot = fullPath.lastIndexOf('.');
-                        propertyPath = lastDot >= 0 ? fullPath.substring(lastDot + 1) : fullPath;
-                    }
+                    final int lastDot = fullPath.lastIndexOf('.');
+                    propertyPath = lastDot >= 0 ? fullPath.substring(lastDot + 1) : fullPath;
+                } else {
+                    propertyPath = "param";
                 }
                 fieldErrors.putIfAbsent(propertyPath, violation.getMessage());
                 errors.add(new ApiErrorResponse.ValidationErrorItem(
@@ -222,11 +224,13 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<ApiErrorResponse> handleIllegalArgument(final Exception ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
-        String message = ex.getMessage() != null && !ex.getMessage().isBlank()
-            ? ex.getMessage()
-            : "Argumento ou parâmetro inválido.";
+        final String message;
         if (ex instanceof DateTimeParseException) {
             message = "Formato de data inválido: " + ex.getMessage();
+        } else if (ex.getMessage() != null && !ex.getMessage().isBlank()) {
+            message = ex.getMessage();
+        } else {
+            message = "Argumento ou parâmetro inválido.";
         }
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),

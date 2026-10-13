@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             subjectId, null, Collections.emptyList());
                     SecurityContextHolder.getContext().setAuthentication(auth);
                     TenantContext.setTenantId(subjectId);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     final ResponseCookie clearCookie = ResponseCookie.from("AUREUS_SESSION", "")
                             .maxAge(0)
                             .path("/")
