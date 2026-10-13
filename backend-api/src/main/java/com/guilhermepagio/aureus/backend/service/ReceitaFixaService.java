@@ -18,20 +18,15 @@ import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 import com.guilhermepagio.aureus.backend.repository.ReceitaFixaRepository;
 import com.guilhermepagio.aureus.backend.security.TenantContext;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ReceitaFixaService {
 
     private final ReceitaFixaRepository receitaFixaRepository;
     private final ContaRepository contaRepository;
     private final CategoriaRepository categoriaRepository;
-
-    public ReceitaFixaService(ReceitaFixaRepository receitaFixaRepository,
-                              ContaRepository contaRepository,
-                              CategoriaRepository categoriaRepository) {
-        this.receitaFixaRepository = receitaFixaRepository;
-        this.contaRepository = contaRepository;
-        this.categoriaRepository = categoriaRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<ReceitaFixaResponseDTO> listar() {
@@ -41,17 +36,17 @@ public class ReceitaFixaService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<ReceitaFixaResponseDTO> buscarPorId(Long id) {
+    public Optional<ReceitaFixaResponseDTO> buscarPorId(final Long id) {
         return receitaFixaRepository.findById(id).map(ReceitaFixaResponseDTO::fromEntity);
     }
 
-    private Conta validarEObterConta(Long contaId) {
+    private Conta validarEObterConta(final Long contaId) {
         if (contaId == null) {
             throw new ResourceNotFoundException("Conta não encontrada: null");
         }
-        String ownerUsuarioId = contaRepository.findOwnerUsuarioId(contaId)
+        final String ownerUsuarioId = contaRepository.findOwnerUsuarioId(contaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
-        String currentTenant = TenantContext.getTenantId();
+        final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
             throw new AccessDeniedException("Acesso negado: a conta informada não pertence ao usuário autenticado");
         }
@@ -59,13 +54,13 @@ public class ReceitaFixaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
     }
 
-    private Categoria validarEObterCategoria(Long categoriaId) {
+    private Categoria validarEObterCategoria(final Long categoriaId) {
         if (categoriaId == null) {
             throw new ResourceNotFoundException("Categoria não encontrada: null");
         }
-        String ownerUsuarioId = categoriaRepository.findOwnerUsuarioId(categoriaId)
+        final String ownerUsuarioId = categoriaRepository.findOwnerUsuarioId(categoriaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + categoriaId));
-        String currentTenant = TenantContext.getTenantId();
+        final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
             throw new AccessDeniedException("Acesso negado: a categoria informada não pertence ao usuário autenticado");
         }
@@ -74,11 +69,11 @@ public class ReceitaFixaService {
     }
 
     @Transactional
-    public ReceitaFixaResponseDTO criar(ReceitaFixaRequestDTO dto) {
-        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
-        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
+    public ReceitaFixaResponseDTO criar(final ReceitaFixaRequestDTO dto) {
+        final Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        final Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
-        ReceitaFixa receita = new ReceitaFixa();
+        final ReceitaFixa receita = new ReceitaFixa();
         receita.setDescricao(dto.descricao());
         receita.setValor(dto.valor());
         receita.setConta(conta);
@@ -86,17 +81,17 @@ public class ReceitaFixaService {
         receita.setObservacoes(dto.observacoes());
         receita.setDataInicio(dto.dataInicio());
 
-        ReceitaFixa salva = receitaFixaRepository.saveAndFlush(receita);
+        final ReceitaFixa salva = receitaFixaRepository.saveAndFlush(receita);
         return ReceitaFixaResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public ReceitaFixaResponseDTO atualizar(Long id, ReceitaFixaRequestDTO dto) {
-        ReceitaFixa existente = receitaFixaRepository.findById(id)
+    public ReceitaFixaResponseDTO atualizar(final Long id, final ReceitaFixaRequestDTO dto) {
+        final ReceitaFixa existente = receitaFixaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Receita fixa não encontrada: " + id));
 
-        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
-        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
+        final Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        final Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
         existente.setDescricao(dto.descricao());
         existente.setValor(dto.valor());
@@ -105,12 +100,12 @@ public class ReceitaFixaService {
         existente.setObservacoes(dto.observacoes());
         existente.setDataInicio(dto.dataInicio());
 
-        ReceitaFixa salva = receitaFixaRepository.saveAndFlush(existente);
+        final ReceitaFixa salva = receitaFixaRepository.saveAndFlush(existente);
         return ReceitaFixaResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public boolean excluir(Long id) {
+    public boolean excluir(final Long id) {
         if (!receitaFixaRepository.existsById(id)) {
             return false;
         }

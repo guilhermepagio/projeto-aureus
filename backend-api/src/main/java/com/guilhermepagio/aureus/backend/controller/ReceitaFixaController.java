@@ -17,16 +17,14 @@ import com.guilhermepagio.aureus.backend.domain.dto.ReceitaFixaResponseDTO;
 import com.guilhermepagio.aureus.backend.service.ReceitaFixaService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/receitas-fixas")
+@RequiredArgsConstructor
 public class ReceitaFixaController {
 
     private final ReceitaFixaService receitaFixaService;
-
-    public ReceitaFixaController(ReceitaFixaService receitaFixaService) {
-        this.receitaFixaService = receitaFixaService;
-    }
 
     @GetMapping
     public List<ReceitaFixaResponseDTO> listar() {
@@ -45,7 +43,7 @@ public class ReceitaFixaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = receitaFixaService.excluir(id);
+        final boolean excluido = receitaFixaService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

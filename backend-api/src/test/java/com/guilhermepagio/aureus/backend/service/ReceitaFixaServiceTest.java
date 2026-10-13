@@ -19,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.domain.Categoria;
@@ -104,7 +103,6 @@ public class ReceitaFixaServiceTest {
 
         Conta conta = new Conta(1L, "Nubank", "Principal");
         Categoria categoria = new Categoria(2L, "Trabalho", "Salário");
-        ReceitaFixa salva = new ReceitaFixa(100L, "Salário", new BigDecimal("5000.00"), conta, categoria, "Mensal", LocalDate.of(2024, 1, 1));
 
         when(contaRepository.findOwnerUsuarioId(1L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));

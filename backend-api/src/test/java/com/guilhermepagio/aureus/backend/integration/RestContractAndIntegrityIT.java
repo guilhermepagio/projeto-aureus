@@ -6,10 +6,14 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestConstructor;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.guilhermepagio.aureus.backend.AbstractIntegrationTest;
+import com.guilhermepagio.aureus.backend.security.JwtUtil;
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
@@ -26,28 +30,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public class RestContractAndIntegrityIT extends AbstractIntegrationTest {
 
-    private String novoTenant(String prefix) {
+    public RestContractAndIntegrityIT(
+            final MockMvc mockMvc,
+            final JwtUtil jwtUtil,
+            @Value("${jwt.secret}") final String jwtSecret) {
+        super(mockMvc, jwtUtil, jwtSecret);
+    }
+
+    private String novoTenant(final String prefix) {
         return prefix + "-" + UUID.randomUUID();
     }
 
-    private Long criarConta(String tenant, String descricao) throws Exception {
-        ContaRequestDTO request = new ContaRequestDTO(descricao, "Obs " + descricao);
-        MvcResult result = mockMvc.perform(post("/api/contas")
+    private Long criarConta(final String tenant, final String descricao) throws Exception {
+        final ContaRequestDTO request = new ContaRequestDTO(descricao, "Obs " + descricao);
+        final MvcResult result = mockMvc.perform(post("/api/contas")
                 .cookie(authCookie(tenant))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andReturn();
-        ContaResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), ContaResponseDTO.class);
+        final ContaResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), ContaResponseDTO.class);
         return response.id();
     }
 
-    private Long criarCategoria(String tenant, String descricao) throws Exception {
-        CategoriaRequestDTO request = new CategoriaRequestDTO(descricao, "Obs " + descricao);
-        MvcResult result = mockMvc.perform(post("/api/categorias")
+    private Long criarCategoria(final String tenant, final String descricao) throws Exception {
+        final CategoriaRequestDTO request = new CategoriaRequestDTO(descricao, "Obs " + descricao);
+        final MvcResult result = mockMvc.perform(post("/api/categorias")
                 .cookie(authCookie(tenant))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -57,20 +69,20 @@ public class RestContractAndIntegrityIT extends AbstractIntegrationTest {
         return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
     }
 
-    private Long criarDespesaFixa(String tenant, String descricao, Long contaId, Long categoriaId) throws Exception {
-        DespesaFixaRequestDTO request = new DespesaFixaRequestDTO(
+    private Long criarDespesaFixa(final String tenant, final String descricao, final Long contaId, final Long categoriaId) throws Exception {
+        final DespesaFixaRequestDTO request = new DespesaFixaRequestDTO(
                 descricao, new BigDecimal("250.00"),
                 new IdReferenceDTO(contaId), new IdReferenceDTO(categoriaId),
                 "Obs", LocalDate.of(2026, 1, 1)
         );
-        MvcResult result = mockMvc.perform(post("/api/despesas-fixas")
+        final MvcResult result = mockMvc.perform(post("/api/despesas-fixas")
                 .cookie(authCookie(tenant))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andReturn();
-        DespesaFixaResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), DespesaFixaResponseDTO.class);
+        final DespesaFixaResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), DespesaFixaResponseDTO.class);
         return response.id();
     }
 

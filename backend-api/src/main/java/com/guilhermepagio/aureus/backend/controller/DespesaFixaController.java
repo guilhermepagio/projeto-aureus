@@ -17,16 +17,14 @@ import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaResponseDTO;
 import com.guilhermepagio.aureus.backend.service.DespesaFixaService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/despesas-fixas")
+@RequiredArgsConstructor
 public class DespesaFixaController {
 
     private final DespesaFixaService despesaFixaService;
-
-    public DespesaFixaController(DespesaFixaService despesaFixaService) {
-        this.despesaFixaService = despesaFixaService;
-    }
 
     @GetMapping
     public List<DespesaFixaResponseDTO> listar() {
@@ -45,7 +43,7 @@ public class DespesaFixaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = despesaFixaService.excluir(id);
+        final boolean excluido = despesaFixaService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

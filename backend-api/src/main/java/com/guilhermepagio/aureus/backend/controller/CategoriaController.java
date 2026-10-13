@@ -17,16 +17,14 @@ import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
 import com.guilhermepagio.aureus.backend.service.CategoriaService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/categorias")
+@RequiredArgsConstructor
 public class CategoriaController {
 
     private final CategoriaService categoriaService;
-
-    public CategoriaController(CategoriaService categoriaService) {
-        this.categoriaService = categoriaService;
-    }
 
     @GetMapping
     public List<CategoriaResponseDTO> listar() {
@@ -45,7 +43,7 @@ public class CategoriaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = categoriaService.excluir(id);
+        final boolean excluido = categoriaService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

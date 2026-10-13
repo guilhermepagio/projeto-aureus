@@ -19,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import com.guilhermepagio.aureus.backend.domain.Categoria;
 import com.guilhermepagio.aureus.backend.domain.Conta;
@@ -103,7 +102,6 @@ public class DespesaFixaServiceTest {
 
         Conta conta = new Conta(1L, "Nubank", "Principal");
         Categoria categoria = new Categoria(2L, "Serviços", "Internet");
-        DespesaFixa salva = new DespesaFixa(100L, "Internet", new BigDecimal("150.00"), conta, categoria, "Vivo Fibra", LocalDate.of(2024, 1, 1));
 
         when(contaRepository.findOwnerUsuarioId(1L)).thenReturn(Optional.of("user1"));
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));

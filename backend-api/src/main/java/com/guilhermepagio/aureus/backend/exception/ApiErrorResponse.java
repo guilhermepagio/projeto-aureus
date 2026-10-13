@@ -13,7 +13,7 @@ public record ApiErrorResponse(
     Map<String, String> fieldErrors,
     List<ValidationErrorItem> errors
 ) {
-    public ApiErrorResponse(int status, String error, String message, String path) {
+    public ApiErrorResponse(final int status, final String error, final String message, final String path) {
         this(Instant.now(), status, error, message, path, null, null);
     }
 

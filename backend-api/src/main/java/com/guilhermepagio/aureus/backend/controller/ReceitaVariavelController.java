@@ -17,16 +17,14 @@ import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelResponseDTO;
 import com.guilhermepagio.aureus.backend.service.ReceitaVariavelService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/receitas-variaveis")
+@RequiredArgsConstructor
 public class ReceitaVariavelController {
 
     private final ReceitaVariavelService receitaVariavelService;
-
-    public ReceitaVariavelController(ReceitaVariavelService receitaVariavelService) {
-        this.receitaVariavelService = receitaVariavelService;
-    }
 
     @GetMapping
     public List<ReceitaVariavelResponseDTO> listar() {
@@ -45,7 +43,7 @@ public class ReceitaVariavelController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = receitaVariavelService.excluir(id);
+        final boolean excluido = receitaVariavelService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

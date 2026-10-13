@@ -14,7 +14,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final AuthenticationException exception) throws IOException, ServletException {
         getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173/login?error=true");
     }
 }

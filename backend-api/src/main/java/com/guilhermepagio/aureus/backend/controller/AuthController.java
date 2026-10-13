@@ -17,6 +17,7 @@ import com.guilhermepagio.aureus.backend.domain.Usuario;
 import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController

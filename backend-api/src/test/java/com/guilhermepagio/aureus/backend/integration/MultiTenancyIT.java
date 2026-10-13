@@ -6,10 +6,14 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestConstructor;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.guilhermepagio.aureus.backend.AbstractIntegrationTest;
+import com.guilhermepagio.aureus.backend.security.JwtUtil;
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
@@ -30,28 +34,36 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public class MultiTenancyIT extends AbstractIntegrationTest {
 
-    private String novoTenant(String prefix) {
+    public MultiTenancyIT(
+            final MockMvc mockMvc,
+            final JwtUtil jwtUtil,
+            @Value("${jwt.secret}") final String jwtSecret) {
+        super(mockMvc, jwtUtil, jwtSecret);
+    }
+
+    private String novoTenant(final String prefix) {
         return prefix + "-" + UUID.randomUUID();
     }
 
-    private Long criarConta(String tenant, String descricao) throws Exception {
-        ContaRequestDTO request = new ContaRequestDTO(descricao, "Obs " + descricao);
-        MvcResult result = mockMvc.perform(post("/api/contas")
+    private Long criarConta(final String tenant, final String descricao) throws Exception {
+        final ContaRequestDTO request = new ContaRequestDTO(descricao, "Obs " + descricao);
+        final MvcResult result = mockMvc.perform(post("/api/contas")
                 .cookie(authCookie(tenant))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andReturn();
-        ContaResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), ContaResponseDTO.class);
+        final ContaResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), ContaResponseDTO.class);
         return response.id();
     }
 
-    private Long criarCategoria(String tenant, String descricao) throws Exception {
-        CategoriaRequestDTO request = new CategoriaRequestDTO(descricao, "Obs " + descricao);
-        MvcResult result = mockMvc.perform(post("/api/categorias")
+    private Long criarCategoria(final String tenant, final String descricao) throws Exception {
+        final CategoriaRequestDTO request = new CategoriaRequestDTO(descricao, "Obs " + descricao);
+        final MvcResult result = mockMvc.perform(post("/api/categorias")
                 .cookie(authCookie(tenant))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)

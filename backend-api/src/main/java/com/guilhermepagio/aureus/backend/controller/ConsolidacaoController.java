@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/consolidacao")
-@RequiredArgsConstructor
 @Validated
+@RequiredArgsConstructor
 public class ConsolidacaoController {
 
     private static final String MES_ANO_REGEX = "^\\d{4}-(0[1-9]|1[0-2])$";
@@ -27,23 +27,23 @@ public class ConsolidacaoController {
 
     @GetMapping("/por-conta")
     public ResponseEntity<ConsolidacaoPorContaDTO> getPorConta(
-            @RequestParam @Pattern(regexp = MES_ANO_REGEX, message = "Formato de data inválido. Use YYYY-MM") String mesAno,
-            @AuthenticationPrincipal String usuarioId) {
+            @RequestParam @Pattern(regexp = MES_ANO_REGEX, message = "Formato de data inválido. Use YYYY-MM") final String mesAno,
+            @AuthenticationPrincipal final String usuarioId) {
         if (usuarioId == null) {
             return ResponseEntity.status(401).build();
         }
-        ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta(usuarioId, mesAno);
+        final ConsolidacaoPorContaDTO dto = consolidacaoService.calcularConsolidacaoPorConta(usuarioId, mesAno);
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/por-categoria")
     public ResponseEntity<ConsolidacaoPorCategoriaDTO> getPorCategoria(
-            @RequestParam @Pattern(regexp = MES_ANO_REGEX, message = "Formato de data inválido. Use YYYY-MM") String mesAno,
-            @AuthenticationPrincipal String usuarioId) {
+            @RequestParam @Pattern(regexp = MES_ANO_REGEX, message = "Formato de data inválido. Use YYYY-MM") final String mesAno,
+            @AuthenticationPrincipal final String usuarioId) {
         if (usuarioId == null) {
             return ResponseEntity.status(401).build();
         }
-        ConsolidacaoPorCategoriaDTO dto = consolidacaoService.calcularConsolidacaoPorCategoria(usuarioId, mesAno);
+        final ConsolidacaoPorCategoriaDTO dto = consolidacaoService.calcularConsolidacaoPorCategoria(usuarioId, mesAno);
         return ResponseEntity.ok(dto);
     }
 }

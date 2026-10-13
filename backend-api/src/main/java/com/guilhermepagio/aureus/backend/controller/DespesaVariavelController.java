@@ -17,16 +17,14 @@ import com.guilhermepagio.aureus.backend.domain.dto.DespesaVariavelResponseDTO;
 import com.guilhermepagio.aureus.backend.service.DespesaVariavelService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/despesas-variaveis")
+@RequiredArgsConstructor
 public class DespesaVariavelController {
 
     private final DespesaVariavelService despesaVariavelService;
-
-    public DespesaVariavelController(DespesaVariavelService despesaVariavelService) {
-        this.despesaVariavelService = despesaVariavelService;
-    }
 
     @GetMapping
     public List<DespesaVariavelResponseDTO> listar() {
@@ -45,7 +43,7 @@ public class DespesaVariavelController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = despesaVariavelService.excluir(id);
+        final boolean excluido = despesaVariavelService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

@@ -3,6 +3,8 @@ package com.guilhermepagio.aureus.backend.security;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -14,31 +16,37 @@ import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.HttpHeaders;
 
 @Component
-@RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final UsuarioRepository usuarioRepository;
     private final JwtUtil jwtUtil;
+    private final String frontendUrl;
 
-    @Value("${app.frontend.url}")
-    private String frontendUrl;
+    public OAuth2LoginSuccessHandler(
+            final UsuarioRepository usuarioRepository,
+            final JwtUtil jwtUtil,
+            @Value("${app.frontend.url}") final String frontendUrl) {
+        this.usuarioRepository = usuarioRepository;
+        this.jwtUtil = jwtUtil;
+        this.frontendUrl = frontendUrl;
+    }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String googleSubjectId = oAuth2User.getAttribute("sub");
-        String email = oAuth2User.getAttribute("email");
-        String name = oAuth2User.getAttribute("name");
-        String picture = oAuth2User.getAttribute("picture");
+    public void onAuthenticationSuccess(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final Authentication authentication) throws IOException, ServletException {
+        final OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        final String googleSubjectId = oAuth2User.getAttribute("sub");
+        final String email = oAuth2User.getAttribute("email");
+        final String name = oAuth2User.getAttribute("name");
+        final String picture = oAuth2User.getAttribute("picture");
 
-        Usuario usuario = usuarioRepository.findByGoogleSubjectId(googleSubjectId)
+        final Usuario usuario = usuarioRepository.findByGoogleSubjectId(googleSubjectId)
                 .orElseGet(() -> {
-                    Usuario newUser = new Usuario();
+                    final Usuario newUser = new Usuario();
                     newUser.setGoogleSubjectId(googleSubjectId);
                     return newUser;
                 });
@@ -48,9 +56,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         usuario.setFotoPerfil(picture);
         usuarioRepository.save(usuario);
 
-        String token = jwtUtil.generateToken(usuario.getId().toString());
+        final String token = jwtUtil.generateToken(usuario.getId().toString());
 
-        ResponseCookie cookie = ResponseCookie.from("AUREUS_SESSION", token)
+        final ResponseCookie cookie = ResponseCookie.from("AUREUS_SESSION", token)
                 .httpOnly(true)
                 .secure(request.isSecure())
                 .sameSite("Lax")
