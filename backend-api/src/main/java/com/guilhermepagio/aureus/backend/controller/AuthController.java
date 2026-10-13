@@ -18,15 +18,14 @@ import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final UsuarioRepository usuarioRepository;
-
-    public AuthController(final UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
-    }
 
     @GetMapping("/me")
     public ResponseEntity<?> me(final Authentication authentication) {

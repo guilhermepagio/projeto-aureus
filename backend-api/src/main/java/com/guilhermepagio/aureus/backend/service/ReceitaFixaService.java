@@ -18,20 +18,15 @@ import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 import com.guilhermepagio.aureus.backend.repository.ReceitaFixaRepository;
 import com.guilhermepagio.aureus.backend.security.TenantContext;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ReceitaFixaService {
 
     private final ReceitaFixaRepository receitaFixaRepository;
     private final ContaRepository contaRepository;
     private final CategoriaRepository categoriaRepository;
-
-    public ReceitaFixaService(final ReceitaFixaRepository receitaFixaRepository,
-                              final ContaRepository contaRepository,
-                              final CategoriaRepository categoriaRepository) {
-        this.receitaFixaRepository = receitaFixaRepository;
-        this.contaRepository = contaRepository;
-        this.categoriaRepository = categoriaRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<ReceitaFixaResponseDTO> listar() {

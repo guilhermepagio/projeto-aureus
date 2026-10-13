@@ -17,16 +17,14 @@ import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelResponseDTO;
 import com.guilhermepagio.aureus.backend.service.ReceitaVariavelService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/receitas-variaveis")
+@RequiredArgsConstructor
 public class ReceitaVariavelController {
 
     private final ReceitaVariavelService receitaVariavelService;
-
-    public ReceitaVariavelController(final ReceitaVariavelService receitaVariavelService) {
-        this.receitaVariavelService = receitaVariavelService;
-    }
 
     @GetMapping
     public List<ReceitaVariavelResponseDTO> listar() {

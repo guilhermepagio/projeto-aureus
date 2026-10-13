@@ -12,14 +12,13 @@ import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
 import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
-
-    public CategoriaService(final CategoriaRepository categoriaRepository) {
-        this.categoriaRepository = categoriaRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<CategoriaResponseDTO> listar() {

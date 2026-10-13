@@ -18,20 +18,15 @@ import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 import com.guilhermepagio.aureus.backend.repository.DespesaFixaRepository;
 import com.guilhermepagio.aureus.backend.security.TenantContext;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class DespesaFixaService {
 
     private final DespesaFixaRepository despesaFixaRepository;
     private final ContaRepository contaRepository;
     private final CategoriaRepository categoriaRepository;
-
-    public DespesaFixaService(final DespesaFixaRepository despesaFixaRepository,
-                              final ContaRepository contaRepository,
-                              final CategoriaRepository categoriaRepository) {
-        this.despesaFixaRepository = despesaFixaRepository;
-        this.contaRepository = contaRepository;
-        this.categoriaRepository = categoriaRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<DespesaFixaResponseDTO> listar() {

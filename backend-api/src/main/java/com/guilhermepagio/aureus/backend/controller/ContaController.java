@@ -18,16 +18,14 @@ import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.service.ContaService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/contas")
+@RequiredArgsConstructor
 public class ContaController {
 
     private final ContaService contaService;
-
-    public ContaController(final ContaService contaService) {
-        this.contaService = contaService;
-    }
 
     @GetMapping
     public List<ContaResponseDTO> listar() {

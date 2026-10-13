@@ -29,7 +29,10 @@ import com.guilhermepagio.aureus.backend.repository.DespesaVariavelRepository;
 import com.guilhermepagio.aureus.backend.repository.ReceitaFixaRepository;
 import com.guilhermepagio.aureus.backend.repository.ReceitaVariavelRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ConsolidacaoService {
 
     public static final Long SEM_CATEGORIA_ID = -1L;
@@ -41,21 +44,6 @@ public class ConsolidacaoService {
     private final ReceitaVariavelRepository receitaVariavelRepository;
     private final DespesaFixaRepository despesaFixaRepository;
     private final DespesaVariavelRepository despesaVariavelRepository;
-
-    public ConsolidacaoService(
-            final ContaRepository contaRepository,
-            final CategoriaRepository categoriaRepository,
-            final ReceitaFixaRepository receitaFixaRepository,
-            final ReceitaVariavelRepository receitaVariavelRepository,
-            final DespesaFixaRepository despesaFixaRepository,
-            final DespesaVariavelRepository despesaVariavelRepository) {
-        this.contaRepository = contaRepository;
-        this.categoriaRepository = categoriaRepository;
-        this.receitaFixaRepository = receitaFixaRepository;
-        this.receitaVariavelRepository = receitaVariavelRepository;
-        this.despesaFixaRepository = despesaFixaRepository;
-        this.despesaVariavelRepository = despesaVariavelRepository;
-    }
 
     @Transactional(readOnly = true)
     public ConsolidacaoPorContaDTO calcularConsolidacaoPorConta(String usuarioId, String mesAno) {

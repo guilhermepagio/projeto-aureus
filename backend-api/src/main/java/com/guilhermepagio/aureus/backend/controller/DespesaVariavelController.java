@@ -17,16 +17,14 @@ import com.guilhermepagio.aureus.backend.domain.dto.DespesaVariavelResponseDTO;
 import com.guilhermepagio.aureus.backend.service.DespesaVariavelService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/despesas-variaveis")
+@RequiredArgsConstructor
 public class DespesaVariavelController {
 
     private final DespesaVariavelService despesaVariavelService;
-
-    public DespesaVariavelController(final DespesaVariavelService despesaVariavelService) {
-        this.despesaVariavelService = despesaVariavelService;
-    }
 
     @GetMapping
     public List<DespesaVariavelResponseDTO> listar() {

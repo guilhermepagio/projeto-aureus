@@ -12,14 +12,13 @@ import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
 import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ContaService {
 
     private final ContaRepository contaRepository;
-
-    public ContaService(final ContaRepository contaRepository) {
-        this.contaRepository = contaRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<ContaResponseDTO> listar() {

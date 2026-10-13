@@ -18,20 +18,15 @@ import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 import com.guilhermepagio.aureus.backend.repository.ReceitaVariavelRepository;
 import com.guilhermepagio.aureus.backend.security.TenantContext;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ReceitaVariavelService {
 
     private final ReceitaVariavelRepository receitaVariavelRepository;
     private final ContaRepository contaRepository;
     private final CategoriaRepository categoriaRepository;
-
-    public ReceitaVariavelService(final ReceitaVariavelRepository receitaVariavelRepository,
-                                  final ContaRepository contaRepository,
-                                  final CategoriaRepository categoriaRepository) {
-        this.receitaVariavelRepository = receitaVariavelRepository;
-        this.contaRepository = contaRepository;
-        this.categoriaRepository = categoriaRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<ReceitaVariavelResponseDTO> listar() {

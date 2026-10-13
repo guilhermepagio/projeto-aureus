@@ -17,16 +17,14 @@ import com.guilhermepagio.aureus.backend.domain.dto.ReceitaFixaResponseDTO;
 import com.guilhermepagio.aureus.backend.service.ReceitaFixaService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/receitas-fixas")
+@RequiredArgsConstructor
 public class ReceitaFixaController {
 
     private final ReceitaFixaService receitaFixaService;
-
-    public ReceitaFixaController(final ReceitaFixaService receitaFixaService) {
-        this.receitaFixaService = receitaFixaService;
-    }
 
     @GetMapping
     public List<ReceitaFixaResponseDTO> listar() {
