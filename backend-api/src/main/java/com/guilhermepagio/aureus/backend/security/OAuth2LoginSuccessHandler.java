@@ -14,19 +14,24 @@ import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.HttpHeaders;
 
 @Component
-@RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final UsuarioRepository usuarioRepository;
     private final JwtUtil jwtUtil;
+    private final String frontendUrl;
 
-    @Value("${app.frontend.url}")
-    private String frontendUrl;
+    public OAuth2LoginSuccessHandler(
+            final UsuarioRepository usuarioRepository,
+            final JwtUtil jwtUtil,
+            @Value("${app.frontend.url}") final String frontendUrl) {
+        this.usuarioRepository = usuarioRepository;
+        this.jwtUtil = jwtUtil;
+        this.frontendUrl = frontendUrl;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

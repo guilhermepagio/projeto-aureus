@@ -24,7 +24,7 @@ public class DespesaFixaController {
 
     private final DespesaFixaService despesaFixaService;
 
-    public DespesaFixaController(DespesaFixaService despesaFixaService) {
+    public DespesaFixaController(final DespesaFixaService despesaFixaService) {
         this.despesaFixaService = despesaFixaService;
     }
 
@@ -45,7 +45,7 @@ public class DespesaFixaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = despesaFixaService.excluir(id);
+        final boolean excluido = despesaFixaService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

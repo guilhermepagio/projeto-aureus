@@ -20,27 +20,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(final JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final FilterChain filterChain)
             throws ServletException, IOException {
         
         try {
-            Cookie cookie = WebUtils.getCookie(request, "AUREUS_SESSION");
+            final Cookie cookie = WebUtils.getCookie(request, "AUREUS_SESSION");
             if (cookie != null) {
-                String token = cookie.getValue();
+                final String token = cookie.getValue();
                 try {
                     jwtUtil.validateToken(token);
-                    String subjectId = jwtUtil.getSubject(token);
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                    final String subjectId = jwtUtil.getSubject(token);
+                    final UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                             subjectId, null, Collections.emptyList());
                     SecurityContextHolder.getContext().setAuthentication(auth);
                     TenantContext.setTenantId(subjectId);
                 } catch (Exception e) {
-                    ResponseCookie clearCookie = ResponseCookie.from("AUREUS_SESSION", "")
+                    final ResponseCookie clearCookie = ResponseCookie.from("AUREUS_SESSION", "")
                             .maxAge(0)
                             .path("/")
                             .httpOnly(true)

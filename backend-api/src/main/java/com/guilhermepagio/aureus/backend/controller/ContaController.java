@@ -25,7 +25,7 @@ public class ContaController {
 
     private final ContaService contaService;
 
-    public ContaController(ContaService contaService) {
+    public ContaController(final ContaService contaService) {
         this.contaService = contaService;
     }
 
@@ -53,7 +53,7 @@ public class ContaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = contaService.excluir(id);
+        final boolean excluido = contaService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

@@ -13,9 +13,12 @@ import jakarta.servlet.http.HttpServletResponse;
 public class CsrfCookieFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final FilterChain filterChain)
             throws ServletException, IOException {
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+        final CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         // Resolves the token so that the CookieCsrfTokenRepository writes it to the response cookie
         if (csrfToken != null) {
             csrfToken.getToken();

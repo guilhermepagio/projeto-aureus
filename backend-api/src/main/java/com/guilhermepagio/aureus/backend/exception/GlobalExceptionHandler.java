@@ -38,11 +38,11 @@ public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        Map<String, String> fieldErrors = new LinkedHashMap<>();
-        List<ApiErrorResponse.ValidationErrorItem> errors = new ArrayList<>();
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpServletRequest request) {
+        final Map<String, String> fieldErrors = new LinkedHashMap<>();
+        final List<ApiErrorResponse.ValidationErrorItem> errors = new ArrayList<>();
 
-        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+        for (final FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             fieldErrors.putIfAbsent(fieldError.getField(), fieldError.getDefaultMessage());
             errors.add(new ApiErrorResponse.ValidationErrorItem(
                 fieldError.getField(),
@@ -51,8 +51,8 @@ public class GlobalExceptionHandler {
             ));
         }
 
-        for (ObjectError globalError : ex.getBindingResult().getGlobalErrors()) {
-            String objectName = globalError.getObjectName();
+        for (final ObjectError globalError : ex.getBindingResult().getGlobalErrors()) {
+            final String objectName = globalError.getObjectName();
             fieldErrors.putIfAbsent(objectName, globalError.getDefaultMessage());
             errors.add(new ApiErrorResponse.ValidationErrorItem(
                 objectName,
@@ -61,8 +61,8 @@ public class GlobalExceptionHandler {
             ));
         }
 
-        String path = request != null ? request.getRequestURI() : "";
-        ApiErrorResponse response = new ApiErrorResponse(
+        final String path = request != null ? request.getRequestURI() : "";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -79,15 +79,15 @@ public class GlobalExceptionHandler {
         MethodArgumentTypeMismatchException.class,
         MissingServletRequestParameterException.class
     })
-    public ResponseEntity<ApiErrorResponse> handleTypeMismatchAndMissingParam(Exception ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
+    public ResponseEntity<ApiErrorResponse> handleTypeMismatchAndMissingParam(final Exception ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
         String message = "Parâmetro de requisição inválido ou ausente.";
         if (ex instanceof MethodArgumentTypeMismatchException mismatch) {
             message = String.format("O parâmetro '%s' possui formato ou tipo inválido.", mismatch.getName());
         } else if (ex instanceof MissingServletRequestParameterException missing) {
             message = String.format("O parâmetro obrigatório '%s' não foi informado.", missing.getParameterName());
         }
-        ApiErrorResponse response = new ApiErrorResponse(
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -100,18 +100,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiErrorResponse> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
-        Map<String, String> fieldErrors = new LinkedHashMap<>();
-        List<ApiErrorResponse.ValidationErrorItem> errors = new ArrayList<>();
+    public ResponseEntity<ApiErrorResponse> handleConstraintViolation(final ConstraintViolationException ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
+        final Map<String, String> fieldErrors = new LinkedHashMap<>();
+        final List<ApiErrorResponse.ValidationErrorItem> errors = new ArrayList<>();
 
         if (ex.getConstraintViolations() != null) {
-            for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            for (final ConstraintViolation<?> violation : ex.getConstraintViolations()) {
                 String propertyPath = "param";
                 if (violation.getPropertyPath() != null) {
-                    String fullPath = violation.getPropertyPath().toString();
+                    final String fullPath = violation.getPropertyPath().toString();
                     if (fullPath != null && !fullPath.isBlank()) {
-                        int lastDot = fullPath.lastIndexOf('.');
+                        final int lastDot = fullPath.lastIndexOf('.');
                         propertyPath = lastDot >= 0 ? fullPath.substring(lastDot + 1) : fullPath;
                     }
                 }
@@ -124,7 +124,7 @@ public class GlobalExceptionHandler {
             }
         }
 
-        ApiErrorResponse response = new ApiErrorResponse(
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -137,17 +137,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)
-    public ResponseEntity<ApiErrorResponse> handleHandlerMethodValidation(HandlerMethodValidationException ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
-        Map<String, String> fieldErrors = new LinkedHashMap<>();
-        List<ApiErrorResponse.ValidationErrorItem> errors = new ArrayList<>();
+    public ResponseEntity<ApiErrorResponse> handleHandlerMethodValidation(final HandlerMethodValidationException ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
+        final Map<String, String> fieldErrors = new LinkedHashMap<>();
+        final List<ApiErrorResponse.ValidationErrorItem> errors = new ArrayList<>();
 
         if (ex.getParameterValidationResults() != null) {
-            for (var parameterValidationResult : ex.getParameterValidationResults()) {
-                String paramName = parameterValidationResult.getMethodParameter().getParameterName();
-                for (var resolvableError : parameterValidationResult.getResolvableErrors()) {
-                    String defaultMessage = resolvableError.getDefaultMessage();
-                    String fieldKey = paramName != null ? paramName : "param";
+            for (final var parameterValidationResult : ex.getParameterValidationResults()) {
+                final String paramName = parameterValidationResult.getMethodParameter().getParameterName();
+                for (final var resolvableError : parameterValidationResult.getResolvableErrors()) {
+                    final String defaultMessage = resolvableError.getDefaultMessage();
+                    final String fieldKey = paramName != null ? paramName : "param";
                     fieldErrors.putIfAbsent(fieldKey, defaultMessage);
                     errors.add(new ApiErrorResponse.ValidationErrorItem(
                         fieldKey,
@@ -158,7 +158,7 @@ public class GlobalExceptionHandler {
             }
         }
 
-        ApiErrorResponse response = new ApiErrorResponse(
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -171,10 +171,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(final DataIntegrityViolationException ex, final HttpServletRequest request) {
         log.warn("Violação de integridade relacional: {}", ex.getMessage());
-        String path = request != null ? request.getRequestURI() : "";
-        ApiErrorResponse response = new ApiErrorResponse(
+        final String path = request != null ? request.getRequestURI() : "";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -187,9 +187,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
-        ApiErrorResponse response = new ApiErrorResponse(
+    public ResponseEntity<ApiErrorResponse> handleResourceNotFound(final ResourceNotFoundException ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.NOT_FOUND.value(),
             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -202,9 +202,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
-        ApiErrorResponse response = new ApiErrorResponse(
+    public ResponseEntity<ApiErrorResponse> handleAccessDenied(final AccessDeniedException ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.FORBIDDEN.value(),
             HttpStatus.FORBIDDEN.getReasonPhrase(),
@@ -220,15 +220,15 @@ public class GlobalExceptionHandler {
         IllegalArgumentException.class,
         DateTimeParseException.class
     })
-    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(Exception ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(final Exception ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
         String message = ex.getMessage() != null && !ex.getMessage().isBlank()
             ? ex.getMessage()
             : "Argumento ou parâmetro inválido.";
         if (ex instanceof DateTimeParseException) {
             message = "Formato de data inválido: " + ex.getMessage();
         }
-        ApiErrorResponse response = new ApiErrorResponse(
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -241,9 +241,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
-        ApiErrorResponse response = new ApiErrorResponse(
+    public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadable(final HttpMessageNotReadableException ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -256,9 +256,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
-        ApiErrorResponse response = new ApiErrorResponse(
+    public ResponseEntity<ApiErrorResponse> handleNoResourceFound(final NoResourceFoundException ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.NOT_FOUND.value(),
             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -271,9 +271,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiErrorResponse> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
-        ApiErrorResponse response = new ApiErrorResponse(
+    public ResponseEntity<ApiErrorResponse> handleMethodNotSupported(final HttpRequestMethodNotSupportedException ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.METHOD_NOT_ALLOWED.value(),
             HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(),
@@ -282,7 +282,7 @@ public class GlobalExceptionHandler {
             null,
             null
         );
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         if (ex.getSupportedHttpMethods() != null) {
             headers.setAllow(ex.getSupportedHttpMethods());
         }
@@ -290,11 +290,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<ApiErrorResponse> handleMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
-        String mediaTypeInfo = ex.getContentType() != null ? ex.getContentType().toString() : (ex.getMessage() != null ? ex.getMessage() : "");
-        String message = !mediaTypeInfo.isBlank() ? "Tipo de mídia não suportado: " + mediaTypeInfo : "Tipo de mídia não suportado.";
-        ApiErrorResponse response = new ApiErrorResponse(
+    public ResponseEntity<ApiErrorResponse> handleMediaTypeNotSupported(final HttpMediaTypeNotSupportedException ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
+        final String mediaTypeInfo = ex.getContentType() != null ? ex.getContentType().toString() : (ex.getMessage() != null ? ex.getMessage() : "");
+        final String message = !mediaTypeInfo.isBlank() ? "Tipo de mídia não suportado: " + mediaTypeInfo : "Tipo de mídia não suportado.";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
             HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase(),
@@ -307,9 +307,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
-    public ResponseEntity<ApiErrorResponse> handleMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, HttpServletRequest request) {
-        String path = request != null ? request.getRequestURI() : "";
-        ApiErrorResponse response = new ApiErrorResponse(
+    public ResponseEntity<ApiErrorResponse> handleMediaTypeNotAcceptable(final HttpMediaTypeNotAcceptableException ex, final HttpServletRequest request) {
+        final String path = request != null ? request.getRequestURI() : "";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.NOT_ACCEPTABLE.value(),
             HttpStatus.NOT_ACCEPTABLE.getReasonPhrase(),
@@ -322,10 +322,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleGenericException(final Exception ex, final HttpServletRequest request) {
         log.error("Erro interno inesperado no servidor: ", ex);
-        String path = request != null ? request.getRequestURI() : "";
-        ApiErrorResponse response = new ApiErrorResponse(
+        final String path = request != null ? request.getRequestURI() : "";
+        final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),

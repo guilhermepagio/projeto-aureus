@@ -24,7 +24,7 @@ public class ReceitaFixaController {
 
     private final ReceitaFixaService receitaFixaService;
 
-    public ReceitaFixaController(ReceitaFixaService receitaFixaService) {
+    public ReceitaFixaController(final ReceitaFixaService receitaFixaService) {
         this.receitaFixaService = receitaFixaService;
     }
 
@@ -45,7 +45,7 @@ public class ReceitaFixaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = receitaFixaService.excluir(id);
+        final boolean excluido = receitaFixaService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

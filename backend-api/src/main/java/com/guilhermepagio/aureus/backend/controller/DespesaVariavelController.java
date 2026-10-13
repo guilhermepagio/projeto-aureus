@@ -24,7 +24,7 @@ public class DespesaVariavelController {
 
     private final DespesaVariavelService despesaVariavelService;
 
-    public DespesaVariavelController(DespesaVariavelService despesaVariavelService) {
+    public DespesaVariavelController(final DespesaVariavelService despesaVariavelService) {
         this.despesaVariavelService = despesaVariavelService;
     }
 
@@ -45,7 +45,7 @@ public class DespesaVariavelController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = despesaVariavelService.excluir(id);
+        final boolean excluido = despesaVariavelService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

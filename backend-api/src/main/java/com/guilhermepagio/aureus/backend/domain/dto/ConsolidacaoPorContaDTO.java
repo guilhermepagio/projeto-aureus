@@ -15,11 +15,11 @@ public class ConsolidacaoPorContaDTO {
     private List<LinhaConsolidacaoDTO> despesas;
     private BigDecimal saldoHistoricoPreGrade = BigDecimal.ZERO.setScale(2, java.math.RoundingMode.HALF_UP);
 
-    public ConsolidacaoPorContaDTO(List<LinhaConsolidacaoDTO> receitas, List<LinhaConsolidacaoDTO> despesas) {
+    public ConsolidacaoPorContaDTO(final List<LinhaConsolidacaoDTO> receitas, final List<LinhaConsolidacaoDTO> despesas) {
         this(receitas, despesas, BigDecimal.ZERO.setScale(2, java.math.RoundingMode.HALF_UP));
     }
 
-    public ConsolidacaoPorContaDTO(List<LinhaConsolidacaoDTO> receitas, List<LinhaConsolidacaoDTO> despesas, BigDecimal saldoHistoricoPreGrade) {
+    public ConsolidacaoPorContaDTO(final List<LinhaConsolidacaoDTO> receitas, final List<LinhaConsolidacaoDTO> despesas, final BigDecimal saldoHistoricoPreGrade) {
         this.receitas = receitas;
         this.despesas = despesas;
         this.saldoHistoricoPreGrade = saldoHistoricoPreGrade != null 
@@ -27,7 +27,7 @@ public class ConsolidacaoPorContaDTO {
                 : BigDecimal.ZERO.setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
-    public void setSaldoHistoricoPreGrade(BigDecimal saldoHistoricoPreGrade) {
+    public void setSaldoHistoricoPreGrade(final BigDecimal saldoHistoricoPreGrade) {
         this.saldoHistoricoPreGrade = saldoHistoricoPreGrade != null 
                 ? saldoHistoricoPreGrade.setScale(2, java.math.RoundingMode.HALF_UP) 
                 : BigDecimal.ZERO.setScale(2, java.math.RoundingMode.HALF_UP);

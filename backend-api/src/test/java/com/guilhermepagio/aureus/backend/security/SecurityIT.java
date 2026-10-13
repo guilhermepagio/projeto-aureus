@@ -2,7 +2,10 @@ package com.guilhermepagio.aureus.backend.security;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.context.TestConstructor;
+import org.springframework.test.web.servlet.MockMvc;
 
 import com.guilhermepagio.aureus.backend.AbstractIntegrationTest;
 
@@ -14,7 +17,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public class SecurityIT extends AbstractIntegrationTest {
+
+    public SecurityIT(
+            final MockMvc mockMvc,
+            final JwtUtil jwtUtil,
+            @Value("${jwt.secret}") final String jwtSecret) {
+        super(mockMvc, jwtUtil, jwtSecret);
+    }
 
     @Test
     @DisplayName("Requisição para /api/** sem cookie AUREUS_SESSION deve retornar 401 Unauthorized")

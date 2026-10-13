@@ -25,9 +25,9 @@ public class DespesaFixaService {
     private final ContaRepository contaRepository;
     private final CategoriaRepository categoriaRepository;
 
-    public DespesaFixaService(DespesaFixaRepository despesaFixaRepository,
-                              ContaRepository contaRepository,
-                              CategoriaRepository categoriaRepository) {
+    public DespesaFixaService(final DespesaFixaRepository despesaFixaRepository,
+                              final ContaRepository contaRepository,
+                              final CategoriaRepository categoriaRepository) {
         this.despesaFixaRepository = despesaFixaRepository;
         this.contaRepository = contaRepository;
         this.categoriaRepository = categoriaRepository;
@@ -41,17 +41,17 @@ public class DespesaFixaService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<DespesaFixaResponseDTO> buscarPorId(Long id) {
+    public Optional<DespesaFixaResponseDTO> buscarPorId(final Long id) {
         return despesaFixaRepository.findById(id).map(DespesaFixaResponseDTO::fromEntity);
     }
 
-    private Conta validarEObterConta(Long contaId) {
+    private Conta validarEObterConta(final Long contaId) {
         if (contaId == null) {
             throw new ResourceNotFoundException("Conta não encontrada: null");
         }
-        String ownerUsuarioId = contaRepository.findOwnerUsuarioId(contaId)
+        final String ownerUsuarioId = contaRepository.findOwnerUsuarioId(contaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
-        String currentTenant = TenantContext.getTenantId();
+        final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
             throw new AccessDeniedException("Acesso negado: a conta informada não pertence ao usuário autenticado");
         }
@@ -59,13 +59,13 @@ public class DespesaFixaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
     }
 
-    private Categoria validarEObterCategoria(Long categoriaId) {
+    private Categoria validarEObterCategoria(final Long categoriaId) {
         if (categoriaId == null) {
             throw new ResourceNotFoundException("Categoria não encontrada: null");
         }
-        String ownerUsuarioId = categoriaRepository.findOwnerUsuarioId(categoriaId)
+        final String ownerUsuarioId = categoriaRepository.findOwnerUsuarioId(categoriaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + categoriaId));
-        String currentTenant = TenantContext.getTenantId();
+        final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
             throw new AccessDeniedException("Acesso negado: a categoria informada não pertence ao usuário autenticado");
         }
@@ -74,11 +74,11 @@ public class DespesaFixaService {
     }
 
     @Transactional
-    public DespesaFixaResponseDTO criar(DespesaFixaRequestDTO dto) {
-        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
-        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
+    public DespesaFixaResponseDTO criar(final DespesaFixaRequestDTO dto) {
+        final Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        final Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
-        DespesaFixa despesa = new DespesaFixa();
+        final DespesaFixa despesa = new DespesaFixa();
         despesa.setDescricao(dto.descricao());
         despesa.setValor(dto.valor());
         despesa.setConta(conta);
@@ -86,17 +86,17 @@ public class DespesaFixaService {
         despesa.setObservacoes(dto.observacoes());
         despesa.setDataInicio(dto.dataInicio());
 
-        DespesaFixa salva = despesaFixaRepository.saveAndFlush(despesa);
+        final DespesaFixa salva = despesaFixaRepository.saveAndFlush(despesa);
         return DespesaFixaResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public DespesaFixaResponseDTO atualizar(Long id, DespesaFixaRequestDTO dto) {
-        DespesaFixa existente = despesaFixaRepository.findById(id)
+    public DespesaFixaResponseDTO atualizar(final Long id, final DespesaFixaRequestDTO dto) {
+        final DespesaFixa existente = despesaFixaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Despesa fixa não encontrada: " + id));
 
-        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
-        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
+        final Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        final Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
         existente.setDescricao(dto.descricao());
         existente.setValor(dto.valor());
@@ -105,12 +105,12 @@ public class DespesaFixaService {
         existente.setObservacoes(dto.observacoes());
         existente.setDataInicio(dto.dataInicio());
 
-        DespesaFixa salva = despesaFixaRepository.saveAndFlush(existente);
+        final DespesaFixa salva = despesaFixaRepository.saveAndFlush(existente);
         return DespesaFixaResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public boolean excluir(Long id) {
+    public boolean excluir(final Long id) {
         if (!despesaFixaRepository.existsById(id)) {
             return false;
         }

@@ -17,7 +17,7 @@ public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
 
-    public CategoriaService(CategoriaRepository categoriaRepository) {
+    public CategoriaService(final CategoriaRepository categoriaRepository) {
         this.categoriaRepository = categoriaRepository;
     }
 
@@ -29,31 +29,31 @@ public class CategoriaService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<CategoriaResponseDTO> buscarPorId(Long id) {
+    public Optional<CategoriaResponseDTO> buscarPorId(final Long id) {
         return categoriaRepository.findById(id).map(CategoriaResponseDTO::fromEntity);
     }
 
     @Transactional
-    public CategoriaResponseDTO criar(CategoriaRequestDTO dto) {
-        Categoria categoria = new Categoria();
+    public CategoriaResponseDTO criar(final CategoriaRequestDTO dto) {
+        final Categoria categoria = new Categoria();
         categoria.setDescricao(dto.descricao());
         categoria.setObservacoes(dto.observacoes());
-        Categoria salva = categoriaRepository.save(categoria);
+        final Categoria salva = categoriaRepository.save(categoria);
         return CategoriaResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public CategoriaResponseDTO atualizar(Long id, CategoriaRequestDTO dto) {
-        Categoria categoria = categoriaRepository.findById(id)
+    public CategoriaResponseDTO atualizar(final Long id, final CategoriaRequestDTO dto) {
+        final Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + id));
         categoria.setDescricao(dto.descricao());
         categoria.setObservacoes(dto.observacoes());
-        Categoria salva = categoriaRepository.save(categoria);
+        final Categoria salva = categoriaRepository.save(categoria);
         return CategoriaResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public boolean excluir(Long id) {
+    public boolean excluir(final Long id) {
         if (!categoriaRepository.existsById(id)) {
             return false;
         }

@@ -17,7 +17,7 @@ public class ContaService {
 
     private final ContaRepository contaRepository;
 
-    public ContaService(ContaRepository contaRepository) {
+    public ContaService(final ContaRepository contaRepository) {
         this.contaRepository = contaRepository;
     }
 
@@ -29,31 +29,31 @@ public class ContaService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<ContaResponseDTO> buscarPorId(Long id) {
+    public Optional<ContaResponseDTO> buscarPorId(final Long id) {
         return contaRepository.findById(id).map(ContaResponseDTO::fromEntity);
     }
 
     @Transactional
-    public ContaResponseDTO criar(ContaRequestDTO dto) {
-        Conta conta = new Conta();
+    public ContaResponseDTO criar(final ContaRequestDTO dto) {
+        final Conta conta = new Conta();
         conta.setDescricao(dto.descricao());
         conta.setObservacoes(dto.observacoes());
-        Conta salva = contaRepository.save(conta);
+        final Conta salva = contaRepository.save(conta);
         return ContaResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public ContaResponseDTO atualizar(Long id, ContaRequestDTO dto) {
-        Conta conta = contaRepository.findById(id)
+    public ContaResponseDTO atualizar(final Long id, final ContaRequestDTO dto) {
+        final Conta conta = contaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + id));
         conta.setDescricao(dto.descricao());
         conta.setObservacoes(dto.observacoes());
-        Conta salva = contaRepository.save(conta);
+        final Conta salva = contaRepository.save(conta);
         return ContaResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public boolean excluir(Long id) {
+    public boolean excluir(final Long id) {
         if (!contaRepository.existsById(id)) {
             return false;
         }

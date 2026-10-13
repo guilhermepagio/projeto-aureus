@@ -25,9 +25,9 @@ public class DespesaVariavelService {
     private final ContaRepository contaRepository;
     private final CategoriaRepository categoriaRepository;
 
-    public DespesaVariavelService(DespesaVariavelRepository despesaVariavelRepository,
-                                  ContaRepository contaRepository,
-                                  CategoriaRepository categoriaRepository) {
+    public DespesaVariavelService(final DespesaVariavelRepository despesaVariavelRepository,
+                                  final ContaRepository contaRepository,
+                                  final CategoriaRepository categoriaRepository) {
         this.despesaVariavelRepository = despesaVariavelRepository;
         this.contaRepository = contaRepository;
         this.categoriaRepository = categoriaRepository;
@@ -41,11 +41,11 @@ public class DespesaVariavelService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<DespesaVariavelResponseDTO> buscarPorId(Long id) {
+    public Optional<DespesaVariavelResponseDTO> buscarPorId(final Long id) {
         return despesaVariavelRepository.findById(id).map(DespesaVariavelResponseDTO::fromEntity);
     }
 
-    private void preencherDataFim(DespesaVariavel despesaVariavel) {
+    private void preencherDataFim(final DespesaVariavel despesaVariavel) {
         if (despesaVariavel.getDataInicio() != null && despesaVariavel.getQuantidadeParcelas() != null && despesaVariavel.getQuantidadeParcelas() > 0) {
             despesaVariavel.setDataInicio(despesaVariavel.getDataInicio().withDayOfMonth(1));
             despesaVariavel.setDataFim(despesaVariavel.getUltimaParcela());
@@ -54,13 +54,13 @@ public class DespesaVariavelService {
         }
     }
 
-    private Conta validarEObterConta(Long contaId) {
+    private Conta validarEObterConta(final Long contaId) {
         if (contaId == null) {
             throw new ResourceNotFoundException("Conta não encontrada: null");
         }
-        String ownerUsuarioId = contaRepository.findOwnerUsuarioId(contaId)
+        final String ownerUsuarioId = contaRepository.findOwnerUsuarioId(contaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
-        String currentTenant = TenantContext.getTenantId();
+        final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
             throw new AccessDeniedException("Acesso negado: a conta informada não pertence ao usuário autenticado");
         }
@@ -68,13 +68,13 @@ public class DespesaVariavelService {
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
     }
 
-    private Categoria validarEObterCategoria(Long categoriaId) {
+    private Categoria validarEObterCategoria(final Long categoriaId) {
         if (categoriaId == null) {
             throw new ResourceNotFoundException("Categoria não encontrada: null");
         }
-        String ownerUsuarioId = categoriaRepository.findOwnerUsuarioId(categoriaId)
+        final String ownerUsuarioId = categoriaRepository.findOwnerUsuarioId(categoriaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + categoriaId));
-        String currentTenant = TenantContext.getTenantId();
+        final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
             throw new AccessDeniedException("Acesso negado: a categoria informada não pertence ao usuário autenticado");
         }
@@ -83,11 +83,11 @@ public class DespesaVariavelService {
     }
 
     @Transactional
-    public DespesaVariavelResponseDTO criar(DespesaVariavelRequestDTO dto) {
-        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
-        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
+    public DespesaVariavelResponseDTO criar(final DespesaVariavelRequestDTO dto) {
+        final Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        final Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
-        DespesaVariavel despesa = new DespesaVariavel();
+        final DespesaVariavel despesa = new DespesaVariavel();
         despesa.setDescricao(dto.descricao());
         despesa.setLocalCompra(dto.localCompra());
         despesa.setDataCompra(dto.dataCompra());
@@ -99,17 +99,17 @@ public class DespesaVariavelService {
         despesa.setCategoria(categoria);
         despesa.setObservacoes(dto.observacoes());
 
-        DespesaVariavel salva = despesaVariavelRepository.saveAndFlush(despesa);
+        final DespesaVariavel salva = despesaVariavelRepository.saveAndFlush(despesa);
         return DespesaVariavelResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public DespesaVariavelResponseDTO atualizar(Long id, DespesaVariavelRequestDTO dto) {
-        DespesaVariavel existente = despesaVariavelRepository.findById(id)
+    public DespesaVariavelResponseDTO atualizar(final Long id, final DespesaVariavelRequestDTO dto) {
+        final DespesaVariavel existente = despesaVariavelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Despesa variável não encontrada: " + id));
 
-        Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
-        Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
+        final Conta conta = validarEObterConta(dto.conta() != null ? dto.conta().id() : null);
+        final Categoria categoria = validarEObterCategoria(dto.categoria() != null ? dto.categoria().id() : null);
 
         existente.setDescricao(dto.descricao());
         existente.setLocalCompra(dto.localCompra());
@@ -122,12 +122,12 @@ public class DespesaVariavelService {
         existente.setCategoria(categoria);
         existente.setObservacoes(dto.observacoes());
 
-        DespesaVariavel salva = despesaVariavelRepository.saveAndFlush(existente);
+        final DespesaVariavel salva = despesaVariavelRepository.saveAndFlush(existente);
         return DespesaVariavelResponseDTO.fromEntity(salva);
     }
 
     @Transactional
-    public boolean excluir(Long id) {
+    public boolean excluir(final Long id) {
         if (!despesaVariavelRepository.existsById(id)) {
             return false;
         }

@@ -24,7 +24,7 @@ public class ReceitaVariavelController {
 
     private final ReceitaVariavelService receitaVariavelService;
 
-    public ReceitaVariavelController(ReceitaVariavelService receitaVariavelService) {
+    public ReceitaVariavelController(final ReceitaVariavelService receitaVariavelService) {
         this.receitaVariavelService = receitaVariavelService;
     }
 
@@ -45,7 +45,7 @@ public class ReceitaVariavelController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = receitaVariavelService.excluir(id);
+        final boolean excluido = receitaVariavelService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }

@@ -41,7 +41,7 @@ public class ConsolidacaoControllerTest {
 
     @BeforeEach
     public void setup() {
-        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
         validator.afterPropertiesSet();
 
         mockMvc = MockMvcBuilders.standaloneSetup(consolidacaoController)
@@ -49,13 +49,13 @@ public class ConsolidacaoControllerTest {
             .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
             .setCustomArgumentResolvers(new HandlerMethodArgumentResolver() {
                 @Override
-                public boolean supportsParameter(MethodParameter parameter) {
+                public boolean supportsParameter(final MethodParameter parameter) {
                     return parameter.getParameterType().equals(String.class) && 
                            parameter.hasParameterAnnotation(org.springframework.security.core.annotation.AuthenticationPrincipal.class);
                 }
                 @Override
-                public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+                public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
+                        final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
                     return "usuario1";
                 }
             })

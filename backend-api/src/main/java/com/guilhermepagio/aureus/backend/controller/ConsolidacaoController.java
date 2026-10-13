@@ -13,17 +13,19 @@ import com.guilhermepagio.aureus.backend.domain.dto.ConsolidacaoPorCategoriaDTO;
 import com.guilhermepagio.aureus.backend.service.ConsolidacaoService;
 
 import jakarta.validation.constraints.Pattern;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/consolidacao")
-@RequiredArgsConstructor
 @Validated
 public class ConsolidacaoController {
 
     private static final String MES_ANO_REGEX = "^\\d{4}-(0[1-9]|1[0-2])$";
 
     private final ConsolidacaoService consolidacaoService;
+
+    public ConsolidacaoController(final ConsolidacaoService consolidacaoService) {
+        this.consolidacaoService = consolidacaoService;
+    }
 
     @GetMapping("/por-conta")
     public ResponseEntity<ConsolidacaoPorContaDTO> getPorConta(

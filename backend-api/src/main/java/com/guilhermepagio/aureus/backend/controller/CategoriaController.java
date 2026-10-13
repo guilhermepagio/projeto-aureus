@@ -24,7 +24,7 @@ public class CategoriaController {
 
     private final CategoriaService categoriaService;
 
-    public CategoriaController(CategoriaService categoriaService) {
+    public CategoriaController(final CategoriaService categoriaService) {
         this.categoriaService = categoriaService;
     }
 
@@ -45,7 +45,7 @@ public class CategoriaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(final @PathVariable Long id) {
-        boolean excluido = categoriaService.excluir(id);
+        final boolean excluido = categoriaService.excluir(id);
         if (!excluido) {
             return ResponseEntity.notFound().build();
         }
