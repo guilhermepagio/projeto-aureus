@@ -11,7 +11,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guilhermepagio.aureus.backend.security.JwtUtil;
@@ -24,7 +24,7 @@ import jakarta.servlet.http.Cookie;
 @AutoConfigureMockMvc
 public abstract class AbstractIntegrationTest {
 
-    protected static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
+    protected static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:16-alpine");
 
     static {
         postgres.start();
