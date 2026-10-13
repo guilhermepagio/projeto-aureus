@@ -180,7 +180,7 @@ public class ConsolidacaoService {
                     final long meses = java.time.temporal.ChronoUnit.MONTHS.between(YearMonth.from(rf.getDataInicio()), startMonth);
                     return rf.getValor().multiply(BigDecimal.valueOf(meses));
                 })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, (final BigDecimal a, final BigDecimal b) -> a.add(b));
 
         final BigDecimal totalVariaveis = receitasVariaveis.stream()
                 .filter(rv -> rv.getDataInicio() != null && rv.getQuantidadeParcelas() != null && rv.getQuantidadeParcelas() > 0 && rv.getValorParcela() != null)
@@ -189,7 +189,7 @@ public class ConsolidacaoService {
                     final long parcelasAntes = Math.min((long) rv.getQuantidadeParcelas(), java.time.temporal.ChronoUnit.MONTHS.between(YearMonth.from(rv.getDataInicio()), startMonth));
                     return parcelasAntes > 0 ? rv.getValorParcela().multiply(BigDecimal.valueOf(parcelasAntes)) : BigDecimal.ZERO;
                 })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, (final BigDecimal a, final BigDecimal b) -> a.add(b));
 
         return totalFixas.add(totalVariaveis);
     }
@@ -205,7 +205,7 @@ public class ConsolidacaoService {
                     final long meses = java.time.temporal.ChronoUnit.MONTHS.between(YearMonth.from(df.getDataInicio()), startMonth);
                     return df.getValor().multiply(BigDecimal.valueOf(meses));
                 })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, (final BigDecimal a, final BigDecimal b) -> a.add(b));
 
         final BigDecimal totalVariaveis = despesasVariaveis.stream()
                 .filter(dv -> dv.getDataInicio() != null && dv.getQuantidadeParcelas() != null && dv.getQuantidadeParcelas() > 0 && dv.getValorParcela() != null)
@@ -214,7 +214,7 @@ public class ConsolidacaoService {
                     final long parcelasAntes = Math.min((long) dv.getQuantidadeParcelas(), java.time.temporal.ChronoUnit.MONTHS.between(YearMonth.from(dv.getDataInicio()), startMonth));
                     return parcelasAntes > 0 ? dv.getValorParcela().multiply(BigDecimal.valueOf(parcelasAntes)) : BigDecimal.ZERO;
                 })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, (final BigDecimal a, final BigDecimal b) -> a.add(b));
 
         return totalFixas.add(totalVariaveis);
     }
