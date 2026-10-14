@@ -6,6 +6,7 @@ interface EmptyStateProps {
   icon?: React.ReactNode;
   action?: {
     label: string;
+    icon?: React.ReactNode;
     onClick: () => void;
     color?: 'primary' | 'danger' | 'blue';
   };
@@ -51,6 +52,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ title, description, icon, actio
             type="button"
             className={`cursor-pointer h-8 px-4 inline-flex items-center justify-center rounded-md text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonColorClass}`}
           >
+            {action.icon}
             {action.label}
           </button>
         </div>

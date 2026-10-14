@@ -4,6 +4,7 @@ import { useCategorias, type Categoria } from '../../hooks/useCategorias';
 import CategoriaFormModal from './components/CategoriaFormModal';
 import DeleteConfirmModal from './components/DeleteConfirmModal';
 import EmptyState from '../../components/ui/EmptyState';
+import PlusIcon from '../../components/ui/PlusIcon';
 
 const CategoriasPage: React.FC = () => {
   const { data: categorias, isLoading, isError } = useCategorias();
@@ -41,14 +42,15 @@ const CategoriasPage: React.FC = () => {
           onClick={handleCreate}
           className="cursor-pointer h-8 px-4 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold whitespace-nowrap shadow-sm"
         >
-          + Nova Categoria
+          <PlusIcon />
+          Nova Categoria
         </button>
       </div>
       {isEmpty ? (
         <EmptyState
           title="Nenhuma categoria"
           description="Comece criando sua primeira categoria."
-          action={{ label: 'Nova Categoria', onClick: handleCreate, color: 'blue' }}
+          action={{ label: 'Nova Categoria', icon: <PlusIcon />, onClick: handleCreate, color: 'blue' }}
         />
       ) : (
         <div className="bg-white shadow sm:rounded-2xl overflow-auto mt-2 w-full flex-1 min-h-0">

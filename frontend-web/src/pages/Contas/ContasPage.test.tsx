@@ -75,7 +75,7 @@ describe('ContasPage', () => {
 
     expect(screen.getByRole('heading', { level: 3, name: 'Nenhuma conta' })).toBeDefined();
     expect(screen.getByText('Comece criando sua primeira conta.')).toBeDefined();
-    expect(screen.getByRole('button', { name: 'Nova Conta' })).toBeDefined();
+    expect(screen.getAllByRole('button', { name: 'Nova Conta' })).toHaveLength(2);
   });
 
   it('abre o modal de criação ao clicar no botão "Nova Conta" do EmptyState', () => {
@@ -87,7 +87,7 @@ describe('ContasPage', () => {
 
     render(<ContasPage />);
 
-    const emptyStateActionBtn = screen.getByRole('button', { name: 'Nova Conta' });
+    const emptyStateActionBtn = screen.getAllByRole('button', { name: 'Nova Conta' })[1];
     fireEvent.click(emptyStateActionBtn);
 
     expect(screen.getByRole('dialog')).toBeDefined();
@@ -104,10 +104,10 @@ describe('ContasPage', () => {
     expect(screen.getByText('Conta digital principal')).toBeDefined();
   });
 
-  it('abre o modal de criação ao clicar no botão "+ Nova Conta" do cabeçalho', () => {
+  it('abre o modal de criação ao clicar no botão "Nova Conta" do cabeçalho', () => {
     render(<ContasPage />);
 
-    const newBtn = screen.getByRole('button', { name: '+ Nova Conta' });
+    const newBtn = screen.getByRole('button', { name: 'Nova Conta' });
     fireEvent.click(newBtn);
 
     expect(screen.getByRole('dialog')).toBeDefined();
