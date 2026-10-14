@@ -36,7 +36,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
   const themeColorClass = isDespesa
     ? 'bg-red-600 hover:bg-red-700 focus-visible:outline-red-600'
     : isReceita
-    ? 'bg-green-600 hover:bg-green-700 focus-visible:outline-green-600'
+    ? 'bg-primary hover:bg-primary-light focus-visible:outline-primary'
     : 'bg-blue-600 hover:bg-blue-700 focus-visible:outline-blue-600';
 
   if ((isErrorContas && !hasContas) || (isErrorCategorias && !hasCategorias)) {
