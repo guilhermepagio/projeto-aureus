@@ -12,8 +12,8 @@ const Navigation: React.FC = () => {
       activeClasses = "text-primary font-bold md:bg-primary md:text-white md:font-semibold md:shadow-sm focus-visible:outline-primary";
       inactiveClasses += " hover:text-primary-light";
     } else if (type === 'red') {
-      activeClasses = "text-red-600 font-bold md:bg-red-600 md:text-white md:font-semibold md:shadow-sm focus-visible:outline-red-600";
-      inactiveClasses += " hover:text-red-400";
+      activeClasses = "text-rose-800 font-bold md:bg-rose-800 md:text-white md:font-semibold md:shadow-sm focus-visible:outline-rose-800";
+      inactiveClasses += " hover:text-rose-900 md:hover:text-rose-900";
         } else if (type === 'blue') {
       activeClasses = "text-blue-600 font-bold md:bg-blue-600 md:text-white md:font-semibold md:shadow-sm focus-visible:outline-blue-600";
       inactiveClasses += " hover:text-blue-400";

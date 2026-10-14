@@ -15,46 +15,27 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "contas")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Conta extends TenantAwareEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private Long id;
 
     @NotBlank(message = "A descrição é obrigatória")
     @Size(max = 20, message = "A descrição deve ter no máximo 20 caracteres")
     @Column(nullable = false, length = 20)
+    @Getter
+    @Setter
     private String descricao;
     
     @Size(max = 300, message = "As observações devem ter no máximo 300 caracteres")
     @Column(length = 300)
+    @Getter
+    @Setter
     private String observacoes;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
-    }
-
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
-    }
 }

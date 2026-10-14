@@ -9,11 +9,13 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 
 @Component
 public class JwtUtil {
 
     private final SecretKey key;
+    @Getter
     private final long expiration;
 
     public JwtUtil(@Value("${jwt.secret}") final String secret, @Value("${jwt.expiration}") final long expiration) {
@@ -32,10 +34,6 @@ public class JwtUtil {
 
     public void validateToken(final String token) {
         Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-    }
-
-    public long getExpiration() {
-        return this.expiration;
     }
 
     public String getSubject(final String token) {

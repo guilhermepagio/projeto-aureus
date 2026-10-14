@@ -4,6 +4,7 @@ import { useContas, type Conta } from '../../hooks/useContas';
 import ContaFormModal from './components/ContaFormModal';
 import DeleteConfirmModal from './components/DeleteConfirmModal';
 import EmptyState from '../../components/ui/EmptyState';
+import PlusIcon from '../../components/ui/PlusIcon';
 
 const ContasPage: React.FC = () => {
   const { data: contas, isLoading, isError } = useContas();
@@ -41,14 +42,15 @@ const ContasPage: React.FC = () => {
           onClick={handleCreate}
           className="cursor-pointer h-8 px-4 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold whitespace-nowrap shadow-sm"
         >
-          + Nova Conta
+          <PlusIcon />
+          Nova Conta
         </button>
       </div>
       {isEmpty ? (
         <EmptyState
           title="Nenhuma conta"
           description="Comece criando sua primeira conta."
-          action={{ label: 'Nova Conta', onClick: handleCreate, color: 'blue' }}
+          action={{ label: 'Nova Conta', icon: <PlusIcon />, onClick: handleCreate, color: 'blue' }}
         />
       ) : (
         <div className="bg-white shadow sm:rounded-2xl overflow-auto mt-2 w-full flex-1 min-h-0">

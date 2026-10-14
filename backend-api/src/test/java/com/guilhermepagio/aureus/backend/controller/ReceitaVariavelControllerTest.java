@@ -30,6 +30,8 @@ import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaVariavelResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.service.ReceitaVariavelService;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +48,7 @@ public class ReceitaVariavelControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(receitaVariavelController)
-                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
@@ -181,7 +183,7 @@ public class ReceitaVariavelControllerTest {
         """;
 
         when(receitaVariavelService.atualizar(eq(999L), any(ReceitaVariavelRequestDTO.class)))
-                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Receita variável não encontrada: 999"));
+                .thenThrow(new ResourceNotFoundException("Receita variável não encontrada: 999"));
 
         mockMvc.perform(put("/api/receitas-variaveis/999")
                 .contentType(MediaType.APPLICATION_JSON)

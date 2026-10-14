@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,9 +28,11 @@ import com.guilhermepagio.aureus.backend.domain.DespesaFixa;
 import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.IdReferenceDTO;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
 import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 import com.guilhermepagio.aureus.backend.repository.DespesaFixaRepository;
+import com.guilhermepagio.aureus.backend.security.TenantContext;
 
 @ExtendWith(MockitoExtension.class)
 public class DespesaFixaServiceTest {
@@ -45,14 +49,14 @@ public class DespesaFixaServiceTest {
     @InjectMocks
     private DespesaFixaService despesaFixaService;
 
-    @org.junit.jupiter.api.BeforeEach
+    @BeforeEach
     public void setUp() {
-        com.guilhermepagio.aureus.backend.security.TenantContext.setTenantId("user1");
+        TenantContext.setTenantId("user1");
     }
 
-    @org.junit.jupiter.api.AfterEach
+    @AfterEach
     public void tearDown() {
-        com.guilhermepagio.aureus.backend.security.TenantContext.clear();
+        TenantContext.clear();
     }
 
     @Test
@@ -140,7 +144,7 @@ public class DespesaFixaServiceTest {
 
         when(contaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class, () -> despesaFixaService.criar(dto));
+        assertThrows(ResourceNotFoundException.class, () -> despesaFixaService.criar(dto));
     }
 
     @Test
@@ -159,7 +163,7 @@ public class DespesaFixaServiceTest {
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
         when(categoriaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class, () -> despesaFixaService.criar(dto));
+        assertThrows(ResourceNotFoundException.class, () -> despesaFixaService.criar(dto));
     }
 
     @Test
@@ -210,7 +214,7 @@ public class DespesaFixaServiceTest {
 
         when(despesaFixaRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class, () -> despesaFixaService.atualizar(999L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> despesaFixaService.atualizar(999L, dto));
     }
 
     @Test
@@ -228,7 +232,7 @@ public class DespesaFixaServiceTest {
         when(despesaFixaRepository.findById(100L)).thenReturn(Optional.of(existente));
         when(contaRepository.findOwnerUsuarioId(999L)).thenReturn(Optional.empty());
 
-        assertThrows(com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class, () -> despesaFixaService.atualizar(100L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> despesaFixaService.atualizar(100L, dto));
     }
 
     @Test

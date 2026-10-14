@@ -28,6 +28,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.service.ContaService;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,7 +47,7 @@ public class ContaControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(contaController)
-                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
@@ -120,7 +122,7 @@ public class ContaControllerTest {
     public void deveRetornar404AoAtualizarContaInexistente() throws Exception {
         ContaRequestDTO request = new ContaRequestDTO("Nova", "");
         when(contaService.atualizar(eq(999L), any(ContaRequestDTO.class)))
-                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Conta não encontrada: 999"));
+                .thenThrow(new ResourceNotFoundException("Conta não encontrada: 999"));
 
         mockMvc.perform(put("/api/contas/999")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -2,16 +2,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { useContas } from '../hooks/useContas';
 import { useCategorias } from '../hooks/useCategorias';
 import type { ReactNode, FC } from 'react';
+import PlusIcon from './ui/PlusIcon';
 
 interface RequiresDependenciesProps {
   children: ReactNode;
 }
-
-const PlusIcon = () => (
-  <svg className="-ml-0.5 mr-1.5 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-    <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-  </svg>
-);
 
 const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
   const location = useLocation();
@@ -34,9 +29,9 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
   const isDespesa = location.pathname.includes('despesas');
   const isReceita = location.pathname.includes('receitas');
   const themeColorClass = isDespesa
-    ? 'bg-red-600 hover:bg-red-700 focus-visible:outline-red-600'
+    ? 'bg-rose-800 hover:bg-rose-900 focus-visible:outline-rose-800'
     : isReceita
-    ? 'bg-green-600 hover:bg-green-700 focus-visible:outline-green-600'
+    ? 'bg-primary hover:bg-primary-light focus-visible:outline-primary'
     : 'bg-blue-600 hover:bg-blue-700 focus-visible:outline-blue-600';
 
   if ((isErrorContas && !hasContas) || (isErrorCategorias && !hasCategorias)) {

@@ -37,11 +37,11 @@ FRONTEND_DIR="${PROJECT_ROOT}/frontend-web"
 # Exibe o menu de ajuda
 show_help() {
   cat << EOF
-${BOLD}Uso:${NC} ./scripts/validate.sh [OPÇÕES]
+${BOLD}Uso:${NC} ./scripts/run-unit-tests.sh [OPÇÕES]
 
 ${BOLD}Descrição:${NC}
-  Script unificado de validação contínua local para o projeto Aureus.
-  Executa a suíte de testes, verificação de tipos e linting do backend e frontend
+  Script unificado de execução de testes locais para o projeto Aureus.
+  Executa a suíte de testes unitários, verificação de tipos e linting do backend e frontend
   com suporte a fail-fast (interrompe imediatamente na primeira falha).
 
 ${BOLD}Opções disponíveis:${NC}
@@ -57,8 +57,8 @@ ${BOLD}Fluxo padrão (sem parâmetros):${NC}
     4. Frontend: Checagem de tipos TypeScript e Build (npm run build)
 
 ${BOLD}Exemplos:${NC}
-  ./scripts/validate.sh                    # Validação rápida de rotina
-  ./scripts/validate.sh --with-integration # Validação completa pré-PR (com Testcontainers)
+  ./scripts/run-unit-tests.sh                    # Validação rápida de rotina
+  ./scripts/run-unit-tests.sh --with-integration # Validação completa pré-PR (com Testcontainers)
 EOF
 }
 
@@ -91,6 +91,21 @@ if [ ! -d "${BACKEND_DIR}" ] || [ ! -d "${FRONTEND_DIR}" ]; then
   echo -e "${RED}Esperado frontend em: ${FRONTEND_DIR}${NC}" >&2
   exit 1
 fi
+
+# Auto-detecção do JDK 21 caso instalado no diretório padrão do sistema
+if [ -d "/c/Program Files/Java/jdk-21" ] || [ -d "C:/Program Files/Java/jdk-21" ]; then
+  export JAVA_HOME="C:/Program Files/Java/jdk-21"
+  if [ -d "/c/Program Files/Java/jdk-21/bin" ]; then
+    export PATH="/c/Program Files/Java/jdk-21/bin:${PATH}"
+  else
+    export PATH="${JAVA_HOME}/bin:${PATH}"
+  fi
+elif [ -d "/mnt/c/Program Files/Java/jdk-21" ]; then
+  export JAVA_HOME="/mnt/c/Program Files/Java/jdk-21"
+  export PATH="${JAVA_HOME}/bin:${PATH}"
+fi
+
+echo -e "${CYAN}Java ativo:${NC} $(java -version 2>&1 | head -n 1)"
 
 # Verificação de pré-requisitos de ferramentas locais
 if ! command -v java >/dev/null 2>&1; then
@@ -188,7 +203,7 @@ run_step 3 "Frontend: Testes Unitários e Componentes" "${FRONTEND_DIR}" npm tes
 run_step 4 "Frontend: Checagem de Tipos e Build" "${FRONTEND_DIR}" npm run build
 
 if [ "${RUN_INTEGRATION}" = true ]; then
-  run_step 5 "Backend: Testes de Integração e Isolamento Multi-Tenant" "${BACKEND_DIR}" ./mvnw -B verify
+  run_step 5 "Backend: Testes de Integração e Isolamento Multi-Tenant" "${BACKEND_DIR}" ./mvnw -B verify -Pintegration-test
 fi
 
 # Cálculo do tempo decorrido

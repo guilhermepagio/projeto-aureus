@@ -27,6 +27,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.service.CategoriaService;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +46,7 @@ public class CategoriaControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(categoriaController)
-                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
@@ -100,7 +102,7 @@ public class CategoriaControllerTest {
     public void deveRetornar404AoAtualizarCategoriaInexistente() throws Exception {
         CategoriaRequestDTO request = new CategoriaRequestDTO("Nova", "");
         when(categoriaService.atualizar(eq(999L), any(CategoriaRequestDTO.class)))
-                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Categoria não encontrada: 999"));
+                .thenThrow(new ResourceNotFoundException("Categoria não encontrada: 999"));
 
         mockMvc.perform(put("/api/categorias/999")
                 .contentType(MediaType.APPLICATION_JSON)

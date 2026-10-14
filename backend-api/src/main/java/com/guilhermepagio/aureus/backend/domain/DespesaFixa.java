@@ -30,99 +30,56 @@ import lombok.Setter;
     @Index(name = "idx_despesas_fixas_usuario_data_inicio", columnList = "usuario_id, data_inicio"),
     @Index(name = "idx_despesas_fixas_data_inicio", columnList = "data_inicio")
 })
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DespesaFixa extends TenantAwareEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private Long id;
 
     @NotBlank(message = "A descrição é obrigatória")
     @Size(max = 100, message = "A descrição deve ter no máximo 100 caracteres")
     @Column(nullable = false, length = 100)
+    @Getter
+    @Setter
     private String descricao;
 
     @NotNull(message = "O valor é obrigatório")
     @Positive(message = "O valor deve ser maior que zero")
     @Max(value = 9999999, message = "O valor deve ser de no máximo R$ 9.999.999,99")
     @Column(nullable = false, precision = 9, scale = 2)
+    @Getter
+    @Setter
     private BigDecimal valor;
 
     @NotNull(message = "Selecione uma conta")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conta_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @Getter
+    @Setter
     private Conta conta;
 
     @NotNull(message = "Selecione uma categoria")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @Getter
+    @Setter
     private Categoria categoria;
 
     @Size(max = 300, message = "As observações devem ter no máximo 300 caracteres")
     @Column(length = 300)
+    @Getter
+    @Setter
     private String observacoes;
 
     @Column(name = "data_inicio")
+    @Getter
+    @Setter
     private LocalDate dataInicio;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public BigDecimal getValor() {
-        return valor;
-    }
-
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
-
-    public Conta getConta() {
-        return conta;
-    }
-
-    public void setConta(Conta conta) {
-        this.conta = conta;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
-    }
-
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
-    }
 }

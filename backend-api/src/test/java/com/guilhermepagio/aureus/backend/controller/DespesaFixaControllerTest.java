@@ -30,6 +30,8 @@ import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.DespesaFixaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.service.DespesaFixaService;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +48,7 @@ public class DespesaFixaControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(despesaFixaController)
-                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
@@ -164,7 +166,7 @@ public class DespesaFixaControllerTest {
         """;
 
         when(despesaFixaService.atualizar(eq(999L), any(DespesaFixaRequestDTO.class)))
-                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Despesa fixa não encontrada: 999"));
+                .thenThrow(new ResourceNotFoundException("Despesa fixa não encontrada: 999"));
 
         mockMvc.perform(put("/api/despesas-fixas/999")
                 .contentType(MediaType.APPLICATION_JSON)

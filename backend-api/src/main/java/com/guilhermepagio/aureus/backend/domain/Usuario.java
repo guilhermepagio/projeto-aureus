@@ -17,21 +17,29 @@ import lombok.Setter;
 @Table(name = "usuarios", indexes = {
     @Index(name = "idx_usuarios_google_subject_id", columnList = "google_subject_id")
 })
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Getter
+    @Setter
     private String googleSubjectId;
 
+    @Getter
+    @Setter
     private String email;
+    @Getter
+    @Setter
     private String nome;
     @Column(length = 1024)
+    @Getter
+    @Setter
     private String fotoPerfil;
 }

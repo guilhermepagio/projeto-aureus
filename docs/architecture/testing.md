@@ -77,7 +77,7 @@ A pirâmide de testes do Aureus V1 é distribuída em três camadas complementar
   * As migrações do Flyway são aplicadas em um esquema real de banco de dados no contêiner.
   * **Execução in-memory do MockMvc** (`webEnvironment = SpringBootTest.WebEnvironment.MOCK`): as requisições HTTP REST são despachadas diretamente através da cadeia de filtros do Spring Security e dos controllers sem a sobrecarga de vinculação a portas de rede físicas (`RANDOM_PORT`), garantindo testes herméticos, determinísticos e rápidos.
   * **Isolamento de Dados Zero-Leakage (Multi-Tenancy Dinâmico)**: o isolamento entre testes não depende de truncamento lento do banco de dados, mas da geração de inquilinos com identificadores únicos (UUIDs/e-mails distintos) para cada cenário (`Tenant A`, `Tenant B`), eliminando colisões de estado e vazamentos de dados entre execuções concorrentes ou sequenciais.
-  * Executado de forma isolada do fluxo diário rápido via comando dedicado (`./mvnw verify` ou `./scripts/validate.sh --with-integration`).
+  * Executado de forma isolada do fluxo diário rápido via comando dedicado (`./mvnw verify` ou `./scripts/run-unit-tests.sh --with-integration`).
 * **Suítes de Integração Implementadas:**
   * `MultiTenancyIT`:
     * Garante que o **Usuário B** não consegue ler, atualizar ou excluir recursos (contas, categorias, lançamentos fixos e variáveis) criados pelo **Usuário A**.
@@ -200,16 +200,16 @@ Durante ciclos de TDD, desenvolvimento focado ou depuração pontual, execute ap
 
 ---
 
-### O Script de Validação Contínua Local (`scripts/validate.sh`)
+### O Script de Validação Contínua Local (`scripts/run-unit-tests.sh`)
 
-O repositório disponibiliza o script `scripts/validate.sh` para orquestrar todas as validações com feedback visual, fail-fast e cálculo de duração. O script pode ser executado a partir de qualquer diretório:
+O repositório disponibiliza o script `scripts/run-unit-tests.sh` para orquestrar todas as validações com feedback visual, fail-fast e cálculo de duração. O script pode ser executado a partir de qualquer diretório:
 
 #### 1. Execução Padrão (Recomendada para Rotina Diária)
 
 Executa ordenadamente as 4 etapas que não exigem Docker ativo (duração média: ~20-25s):
 
 ```bash
-./scripts/validate.sh
+./scripts/run-unit-tests.sh
 ```
 
 **Etapas executadas:**
@@ -223,9 +223,9 @@ Executa ordenadamente as 4 etapas que não exigem Docker ativo (duração média
 Adiciona a etapa de testes de integração com Testcontainers PostgreSQL (requer o serviço do Docker ativo):
 
 ```bash
-./scripts/validate.sh --with-integration
+./scripts/run-unit-tests.sh --with-integration
 # ou de forma abreviada:
-./scripts/validate.sh -i
+./scripts/run-unit-tests.sh -i
 ```
 
 **Etapa adicional:**
@@ -236,7 +236,7 @@ Adiciona a etapa de testes de integração com Testcontainers PostgreSQL (requer
 Para consultar os parâmetros e exemplos disponíveis:
 
 ```bash
-./scripts/validate.sh --help
+./scripts/run-unit-tests.sh --help
 ```
 
 #### 4. Automação com Git Hook (`pre-push`)
@@ -247,13 +247,13 @@ Para automatizar a execução da validação local e eliminar o risco de esqueci
 git config core.hooksPath .githooks
 ```
 
-Quando ativo, todo `git push` disparará automaticamente a validação rápida (`./scripts/validate.sh`). Em caso de falha, o push é cancelado com código diferente de zero. Para contornar em casos excepcionais: `git push --no-verify`.
+Quando ativo, todo `git push` disparará automaticamente a validação rápida (`./scripts/run-unit-tests.sh`). Em caso de falha, o push é cancelado com código diferente de zero. Para contornar em casos excepcionais: `git push --no-verify`.
 
 ---
 
 ### Boas Práticas e Checklist Pré-PR
 
 Antes de abrir qualquer Pull Request para a branch `main`:
-1. Execute sempre `./scripts/validate.sh` na raiz do projeto e certifique-se de que todas as etapas foram concluídas com sucesso.
-2. Se o seu PR incluir alterações em entidades JPA, migrações Flyway, queries SQL ou filtros de segurança, execute obrigatoriamente `./scripts/validate.sh --with-integration` para atestar a persistência real e o isolamento multi-tenant.
+1. Execute sempre `./scripts/run-unit-tests.sh` na raiz do projeto e certifique-se de que todas as etapas foram concluídas com sucesso.
+2. Se o seu PR incluir alterações em entidades JPA, migrações Flyway, queries SQL ou filtros de segurança, execute obrigatoriamente `./scripts/run-unit-tests.sh --with-integration` para atestar a persistência real e o isolamento multi-tenant.
 3. Não ignore alertas de linter ou erros de tipagem do TypeScript.

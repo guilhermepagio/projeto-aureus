@@ -30,6 +30,8 @@ import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaFixaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ReceitaFixaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.service.ReceitaFixaService;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +48,7 @@ public class ReceitaFixaControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(receitaFixaController)
-                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
@@ -164,7 +166,7 @@ public class ReceitaFixaControllerTest {
         """;
 
         when(receitaFixaService.atualizar(eq(999L), any(ReceitaFixaRequestDTO.class)))
-                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Receita fixa não encontrada: 999"));
+                .thenThrow(new ResourceNotFoundException("Receita fixa não encontrada: 999"));
 
         mockMvc.perform(put("/api/receitas-fixas/999")
                 .contentType(MediaType.APPLICATION_JSON)

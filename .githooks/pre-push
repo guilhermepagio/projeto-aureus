@@ -14,4 +14,4 @@ echo -e "\n🔍 [pre-push] Executando validação canônica local antes do push.
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 # Executa o script canônico de validação
-exec "${REPO_ROOT}/scripts/validate.sh"
+exec "${REPO_ROOT}/scripts/run-unit-tests.sh"
