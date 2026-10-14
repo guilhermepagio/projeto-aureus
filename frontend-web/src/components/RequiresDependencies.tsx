@@ -29,7 +29,7 @@ const RequiresDependencies: FC<RequiresDependenciesProps> = ({ children }) => {
   const isDespesa = location.pathname.includes('despesas');
   const isReceita = location.pathname.includes('receitas');
   const themeColorClass = isDespesa
-    ? 'bg-red-600 hover:bg-red-700 focus-visible:outline-red-600'
+    ? 'bg-rose-800 hover:bg-rose-900 focus-visible:outline-rose-800'
     : isReceita
     ? 'bg-primary hover:bg-primary-light focus-visible:outline-primary'
     : 'bg-blue-600 hover:bg-blue-700 focus-visible:outline-blue-600';
