@@ -3,6 +3,7 @@ package com.guilhermepagio.aureus.backend.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.guilhermepagio.aureus.backend.domain.Conta;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -104,8 +106,8 @@ public class ContaServiceTest {
         ContaRequestDTO dto = new ContaRequestDTO("Nova", "Obs");
         when(contaRepository.findById(999L)).thenReturn(Optional.empty());
 
-        org.junit.jupiter.api.Assertions.assertThrows(
-            com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class,
+        assertThrows(
+            ResourceNotFoundException.class,
             () -> contaService.atualizar(999L, dto)
         );
     }

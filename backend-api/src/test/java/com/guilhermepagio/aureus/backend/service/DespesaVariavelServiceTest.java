@@ -14,22 +14,25 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.domain.Categoria;
 import com.guilhermepagio.aureus.backend.domain.Conta;
 import com.guilhermepagio.aureus.backend.domain.DespesaVariavel;
 import com.guilhermepagio.aureus.backend.domain.dto.DespesaVariavelRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.DespesaVariavelResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.IdReferenceDTO;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
 import com.guilhermepagio.aureus.backend.repository.ContaRepository;
 import com.guilhermepagio.aureus.backend.repository.DespesaVariavelRepository;
+import com.guilhermepagio.aureus.backend.security.TenantContext;
 
 @ExtendWith(MockitoExtension.class)
 public class DespesaVariavelServiceTest {
@@ -46,14 +49,14 @@ public class DespesaVariavelServiceTest {
     @InjectMocks
     private DespesaVariavelService despesaVariavelService;
 
-    @org.junit.jupiter.api.BeforeEach
+    @BeforeEach
     public void setUp() {
-        com.guilhermepagio.aureus.backend.security.TenantContext.setTenantId("user1");
+        TenantContext.setTenantId("user1");
     }
 
-    @org.junit.jupiter.api.AfterEach
+    @AfterEach
     public void tearDown() {
-        com.guilhermepagio.aureus.backend.security.TenantContext.clear();
+        TenantContext.clear();
     }
 
     @Test

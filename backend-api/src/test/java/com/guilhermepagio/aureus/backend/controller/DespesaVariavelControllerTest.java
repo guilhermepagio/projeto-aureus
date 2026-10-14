@@ -30,6 +30,8 @@ import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ContaResponseDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.DespesaVariavelRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.DespesaVariavelResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.service.DespesaVariavelService;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +48,7 @@ public class DespesaVariavelControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(despesaVariavelController)
-                .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
@@ -190,7 +192,7 @@ public class DespesaVariavelControllerTest {
         """;
 
         when(despesaVariavelService.atualizar(eq(999L), any(DespesaVariavelRequestDTO.class)))
-                .thenThrow(new com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException("Despesa variável não encontrada: 999"));
+                .thenThrow(new ResourceNotFoundException("Despesa variável não encontrada: 999"));
 
         mockMvc.perform(put("/api/despesas-variaveis/999")
                 .contentType(MediaType.APPLICATION_JSON)

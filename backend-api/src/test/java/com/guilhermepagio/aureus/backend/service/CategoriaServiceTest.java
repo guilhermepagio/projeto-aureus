@@ -3,6 +3,7 @@ package com.guilhermepagio.aureus.backend.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.guilhermepagio.aureus.backend.domain.Categoria;
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaRequestDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.CategoriaResponseDTO;
+import com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException;
 import com.guilhermepagio.aureus.backend.repository.CategoriaRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -104,8 +106,8 @@ public class CategoriaServiceTest {
         CategoriaRequestDTO dto = new CategoriaRequestDTO("Nova", "Obs");
         when(categoriaRepository.findById(999L)).thenReturn(Optional.empty());
 
-        org.junit.jupiter.api.Assertions.assertThrows(
-            com.guilhermepagio.aureus.backend.exception.ResourceNotFoundException.class,
+        assertThrows(
+            ResourceNotFoundException.class,
             () -> categoriaService.atualizar(999L, dto)
         );
     }

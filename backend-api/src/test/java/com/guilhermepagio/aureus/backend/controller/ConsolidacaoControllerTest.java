@@ -1,13 +1,19 @@
 package com.guilhermepagio.aureus.backend.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Collections;
+
+import jakarta.validation.constraints.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +22,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -26,6 +34,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.guilhermepagio.aureus.backend.domain.dto.ConsolidacaoPorContaDTO;
 import com.guilhermepagio.aureus.backend.domain.dto.ConsolidacaoPorCategoriaDTO;
+import com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler;
 import com.guilhermepagio.aureus.backend.service.ConsolidacaoService;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,12 +55,12 @@ public class ConsolidacaoControllerTest {
 
         mockMvc = MockMvcBuilders.standaloneSetup(consolidacaoController)
             .setValidator(validator)
-            .setControllerAdvice(new com.guilhermepagio.aureus.backend.exception.GlobalExceptionHandler())
+            .setControllerAdvice(new GlobalExceptionHandler())
             .setCustomArgumentResolvers(new HandlerMethodArgumentResolver() {
                 @Override
                 public boolean supportsParameter(final MethodParameter parameter) {
                     return parameter.getParameterType().equals(String.class) && 
-                           parameter.hasParameterAnnotation(org.springframework.security.core.annotation.AuthenticationPrincipal.class);
+                           parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
                 }
                 @Override
                 public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
@@ -89,15 +98,15 @@ public class ConsolidacaoControllerTest {
 
     @Test
     public void deveRejeitarMesAnoInvalido() throws Exception {
-        java.lang.reflect.Method method = ConsolidacaoController.class.getMethod("getPorConta", String.class, String.class);
+        Method method = ConsolidacaoController.class.getMethod("getPorConta", String.class, String.class);
         boolean hasPattern = false;
-        for (java.lang.annotation.Annotation ann : method.getParameterAnnotations()[0]) {
-            if (ann instanceof jakarta.validation.constraints.Pattern) {
+        for (Annotation ann : method.getParameterAnnotations()[0]) {
+            if (ann instanceof Pattern pattern) {
                 hasPattern = true;
-                org.junit.jupiter.api.Assertions.assertEquals("^\\d{4}-(0[1-9]|1[0-2])$", ((jakarta.validation.constraints.Pattern) ann).regexp());
+                assertEquals("^\\d{4}-(0[1-9]|1[0-2])$", pattern.regexp());
             }
         }
-        org.junit.jupiter.api.Assertions.assertTrue(hasPattern);
+        assertTrue(hasPattern);
     }
 
     /**
@@ -134,23 +143,23 @@ public class ConsolidacaoControllerTest {
 
     @Test
     public void deveRejeitarMesAnoInvalidoPorCategoria() throws Exception {
-        java.lang.reflect.Method method = ConsolidacaoController.class.getMethod("getPorCategoria", String.class, String.class);
+        Method method = ConsolidacaoController.class.getMethod("getPorCategoria", String.class, String.class);
         boolean hasPattern = false;
-        for (java.lang.annotation.Annotation ann : method.getParameterAnnotations()[0]) {
-            if (ann instanceof jakarta.validation.constraints.Pattern) {
+        for (Annotation ann : method.getParameterAnnotations()[0]) {
+            if (ann instanceof Pattern pattern) {
                 hasPattern = true;
-                org.junit.jupiter.api.Assertions.assertEquals("^\\d{4}-(0[1-9]|1[0-2])$", ((jakarta.validation.constraints.Pattern) ann).regexp());
+                assertEquals("^\\d{4}-(0[1-9]|1[0-2])$", pattern.regexp());
             }
         }
-        org.junit.jupiter.api.Assertions.assertTrue(hasPattern);
+        assertTrue(hasPattern);
     }
 
     @Test
     public void deveRetornar401QuandoUsuarioIdNulo() {
-        org.springframework.http.ResponseEntity<ConsolidacaoPorContaDTO> respConta = consolidacaoController.getPorConta("2024-01", null);
-        org.junit.jupiter.api.Assertions.assertEquals(401, respConta.getStatusCode().value());
+        ResponseEntity<ConsolidacaoPorContaDTO> respConta = consolidacaoController.getPorConta("2024-01", null);
+        assertEquals(401, respConta.getStatusCode().value());
 
-        org.springframework.http.ResponseEntity<ConsolidacaoPorCategoriaDTO> respCat = consolidacaoController.getPorCategoria("2024-01", null);
-        org.junit.jupiter.api.Assertions.assertEquals(401, respCat.getStatusCode().value());
+        ResponseEntity<ConsolidacaoPorCategoriaDTO> respCat = consolidacaoController.getPorCategoria("2024-01", null);
+        assertEquals(401, respCat.getStatusCode().value());
     }
 }

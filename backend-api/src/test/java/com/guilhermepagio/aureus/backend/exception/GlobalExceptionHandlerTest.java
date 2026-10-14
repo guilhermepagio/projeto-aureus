@@ -7,17 +7,39 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Set;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.MethodParameter;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.method.ParameterValidationResult;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 public class GlobalExceptionHandlerTest {
 
@@ -37,7 +59,7 @@ public class GlobalExceptionHandlerTest {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(target, "testObject");
         bindingResult.addError(new FieldError("testObject", "descricao", "A descrição é obrigatória"));
         bindingResult.addError(new FieldError("testObject", "valor", "O valor deve ser maior que zero"));
-        bindingResult.addError(new org.springframework.validation.ObjectError("testObject", "Constraint global de objeto violada"));
+        bindingResult.addError(new ObjectError("testObject", "Constraint global de objeto violada"));
 
         MethodParameter parameter = new MethodParameter(
             this.getClass().getDeclaredMethod("setUp"), -1
@@ -74,8 +96,8 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarHttpMessageNotReadableExceptionComStatus400() {
-        org.springframework.http.converter.HttpMessageNotReadableException ex =
-            new org.springframework.http.converter.HttpMessageNotReadableException("JSON parse error", (org.springframework.http.HttpInputMessage) null);
+        HttpMessageNotReadableException ex =
+            new HttpMessageNotReadableException("JSON parse error", (HttpInputMessage) null);
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleHttpMessageNotReadable(ex, request);
 
@@ -91,8 +113,8 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarMethodArgumentTypeMismatchExceptionComStatus400() {
-        org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex =
-            new org.springframework.web.method.annotation.MethodArgumentTypeMismatchException("abc", Long.class, "id", null, null);
+        MethodArgumentTypeMismatchException ex =
+            new MethodArgumentTypeMismatchException("abc", Long.class, "id", null, null);
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleTypeMismatchAndMissingParam(ex, request);
 
@@ -109,8 +131,8 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarMissingServletRequestParameterExceptionComStatus400() {
-        org.springframework.web.bind.MissingServletRequestParameterException ex =
-            new org.springframework.web.bind.MissingServletRequestParameterException("mesAno", "String");
+        MissingServletRequestParameterException ex =
+            new MissingServletRequestParameterException("mesAno", "String");
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleTypeMismatchAndMissingParam(ex, request);
 
@@ -126,14 +148,14 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarConstraintViolationExceptionComStatus400() {
-        jakarta.validation.ConstraintViolation<?> violation = mock(jakarta.validation.ConstraintViolation.class);
-        jakarta.validation.Path path = mock(jakarta.validation.Path.class);
+        ConstraintViolation<?> violation = mock(ConstraintViolation.class);
+        Path path = mock(Path.class);
         when(path.toString()).thenReturn("mesAno");
         when(violation.getPropertyPath()).thenReturn(path);
         when(violation.getMessage()).thenReturn("Formato de data inválido. Use YYYY-MM");
 
-        jakarta.validation.ConstraintViolationException ex =
-            new jakarta.validation.ConstraintViolationException("Erro de validação", java.util.Set.of(violation));
+        ConstraintViolationException ex =
+            new ConstraintViolationException("Erro de validação", Set.of(violation));
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleConstraintViolation(ex, request);
 
@@ -154,8 +176,8 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarNoResourceFoundExceptionComStatus404() {
-        org.springframework.web.servlet.resource.NoResourceFoundException ex =
-            new org.springframework.web.servlet.resource.NoResourceFoundException(org.springframework.http.HttpMethod.GET, "/api/contas/99999", "No static resource");
+        NoResourceFoundException ex =
+            new NoResourceFoundException(HttpMethod.GET, "/api/contas/99999", "No static resource");
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleNoResourceFound(ex, request);
 
@@ -171,15 +193,15 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarHttpRequestMethodNotSupportedExceptionComStatus405EHeaderAllow() {
-        org.springframework.web.HttpRequestMethodNotSupportedException ex =
-            new org.springframework.web.HttpRequestMethodNotSupportedException("POST", java.util.List.of("GET", "OPTIONS"));
+        HttpRequestMethodNotSupportedException ex =
+            new HttpRequestMethodNotSupportedException("POST", List.of("GET", "OPTIONS"));
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleMethodNotSupported(ex, request);
 
         assertNotNull(response);
         assertEquals(HttpStatus.METHOD_NOT_ALLOWED, response.getStatusCode());
         assertNotNull(response.getHeaders().getAllow());
-        assertTrue(response.getHeaders().getAllow().contains(org.springframework.http.HttpMethod.GET));
+        assertTrue(response.getHeaders().getAllow().contains(HttpMethod.GET));
         ApiErrorResponse body = response.getBody();
         assertNotNull(body);
         assertEquals(405, body.status());
@@ -274,14 +296,14 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveExtrairNomeFolhaEmConstraintViolationComPrefixoDeMetodo() {
-        jakarta.validation.ConstraintViolation<?> violation = mock(jakarta.validation.ConstraintViolation.class);
-        jakarta.validation.Path path = mock(jakarta.validation.Path.class);
+        ConstraintViolation<?> violation = mock(ConstraintViolation.class);
+        Path path = mock(Path.class);
         when(path.toString()).thenReturn("getPorConta.mesAno");
         when(violation.getPropertyPath()).thenReturn(path);
         when(violation.getMessage()).thenReturn("Formato de data inválido. Use YYYY-MM");
 
-        jakarta.validation.ConstraintViolationException ex =
-            new jakarta.validation.ConstraintViolationException("Erro de validação", java.util.Set.of(violation));
+        ConstraintViolationException ex =
+            new ConstraintViolationException("Erro de validação", Set.of(violation));
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleConstraintViolation(ex, request);
 
@@ -315,8 +337,8 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarConstraintViolationExceptionComListaNulaSemLancarNpe() {
-        jakarta.validation.ConstraintViolationException ex =
-            new jakarta.validation.ConstraintViolationException("Violação", null);
+        ConstraintViolationException ex =
+            new ConstraintViolationException("Violação", null);
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleConstraintViolation(ex, request);
 
@@ -327,18 +349,18 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarHandlerMethodValidationExceptionComStatus400EItensDeValidacao() {
-        org.springframework.web.method.annotation.HandlerMethodValidationException ex =
-            mock(org.springframework.web.method.annotation.HandlerMethodValidationException.class);
-        org.springframework.validation.method.ParameterValidationResult paramResult =
-            mock(org.springframework.validation.method.ParameterValidationResult.class);
-        org.springframework.core.MethodParameter methodParam = mock(org.springframework.core.MethodParameter.class);
+        HandlerMethodValidationException ex =
+            mock(HandlerMethodValidationException.class);
+        ParameterValidationResult paramResult =
+            mock(ParameterValidationResult.class);
+        MethodParameter methodParam = mock(MethodParameter.class);
         when(methodParam.getParameterName()).thenReturn("mesAno");
         when(paramResult.getMethodParameter()).thenReturn(methodParam);
 
-        org.springframework.context.MessageSourceResolvable resolvable = mock(org.springframework.context.MessageSourceResolvable.class);
+        MessageSourceResolvable resolvable = mock(MessageSourceResolvable.class);
         when(resolvable.getDefaultMessage()).thenReturn("Formato de data inválido. Use YYYY-MM");
-        when(paramResult.getResolvableErrors()).thenReturn(java.util.List.of(resolvable));
-        when(ex.getParameterValidationResults()).thenReturn(java.util.List.of(paramResult));
+        when(paramResult.getResolvableErrors()).thenReturn(List.of(resolvable));
+        when(ex.getParameterValidationResults()).thenReturn(List.of(paramResult));
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleHandlerMethodValidation(ex, request);
 
@@ -354,8 +376,8 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarDateTimeParseExceptionComStatus400() {
-        java.time.format.DateTimeParseException ex =
-            new java.time.format.DateTimeParseException("Text '2024-13' could not be parsed", "2024-13", 5);
+        DateTimeParseException ex =
+            new DateTimeParseException("Text '2024-13' could not be parsed", "2024-13", 5);
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleIllegalArgument(ex, request);
 
@@ -369,10 +391,10 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarHttpMediaTypeNotSupportedExceptionComStatus415() {
-        org.springframework.web.HttpMediaTypeNotSupportedException ex =
-            new org.springframework.web.HttpMediaTypeNotSupportedException(
-                org.springframework.http.MediaType.TEXT_PLAIN,
-                java.util.List.of(org.springframework.http.MediaType.APPLICATION_JSON)
+        HttpMediaTypeNotSupportedException ex =
+            new HttpMediaTypeNotSupportedException(
+                MediaType.TEXT_PLAIN,
+                List.of(MediaType.APPLICATION_JSON)
             );
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleMediaTypeNotSupported(ex, request);
@@ -388,8 +410,8 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void deveTratarHttpMediaTypeNotAcceptableExceptionComStatus406() {
-        org.springframework.web.HttpMediaTypeNotAcceptableException ex =
-            new org.springframework.web.HttpMediaTypeNotAcceptableException("No acceptable representation");
+        HttpMediaTypeNotAcceptableException ex =
+            new HttpMediaTypeNotAcceptableException("No acceptable representation");
 
         ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleMediaTypeNotAcceptable(ex, request);
 
