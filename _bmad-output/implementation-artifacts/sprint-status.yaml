@@ -20,6 +20,8 @@
 #   - open: Committed during a retrospective, not yet addressed
 #   - in-progress: Actively being worked on
 #   - done: Completed
+# Archived actions live in action_items_history; status_at_triage is historical only.
+# Discarded/consolidated actions are not marked done.
 
 # WORKFLOW NOTES:
 # ===============
@@ -29,7 +31,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: 10-11-2026 20:52
+last_updated: 10-14-2026 17:16
 project: projeto-aureus
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
@@ -75,105 +77,221 @@ development_status:
   6-4-infraestrutura-de-validação-contínua-local-e-documentação-ca: done
   epic-6-retrospective: done
 action_items:
-  - id: "epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave"
-    epic: 1
-    action: "Corrigir ordem das abas na barra de navegacao (Receitas Variaveis antes
-      de Receitas Fixas)"
-    owner: "Guilherme"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-1/epic-1-retro-08-19-2026.md"
-  - id: "epic-1-retro-item-2-criar-testes-automatizados-para-o-pacote"
-    epic: 1
-    action: "Criar testes automatizados para o pacote security no backend"
-    owner: "Guilherme"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-1/epic-1-retro-08-19-2026.md"
-  - id: "epic-2-retro-item-3-commitar-as-alterações-pendentes-da-revi"
-    epic: 2
-    action: "Commitar as alterações pendentes da revisão de código da Story 2.3"
-    owner: "Desenvolvedor"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-2/epic-2-retro-2026-08-20.md"
-  - id: "epic-3-retro-item-4-refatorar-os-componentes-de-formulários"
-    epic: 3
-    action: "Refatorar os componentes de formulários e hooks de Despesas e Receitas
-      (tanto fixas quanto variáveis) para utilizar abstrações comuns, reduzindo duplicação
-      de código."
-    owner: "Desenvolvedor"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"
-  - id: "epic-3-retro-item-5-adicionar-cobertura-de-testes-unitários"
-    epic: 3
-    action: "Adicionar cobertura de testes unitários para os Domain Models e Controllers
-      desenvolvidos (DespesaFixa, ReceitaFixa, DespesaVariavel, ReceitaVariavel)."
-    owner: "QA"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"
-  - id: "epic-3-retro-item-6-criar-uma-camada-de-serviço-service-laye"
-    epic: 3
-    action: "Criar uma camada de serviço (Service Layer) no backend para encapsular
-      e remover a regra de negócio dos Controllers."
-    owner: "Desenvolvedor Backend"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"
-  - id: "epic-3-retro-item-7-refatorar-as-apis-rest-para-utilizar-dto"
-    epic: 3
-    action: "Refatorar as APIs REST para utilizar DTOs (Data Transfer Objects), de
-      preferência usando records do Java, isolando as entidades do domínio."
-    owner: "Desenvolvedor Backend"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md"
-  - id: "epic-4-retro-item-8-centralizar-cliente-http-api-no-frontend"
-    epic: 4
-    action: "Centralizar cliente HTTP/API no Frontend para padronizar chamadas e tratamento
-      de erros"
-    owner: "Desenvolvedor Frontend"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md"
-  - id: "epic-4-retro-item-9-padronizar-regra-de-negócio-para-movimen"
-    epic: 4
-    action: "Padronizar regra de negócio para movimentações sem conta associada"
-    owner: "Arquiteto / Desenvolvedor Backend"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md"
-  - id: "epic-4-retro-item-10-otimizar-agregação-de-transações-no-back"
-    epic: 4
-    action: "Otimizar agregação de transações no Backend substituindo carregamento
-      em memória por queries SQL e índices"
-    owner: "Desenvolvedor Backend"
-    status: done
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md"
-  - id: "epic-4-retro-item-11-implementar-suíte-de-testes-e2e-automati"
-    epic: 4
-    action: "Implementar suíte de testes E2E automatizados para o Painel de Consolidação"
-    owner: "QA / Desenvolvedor"
-    status: open
-    ref: "/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md"
-  - id: "epic-5-retro-item-12-configurar-testcontainers-e-isolamento-d"
-    epic: 5
-    action: "Configurar Testcontainers e isolamento de banco de dados para a suíte
-      BackendApplicationTests"
-    owner: "Desenvolvedor Backend / DevOps"
-    status: done
-    ref: "_bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md"
-  - id: "epic-5-retro-item-13-criar-migração-flyway-v2-para-limpeza-de"
-    epic: 5
-    action: "Criar migração Flyway V2 para limpeza de índice redundante em usuarios
-      e adição de índices em FKs de movimentações"
-    owner: "Arquiteto / DBA"
-    status: open
-    ref: "_bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md"
-  - id: "epic-5-retro-item-14-integrar-errorboundary-com-queryerrorres"
-    epic: 5
-    action: "Integrar ErrorBoundary com QueryErrorResetBoundary do TanStack Query
-      para reset de cache em retentativas"
-    owner: "Desenvolvedor Frontend"
-    status: open
-    ref: "_bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md"
-  - id: "epic-6-retro-item-15-configurar-github-actions-workflow-para"
-    epic: 6
-    action: "Configurar GitHub Actions Workflow para Validação Contínua"
-    owner: "DevOps / Mantenedor"
-    status: open
-    ref: "_bmad-output/implementation-artifacts/archive/epic-6/epic-6-retro-2026-10-11.md"
+- id: epic-4-retro-item-10-otimizar-agregação-de-transações-no-back
+  epic: 4
+  action: Otimizar agregação de transações no Backend substituindo carregamento em memória por queries SQL e índices
+  owner: Desenvolvedor Backend
+  status: open
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md
+  status_at_triage: done
+  triage_id: A10
+  validation_decision: investigacao-aprovada-grupo-4
+  triage_decision: investigar-desempenho
+  triaged_at: '2026-10-14'
+  backlog_refs:
+  - DW-139
+  next_step: Medir custo e validar equivalência do saldo histórico antes de escolher otimização.
+  decision_reason: Consultar decisão vigente de D139; não é uma tarefa independente.
+- id: epic-5-retro-item-13-criar-migração-flyway-v2-para-limpeza-de
+  epic: 5
+  action: Criar migração Flyway V2 para limpeza de índice redundante em usuarios e adição de índices em FKs de movimentações
+  owner: Arquiteto / DBA
+  status: open
+  ref: _bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md
+  status_at_triage: open
+  triage_id: A13
+  validation_decision: DW-155-investigacao-aprovada-e-DW-161-planejamento-condicional-grupo-4
+  triage_decision: investigar-desempenho
+  triaged_at: '2026-10-14'
+  backlog_refs:
+  - DW-155
+  - DW-161
+  next_step: Validar catálogo/planos e redundância dos índices antes de planejar migração.
+  decision_reason: 'Migração corretiva é eventual entrega das decisões de índices; não criar V2 nesta etapa. Representante(s):
+    D155/D161.'
+action_items_history:
+- id: epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave
+  epic: 1
+  action: Corrigir ordem das abas na barra de navegacao (Receitas Variaveis antes de Receitas Fixas)
+  owner: Guilherme
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-1/epic-1-retro-08-19-2026.md
+  status_at_triage: done
+  triage_id: A01
+  triage_decision: Descartado por critério
+  triaged_at: '2026-10-14'
+  decision_reason: Não há benefício específico demonstrado de segurança ou desempenho da aplicação. Melhoria funcional,
+    visual, acessibilidade, refatoração, documentação ou cobertura genérica fora do recorte autorizado. Descartar
+    do escopo não significa resolver a falha ou desqualificar seu valor em outro objetivo.
+- id: epic-1-retro-item-2-criar-testes-automatizados-para-o-pacote
+  epic: 1
+  action: Criar testes automatizados para o pacote security no backend
+  owner: Guilherme
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-1/epic-1-retro-08-19-2026.md
+  status_at_triage: done
+  triage_id: A02
+  triage_decision: Resolvido — histórico
+  triaged_at: '2026-10-14'
+  decision_reason: Sem trabalho remanescente neste apontamento; preservar evidência original, sem descartar como
+    se nunca tivesse sido entregue.
+- id: epic-2-retro-item-3-commitar-as-alterações-pendentes-da-revi
+  epic: 2
+  action: Commitar as alterações pendentes da revisão de código da Story 2.3
+  owner: Desenvolvedor
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-2/epic-2-retro-2026-08-20.md
+  status_at_triage: done
+  triage_id: A03
+  triage_decision: Resolvido — histórico
+  triaged_at: '2026-10-14'
+  decision_reason: Sem trabalho remanescente neste apontamento; preservar evidência original, sem descartar como
+    se nunca tivesse sido entregue.
+- id: epic-3-retro-item-4-refatorar-os-componentes-de-formulários
+  epic: 3
+  action: Refatorar os componentes de formulários e hooks de Despesas e Receitas (tanto fixas quanto variáveis)
+    para utilizar abstrações comuns, reduzindo duplicação de código.
+  owner: Desenvolvedor
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md
+  status_at_triage: done
+  triage_id: A04
+  triage_decision: Descartado por critério
+  triaged_at: '2026-10-14'
+  decision_reason: Não há benefício específico demonstrado de segurança ou desempenho da aplicação. Melhoria funcional,
+    visual, acessibilidade, refatoração, documentação ou cobertura genérica fora do recorte autorizado. Descartar
+    do escopo não significa resolver a falha ou desqualificar seu valor em outro objetivo.
+- id: epic-3-retro-item-5-adicionar-cobertura-de-testes-unitários
+  epic: 3
+  action: Adicionar cobertura de testes unitários para os Domain Models e Controllers desenvolvidos (DespesaFixa,
+    ReceitaFixa, DespesaVariavel, ReceitaVariavel).
+  owner: QA
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md
+  status_at_triage: done
+  triage_id: A05
+  triage_decision: Resolvido — histórico
+  triaged_at: '2026-10-14'
+  decision_reason: Sem trabalho remanescente neste apontamento; preservar evidência original, sem descartar como
+    se nunca tivesse sido entregue.
+- id: epic-3-retro-item-6-criar-uma-camada-de-serviço-service-laye
+  epic: 3
+  action: Criar uma camada de serviço (Service Layer) no backend para encapsular e remover a regra de negócio dos
+    Controllers.
+  owner: Desenvolvedor Backend
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md
+  status_at_triage: done
+  triage_id: A06
+  triage_decision: Resolvido — histórico
+  triaged_at: '2026-10-14'
+  decision_reason: Sem trabalho remanescente neste apontamento; preservar evidência original, sem descartar como
+    se nunca tivesse sido entregue.
+- id: epic-3-retro-item-7-refatorar-as-apis-rest-para-utilizar-dto
+  epic: 3
+  action: Refatorar as APIs REST para utilizar DTOs (Data Transfer Objects), de preferência usando records do Java,
+    isolando as entidades do domínio.
+  owner: Desenvolvedor Backend
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-3/epic-3-retro-2026-08-23.md
+  status_at_triage: done
+  triage_id: A07
+  triage_decision: Resolvido — histórico
+  triaged_at: '2026-10-14'
+  decision_reason: Sem trabalho remanescente neste apontamento; preservar evidência original, sem descartar como
+    se nunca tivesse sido entregue.
+- id: epic-4-retro-item-8-centralizar-cliente-http-api-no-frontend
+  epic: 4
+  action: Centralizar cliente HTTP/API no Frontend para padronizar chamadas e tratamento de erros
+  owner: Desenvolvedor Frontend
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md
+  status_at_triage: done
+  triage_id: A08
+  triage_decision: Resolvido — histórico
+  triaged_at: '2026-10-14'
+  decision_reason: Sem trabalho remanescente neste apontamento; preservar evidência original, sem descartar como
+    se nunca tivesse sido entregue.
+- id: epic-4-retro-item-9-padronizar-regra-de-negócio-para-movimen
+  epic: 4
+  action: Padronizar regra de negócio para movimentações sem conta associada
+  owner: Arquiteto / Desenvolvedor Backend
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md
+  status_at_triage: done
+  triage_id: A09
+  triage_decision: Resolvido — histórico
+  triaged_at: '2026-10-14'
+  decision_reason: Sem trabalho remanescente neste apontamento; preservar evidência original, sem descartar como
+    se nunca tivesse sido entregue.
+- id: epic-4-retro-item-11-implementar-suíte-de-testes-e2e-automati
+  epic: 4
+  action: Implementar suíte de testes E2E automatizados para o Painel de Consolidação
+  owner: QA / Desenvolvedor
+  ref: /home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/implementation-artifacts/archive/epic-4/epic-4-retro-2026-09-14.md
+  status_at_triage: open
+  triage_id: A11
+  triage_decision: Descartado por critério
+  triaged_at: '2026-10-14'
+  decision_reason: Não há benefício específico demonstrado de segurança ou desempenho da aplicação. Melhoria funcional,
+    visual, acessibilidade, refatoração, documentação ou cobertura genérica fora do recorte autorizado. Descartar
+    do escopo não significa resolver a falha ou desqualificar seu valor em outro objetivo.
+- id: epic-5-retro-item-12-configurar-testcontainers-e-isolamento-d
+  epic: 5
+  action: Configurar Testcontainers e isolamento de banco de dados para a suíte BackendApplicationTests
+  owner: Desenvolvedor Backend / DevOps
+  ref: _bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md
+  status_at_triage: done
+  triage_id: A12
+  triage_decision: Duplicado — histórico
+  triaged_at: '2026-10-14'
+  decision_reason: Consultar decisão vigente de D163; não é uma tarefa independente.
+- id: epic-5-retro-item-14-integrar-errorboundary-com-queryerrorres
+  epic: 5
+  action: Integrar ErrorBoundary com QueryErrorResetBoundary do TanStack Query para reset de cache em retentativas
+  owner: Desenvolvedor Frontend
+  ref: _bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md
+  status_at_triage: open
+  triage_id: A14
+  triage_decision: Duplicado — histórico
+  triaged_at: '2026-10-14'
+  decision_reason: Consultar decisão vigente de D168; não é uma tarefa independente.
+- id: epic-6-retro-item-15-configurar-github-actions-workflow-para
+  epic: 6
+  action: Configurar GitHub Actions Workflow para Validação Contínua
+  owner: DevOps / Mantenedor
+  ref: _bmad-output/implementation-artifacts/archive/epic-6/epic-6-retro-2026-10-11.md
+  status_at_triage: open
+  triage_id: A15
+  triage_decision: Descartado por critério
+  triaged_at: '2026-10-14'
+  decision_reason: CI previne regressões indiretamente, mas não é correção específica de segurança nem desempenho
+    da aplicação. Testes de segurança preservados não exigem GitHub Actions para existir.
+backlog_triage:
+  date: '2026-10-14'
+  report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
+  ledger: _bmad-output/implementation-artifacts/deferred-work.md
+  scope: Segurança e desempenho da aplicação; descartes por decisão de Guilherme.
+  active_deferred_counts:
+    security_retained: 8
+    security_investigation: 2
+    performance_investigation: 5
+    performance_conditional_planning: 1
+  note: action_items contém apenas compromissos retrospectivos ainda ativos. Os demais estão em action_items_history;
+    detalhes ativos de segurança e desempenho ficam no ledger DW. Nenhum épico/story foi criado ou reaberto.
+  planning_approvals: [{group: 1, approved_by: Guilherme, scope: planejamento, backlog_refs: [DW-13, DW-14, DW-26, DW-36], execution_status: not-started}]
+  validation_decisions_group_2: {approved_by: Guilherme, plan: [DW-35, DW-37, DW-176], investigate: [DW-160], consolidated: {DW-38: DW-160}, discard: [DW-63], execution_status: not-started}
+  validation_decisions_group_3: {approved_by: Guilherme, plan: [DW-60], investigate: [DW-2], investigation_scope: revogacao-de-sessao, automatic_renewal: not-approved, execution_status: not-started}
+  validation_decisions_group_4: {approved_by: Guilherme, investigate: [DW-139, DW-155], plan_conditionally: [DW-161], precondition: conferir-catalogo-e-preservar-unique, action_item_refs: [A10, A13], execution_status: not-started}
+  validation_decisions_group_5: {approved_by: Guilherme, investigate: [DW-117, DW-147, DW-153], lower_priority: [DW-153], implementation: conditional-on-evidence, execution_status: not-started}
+  validation_decisions_group_6: {approved_by: Guilherme, discard: [DW-27, DW-28, DW-92], execution_status: not-started}
+  validation_result:
+    status: complete
+    reviewed_original_records: 21
+    approved_by: Guilherme
+    plan: [DW-13, DW-14, DW-26, DW-35, DW-36, DW-37, DW-60, DW-176]
+    plan_conditionally: [DW-161]
+    investigate: [DW-2, DW-160, DW-117, DW-139, DW-147, DW-153, DW-155]
+    consolidated: {DW-38: DW-160}
+    discarded: [DW-63, DW-27, DW-28, DW-92]
+    lower_priority_investigation: [DW-153]
+    action_item_links: {A10: [DW-139], A13: [DW-155, DW-161]}
+    story_completion_rule: Atualizar os DW e action items declarados com data/evidência após testes e revisão, antes de marcar a história done; não encerrar escopo parcial nem tratar investigação como implementação.
+    execution_status: not-started
+  branch_policy:
+    housekeeping_branch: planning/organizacao-backlog
+    next_planning_branch: planning/epico-seguranca-desempenho
+    create_planning_branch_before_writing_planning_artifacts: true
+    note: Esta branch é exclusiva da organização. Antes de iniciar o planejamento, versionar a organização para não transportar alterações pendentes para a nova branch. Guilherme autorizou commit somente dos dois backlogs e do relatório; push não autorizado.
 project_key: NOKEY
