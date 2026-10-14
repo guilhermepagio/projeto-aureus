@@ -17,13 +17,13 @@ route: 'one-shot'
 ## Suggested Review Order
 
 - Alinha o seletor de mês à identidade verde das receitas.
-  [MonthPicker.tsx:152](../../frontend-web/src/components/ui/MonthPicker.tsx#L152)
+  [MonthPicker.tsx:152](../../../../../frontend-web/src/components/ui/MonthPicker.tsx#L152)
 
 - Mantém o tema verde do seletor de datas coerente com o de meses.
-  [DatePicker.tsx:189](../../frontend-web/src/components/ui/DatePicker.tsx#L189)
+  [DatePicker.tsx:189](../../../../../frontend-web/src/components/ui/DatePicker.tsx#L189)
 
 - Alinha submissão e foco dos campos ao azul de Contas.
-  [ContaFormModal.tsx:112](../../frontend-web/src/pages/Contas/components/ContaFormModal.tsx#L112)
+  [ContaFormModal.tsx:112](../../../../../frontend-web/src/pages/Contas/components/ContaFormModal.tsx#L112)
 
 - Alinha submissão e foco dos campos ao azul de Categorias.
-  [CategoriaFormModal.tsx:119](../../frontend-web/src/pages/Categorias/components/CategoriaFormModal.tsx#L119)
+  [CategoriaFormModal.tsx:119](../../../../../frontend-web/src/pages/Categorias/components/CategoriaFormModal.tsx#L119)

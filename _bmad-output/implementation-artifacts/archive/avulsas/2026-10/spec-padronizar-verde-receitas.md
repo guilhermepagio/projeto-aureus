@@ -19,13 +19,13 @@ Levantamento para análise: seletores de mês de Receitas Variáveis usam emeral
 ## Suggested Review Order
 
 - Alinha cadastro e recuperação ao verde da navegação nas duas abas de receitas.
-  [RequiresDependencies.tsx:39](../../frontend-web/src/components/RequiresDependencies.tsx#L39)
+  [RequiresDependencies.tsx:39](../../../../../frontend-web/src/components/RequiresDependencies.tsx#L39)
 
 - Comparar seletores esmeralda com ações de receitas.
-  [MonthPicker.tsx:156](../../frontend-web/src/components/ui/MonthPicker.tsx#L156)
+  [MonthPicker.tsx:156](../../../../../frontend-web/src/components/ui/MonthPicker.tsx#L156)
 
 - Comparar criação azul com Salvar verde em Contas.
-  [ContaFormModal.tsx:112](../../frontend-web/src/pages/Contas/components/ContaFormModal.tsx#L112)
+  [ContaFormModal.tsx:112](../../../../../frontend-web/src/pages/Contas/components/ContaFormModal.tsx#L112)
 
 - Comparar criação azul com Salvar verde em Categorias.
-  [CategoriaFormModal.tsx:119](../../frontend-web/src/pages/Categorias/components/CategoriaFormModal.tsx#L119)
+  [CategoriaFormModal.tsx:119](../../../../../frontend-web/src/pages/Categorias/components/CategoriaFormModal.tsx#L119)

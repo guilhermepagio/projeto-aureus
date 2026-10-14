@@ -478,21 +478,21 @@
 
 
 
-- source_spec: spec-padronizar-verde-receitas.md
+- source_spec: archive/avulsas/2026-10/spec-padronizar-verde-receitas.md
   summary: Distinguir consultas pausadas sem dados de cadastros vazios.
   evidence: RequiresDependencies verifica isLoading, mas não trata estado pending/paused; preexistente.
-- source_spec: spec-padronizar-verde-receitas.md
+- source_spec: archive/avulsas/2026-10/spec-padronizar-verde-receitas.md
   summary: Indicar recuperação em andamento e evitar cliques repetidos.
   evidence: Tentar novamente dispara refetch sem desabilitação nem indicação de isFetching; preexistente.
-- source_spec: spec-padronizar-verde-receitas.md
+- source_spec: archive/avulsas/2026-10/spec-padronizar-verde-receitas.md
   summary: Retirar console.error da renderização de RequiresDependencies.
   evidence: O registro ocorre em cada renderização do ramo de falha; preexistente.
-- source_spec: spec-padronizar-verde-receitas.md
+- source_spec: archive/avulsas/2026-10/spec-padronizar-verde-receitas.md
   summary: Melhorar anúncios e hierarquia de títulos dos estados de dependências.
   evidence: Carregamento e falha não têm status/alert e o primeiro título da área é h3; preexistente.
-- source_spec: spec-padronizar-verde-receitas.md
+- source_spec: archive/avulsas/2026-10/spec-padronizar-verde-receitas.md
   summary: Completar retorno ao fluxo original após cadastrar dependências.
   evidence: RequiresDependencies envia state.from, mas os destinos não o consomem; preexistente.
-- source_spec: spec-padronizar-verde-receitas.md
+- source_spec: archive/avulsas/2026-10/spec-padronizar-verde-receitas.md
   summary: Avaliar abertura direta dos formulários nos links Cadastrar Conta e Cadastrar Categoria.
   evidence: Os links abrem listagens e exigem outra ação para iniciar cadastro; preexistente.

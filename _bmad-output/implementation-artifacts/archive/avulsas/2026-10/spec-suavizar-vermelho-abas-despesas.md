@@ -19,7 +19,7 @@ Revisão independente: uma correção aplicada para preservar o hover vinho no d
 ## Suggested Review Order
 
 - Aplica vinho às duas abas de despesas, incluindo navegação mobile e foco.
-  [Navigation.tsx:16](../../frontend-web/src/components/Navigation/Navigation.tsx#L16)
+  [Navigation.tsx:16](../../../../../frontend-web/src/components/Navigation/Navigation.tsx#L16)
 
 - Alinha os cadastros de dependências ao vinho das abas de despesas.
-  [RequiresDependencies.tsx:32](../../frontend-web/src/components/RequiresDependencies.tsx#L32)
+  [RequiresDependencies.tsx:32](../../../../../frontend-web/src/components/RequiresDependencies.tsx#L32)

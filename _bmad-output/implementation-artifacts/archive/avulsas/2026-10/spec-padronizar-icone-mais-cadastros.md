@@ -17,16 +17,16 @@ route: 'one-shot'
 ## Suggested Review Order
 
 - Centraliza o mesmo desenho de adição em 20 px.
-  [PlusIcon.tsx:1](../../frontend-web/src/components/ui/PlusIcon.tsx#L1)
+  [PlusIcon.tsx:1](../../../../../frontend-web/src/components/ui/PlusIcon.tsx#L1)
 
 - Aplica o ícone no cabeçalho e no botão central de Contas.
-  [ContasPage.tsx:45](../../frontend-web/src/pages/Contas/ContasPage.tsx#L45)
+  [ContasPage.tsx:45](../../../../../frontend-web/src/pages/Contas/ContasPage.tsx#L45)
 
 - Aplica o ícone no cabeçalho e no botão central de Categorias.
-  [CategoriasPage.tsx:45](../../frontend-web/src/pages/Categorias/CategoriasPage.tsx#L45)
+  [CategoriasPage.tsx:45](../../../../../frontend-web/src/pages/Categorias/CategoriasPage.tsx#L45)
 
 - Permite ícone opcional sem alterar ações existentes.
-  [EmptyState.tsx:58](../../frontend-web/src/components/ui/EmptyState.tsx#L58)
+  [EmptyState.tsx:58](../../../../../frontend-web/src/components/ui/EmptyState.tsx#L58)
 
 - Confirma abertura do formulário pelos dois botões após atualização do nome acessível.
-  [ContasPage.test.tsx:84](../../frontend-web/src/pages/Contas/ContasPage.test.tsx#L84)
+  [ContasPage.test.tsx:84](../../../../../frontend-web/src/pages/Contas/ContasPage.test.tsx#L84)

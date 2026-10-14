@@ -77,10 +77,10 @@ context: []
 ## Suggested Review Order
 
 - Anotações por campo substituem acessores triviais e explicitam permissões de acesso.
-  [Categoria.java:24](../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/Categoria.java#L24)
+  [Categoria.java:24](../../../../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/Categoria.java#L24)
 - O identificador do tenant mantém exclusivamente leitura pública.
-  [TenantAwareEntity.java:8](../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java#L8)
+  [TenantAwareEntity.java:8](../../../../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java#L8)
 - Campos financeiros usam Lombok; métodos de cálculo permanecem explícitos.
-  [ReceitaVariavel.java:40](../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/ReceitaVariavel.java#L40)
+  [ReceitaVariavel.java:40](../../../../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/ReceitaVariavel.java#L40)
 - O getter de expiração é gerado sem expor a chave criptográfica.
-  [JwtUtil.java:15](../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtUtil.java#L15)
+  [JwtUtil.java:15](../../../../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtUtil.java#L15)

@@ -17,7 +17,7 @@ route: 'one-shot'
 ## Suggested Review Order
 
 - Conferir o acesso à foto dentro de Optional.map.
-  [AuthController.java:37](../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java#L37)
+  [AuthController.java:37](../../../../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java#L37)
 
 - Conferir as quatro reduções dos valores históricos com a mesma soma e identidade.
-  [ConsolidacaoService.java:184](../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java#L184)
+  [ConsolidacaoService.java:184](../../../../../backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java#L184)
