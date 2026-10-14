@@ -1,7 +1,5 @@
 package com.guilhermepagio.aureus.backend.controller;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.guilhermepagio.aureus.backend.domain.Usuario;
+import com.guilhermepagio.aureus.backend.domain.dto.UserProfileResponseDTO;
 import com.guilhermepagio.aureus.backend.repository.UsuarioRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,19 +27,16 @@ public class AuthController {
     private final UsuarioRepository usuarioRepository;
 
     @GetMapping("/me")
-    public ResponseEntity<?> me(final Authentication authentication) {
+    public ResponseEntity<UserProfileResponseDTO> me(final Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
             return ResponseEntity.status(401).build();
         }
         
         final String subjectId = String.valueOf(authentication.getPrincipal());
         final Optional<Usuario> usuarioOpt = usuarioRepository.findById(Long.valueOf(subjectId));
+        final String fotoPerfil = usuarioOpt.map((final Usuario usuario) -> usuario.getFotoPerfil()).orElse(null);
         
-        final Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("subjectId", subjectId);
-        usuarioOpt.ifPresent(usuario -> responseBody.put("fotoPerfil", usuario.getFotoPerfil()));
-        
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok(new UserProfileResponseDTO(subjectId, fotoPerfil));
     }
 
     @PostMapping("/logout")
