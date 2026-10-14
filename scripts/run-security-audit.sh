@@ -168,7 +168,7 @@ if [ "${AUDIT_BACKEND}" = true ]; then
 
     echo -e "${CYAN}Executando OWASP Dependency-Check via Maven...${NC}"
     if "${MVN_CMD[@]}"; then
-      echo -e "${GREEN}✓ Nenhuma vulnerabilidade de severidade crítica/alta (CVSS >= 8) identificada no Backend!${NC}"
+      echo -e "${GREEN}✓ Auditoria do Backend aprovada conforme o limite CVSS e as supressões configuradas no Maven.${NC}"
       echo -e "${CYAN}Relatório detalhado gerado em: ${BACKEND_DIR}/target/dependency-check-report.html${NC}"
     else
       echo -e "${RED}❌ O OWASP Dependency-Check identificou potenciais vulnerabilidades no Backend.${NC}"
