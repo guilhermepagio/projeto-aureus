@@ -83,7 +83,7 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
               if (!e.target.value.trim()) setError('A descrição é obrigatória.');
             }}
             disabled={isPending}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600 sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100"
             placeholder="Ex: Alimentação, Transporte, Salário"
             maxLength={20}
           />
@@ -100,7 +100,7 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
             onChange={(e) => setObservacoes(e.target.value)}
             disabled={isPending}
             rows={12}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600 sm:text-sm p-2 border disabled:opacity-50 disabled:bg-gray-100 resize-none overflow-y-auto"
             maxLength={300}
           />
         </div>
@@ -116,7 +116,7 @@ const CategoriaFormModal: React.FC<CategoriaFormModalProps> = ({ isOpen, onClose
           </button>
           <button
             type="submit"
-            className="cursor-pointer px-4 h-8 inline-flex items-center justify-center text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary-light focus:outline-none"
+            className="cursor-pointer px-4 h-8 inline-flex items-center justify-center text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
             disabled={isPending}
           >
             {isPending ? 'Salvando...' : 'Salvar'}
