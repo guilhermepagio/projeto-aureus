@@ -18,6 +18,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -35,151 +36,83 @@ import lombok.Setter;
     @Index(name = "idx_despesas_variaveis_usuario_datas", columnList = "usuario_id, data_inicio, data_fim"),
     @Index(name = "idx_despesas_variaveis_datas", columnList = "data_inicio, data_fim")
 })
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DespesaVariavel extends TenantAwareEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private Long id;
 
     @NotBlank(message = "A descrição é obrigatória")
     @Size(max = 100, message = "A descrição deve ter no máximo 100 caracteres")
     @Column(nullable = false, length = 100)
+    @Getter
+    @Setter
     private String descricao;
 
     @Size(max = 100, message = "O local da compra deve ter no máximo 100 caracteres")
     @Column(length = 100)
+    @Getter
+    @Setter
     private String localCompra;
 
     @Column
+    @Getter
+    @Setter
     private LocalDate dataCompra;
 
     @NotNull(message = "O valor da parcela é obrigatório")
     @Positive(message = "O valor da parcela deve ser maior que zero")
-    @jakarta.validation.constraints.DecimalMax(value = "9999999.99", message = "O valor deve ser de no máximo R$ 9.999.999,99")
+    @DecimalMax(value = "9999999.99", message = "O valor deve ser de no máximo R$ 9.999.999,99")
     @Digits(integer = 7, fraction = 2, message = "Formato numérico inválido")
     @Column(nullable = false, precision = 9, scale = 2)
+    @Getter
+    @Setter
     private BigDecimal valorParcela;
 
     @NotNull(message = "A quantidade de parcelas é obrigatória")
     @Min(value = 1, message = "A quantidade de parcelas deve ser pelo menos 1")
     @Max(value = 1200, message = "Máximo de 1200 parcelas")
     @Column(nullable = false)
+    @Getter
+    @Setter
     private Integer quantidadeParcelas;
 
     @NotNull(message = "A data de início é obrigatória")
     @Column(nullable = false)
+    @Getter
+    @Setter
     private LocalDate dataInicio;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private LocalDate dataFim;
 
     @NotNull(message = "Selecione uma categoria")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @Getter
+    @Setter
     private Categoria categoria;
 
     @NotNull(message = "Selecione uma conta")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conta_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @Getter
+    @Setter
     private Conta conta;
 
     @Size(max = 300, message = "As observações devem ter no máximo 300 caracteres")
     @Column(length = 300)
+    @Getter
+    @Setter
     private String observacoes;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getLocalCompra() {
-        return localCompra;
-    }
-
-    public void setLocalCompra(String localCompra) {
-        this.localCompra = localCompra;
-    }
-
-    public LocalDate getDataCompra() {
-        return dataCompra;
-    }
-
-    public void setDataCompra(LocalDate dataCompra) {
-        this.dataCompra = dataCompra;
-    }
-
-    public BigDecimal getValorParcela() {
-        return valorParcela;
-    }
-
-    public void setValorParcela(BigDecimal valorParcela) {
-        this.valorParcela = valorParcela;
-    }
-
-    public Integer getQuantidadeParcelas() {
-        return quantidadeParcelas;
-    }
-
-    public void setQuantidadeParcelas(Integer quantidadeParcelas) {
-        this.quantidadeParcelas = quantidadeParcelas;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
-    public Conta getConta() {
-        return conta;
-    }
-
-    public void setConta(Conta conta) {
-        this.conta = conta;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
-    }
-
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
-    }
 
     /**
      * Calcula o valor total do parcelamento (valorParcela * quantidadeParcelas).
