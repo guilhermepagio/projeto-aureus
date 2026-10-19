@@ -149,6 +149,12 @@ FR38: Epic 6 - Testes de Integração e Isolamento Multi-Tenancy (Surefire/Fails
 FR40: Epic 6 - Testes de Componentes Frontend (Vitest)
 FR42: Epic 6 - Infraestrutura de Validação Contínua e Documentação Canônica
 
+FR47: Epic 7 - Hardening de Autorização, Cookies de Sessão e Matriz Residual CSRF/Multi-Tenancy
+FR48: Epic 7 - Isolamento de Contexto, Correlação MDC e Logs Estruturados de Troubleshooting
+FR49: Epic 7 - Tratamento de Sessão Inválida (401 em Uso) e Limpeza de Estado Privado no Logout
+FR50: Epic 7 - Migração Flyway V2 (Índices de Tenant Obrigatórios e Redundâncias) e Avaliação de Índices/FKs
+FR51: Epic 7 - Investigações Técnicas de Segurança e Desempenho
+
 ## Epic List
 
 * **Epic 1: Autenticação e Navegação Segura (Auth & Shell)** — Permitir que o usuário acesse o sistema de forma segura via Google e que seus dados fiquem completamente isolados por usuário, fornecendo a casca visual e navegação principal (Pill Nav Desktop e Bottom Nav Mobile).
@@ -157,6 +163,7 @@ FR42: Epic 6 - Infraestrutura de Validação Contínua e Documentação Canônic
 * **Epic 4: Consolidação e Projeção Mensal (Painel de 24 Meses)** — Matriz analítica de projeção de 24 meses com subtotais por conta, despesas por categoria (R$ e %), resumo mensal, saldo histórico acumulado e navegação por Swipe mobile.
 * **Epic 5: Saneamento Arquitetural e Resolução de Débitos Técnicos (Hardening)** — Resolução definitiva dos débitos técnicos acumulados: Service Layer e DTOs Records no backend, `@RestControllerAdvice` global, validação de propriedade multi-tenant em relacionamentos, índices de banco, cliente HTTP centralizado no frontend e abstração compartilhada de formulários (DRY).
 * **Epic 6: Testes Automatizados e Qualidade Contínua (Testing Strategy)** — Suíte robusta de testes em 3 camadas sobre a base saneada (Unitários Backend com JUnit 5/Mockito, Integração com Testcontainers e Failsafe, e Componentes Frontend com Vitest), complementada por pipeline unificado e documentação canônica.
+* **Epic 7: Segurança, Desempenho e Observabilidade da Aplicação** — Fechamento dos itens ativos da triagem de segurança e desempenho e instrumentação de observabilidade: restrição de fallback de rotas, garantias de cookie e limpeza de sessão local em 401/logout, correlação `MDC` e logs estruturados, migração Flyway V2 com índices obrigatórios de `usuario_id` em `contas` e `categorias`, e investigações técnicas reproduzíveis de sessão e banco de dados.
 
 ---
 
@@ -563,5 +570,102 @@ So that qualquer desenvolvedor compreenda a arquitetura de testes, consiga rodar
 - Matriz qualitativa de testes (regras de negócio, segurança e UX garantidas)
 - Guia de execução de comandos para desenvolvedor solo
 - Registro formal do adiamento do Playwright (E2E) para pós-V1 (após a consolidação do Modo Escuro e da experiência Mobile)
+
+---
+
+## Epic 7: Segurança, Desempenho e Observabilidade da Aplicação
+
+Consolidar as garantias operacionais de segurança, desempenho e observabilidade do Aureus a partir do contrato canônico `_bmad-output/specs/spec-epico-7/SPEC.md`: restringir o fallback de autorização à allowlist pública explícita, validar atributos de cookies e matriz residual de CSRF/vínculos cruzados, instrumentar correlação por requisição (`MDC`) e logs estruturados sem vazamento de dados sensíveis, limpar o estado privado do frontend ao detectar `401` em uso ou falha de rede no logout, garantir índices de `usuario_id` em todas as tabelas filtradas por `TenantContext` via migração Flyway V2 e produzir relatórios reproduzíveis para as investigações técnicas de segurança e banco de dados.
+
+### Story 7.1: Hardening de Autorização, Cookies de Sessão e Matriz Residual CSRF/Multi-Tenancy (Backend)
+
+As a Engenheiro de Segurança / Desenvolvedor Backend,
+I want restringir o fallback de autorização à allowlist pública explícita e completar as verificações de atributos de cookie OAuth/logout, CSRF em `PUT`/`DELETE` e vínculos cruzados entre tenants,
+So that nenhum endpoint fora da política pública fique exposto a acesso anônimo e os contratos de sessão e integridade multi-tenant estejam integralmente comprovados por testes automatizados.
+
+**Acceptance Criteria:**
+
+**Given** o contrato de segurança definido em `_bmad-output/specs/spec-epico-7/SPEC.md` (`CAP-1`, `CAP-2`, `CAP-5`) e `seguranca.md` (`SEG-01` a `SEG-06`, `SEG-14` a `SEG-16`)
+**When** a configuração de segurança e a suíte de testes de integração forem atualizadas
+**Then** devem assegurar:
+- **Escopo rastreado:** `DW-13`, `DW-14`, `DW-36`, `DW-176` | **Action items:** `nenhum`
+- Inventário das rotas públicas necessárias (incluindo início/callback OAuth e política explícita para endpoints do Actuator) e substituição do fallback `anyRequest().permitAll()` em `SecurityConfig.java` pela restrição correspondente (`DW-13`)
+- Preservação do fluxo OAuth legítimo, retorno `401` em `/api/auth/me` anônimo e manutenção do contrato de logout com CSRF (`SEG-01` a `SEG-03`)
+- Verificação automatizada dos atributos do cookie `AUREUS_SESSION` na emissão OAuth (`HttpOnly`, `Path=/`, `SameSite=Lax`, `Secure` conforme transporte e `Max-Age` coerente com `jwt.expiration / 1000` — `DW-36`) e na expiração do logout (valor vazio, `Max-Age=0` e mesmos atributos de segurança — `DW-14`)
+- Inventário da cobertura existente em `SecurityIT`, `MultiTenancyIT` e `RestContractAndIntegrityIT` e adição exclusiva dos testes residuais faltantes para `PUT`/`DELETE` sem token CSRF (`403` sem mutação) e vínculos cruzados de conta/categoria entre tenants (`403` para vínculo alheio e `404` para recurso não acessível — `DW-176`)
+- Atualização obrigatória de `DW-13`, `DW-14`, `DW-36` e `DW-176` em `_bmad-output/implementation-artifacts/deferred-work.md` com data ISO, evidência e revisão antes de marcar a história como `done`
+
+### Story 7.2: Isolamento de Contexto, Correlação MDC e Logs Estruturados de Troubleshooting (Backend)
+
+As a Desenvolvedor / Operador do Sistema,
+I want verificar o isolamento e limpeza de `TenantContext` e `SecurityContextHolder` em reutilização de threads e instrumentar correlação `MDC` (`requestId` + `tenantId`) com logs estruturados nos fluxos críticos,
+So that possamos diagnosticar falhas de autenticação, erros de validação e gargalos com rastreabilidade ponta a ponta sem vazar contexto entre requisições nem expor dados financeiros ou segredos nos logs.
+
+**Acceptance Criteria:**
+
+**Given** o contrato definido em `_bmad-output/specs/spec-epico-7/SPEC.md` (`CAP-4 parcial`, `CAP-10`), `seguranca.md` (`SEG-10`, `SEG-11`) e `observabilidade.md` (`OBS-01` a `OBS-05`)
+**When** o filtro de autenticação, o resolver de tenant, o handler global de exceções e os serviços forem instrumentados e testados
+**Then** devem assegurar:
+- **Escopo rastreado:** `DW-35`, `DW-37`, `CAP-10` (`OBS-01..05`) | **Action items:** `nenhum`
+- Testes automatizados comprovando população e limpeza de `TenantContext` e `SecurityContextHolder` após requisição válida, token inválido/expirado, erro e exceção na cadeia, incluindo reuso da mesma thread por outro tenant ou chamada anônima (`DW-35`)
+- Testes unitários do contrato atual de `CurrentTenantIdentifierResolverImpl` para tenant preenchido, nulo, vazio e apenas espaços (`DW-37`, sem alterar o fallback antes da investigação `DW-160`)
+- Preenchimento do `MDC` (SLF4J) com `requestId` e `tenantId` (ou marcador anônimo) por requisição e remoção/limpeza garantida em bloco `finally` no filtro, configurando o padrão de console no `application.yaml` (`OBS-01` a `OBS-03`)
+- Instrumentação de logs padronizados em `OAuth2LoginSuccessHandler`, `AuthController` e `JwtAuthenticationFilter` (`INFO` em login/logout; `DEBUG`/`WARN` em rejeição de token), `GlobalExceptionHandler` (`WARN` em `403`/violações, `DEBUG` em `404`, `ERROR` em `500`) e serviços financeiros/consolidação (`INFO`/`DEBUG` com IDs técnicos e duração/contagem na consolidação)
+- Proibição estrita e verificada por testes de registrar tokens JWT, cookies (`AUREUS_SESSION`, `XSRF-TOKEN`), valores monetários, descrições financeiras pessoais ou dados de perfil nas mensagens de log (`OBS-04`, `OBS-05`)
+- Atualização obrigatória de `DW-35` e `DW-37` em `_bmad-output/implementation-artifacts/deferred-work.md` com data ISO, evidência e revisão antes de marcar a história como `done`
+
+### Story 7.3: Tratamento de Sessão Inválida (401 em Uso) e Limpeza de Estado Privado no Logout (Frontend)
+
+As a Usuário do Aureus,
+I want que a aplicação limpe imediatamente qualquer estado e cache privado local e retorne à tela de login tanto no logout (mesmo com falha de rede) quanto ao receber `401 Unauthorized` durante o uso,
+So that meus dados financeiros não permaneçam visíveis ou em memória no navegador quando minha sessão expirar ou for encerrada.
+
+**Acceptance Criteria:**
+
+**Given** o contrato definido em `_bmad-output/specs/spec-epico-7/SPEC.md` (`CAP-3`) e `seguranca.md` (`SEG-07` a `SEG-09`)
+**When** o cliente HTTP (`apiClient.ts`), o fluxo de autenticação e os testes de frontend forem atualizados
+**Then** devem assegurar:
+- **Escopo rastreado:** `DW-26`, `DW-60` | **Action items:** `nenhum`
+- Tratamento centralizado de respostas `401 Unauthorized` durante o uso da aplicação (após a inicialização), disparando limpeza imediata do `authStore` e do cache privado do `QueryClient` e redirecionamento para a tela de login, preservando o comportamento normal de erros `403`, `404` e `400` (`DW-60` / `SEG-08`)
+- Testes automatizados no frontend verificando que o acionamento de logout em `Header.tsx` com cache privado preenchido limpa `authStore` e `QueryClient` e navega ao login tanto em resposta `200/204` quanto em erro de rede (`DW-26` / `SEG-07`)
+- Registro claro na evidência distinguindo limpeza local no cliente da invalidação de cookie/sessão no servidor (`SEG-09`)
+- Atualização obrigatória de `DW-26` e `DW-60` em `_bmad-output/implementation-artifacts/deferred-work.md` com data ISO, evidência e revisão antes de marcar a história como `done`
+
+### Story 7.4: Migração Flyway V2 (Índices de Tenant Obrigatórios e Redundâncias) e Avaliação de Índices/FKs
+
+As a Arquiteto de Sistema / Desenvolvedor Backend,
+I want criar a migração incremental Flyway V2 garantindo índices em `usuario_id` para `contas` e `categorias`, avaliar pelo catálogo/planos do PostgreSQL os índices de FKs e os índices de data sem `usuario_id`, e remover eventual índice secundário redundante em `usuarios` preservando `UNIQUE`,
+So that todas as tabelas filtradas pelo `TenantContext` possuam índice adequado sem quebrar o checksum da migração `V1` e sem manter índices redundantes comprovados.
+
+**Acceptance Criteria:**
+
+**Given** o contrato definido em `_bmad-output/specs/spec-epico-7/SPEC.md` (`CAP-8`) e `desempenho.md` (`PERF-07` a `PERF-11`)
+**When** o catálogo do PostgreSQL for inspecionado e a migração `V2` for implementada e testada
+**Then** devem assegurar:
+- **Escopo rastreado:** `DW-155`, `DW-161` | **Action items:** `A13` (`epic-5-retro-item-13-criar-migração-flyway-v2-para-limpeza-de`)
+- Preservação integral e imutável de `V1__create_performance_indexes.sql` e ausência de índice simples duplicado em `(usuario_id)` nas 4 tabelas de movimentações (que já possuem `usuario_id` como primeira coluna de índices compostos na `V1` — `PERF-07`)
+- Criação obrigatória na migração Flyway `V2` dos índices `idx_contas_usuario_id` em `contas(usuario_id)` e `idx_categorias_usuario_id` em `categorias(usuario_id)` (`PERF-07`)
+- Inspeção do catálogo (`pg_indexes` / `pg_constraint`) para `usuarios.google_subject_id`: somente se confirmado que `idx_usuarios_google_subject_id` é secundário redundante ao índice da constraint `UNIQUE`, removê-lo na `V2` comprovando por teste que a unicidade continua imposta (`DW-161` / `PERF-09` a `PERF-11`)
+- Avaliação documentada com catálogo, planos de execução e trade-off de escrita/leitura para os índices de FKs (`conta_id`, `categoria_id`) nas tabelas de movimentações e para os 4 índices de data da `V1` sem `usuario_id`, aplicando na `V2` apenas o que for sustentado por evidência (`DW-155` / `PERF-08`)
+- Atualização obrigatória de `DW-155` e `DW-161` em `_bmad-output/implementation-artifacts/deferred-work.md` e do action item `A13` em `_bmad-output/implementation-artifacts/sprint-status.yaml` com data ISO, evidência e revisão antes de marcar a história como `done`
+
+### Story 7.5: Investigações Técnicas de Segurança (Revogação JWT e Ausência de Tenant) e Desempenho (Consolidação, N+1 e Listagens)
+
+As a Arquiteto de Sistema / Engenheiro de Software,
+I want conduzir e documentar as investigações técnicas reproduzíveis sobre revogação de sessão JWT, comportamento sem contexto de tenant/bootstrap e medição de custos de consolidação, listagens, conversão LAZY de DTOs e validação de titularidade,
+So that qualquer decisão futura de mudança arquitetural ou otimização de consultas seja tomada com base em métricas reais e contratos comprovados, sem otimização prematura.
+
+**Acceptance Criteria:**
+
+**Given** o contrato definido em `_bmad-output/specs/spec-epico-7/SPEC.md` (`CAP-4 investigação`, `CAP-6`, `CAP-7`, `CAP-9`), `seguranca.md` (`SEG-12`, `SEG-13`, `SEG-17`, `SEG-18`) e `desempenho.md` (`PERF-01` a `PERF-06`, `PERF-12` a `PERF-14`)
+**When** os testes exploratórios, inspeções e medições reproduzíveis forem executados
+**Then** devem produzir evidência documentada e recomendações rastreáveis cobrindo:
+- **Escopo rastreado:** `DW-2`, `DW-160` (absorvendo `DW-38`), `DW-139`, `DW-117`, `DW-147`, `DW-153` | **Action items:** `A10` (`epic-4-retro-item-10-otimizar-agregação-de-transações-no-back`)
+- **Investigação `DW-160` (`DW-38`):** verificação de consultas/persistência sem contexto de tenant, operações legítimas de bootstrap e ciclo de vida do resolver na configuração Hibernate atual (`SEG-12`, `SEG-13`)
+- **Investigação `DW-2`:** avaliação de necessidade, risco, alternativas e custo de revogação de JWT antes da expiração, sem implementar renovação automática nem tabela de sessões (`SEG-17`, `SEG-18`)
+- **Investigação `DW-139` (`A10`):** medição de tempo, memória, volume e consultas da consolidação por conta/categoria e saldo histórico pré-grade sob carga de referência definida (`Q-4`), exigindo preservação da equivalência financeira de 24 meses e histórico anterior (`PERF-04` a `PERF-06`)
+- **Investigações `DW-117`, `DW-147` e `DW-153`:** medição de volume/bytes/latência das listagens preservando opções completas dos seletores (`PERF-12`), contagem de SQL real no caminho completo dos DTOs que acessam descrição/observações LAZY de conta/categoria (`PERF-13`), e medição de custo da validação de propriedade + `findById` com prioridade menor preservando contratos `403`/`404` (`PERF-14`)
+- Respeito estrito ao limite investigativo: não aplicar refatorações de código/queries não autorizadas nesta história nem encerrar `A10` como implementação concluída sem decisão explícita; atualizar `DW-2`, `DW-160`, `DW-139`, `DW-117`, `DW-147`, `DW-153` em `deferred-work.md` e `A10` em `sprint-status.yaml` antes de marcar a história como `done`
+
 
 

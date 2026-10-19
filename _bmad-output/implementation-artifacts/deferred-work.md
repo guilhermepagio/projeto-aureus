@@ -282,13 +282,13 @@ source_spec_original: _bmad-output/implementation-artifacts/spec-5-2-tratamento-
 severity: medium
 reason: Validar planos/catálogo e volume para índices de FKs e usuario_id de contas/categorias. Benefício de busca/delete plausível, mas índices também custam escrita e espaço.
 status: open
-decision: 2026-10-14 Investigação aprovada por Guilherme no grupo 4, vinculada a A13. Sem implementação.
+decision: 2026-10-14 Investigação aprovada por Guilherme no grupo 4, vinculada a A13. Atualizado em 2026-10-19 por Guilherme: criação de índices para usuario_id em contas e categorias passa a ser implementação obrigatória na migração incremental Flyway V2 (nas 4 tabelas de movimentações usuario_id já lidera índices compostos na V1); avaliação das FKs (conta_id, categoria_id) e dos índices de data sem usuario_id permanece investigativa. Sem execução nesta etapa.
 triage_id: D155
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: A13/D161
 verification: [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74); [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:24](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:24).
-next_step: Conferir catálogo, consultas e planos antes de selecionar índices; considerar custo de escrita/espaço.
+next_step: Planejar na migração Flyway V2 os índices obrigatórios idx_contas_usuario_id e idx_categorias_usuario_id; conferir catálogo, consultas e planos antes de decidir índices de FKs e limpeza de índices sem usuario_id.
 
 ## Registros consolidados e descartados — histórico
 
