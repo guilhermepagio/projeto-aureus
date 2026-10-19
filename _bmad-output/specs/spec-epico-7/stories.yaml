@@ -1,0 +1,55 @@
+- id: "7-1"
+  title: Hardening de Autorização, Cookies de Sessão e Matriz Residual CSRF/Multi-Tenancy (Backend)
+  description: >-
+    Restringir o fallback de autorização à allowlist pública explícita e política do Actuator (CAP-1),
+    e verificar os atributos/TTL do cookie OAuth/logout (CAP-2) e as lacunas residuais de CSRF PUT/DELETE e vínculos cruzados (CAP-5) conforme SPEC.md e seguranca.md.
+  spec_checkpoint: false
+  done_checkpoint: false
+  invoke_dev_with: >-
+    Escopo: CAP-1 (DW-13), CAP-2 (DW-14, DW-36) e CAP-5 (DW-176); action items: nenhum.
+    Definir allowlist pública preservando OAuth/callback antes de restringir anyRequest() em SecurityConfig.java.
+    Antes de marcar a história done, atualizar DW-13, DW-14, DW-36 e DW-176 em _bmad-output/implementation-artifacts/deferred-work.md com data ISO, evidência de testes e revisão conforme rastreabilidade.md.
+- id: "7-2"
+  title: Isolamento de Contexto, Correlação MDC e Logs Estruturados de Troubleshooting (Backend)
+  description: >-
+    Verificar o ciclo de vida e limpeza de TenantContext, SecurityContextHolder e resolver de tenant (CAP-4 parcial),
+    e implementar correlação por requisição via MDC (requestId + tenantId) e logs estruturados sem expor dados sensíveis (CAP-10) conforme SPEC.md, seguranca.md e observabilidade.md.
+  spec_checkpoint: false
+  done_checkpoint: false
+  invoke_dev_with: >-
+    Escopo: CAP-4 verificação (DW-35, DW-37) e CAP-10 (OBS-01..05); action items: nenhum.
+    Garantir limpeza de TenantContext, SecurityContextHolder e MDC em finally no filtro e proibir log de JWT, cookies ou valores financeiros.
+    Antes de marcar a história done, atualizar DW-35 e DW-37 em _bmad-output/implementation-artifacts/deferred-work.md conforme rastreabilidade.md.
+- id: "7-3"
+  title: Tratamento de Sessão Inválida (401 em Uso) e Limpeza de Estado Privado no Logout (Frontend)
+  description: >-
+    Garantir invalidação da sessão local, limpeza de authStore e QueryClient e retorno ao login ao receber 401 durante o uso ou no logout com sucesso/falha de rede (CAP-3)
+    conforme SPEC.md e seguranca.md.
+  spec_checkpoint: false
+  done_checkpoint: false
+  invoke_dev_with: >-
+    Escopo: CAP-3 (DW-26, DW-60); action items: nenhum.
+    Preservar contratos de erros 403/404 no apiClient.ts e distinguir limpeza local no cliente da invalidação no servidor.
+    Antes de marcar a história done, atualizar DW-26 e DW-60 em _bmad-output/implementation-artifacts/deferred-work.md conforme rastreabilidade.md.
+- id: "7-4"
+  title: Migração Flyway V2 (Índices de Tenant Obrigatórios e Redundâncias) e Avaliação de Índices/FKs
+  description: >-
+    Criar a migração incremental Flyway V2 com os índices obrigatórios de usuario_id em contas e categorias,
+    conferir catálogo/planos para índices de FKs e índices de data sem usuario_id (DW-155) e aplicar a remoção condicional de índice redundante em usuarios preservando UNIQUE (DW-161) conforme SPEC.md e desempenho.md.
+  spec_checkpoint: false
+  done_checkpoint: false
+  invoke_dev_with: >-
+    Escopo: CAP-8 (DW-155, DW-161); action items: A13 (epic-5-retro-item-13-criar-migração-flyway-v2-para-limpeza-de).
+    Manter V1__create_performance_indexes.sql intocada e não criar índice simples duplicado em (usuario_id) nas 4 tabelas de movimentações.
+    Antes de marcar a história done, atualizar DW-155 e DW-161 em deferred-work.md e A13 em sprint-status.yaml conforme rastreabilidade.md.
+- id: "7-5"
+  title: Investigações Técnicas de Segurança (Revogação JWT e Ausência de Tenant) e Desempenho (Consolidação, N+1 e Listagens)
+  description: >-
+    Executar e documentar as investigações reproduzíveis sobre revogação de JWT (CAP-6) e acesso/bootstrap sem contexto de tenant (CAP-4 investigação),
+    bem como as medições de custo de consolidação (CAP-7) e de listagens, conversão de DTOs LAZY e validação de titularidade (CAP-9) conforme SPEC.md, seguranca.md e desempenho.md.
+  spec_checkpoint: false
+  done_checkpoint: true
+  invoke_dev_with: >-
+    Escopo: CAP-4 investigação (DW-160, absorvendo DW-38), CAP-6 (DW-2), CAP-7 (DW-139) e CAP-9 (DW-117, DW-147, DW-153); action items: A10 (epic-4-retro-item-10-otimizar-agregação-de-transações-no-back).
+    História estritamente investigativa: produzir evidências e recomendações sem implementar otimizações não autorizadas nem declarar A10 como código entregue.
+    Antes de marcar a história done, atualizar DW-2, DW-160, DW-139, DW-117, DW-147 e DW-153 em deferred-work.md e A10 em sprint-status.yaml conforme rastreabilidade.md.
