@@ -11,7 +11,6 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,15 +35,19 @@ public class SecurityConfig {
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(exceptions -> exceptions
-                .defaultAuthenticationEntryPointFor(
-                    new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
-                    PathPatternRequestMatcher.pathPattern("/api/**")
-                )
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             )
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/me", "/api/auth/logout", "/api/oauth2/**", "/login**", "/").permitAll()
+                .requestMatchers(
+                    "/api/auth/me",
+                    "/api/auth/logout",
+                    "/api/oauth2/authorization/**",
+                    "/login/oauth2/code/**",
+                    "/actuator/health",
+                    "/error"
+                ).permitAll()
                 .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
+                .anyRequest().denyAll()
             )
             .oauth2Login(oauth2 -> oauth2
                 .authorizationEndpoint(auth -> auth.baseUri("/api/oauth2/authorization"))
