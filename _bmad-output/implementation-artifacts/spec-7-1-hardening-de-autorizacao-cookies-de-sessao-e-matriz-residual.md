@@ -79,6 +79,14 @@ context:
 - Given um usuário autenticado com recursos existentes, when enviar `PUT` ou `DELETE` sem token CSRF, then a API deve responder `403 Forbidden` e o registro deve permanecer inalterado no banco de dados (`DW-176` / `SEG-15`).
 - Given dois tenants isolados A e B, when B tentar criar (`POST`) ou atualizar (`PUT`) qualquer uma das 4 entidades de movimentação referenciando Conta ou Categoria de A, ou acessar/editar/excluir movimentação de A, then a API deve responder `403 Forbidden` para vínculo alheio e `404 Not Found` para recurso alheio, sem persistir mutação indevida (`DW-176` / `SEG-16`).
 
+### Review Findings
+
+- [x] [Review][Patch] Restaurar verificação de `POST /api/auth/logout` anônimo com CSRF válido para comprovar presença de `/api/auth/logout` na allowlist pública [`backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:222`]
+- [x] [Review][Patch] Verificar diretamente via `WebEndpointsSupplier` que `management.endpoints.web.exposure.include` expõe exclusivamente `health`, sem depender apenas do bloqueio prévio do `SecurityFilterChain` [`backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:270`]
+- [x] [Review][Patch] Exercitar a rota `/error` na suíte da allowlist pública para garantir que não caia em `.anyRequest().denyAll()` [`backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:292`]
+- [x] [Review][Patch] Validar explicitamente `expectedMaxAgeSeconds == 86400` e remover asserção duplicada `assertThat(jwtHttps).isNotBlank()` no teste do `OAuth2LoginSuccessHandler` [`backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:359`]
+- [x] [Review][Patch] Sincronizar referências de linha de `SecurityIT.java`/`MultiTenancyIT.java` e registro da revisão de 4 camadas em `spec-7-1` e `deferred-work.md` [`_bmad-output/implementation-artifacts/deferred-work.md:45`]
+
 ## Spec Change Log
 
 ## Design Notes
@@ -113,30 +121,30 @@ context:
 - Restringe exposição web do Actuator somente a `health` com `show-details: never`.
   [`application.yaml:39`](../../backend-api/src/main/resources/application.yaml#L39)
 
-- Verifica allowlist OAuth, `/actuator/health` sem componentes e bloqueio de rotas não autorizadas.
-  [`SecurityIT.java:247`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L247)
+- Verifica allowlist OAuth, `/actuator/health` sem componentes, `/error` permitido, `WebEndpointsSupplier` e bloqueio de rotas não autorizadas.
+  [`SecurityIT.java:269`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L269)
 
 **Atributos de segurança e expiração do cookie `AUREUS_SESSION` (`CAP-2` / `DW-14`, `DW-36`)**
 
-- Valida emissão OAuth (`HttpOnly`, `Path=/`, `SameSite=Lax`, `Max-Age`, `Secure` por transporte e subject JWT).
-  [`SecurityIT.java:311`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L311)
+- Valida emissão OAuth (`HttpOnly`, `Path=/`, `SameSite=Lax`, `Max-Age=86400`, `Secure` por transporte e subject JWT).
+  [`SecurityIT.java:345`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L345)
 
-- Valida expiração de cookie no `/api/auth/logout` em HTTP/HTTPS e rejeição sem CSRF.
-  [`SecurityIT.java:201`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L201)
+- Valida expiração de cookie no `/api/auth/logout` (anônimo e autenticado) em HTTP/HTTPS e rejeição sem CSRF.
+  [`SecurityIT.java:209`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L209)
 
 - Valida atributos completos do cookie de limpeza em respostas `401` por token expirado/inválido.
-  [`SecurityIT.java:83`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L83)
+  [`SecurityIT.java:78`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L78)
 
 **Matriz residual CSRF e isolamento multi-tenant (`CAP-5` / `DW-176`)**
 
 - Comprova `403 Forbidden` e preservação integral do registro em `PUT` e `DELETE` sem CSRF.
-  [`SecurityIT.java:159`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L159)
+  [`SecurityIT.java:167`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java#L167)
 
 - Completa casos de `POST` e `PUT` com conta/categoria de outro tenant (`403` sem mutação).
-  [`MultiTenancyIT.java:301`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java#L301)
+  [`MultiTenancyIT.java:207`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java#L207)
 
 - Completa matriz `GET` listagem e `PUT`/`DELETE /{id}` (`404` sem mutação) nas 4 movimentações.
-  [`MultiTenancyIT.java:869`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java#L869)
+  [`MultiTenancyIT.java:814`](../../backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java#L814)
 
 **Rastreabilidade e fechamento do backlog (`rastreabilidade.md`)**
 

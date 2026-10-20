@@ -42,13 +42,13 @@ triage_id: D013
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:40](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:40); [backend-api/src/main/resources/application.yaml:39](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/application.yaml:39); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:247](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:247).
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:40](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:40); [backend-api/src/main/resources/application.yaml:39](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/application.yaml:39); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:269](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:269).
 next_step: Nenhuma pendência; allowlist pública explícita, exposição restrita de /actuator/health (show-details: never) e fallback .anyRequest().denyAll() implementados e verificados.
 data: 2026-10-19
 historia: 7-1-hardening-de-autorizacao-cookies-de-sessao-e-matriz-residual
 resultado: implementação verificada
-evidencia: SecurityConfig.java, application.yaml e SecurityIT#allowlistPublicaEPoliticaActuatorDevemNegarRotasNaoAutorizadas executados via ./mvnw verify -Pintegration-test (BUILD SUCCESS, 205 testes unitários e 36 testes de integração verdes, diff auditado sobre baseline 6a83233024003de2d7823f927d92a9a1c071b432)
-revisao: Revisão adversarial em 3 camadas (blind-hunter, edge-case-hunter, verification-gap) em spec-7-1 concluída e aprovada contra SEG-01, SEG-02 e SEG-03 de seguranca.md
+evidencia: SecurityConfig.java, application.yaml e SecurityIT#allowlistPublicaEPoliticaActuatorDevemNegarRotasNaoAutorizadas (incluindo WebEndpointsSupplier e /error) executados via ./mvnw verify -Pintegration-test (BUILD SUCCESS, 205 testes unitários e 36 testes de integração verdes, diff auditado sobre baseline 6a83233024003de2d7823f927d92a9a1c071b432)
+revisao: Revisão adversarial em 4 camadas (blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor) em spec-7-1 concluída, 5 patches aplicados e aprovada contra SEG-01, SEG-02 e SEG-03 de seguranca.md
 pendencias: nenhuma
 estado_do_registro: done
 data_da_resolucao: 2026-10-19
@@ -66,13 +66,13 @@ triage_id: D014
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D025/D022
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:42](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:42); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:201](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:201).
-next_step: Nenhuma pendência; atributos de expiração e segurança do cookie AUREUS_SESSION no logout e na limpeza por token expirado/inválido verificados em HTTP e HTTPS.
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:42](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:42); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:209](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:209).
+next_step: Nenhuma pendência; atributos de expiração e segurança do cookie AUREUS_SESSION no logout (anônimo e autenticado) e na limpeza por token expirado/inválido verificados em HTTP e HTTPS.
 data: 2026-10-19
 historia: 7-1-hardening-de-autorizacao-cookies-de-sessao-e-matriz-residual
 resultado: verificação
 evidencia: SecurityIT#endpointsDeAuthDevemFuncionarCorretamente, SecurityIT#requisicaoComTokenExpiradoDeveRetornar401ELimparCookie e SecurityIT#requisicaoComTokenInvalidoDeveRetornar401ELimparCookie executados via ./mvnw verify -Pintegration-test (BUILD SUCCESS, 9 testes em SecurityIT verdes, diff auditado sobre baseline 6a83233024003de2d7823f927d92a9a1c071b432)
-revisao: Revisão adversarial em 3 camadas (blind-hunter, edge-case-hunter, verification-gap) em spec-7-1 concluída e aprovada contra SEG-05 e SEG-06 de seguranca.md
+revisao: Revisão adversarial em 4 camadas (blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor) em spec-7-1 concluída, 5 patches aplicados e aprovada contra SEG-05 e SEG-06 de seguranca.md
 pendencias: nenhuma
 estado_do_registro: done
 data_da_resolucao: 2026-10-19
@@ -122,13 +122,13 @@ triage_id: D036
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:311](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:311).
-next_step: Nenhuma pendência; atributos HttpOnly, Path=/, SameSite=Lax, Max-Age coerente com jwt.expiration e Secure condicionado ao transporte verificados em HTTP e HTTPS no OAuth2LoginSuccessHandler.
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:345](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:345).
+next_step: Nenhuma pendência; atributos HttpOnly, Path=/, SameSite=Lax, Max-Age=86400 coerente com jwt.expiration e Secure condicionado ao transporte verificados em HTTP e HTTPS no OAuth2LoginSuccessHandler.
 data: 2026-10-19
 historia: 7-1-hardening-de-autorizacao-cookies-de-sessao-e-matriz-residual
 resultado: verificação
 evidencia: SecurityIT#oauth2LoginSuccessHandlerDeveEmitirCookieComAtributosDeSegurancaEmHttpEHttps executado via ./mvnw verify -Pintegration-test (BUILD SUCCESS, 9 testes em SecurityIT verdes, diff auditado sobre baseline 6a83233024003de2d7823f927d92a9a1c071b432)
-revisao: Revisão adversarial em 3 camadas (blind-hunter, edge-case-hunter, verification-gap) em spec-7-1 concluída e aprovada contra SEG-04 de seguranca.md
+revisao: Revisão adversarial em 4 camadas (blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor) em spec-7-1 concluída, 5 patches aplicados e aprovada contra SEG-04 de seguranca.md
 pendencias: nenhuma
 estado_do_registro: done
 data_da_resolucao: 2026-10-19
@@ -167,7 +167,7 @@ next_step: Planejar tratamento central de sessão inválida com limpeza local e 
 ### DW-176: Definir e completar matriz específica de testes CSRF e vínculos cruzados
 
 origin: Deferred from: code review of spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md (2026-10-05); triage D176
-location: backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:205
+location: backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:207
 severity: medium
 reason: Manter só matriz de segurança CSRF PUT/DELETE sem token e vínculos cruzados não exercitados. Expansão exaustiva de DTOs/validação genérica fica descartada.
 status: done
@@ -176,13 +176,13 @@ triage_id: D176
 triage_classification: Necessita esclarecimento ou validação adicional
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D122/D164
-verification: [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:159](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:159); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:205](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:205).
+verification: [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:167](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:167); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:207](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:207).
 next_step: Nenhuma pendência; matriz residual de PUT/DELETE sem CSRF (403 sem mutação), vínculos cruzados POST/PUT (403 sem mutação) e recursos alheios GET de listagem (ocultação por @TenantId) e PUT/DELETE /{id} (404 sem mutação) completa e verificada.
 data: 2026-10-19
 historia: 7-1-hardening-de-autorizacao-cookies-de-sessao-e-matriz-residual
 resultado: verificação
 evidencia: SecurityIT#requisicoesPutEDeleteSemCsrfDevemRetornar403EManterRegistroIntacto e MultiTenancyIT (22 testes cobrindo POST/PUT 403 e GET listagem / PUT/DELETE 404 nas entidades multi-tenant) executados via ./mvnw verify -Pintegration-test (BUILD SUCCESS, 36 testes de integração verdes, diff auditado sobre baseline 6a83233024003de2d7823f927d92a9a1c071b432)
-revisao: Revisão adversarial em 3 camadas (blind-hunter, edge-case-hunter, verification-gap) em spec-7-1 concluída e aprovada contra SEG-14, SEG-15 e SEG-16 de seguranca.md
+revisao: Revisão adversarial em 4 camadas (blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor) em spec-7-1 concluída, 5 patches aplicados e aprovada contra SEG-14, SEG-15 e SEG-16 de seguranca.md
 pendencias: nenhuma
 estado_do_registro: done
 data_da_resolucao: 2026-10-19

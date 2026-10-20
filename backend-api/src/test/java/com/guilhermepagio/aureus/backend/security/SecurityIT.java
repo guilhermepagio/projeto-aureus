@@ -7,6 +7,9 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.endpoint.EndpointId;
+import org.springframework.boot.actuate.endpoint.web.ExposableWebEndpoint;
+import org.springframework.boot.actuate.endpoint.web.WebEndpointsSupplier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -41,14 +44,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SecurityIT extends AbstractIntegrationTest {
 
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final WebEndpointsSupplier webEndpointsSupplier;
 
     public SecurityIT(
             final MockMvc mockMvc,
             final JwtUtil jwtUtil,
             @Value("${jwt.secret}") final String jwtSecret,
-            final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) {
+            final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler,
+            final WebEndpointsSupplier webEndpointsSupplier) {
         super(mockMvc, jwtUtil, jwtSecret);
         this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
+        this.webEndpointsSupplier = webEndpointsSupplier;
     }
 
     @Test
@@ -215,6 +221,20 @@ public class SecurityIT extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/api/auth/logout")
                 .secure(false)
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
+                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE, hasItem(allOf(
+                        containsString("AUREUS_SESSION=;"),
+                        containsString("Max-Age=0"),
+                        containsString("Path=/"),
+                        containsString("HttpOnly"),
+                        containsString("SameSite=Lax"),
+                        not(containsString("; Secure"))
+                ))));
+
+        mockMvc.perform(post("/api/auth/logout")
+                .secure(false)
                 .cookie(authCookie("1"))
                 .with(csrf()))
                 .andExpect(status().isOk())
@@ -247,6 +267,10 @@ public class SecurityIT extends AbstractIntegrationTest {
     @Test
     @DisplayName("Allowlist pública deve preservar fluxo OAuth2 e /actuator/health sem detalhes, negando /actuator/env e rotas fora da allowlist")
     void allowlistPublicaEPoliticaActuatorDevemNegarRotasNaoAutorizadas() throws Exception {
+        assertThat(webEndpointsSupplier.getEndpoints())
+                .extracting(ExposableWebEndpoint::getEndpointId)
+                .containsExactly(EndpointId.of("health"));
+
         mockMvc.perform(get("/api/oauth2/authorization/google"))
                 .andExpect(status().isFound())
                 .andExpect(header().string(HttpHeaders.LOCATION, containsString("accounts.google.com")));
@@ -264,6 +288,14 @@ public class SecurityIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("UP"))
                 .andExpect(jsonPath("$.components").doesNotExist());
+
+        final int statusErrorAnonimo = mockMvc.perform(get("/error"))
+                .andReturn().getResponse().getStatus();
+        assertThat(statusErrorAnonimo).isNotIn(401, 403);
+
+        final int statusErrorAutenticado = mockMvc.perform(get("/error").cookie(authCookie("1")))
+                .andReturn().getResponse().getStatus();
+        assertThat(statusErrorAutenticado).isNotIn(401, 403);
 
         mockMvc.perform(get("/actuator"))
                 .andExpect(status().isUnauthorized());
@@ -324,6 +356,7 @@ public class SecurityIT extends AbstractIntegrationTest {
         final OAuth2AuthenticationToken authToken = new OAuth2AuthenticationToken(
                 oAuth2User, oAuth2User.getAuthorities(), "google");
         final long expectedMaxAgeSeconds = jwtUtil.getExpiration() / 1000;
+        assertThat(expectedMaxAgeSeconds).isEqualTo(86400L);
 
         final MockHttpServletRequest httpRequest = new MockHttpServletRequest("GET", "/login/oauth2/code/google");
         httpRequest.setSecure(false);
@@ -371,7 +404,6 @@ public class SecurityIT extends AbstractIntegrationTest {
         final String jwtHttps = extrairValorCookieSessao(setCookieHttps);
         assertThat(jwtHttps).isNotBlank();
         jwtUtil.validateToken(jwtHttps);
-        assertThat(jwtHttps).isNotBlank();
         assertThat(jwtUtil.getSubject(jwtHttps)).isEqualTo(jwtUtil.getSubject(jwtHttp));
     }
 
