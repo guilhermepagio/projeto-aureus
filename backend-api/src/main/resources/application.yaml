@@ -45,3 +45,7 @@ management:
     health:
       show-details: never
 
+logging:
+  pattern:
+    level: "%5p [req:%X{requestId:-} tenant:%X{tenantId:-}]"
+

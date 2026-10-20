@@ -6,10 +6,13 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.EndpointId;
 import org.springframework.boot.actuate.endpoint.web.ExposableWebEndpoint;
 import org.springframework.boot.actuate.endpoint.web.WebEndpointsSupplier;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -405,6 +408,33 @@ public class SecurityIT extends AbstractIntegrationTest {
         assertThat(jwtHttps).isNotBlank();
         jwtUtil.validateToken(jwtHttps);
         assertThat(jwtUtil.getSubject(jwtHttps)).isEqualTo(jwtUtil.getSubject(jwtHttp));
+    }
+
+    @Test
+    @ExtendWith(OutputCaptureExtension.class)
+    @DisplayName("Requisições HTTP no Spring Boot devem formatar logs de console com correlação [req: e tenant:] para autenticado e anônimo")
+    void requisicoesDevemEmitirLogFormatadoComReqETenantNoConsole(final CapturedOutput output) throws Exception {
+        final String usuarioId = "user-log-console-" + UUID.randomUUID();
+        final ContaRequestDTO contaDto = new ContaRequestDTO("Conta Teste", "Obs");
+
+        mockMvc.perform(post("/api/contas")
+                .cookie(authCookie(usuarioId))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(contaDto)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/auth/logout")
+                .with(csrf()))
+                .andExpect(status().isOk());
+
+        final String allLogs = output.getAll();
+        assertThat(allLogs)
+                .contains("[req:")
+                .contains("tenant:" + usuarioId + "]")
+                .contains("Operação de cadastro concluída: entidade=Conta operacao=CRIAR")
+                .contains("tenant:anon]")
+                .contains("Sessão encerrada via logout: method=POST uri=/api/auth/logout resultado=sucesso");
     }
 
     private String extrairValorCookieSessao(final String setCookieHeader) {

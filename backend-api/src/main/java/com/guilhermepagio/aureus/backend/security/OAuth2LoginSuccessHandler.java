@@ -2,6 +2,8 @@ package com.guilhermepagio.aureus.backend.security;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -19,6 +21,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(OAuth2LoginSuccessHandler.class);
 
     private final UsuarioRepository usuarioRepository;
     private final JwtUtil jwtUtil;
@@ -66,6 +70,15 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
                 .maxAge(jwtUtil.getExpiration() / 1000)
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        final String method = request != null && request.getMethod() != null && !request.getMethod().isBlank()
+                ? request.getMethod()
+                : "GET";
+        final String uri = request != null && request.getRequestURI() != null && !request.getRequestURI().isBlank()
+                ? request.getRequestURI()
+                : "/login/oauth2/code/google";
+        log.info("Login OAuth2 concluído: method={} uri={} resultado=sucesso usuarioId={}",
+                method, uri, usuario.getId());
 
         getRedirectStrategy().sendRedirect(request, response, frontendUrl);
     }

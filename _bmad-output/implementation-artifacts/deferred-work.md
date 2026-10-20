@@ -100,14 +100,22 @@ location: backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/J
 source_spec: _bmad-output/implementation-artifacts/archive/epic-1/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md
 severity: medium
 reason: Testar set/clear de TenantContext e SecurityContextHolder em sucesso, falha e reuso de thread. Protege isolamento; implementação de finally já existe, não se presume vazamento atual.
-status: open
-decision: 2026-10-14 Grupo 2 — Aprovado para planejamento; testar limpeza dos contextos em sucesso, erro e reuso de thread.
+status: done
+decision: 2026-10-14 Grupo 2 — Aprovado para planejamento; testar limpeza dos contextos em sucesso, erro e reuso de thread; verificação concluída em 2026-10-20 na Story 7.2.
 triage_id: D035
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java:57](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java:57); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:31](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:31).
-next_step: Aprovado para planejamento; testar limpeza dos contextos em sucesso, erro e reuso de thread.
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java:97](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java:97); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/ContextAndMdcLifecycleTest.java:112](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/ContextAndMdcLifecycleTest.java:112); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:416](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:416).
+next_step: Nenhuma pendência; população e limpeza de TenantContext, SecurityContextHolder e MDC (requestId, tenantId) em sucesso, token inválido/expirado, subject vazio, exceção na cadeia e reuso de thread verificadas.
+data: 2026-10-20
+historia: 7-2-isolamento-de-contexto-correlacao-mdc-e-logs-estruturados
+resultado: implementação verificada
+evidencia: JwtAuthenticationFilter.java, ContextAndMdcLifecycleTest (9 testes cobrindo população/limpeza de TenantContext, SecurityContextHolder e MDC em sucesso, token inválido/expirado, subject vazio, exceção e reuso da mesma thread, além de logs sem vazamento sensível) e SecurityIT (10 testes incluindo verificação com OutputCaptureExtension da emissão real do pattern de console com [req: e tenant:]) executados via ./mvnw test e ./mvnw verify -Pintegration-test (BUILD SUCCESS, 219 testes unitários e 37 testes de integração verdes, sobre baseline 00434e9978d132de880cb0874eaf9e5e77a3bf64)
+revisao: Revisão adversarial em 3 camadas (blind-hunter, edge-case-hunter, verification-gap) em spec-7-2 concluída, patches aplicados e aprovada contra SEG-10 de seguranca.md e OBS-01..05 de observabilidade.md
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-20
 
 ### DW-36: Verificar atributos de segurança e TTL do cookie no sucesso OAuth
 
@@ -140,14 +148,22 @@ location: backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/C
 source_spec: _bmad-output/implementation-artifacts/archive/epic-1/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md
 severity: medium
 reason: Testar contrato do resolver com tenant preenchido/nulo/vazio; vincular à investigação D160. Não alterar fallback automaticamente nem duplicar integração cross-tenant existente.
-status: open
-decision: 2026-10-14 Grupo 2 — Aprovado para planejamento; testar o resolver junto à investigação DW-160.
+status: done
+decision: 2026-10-14 Grupo 2 — Aprovado para planejamento; testar o resolver junto à investigação DW-160; verificação do contrato vigente concluída em 2026-10-20 na Story 7.2.
 triage_id: D037
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —; origens duplicadas: D044
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:206](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:206).
-next_step: Aprovado para planejamento; testar o resolver junto à investigação DW-160.
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImplTest.java:11](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImplTest.java:11); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:206](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:206).
+next_step: Nenhuma pendência no contrato vigente do resolver (SEG-11); investigação sobre acesso sem contexto e bootstrap segue rastreada em DW-160 (Story 7.5).
+data: 2026-10-20
+historia: 7-2-isolamento-de-contexto-correlacao-mdc-e-logs-estruturados
+resultado: verificação
+evidencia: CurrentTenantIdentifierResolverImplTest (5 testes unitários cobrindo tenant preenchido, null, string vazia, espaços em branco e validateExistingCurrentSessions() == true) executado via ./mvnw test e ./mvnw verify -Pintegration-test (BUILD SUCCESS, 219 testes unitários e 37 testes de integração verdes, sobre baseline 00434e9978d132de880cb0874eaf9e5e77a3bf64)
+revisao: Revisão adversarial em 3 camadas (blind-hunter, edge-case-hunter, verification-gap) em spec-7-2 concluída contra SEG-11 de seguranca.md preservando integralmente o contrato vigente do resolver
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-20
 
 ### DW-60: Tratar 401 durante uso e limpar estado/cache privado
 

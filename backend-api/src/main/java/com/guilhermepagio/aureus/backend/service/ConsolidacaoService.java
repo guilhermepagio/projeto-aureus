@@ -11,6 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConsolidacaoService {
 
+    private static final Logger log = LoggerFactory.getLogger(ConsolidacaoService.class);
+
     public static final Long SEM_CATEGORIA_ID = -1L;
     public static final Long SEM_CONTA_ID = -1L;
 
@@ -55,6 +59,7 @@ public class ConsolidacaoService {
         if (mesAno == null) {
             throw new IllegalArgumentException("mesAno não pode ser nulo");
         }
+        final long inicioNs = System.nanoTime();
         final YearMonth startMonth = YearMonth.parse(mesAno);
         
         final List<Conta> contas = contaRepository.findByUsuarioId(usuarioId);
@@ -163,6 +168,12 @@ public class ConsolidacaoService {
                 .filter(linha -> linha.getValoresMensais().stream().anyMatch(valor -> valor != null && valor.compareTo(BigDecimal.ZERO) != 0))
                 .toList();
 
+        final int totalItensProcessados = receitasFixas.size() + receitasVariaveis.size() + despesasFixas.size() + despesasVariaveis.size();
+        final long duracaoMs = (System.nanoTime() - inicioNs) / 1_000_000;
+        log.debug(
+                "Consolidação por conta calculada: entidade=ConsolidacaoPorConta operacao=CALCULAR mesAno={} contas={} itensProcessados={} linhasReceita={} linhasDespesa={} duracaoMs={}",
+                mesAno, contas.size(), totalItensProcessados, receitasFiltradas.size(), despesasFiltradas.size(), duracaoMs);
+
         return new ConsolidacaoPorContaDTO(
             receitasFiltradas,
             despesasFiltradas,
@@ -245,6 +256,7 @@ public class ConsolidacaoService {
         if (mesAno == null) {
             throw new IllegalArgumentException("mesAno não pode ser nulo");
         }
+        final long inicioNs = System.nanoTime();
         final YearMonth startMonth = YearMonth.parse(mesAno);
         final YearMonth endMonth = startMonth.plusMonths(23);
         
@@ -298,6 +310,12 @@ public class ConsolidacaoService {
         final List<LinhaConsolidacaoCategoriaDTO> despesasFiltradas = despesasMap.values().stream()
                 .filter(linha -> linha.getValoresMensais().stream().anyMatch(valor -> valor != null && valor.compareTo(BigDecimal.ZERO) != 0))
                 .toList();
+
+        final int totalItensProcessados = despesasFixas.size() + despesasVariaveis.size();
+        final long duracaoMs = (System.nanoTime() - inicioNs) / 1_000_000;
+        log.debug(
+                "Consolidação por categoria calculada: entidade=ConsolidacaoPorCategoria operacao=CALCULAR mesAno={} categorias={} itensProcessados={} linhasRetornadas={} duracaoMs={}",
+                mesAno, categorias.size(), totalItensProcessados, despesasFiltradas.size(), duracaoMs);
 
         return new ConsolidacaoPorCategoriaDTO(despesasFiltradas);
     }
