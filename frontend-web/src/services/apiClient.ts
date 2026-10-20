@@ -27,6 +27,14 @@ export class ApiError extends Error {
   }
 }
 
+export type UnauthorizedHandler = () => void;
+
+let unauthorizedHandler: UnauthorizedHandler | null = null;
+
+export function setUnauthorizedHandler(handler: UnauthorizedHandler | null): void {
+  unauthorizedHandler = handler;
+}
+
 export function getCsrfToken(): string | undefined {
   if (typeof document === 'undefined' || !document.cookie) {
     return undefined;
@@ -44,6 +52,7 @@ export interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: unknown;
   timeout?: number;
   params?: Record<string, unknown> | URLSearchParams;
+  skipUnauthorizedHandler?: boolean;
 }
 
 function buildUrl(url: string, params?: Record<string, unknown> | URLSearchParams): string {
@@ -98,13 +107,13 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
     headers.set('Accept', 'application/json');
   }
 
+  const isRelativeOrSameOrigin =
+    (!url.startsWith('http://') && !url.startsWith('https://')) ||
+    (typeof window !== 'undefined' && url.startsWith(window.location.origin));
+
   // Auto-inject CSRF token for state-mutating HTTP methods
   const mutationMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
   if (mutationMethods.includes(upperMethod)) {
-    const isRelativeOrSameOrigin =
-      (!url.startsWith('http://') && !url.startsWith('https://')) ||
-      (typeof window !== 'undefined' && url.startsWith(window.location.origin));
-
     if (isRelativeOrSameOrigin) {
       const csrfToken = getCsrfToken();
       if (csrfToken && !headers.has('X-XSRF-TOKEN')) {
@@ -223,6 +232,19 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
         errorMessage = `Erro na requisição (${response.status}${response.statusText ? ': ' + response.statusText : ''})`;
       }
 
+      if (
+        response.status === 401 &&
+        !options.skipUnauthorizedHandler &&
+        isRelativeOrSameOrigin &&
+        unauthorizedHandler
+      ) {
+        try {
+          unauthorizedHandler();
+        } catch {
+          // Evita que erros no handler impeçam o lançamento de ApiError
+        }
+      }
+
       throw new ApiError(errorMessage, response.status, errorData);
     }
 
@@ -291,6 +313,7 @@ export const apiClient = Object.assign(
       request<T>(url, { ...options, method: 'DELETE' }),
     patch: <T = unknown>(url: string, body?: unknown, options?: RequestOptions) =>
       request<T>(url, { ...options, method: 'PATCH', body }),
+    setUnauthorizedHandler,
   }
 );
 

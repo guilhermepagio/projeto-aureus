@@ -1,5 +1,6 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { useQueryClient } from '@tanstack/react-query';
 import Header from './components/Header/Header';
 import Navigation from './components/Navigation/Navigation';
 import Login from './components/Login/Login';
@@ -9,7 +10,7 @@ import ContasPage from './pages/Contas/ContasPage';
 import CategoriasPage from './pages/Categorias/CategoriasPage';
 import RequiresDependencies from './components/RequiresDependencies';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
-import { apiClient } from './services/apiClient';
+import { apiClient, setUnauthorizedHandler } from './services/apiClient';
 
 import DespesasFixasPage from './pages/DespesasFixas/DespesasFixasPage';
 import ReceitasFixasPage from './pages/ReceitasFixas/ReceitasFixasPage';
@@ -38,8 +39,23 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
-  const { setAuth, setLoading } = useAuthStore();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { setAuth, setLoading, logout } = useAuthStore();
   const location = useLocation();
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      queryClient.cancelQueries();
+      queryClient.clear();
+      logout();
+      navigate('/login', { replace: true });
+    });
+
+    return () => {
+      setUnauthorizedHandler(null);
+    };
+  }, [navigate, queryClient, logout]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -48,6 +64,7 @@ function App() {
       .get<{ subjectId: string; fotoPerfil?: string }>('/api/auth/me', {
         signal: controller.signal,
         timeout: 5000,
+        skipUnauthorizedHandler: true,
       })
       .then((data) => {
         setAuth(true, data.subjectId, data.fotoPerfil);
