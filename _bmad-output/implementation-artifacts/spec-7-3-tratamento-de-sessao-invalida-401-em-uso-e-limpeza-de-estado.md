@@ -76,7 +76,26 @@ context:
 - Given a aplicação Aureus em uso com usuário autenticado e dados em memória, when qualquer requisição autenticada do `apiClient` receber status HTTP 401, then o handler central deve ser acionado, invalidando a sessão local no `authStore`, limpando todos os dados privados do `queryClient` e conduzindo o usuário de volta à rota `/login` (`SEG-08`, `DW-60`).
 - Given uma requisição realizada pelo `apiClient`, when o backend responder com HTTP 403 (Forbidden), 404 (Not Found) ou 400 (Bad Request), then o `apiClient` deve lançar `ApiError` com status correspondente e os dados da resposta, sem disparar limpeza de autenticação, sem limpar o `queryClient` e sem redirecionar para `/login` (`SEG-08`).
 
+### Review Findings
+
+Revisão de 2026-10-24 sobre `ad7cf515dd7a4701e00a3a1b0a045cba2fc58d7a..159e2e86ece4208a98d1e9dc846b0220ee6864a0`, modo `full`, com Blind Hunter, Edge Case Hunter, Verification Gap Reviewer e Acceptance Auditor concluídos. Triagem: 0 decisões necessárias, 4 patches, 0 adiamentos e 11 apontamentos descartados após leitura do código e dos consumidores.
+
+- [x] [Review][Patch] **Média — Comparar origens de URLs resolvidas para delimitar a invalidação de sessão** [frontend-web/src/services/apiClient.ts:110] — A classificação por `startsWith` aceita destinos externos como `//external.test/api/data`, `https://app.example.test.evil.test/api/data`, `https://app.example.test@external.test/api/data` e `HTTPS://external.test/api/data`. Um 401 desses destinos aciona o handler e encerra indevidamente a sessão Aureus. Também rejeita uma URL local com hostname em maiúsculas, deixando de invalidar a sessão nesse caso. Reproduzido executando o cliente HTTP em memória. Resolver a URL e comparar sua propriedade `origin` com a origem da aplicação; cobrir os casos locais e externos. Fontes: blind-hunter + edge-case-hunter + verification-gap + acceptance-auditor.
+- [x] [Review][Patch] **Média — Invalidar a sessão ao receber o status 401, antes de aguardar o corpo** [frontend-web/src/services/apiClient.ts:235] — O novo handler só é executado depois de `await response.text()` em :188. Com headers 401 já recebidos e corpo pendente, autenticação e dados privados permanecem disponíveis até o corpo terminar ou o timeout ocorrer. A reprodução confirmou zero invalidações enquanto o corpo estava pendente e uma invalidação apenas após o timeout; nessa situação, o chamador ainda recebe status 408 em vez do 401 recebido. Disparar a limpeza assim que o status for conhecido, preservando a construção do erro e cobrindo a resposta com corpo lento/interrompido. Fonte: blind-hunter.
+- [x] [Review][Patch] **Média — Verificar também a remoção do MutationCache nos cenários de encerramento da sessão** [frontend-web/src/App.test.tsx:114] [frontend-web/src/components/Header/Header.test.tsx:46] — Os testes de 401 e logout verificam apenas uma chave de query e não carregam mutações com dados/variáveis privados. A implementação atual usa corretamente `clear()`, mas trocar essa operação por `removeQueries()` manteria as asserções atuais e deixaria o MutationCache preenchido. A diferença foi confirmada com a versão instalada do TanStack Query. Preencher múltiplas queries e uma mutação privada e verificar ambos os caches vazios após 401, logout com sucesso e logout com falha de rede. Fontes: blind-hunter + verification-gap.
+- [x] [Review][Patch] **Baixa — Remover o teste de navegação genérica e ajustar sua contabilização na evidência de DW-26** [frontend-web/src/components/Header/Header.test.tsx:148] [_bmad-output/implementation-artifacts/deferred-work.md:98] — O teste de navegação para Contas/Categorias não verifica logout, sessão inválida ou limpeza de estado/cache. Sua inclusão e contabilização como evidência de encerramento de DW-26 excedem o recorte estrito de CAP-3 e os non-goals de testes genéricos de UI. Preservar os testes dedicados ao encerramento da sessão e atualizar os números de evidência após a validação. Fonte: acceptance-auditor.
+
+Validação inicial: `npm test --prefix frontend-web` — 20 arquivos e 196 testes aprovados; `npm run build --prefix frontend-web` — TypeScript/Vite concluídos com sucesso. As reproduções de origem, corpo 401 pendente e diferença entre `clear()`/`removeQueries()` foram executadas em memória antes da aplicação dos patches.
+
+Resolução em 2026-10-24, autorizada por Guilherme: os quatro patches foram aplicados. `apiClient.ts` compara origens resolvidas, dispara a invalidação antes de ler o corpo do 401 e preserva o status 401 quando a leitura é interrompida por timeout. Os testes de sessão e logout carregam múltiplas queries e mutações privadas e verificam ambos os caches vazios. O teste de navegação genérica foi removido; DW-26 e DW-60 receberam as evidências atualizadas. Validação final na árvore de trabalho sobre `159e2e8`: `npm test --prefix frontend-web` — 20 arquivos e 205 testes aprovados (41 de apiClient, 4 de App e 3 de Header); `npm run build --prefix frontend-web` — aprovado; `git diff --check` — aprovado. Resultado: 4 correções concluídas, 0 pendências e 0 adiamentos; story e sprint em `done`.
+
+Revisão de confirmação em 2026-10-24: a pedido de Guilherme, as quatro camadas revisaram novamente o diff completo da story, do baseline `ad7cf51` até a árvore de trabalho sobre `159e2e8`, com foco exclusivo em falhas materiais e alcançáveis de invalidação de sessão, isolamento de dados privados e contratos HTTP. Blind Hunter, Edge Case Hunter, Verification Gap Reviewer e Acceptance Auditor concluíram sem novos achados relevantes. As quatro correções anteriores permanecem resolvidas. Nenhuma alteração adicional de código foi necessária; permanece válida a execução anterior dos 205 testes e do build sobre o mesmo código de produção/testes. `git diff --check` aprovado; story e sprint permanecem em `done`.
+
 ## Spec Change Log
+
+- 2026-10-24: Revisão de confirmação em quatro camadas concluída sem novos achados relevantes, preservando o foco solicitado em sessão, dados privados e contratos HTTP; nenhuma nova tarefa ou correção necessária.
+
+- 2026-10-24: Code review em quatro camadas com 4 patches aplicados e validados: comparação de origens resolvidas, invalidação imediata em 401 com preservação do status sob timeout na leitura do corpo, cobertura do MutationCache e remoção do teste genérico de navegação. Suíte com 205 testes e build aprovados; evidências DW-26/DW-60 atualizadas e sprint sincronizado em `done`.
 
 - 2026-10-20: Criação inicial do plano da Story 7.3 cobrindo DW-26 e DW-60 (CAP-3).
 - 2026-10-20: Revisão em 3 camadas concluída com 5 patches aplicados: adição de `skipUnauthorizedHandler` em `RequestOptions`, restrição same-origin para acionamento do handler no `apiClient.ts`, cancelamento de queries (`queryClient.cancelQueries()`) e navegação `{ replace: true }` no `App.tsx`, `skipUnauthorizedHandler` no logout explícito do `Header.tsx`, testes unitários adicionais em `apiClient.test.ts` e isolamento do handler com asserção estendida de login em `App.test.tsx`.
@@ -92,7 +111,7 @@ context:
 **Interceptação Central de 401 e Contratos HTTP**
 
 - Definição do handler central e checagem estrita para origens locais com bypass seguro.
-  [`apiClient.ts:234`](../../frontend-web/src/services/apiClient.ts#L234)
+  [`apiClient.ts:195`](../../frontend-web/src/services/apiClient.ts#L195)
 
 - Configuração de registro e exportação no cliente HTTP compartilhado da aplicação.
   [`apiClient.ts:34`](../../frontend-web/src/services/apiClient.ts#L34)
@@ -111,10 +130,10 @@ context:
 **Testes Automatizados e Garantias de Isolamento**
 
 - Validação unitária do fluxo de logout bem-sucedido e sob falha de conexão com toast.
-  [`Header.test.tsx:46`](../../frontend-web/src/components/Header/Header.test.tsx#L46)
+  [`Header.test.tsx:57`](../../frontend-web/src/components/Header/Header.test.tsx#L57)
 
 - Validação da preservação de erros 403, 404, 400 e 500 sem disparar logout indevido.
-  [`apiClient.test.ts:611`](../../frontend-web/src/services/apiClient.test.ts#L611)
+  [`apiClient.test.ts:534`](../../frontend-web/src/services/apiClient.test.ts#L534)
 
 - Teste integrado de invalidação e descarte de dados privados em memória após 401.
   [`App.test.tsx:119`](../../frontend-web/src/App.test.tsx#L119)

@@ -85,21 +85,21 @@ source_spec: _bmad-output/implementation-artifacts/archive/epic-1/spec-1-4-corre
 severity: medium
 reason: Manter somente logout, limpeza de authStore/QueryClient e comportamento de falha de rede. Imagem/avatar/estado visual ficam descartados. Evita regressão na remoção local de dados privados; não comprova revogação do JWT no servidor.
 status: done
-decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); verificação e testes automatizados concluídos em 2026-10-20 na Story 7.3.
+decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); verificação e testes automatizados concluídos em 2026-10-20 na Story 7.3, com patches de revisão validados em 2026-10-24.
 triage_id: D026
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D045/D046
-verification: [frontend-web/src/components/Header/Header.tsx:23](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/components/Header/Header.tsx:23); [frontend-web/src/components/Header/Header.test.tsx:44](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/components/Header/Header.test.tsx:44).
-next_step: Nenhuma pendência; logout com sucesso (200) e sob falha de rede verificado com limpeza integral do QueryClient, logout do authStore, redirecionamento para /login, exibição de toast informativo em erro de rede e proteção contra cliques concorrentes. Registrada a distinção explícita entre limpeza local no cliente e revogação no servidor (SEG-09).
-data: 2026-10-20
+verification: [frontend-web/src/components/Header/Header.tsx:23](../../frontend-web/src/components/Header/Header.tsx#L23); [frontend-web/src/components/Header/Header.test.tsx:57](../../frontend-web/src/components/Header/Header.test.tsx#L57).
+next_step: Nenhuma pendência; logout com sucesso (200) e sob falha de rede verificado com limpeza integral dos caches de queries e mutações, logout do authStore, redirecionamento para /login, toast informativo em erro de rede e proteção contra cliques concorrentes. Limpeza local com falha de rede não prova exclusão do cookie HttpOnly nem revogação do JWT no servidor (SEG-09).
+data: 2026-10-24
 historia: 7-3-tratamento-de-sessao-invalida-401-em-uso-e-limpeza-de-estado
 resultado: verificação
-evidencia: Header.tsx e Header.test.tsx (4 testes cobrindo logout com sucesso, logout com falha de rede e toast informativo, prevenção de cliques concorrentes e navegação de menu) executados via npm test --prefix frontend-web (20 arquivos de teste e 196 testes verdes, sobre baseline ad7cf515dd7a4701e00a3a1b0a045cba2fc58d7a)
-revisao: Verificação automatizada dedicada em Header.test.tsx comprovando SEG-07 e distinção cliente/servidor SEG-09 sem adicionar testes fora de escopo (avatar/visuais)
+evidencia: Header.tsx e Header.test.tsx (3 testes dedicados a logout com sucesso, falha de rede com toast informativo e prevenção de cliques concorrentes; caches de queries e mutações privadas preenchidos e verificados vazios após logout) executados via npm test --prefix frontend-web (20 arquivos e 205 testes aprovados) e npm run build --prefix frontend-web (aprovado), na árvore de trabalho sobre 159e2e8 em 2026-10-24.
+revisao: Code review da Story 7.3 em quatro camadas, com 4 patches aplicados mediante autorização de Guilherme; cobertura do MutationCache adicionada e teste genérico de navegação removido. SEG-07 verificado; limpeza local sob falha de rede não comprova exclusão do cookie HttpOnly nem revogação do JWT no servidor (SEG-09).
 pendencias: nenhuma
 estado_do_registro: done
-data_da_resolucao: 2026-10-20
+data_da_resolucao: 2026-10-24
 
 ### DW-35: Verificar população e limpeza do contexto de tenant e segurança
 
@@ -180,21 +180,21 @@ location: frontend-web/src/services/apiClient.ts:176
 severity: medium
 reason: Limpar estado/cache privado e tratar sessão expirada após 401 em chamadas durante uso. Reduz permanência de dados privados na UI; backend já bloqueia API, portanto não é correção de bypass de autorização.
 status: done
-decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 3; implementação e testes concluídos em 2026-10-20 na Story 7.3.
+decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 3; implementação e testes concluídos em 2026-10-20 na Story 7.3, com patches de revisão validados em 2026-10-24.
 triage_id: D060
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
-verification: [frontend-web/src/services/apiClient.ts:236](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/services/apiClient.ts:236); [frontend-web/src/App.tsx:48](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/App.tsx:48); [frontend-web/src/services/apiClient.test.ts:448](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/services/apiClient.test.ts:448); [frontend-web/src/App.test.tsx:123](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/App.test.tsx:123).
-next_step: Nenhuma pendência; interceptação central de HTTP 401 em apiClient.ts integrada ao ciclo de vida do App.tsx, disparando limpeza do authStore, esvaziamento do QueryClient e navegação para /login, com lançamento preservado de ApiError e isolamento completo sem deslogar em 403, 404, 400 ou 500. Registrada a distinção explícita entre limpeza local no cliente e revogação no servidor (SEG-09).
-data: 2026-10-20
+verification: [frontend-web/src/services/apiClient.ts:195](../../frontend-web/src/services/apiClient.ts#L195); [frontend-web/src/App.tsx:48](../../frontend-web/src/App.tsx#L48); [frontend-web/src/services/apiClient.test.ts:454](../../frontend-web/src/services/apiClient.test.ts#L454); [frontend-web/src/App.test.tsx:114](../../frontend-web/src/App.test.tsx#L114).
+next_step: Nenhuma pendência; 401 local invalida a sessão antes da leitura do corpo, limpa authStore e caches de queries/mutações e navega para /login. Comparação de origens resolvidas evita logout por destinos externos; timeout após headers 401 preserva ApiError 401; contratos 403/404/400/500 permanecem preservados. Limpeza local não prova revogação do JWT no servidor (SEG-09).
+data: 2026-10-24
 historia: 7-3-tratamento-de-sessao-invalida-401-em-uso-e-limpeza-de-estado
 resultado: implementação verificada
-evidencia: apiClient.ts, App.tsx, apiClient.test.ts (31 testes unitários validando disparo em 401, não disparo em 403/404/400/500, skipUnauthorizedHandler e cross-origin) e App.test.tsx (4 testes de integração validando cancelQueries/limpeza do QueryClient, logout e redirecionamento para /login em uso e em carga anônima) executados via npm test --prefix frontend-web (20 arquivos de teste e 196 testes verdes, sobre baseline ad7cf515dd7a4701e00a3a1b0a045cba2fc58d7a)
-revisao: Implementação de interceptor central e ciclo de vida aprovada contra SEG-08 e SEG-09 de seguranca.md preservando estritamente os contratos de erros 403/404
+evidencia: apiClient.test.ts (41 testes incluindo URLs locais normalizadas, 6 formatos externos, invalidação antes do corpo, preservação de 401 sob timeout, demais status e bypass), App.test.tsx (4 testes incluindo limpeza dos caches de queries/mutações após 401 e inicialização anônima) e Header.test.tsx (3 testes de logout) executados via npm test --prefix frontend-web (20 arquivos e 205 testes aprovados) e npm run build --prefix frontend-web (aprovado), na árvore de trabalho sobre 159e2e8 em 2026-10-24.
+revisao: Code review da Story 7.3 em quatro camadas, com 4 patches aplicados mediante autorização de Guilherme; origem, momento da invalidação e cobertura do MutationCache corrigidos e validados contra SEG-08. Limpeza no cliente não comprova exclusão do cookie HttpOnly nem revogação antecipada do JWT no servidor (SEG-09).
 pendencias: nenhuma
 estado_do_registro: done
-data_da_resolucao: 2026-10-20
+data_da_resolucao: 2026-10-24
 
 ### DW-176: Definir e completar matriz específica de testes CSRF e vínculos cruzados
 
