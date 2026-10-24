@@ -229,14 +229,22 @@ source_spec: _bmad-output/implementation-artifacts/archive/epic-5/spec-5-2-trata
 source_spec_original: _bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md
 severity: medium
 reason: Conferir catálogo e remover índice secundário redundante de google_subject_id preservando UNIQUE. Reduz espaço/manutenção se ambos existirem como no DDL; nenhuma melhoria de leitura garantida.
-status: open
+status: done
 decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 4, vinculado a A13; remoção condicionada à conferência do banco. Sem implementação.
 triage_id: D161
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: A13/D155
 verification: [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:4](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:4); [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74).
-next_step: Planejar conferência do catálogo e remoção somente do índice secundário redundante, preservando UNIQUE; nenhuma migração executada nesta etapa.
+next_step: Implementação condicional concluída; a execução normal do Flyway revalida o catálogo de cada alvo e preserva o secundário quando não comprova redundância.
+data: 2026-10-24
+historia: 7-4-migracao-flyway-v2-e-avaliacao-de-indices
+resultado: implementação condicional verificada e revisada em PostgreSQL descartável; UNIQUE preservada
+evidencia: 7-4-evidencias-indices.md e 7-4-index-evidence/measurement.json; V2 remove somente o secundário equivalente/independente após conferir pg_index/pg_constraint/pg_depend; UNIQUE, oito definições/validades de FKs e dados (inclusive quantidade_parcelas/data_fim) preservados após bootstrap JPA; ./mvnw.cmd verify -Pintegration-test aprovado (219 unitários, 70 integrações, incluindo 33 cenários IndexMigrationIT); base dc416175d794645372abf9331201868e76ab6a90 e SHA-256 das fontes registrados na coleta corrigida por digest.
+revisao: Revisão em três camadas (Blind Hunter, Edge Case Hunter e Verification Gap Reviewer), patches aplicados e conferência final pelo agente principal concluídos em 2026-10-24; ver Review Findings na spec 7.4 e verification.json. Fontes e hashes conferem com a execução final de 219 unitários e 70 integrações.
+pendencias: Nenhuma no recorte aprovado. Em alvo divergente, a condição local continua obrigatória; NOTICE de preservação exige inspeção específica e não declara remoção naquele alvo. Nenhum banco real foi acessado.
+estado_do_registro: done
+data_da_resolucao: 2026-10-24
 
 ## Investigações aprovadas — segurança
 
@@ -345,14 +353,22 @@ source_spec: _bmad-output/implementation-artifacts/archive/epic-5/spec-5-2-trata
 source_spec_original: _bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md
 severity: medium
 reason: Validar planos/catálogo e volume para índices de FKs e usuario_id de contas/categorias. Benefício de busca/delete plausível, mas índices também custam escrita e espaço.
-status: open
+status: done
 decision: 2026-10-14 Investigação aprovada por Guilherme no grupo 4, vinculada a A13. Atualizado em 2026-10-19 por Guilherme: criação de índices para usuario_id em contas e categorias passa a ser implementação obrigatória na migração incremental Flyway V2 (nas 4 tabelas de movimentações usuario_id já lidera índices compostos na V1); avaliação das FKs (conta_id, categoria_id) e dos índices de data sem usuario_id permanece investigativa. Sem execução nesta etapa.
 triage_id: D155
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: A13/D161
 verification: [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74); [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:24](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:24).
-next_step: Planejar na migração Flyway V2 os índices obrigatórios idx_contas_usuario_id e idx_categorias_usuario_id; conferir catálogo, consultas e planos antes de decidir índices de FKs e limpeza de índices sem usuario_id.
+next_step: Recorte aprovado concluído; eventual adição de FKs depende do perfil real de exclusões e orçamento de escrita, mantidos no compromisso histórico A13. Preservar os temporais avaliados.
+data: 2026-10-24
+historia: 7-4-migracao-flyway-v2-e-avaliacao-de-indices
+resultado: índices obrigatórios implementados e investigação dos 12 candidatos concluída, verificada e revisada em PostgreSQL descartável
+evidencia: 7-4-evidencias-indices.md e 7-4-index-evidence/measurement.json (40 mil linhas por tabela, 100 tenants, cinco amostras por operação/estado, inventário próprio das oito FKs, EXPLAIN ANALYZE BUFFERS/WAL, leitura/escrita/espaço e DELETE com vínculos presentes/ausentes e rollback); coleta refeita por digest com UPDATE preservando titularidade e publicação atômica; V2 cria idx_contas_usuario_id e idx_categorias_usuario_id sem duplicar simples nas movimentações e recusa cobertura/collation inutilizável; ./mvnw.cmd verify -Pintegration-test aprovado (219 unitários e 70 integrações, 33 IndexMigrationIT); base dc416175d794645372abf9331201868e76ab6a90 e hashes registrados.
+revisao: Revisão em três camadas concluída; patches de cobertura/collation, integridade e coleta corrigidos e conferidos pelo agente principal em 2026-10-24; hashes atuais correspondem à coleta e aos 219 unitários/70 testes de integração aprovados. Ver Review Findings na spec 7.4 e verification.json.
+pendencias: Nenhuma no recorte misto de implementação e investigação aprovado. Recomendação dos oito candidatos de FK é condicional ao perfil real; sua adição não foi implementada. Esse compromisso histórico permanece aberto em A13. Quatro temporais preservados; investigação concluída não significa adição de FKs entregue.
+estado_do_registro: done
+data_da_resolucao: 2026-10-24
 
 ## Registros consolidados e descartados — histórico
 

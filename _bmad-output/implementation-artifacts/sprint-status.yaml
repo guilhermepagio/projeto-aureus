@@ -81,7 +81,7 @@ development_status:
   7-1-hardening-de-autorização-cookies-de-sessão-e-matriz-residual: done
   7-2-isolamento-de-contexto-correlação-mdc-e-logs-estruturados-de: done
   7-3-tratamento-de-sessão-inválida-401-em-uso-e-limpeza-de-estado: done
-  7-4-migração-flyway-v2-índices-de-tenant-obrigatórios-e-redundân: backlog
+  7-4-migração-flyway-v2-índices-de-tenant-obrigatórios-e-redundân: review
   7-5-investigações-técnicas-de-segurança-revogação-jwt-e-ausência: backlog
   epic-7-retrospective: optional
 action_items:
@@ -121,13 +121,30 @@ action_items:
     backlog_refs:
       - DW-155
       - DW-161
-    next_step: Planejar na migração Flyway V2 a criação obrigatória de 
-      idx_contas_usuario_id e idx_categorias_usuario_id (2026-10-19), validar 
-      redundância em usuarios (DW-161) e avaliar catálogo/planos para índices de
-      FKs (DW-155).
+    next_step: Obter frequência/volume real de exclusões e orçamento de escrita
+      antes de eventual adição de índices de FK; preservar o compromisso histórico
+      enquanto esse recorte não for resolvido ou houver decisão explícita de escopo.
     decision_reason: 'Migração incremental V2 entregará os índices obrigatórios de
       usuario_id em contas/categorias e as decisões validadas de D155/D161; não criar
       V2 na etapa de planejamento.'
+    data: '2026-10-24'
+    historia: 7-4-migracao-flyway-v2-e-avaliacao-de-indices
+    resultado: implementação verificada e investigação revisada no descartável;
+      adição histórica de FKs não implementada
+    evidencia: 7-4-evidencias-indices.md e 7-4-index-evidence/measurement.json;
+      12 candidatos com catálogo, planos e custos; verify -Pintegration-test
+      aprovado com 219 unitários e 70 integrações (33 IndexMigrationIT), base
+      dc416175d794645372abf9331201868e76ab6a90 e hashes das fontes na coleta.
+    revisao: Três camadas concluídas e patches conferidos pelo agente principal
+      em 2026-10-24; fontes/hashes correspondem aos testes e à coleta corrigida.
+      Ver Review Findings na spec 7.4 e verification.json. Inventário das oito
+      FKs preservado e UPDATE sem vínculos cruzados; reprodução por digest e
+      publicação atômica verificadas.
+    pendencias: Oito índices de FK permanecem ausentes até confirmação do perfil
+      real que justifique sua manutenção. Quatro
+      temporais preservados; condição de redundância revalidada no próprio alvo.
+      Não encerrar a obrigação de adição de FKs por relatório ou presunção.
+    estado_do_registro: open
 action_items_history:
   - id: epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave
     epic: 1
