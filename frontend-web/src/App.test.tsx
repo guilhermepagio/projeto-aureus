@@ -113,7 +113,15 @@ describe('App Routing', () => {
 
   it('deve invalidar a sessão local, limpar cache do QueryClient e redirecionar para /login ao receber 401 durante o uso', async () => {
     queryClient.setQueryData(['dados-privados-saldo'], { total: 10000 });
-    expect(queryClient.getQueryData(['dados-privados-saldo'])).toBeDefined();
+    queryClient.setQueryData(['dados-privados-contas'], [{ id: 1, descricao: 'Conta privada' }]);
+    const privateMutation = queryClient.getMutationCache().build(queryClient, {
+      mutationFn: async (variables: { descricao: string }) => ({ id: 42, ...variables }),
+    });
+    await privateMutation.execute({ descricao: 'Transação privada' });
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(2);
+    expect(queryClient.getMutationCache().getAll()).toHaveLength(1);
+    expect(privateMutation.state.variables).toEqual({ descricao: 'Transação privada' });
+    expect(privateMutation.state.data).toEqual({ id: 42, descricao: 'Transação privada' });
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -135,13 +143,14 @@ describe('App Routing', () => {
 
     await expect(apiClient.get('/api/contas')).rejects.toThrow();
 
-    expect(queryClient.getQueryData(['dados-privados-saldo'])).toBeUndefined();
     expect((useAuthStore as any).getState().logout).toHaveBeenCalled();
     expect((useAuthStore as any).getState().isAuthenticated).toBe(false);
 
     await waitFor(() => {
       expect(screen.getByText('Acesse sua conta para continuar')).toBeDefined();
     });
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(0);
+    expect(queryClient.getMutationCache().getAll()).toHaveLength(0);
   });
 
   it('deve inicializar desautenticado e redirecionar para /login quando /api/auth/me responder 401 na carga inicial', async () => {

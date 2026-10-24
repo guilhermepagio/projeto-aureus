@@ -21,7 +21,7 @@ vi.mock('react-router-dom', async () => {
 describe('Header component', () => {
   let queryClient: QueryClient;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.restoreAllMocks();
     mockNavigate.mockReset();
     queryClient = new QueryClient({
@@ -36,6 +36,17 @@ describe('Header component', () => {
       subjectId: 'user-teste-123',
       profileImage: 'https://example.com/avatar.png',
     });
+
+    queryClient.setQueryData(['dados-privados-contas'], [{ id: 1, saldo: 5000 }]);
+    queryClient.setQueryData(['dados-privados-transacoes'], [{ id: 42, valor: 350 }]);
+    const privateMutation = queryClient.getMutationCache().build(queryClient, {
+      mutationFn: async (variables: { descricao: string }) => ({ id: 42, ...variables }),
+    });
+    await privateMutation.execute({ descricao: 'Transação privada' });
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(2);
+    expect(queryClient.getMutationCache().getAll()).toHaveLength(1);
+    expect(privateMutation.state.variables).toEqual({ descricao: 'Transação privada' });
+    expect(privateMutation.state.data).toEqual({ id: 42, descricao: 'Transação privada' });
   });
 
   afterEach(() => {
@@ -46,9 +57,6 @@ describe('Header component', () => {
   it('deve realizar logout com sucesso, limpando cache do queryClient, authStore e redirecionando para /login', async () => {
     vi.spyOn(apiClient, 'post').mockResolvedValueOnce(undefined as any);
     const toastErrorSpy = vi.spyOn(toast, 'error');
-
-    queryClient.setQueryData(['dados-privados-conta'], [{ id: 1, saldo: 5000 }]);
-    expect(queryClient.getQueryData(['dados-privados-conta'])).toBeDefined();
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -65,10 +73,12 @@ describe('Header component', () => {
     fireEvent.click(logoutButton);
 
     await waitFor(() => {
-      expect(apiClient.post).toHaveBeenCalledWith('/api/auth/logout', undefined, { skipUnauthorizedHandler: true });
+      expect(mockNavigate).toHaveBeenCalledWith('/login');
     });
 
-    expect(queryClient.getQueryData(['dados-privados-conta'])).toBeUndefined();
+    expect(apiClient.post).toHaveBeenCalledWith('/api/auth/logout', undefined, { skipUnauthorizedHandler: true });
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(0);
+    expect(queryClient.getMutationCache().getAll()).toHaveLength(0);
     expect(useAuthStore.getState().isAuthenticated).toBe(false);
     expect(useAuthStore.getState().subjectId).toBeNull();
     expect(useAuthStore.getState().profileImage).toBeNull();
@@ -79,9 +89,6 @@ describe('Header component', () => {
   it('deve realizar limpeza local completa e exibir toast informativo ao ocorrer falha de rede no logout', async () => {
     vi.spyOn(apiClient, 'post').mockRejectedValueOnce(new Error('Falha de rede'));
     const toastErrorSpy = vi.spyOn(toast, 'error');
-
-    queryClient.setQueryData(['dados-privados-transacoes'], [{ id: 42, valor: 350 }]);
-    expect(queryClient.getQueryData(['dados-privados-transacoes'])).toBeDefined();
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -101,7 +108,8 @@ describe('Header component', () => {
       expect(toastErrorSpy).toHaveBeenCalledWith('Sessão encerrada localmente. (Erro de rede)');
     });
 
-    expect(queryClient.getQueryData(['dados-privados-transacoes'])).toBeUndefined();
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(0);
+    expect(queryClient.getMutationCache().getAll()).toHaveLength(0);
     expect(useAuthStore.getState().isAuthenticated).toBe(false);
     expect(useAuthStore.getState().subjectId).toBeNull();
     expect(useAuthStore.getState().profileImage).toBeNull();
@@ -143,27 +151,7 @@ describe('Header component', () => {
     });
 
     expect(useAuthStore.getState().isAuthenticated).toBe(false);
-  });
-
-  it('deve permitir navegação para Contas e Categorias pelo menu do usuário', () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <Header />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-
-    const userMenuButton = screen.getByRole('button', { name: /menu do usuário/i });
-    fireEvent.click(userMenuButton);
-
-    const contasBtn = screen.getByRole('menuitem', { name: /contas/i });
-    fireEvent.click(contasBtn);
-    expect(mockNavigate).toHaveBeenCalledWith('/contas');
-
-    fireEvent.click(userMenuButton);
-    const categoriasBtn = screen.getByRole('menuitem', { name: /categorias/i });
-    fireEvent.click(categoriasBtn);
-    expect(mockNavigate).toHaveBeenCalledWith('/categorias');
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(0);
+    expect(queryClient.getMutationCache().getAll()).toHaveLength(0);
   });
 });

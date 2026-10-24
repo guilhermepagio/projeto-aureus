@@ -17,6 +17,7 @@ describe('apiClient', () => {
     globalThis.fetch = originalFetch;
     document.cookie = '';
     setUnauthorizedHandler(null);
+    vi.unstubAllGlobals();
   });
 
   it('deve realizar requisição GET com sucesso e retornar JSON parseado', async () => {
@@ -445,7 +446,13 @@ describe('apiClient', () => {
     await expect(apiClient.get('/api/contas')).rejects.toThrow('Descrição é obrigatória');
   });
 
-  it('deve disparar o handler central de 401 e lançar ApiError com status 401', async () => {
+  it.each([
+    '/api/contas',
+    'https://app.example.test/api/contas',
+    'https://APP.EXAMPLE.TEST/api/contas',
+    'https://app.example.test:443/api/contas',
+  ])('deve invalidar a sessão em 401 para a URL local %s', async (url) => {
+    vi.stubGlobal('window', { location: new URL('https://app.example.test/contas') });
     const unauthorizedSpy = vi.fn();
     setUnauthorizedHandler(unauthorizedSpy);
 
@@ -458,14 +465,69 @@ describe('apiClient', () => {
       text: vi.fn().mockResolvedValue(JSON.stringify(errorPayload)),
     } as unknown as Response);
 
-    await expect(apiClient.get('/api/contas')).rejects.toThrow(ApiError);
+    await expect(apiClient.get(url)).rejects.toMatchObject({
+      name: 'ApiError',
+      status: 401,
+      message: 'Sessão expirada',
+      data: errorPayload,
+    });
     expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+  });
 
+  it('deve invalidar a sessão antes de terminar a leitura do corpo de um 401', async () => {
+    const unauthorizedSpy = vi.fn();
+    setUnauthorizedHandler(unauthorizedSpy);
+
+    let resolveBody!: (body: string) => void;
+    const pendingBody = new Promise<string>((resolve) => {
+      resolveBody = resolve;
+    });
+    const readBody = vi.fn(() => pendingBody);
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      text: readBody,
+    } as unknown as Response);
+
+    const result = apiClient.get('/api/contas').catch((error: unknown) => error);
     try {
-      await apiClient.get('/api/contas');
-    } catch (err) {
-      expect(err).toBeInstanceOf(ApiError);
-      expect((err as ApiError).status).toBe(401);
+      await vi.waitFor(() => expect(readBody).toHaveBeenCalledTimes(1));
+      expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      resolveBody(JSON.stringify({ message: 'Sessão expirada' }));
+    }
+
+    expect(await result).toBeInstanceOf(ApiError);
+    expect(await result).toMatchObject({ status: 401, message: 'Sessão expirada' });
+    expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('deve preservar o status 401 se o timeout interromper a leitura do corpo', async () => {
+    vi.useFakeTimers();
+    try {
+      const unauthorizedSpy = vi.fn();
+      setUnauthorizedHandler(unauthorizedSpy);
+      globalThis.fetch = vi.fn().mockImplementation(async (_url: string, options: RequestInit) => ({
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        text: () => new Promise<string>((_resolve, reject) => {
+          options.signal?.addEventListener('abort', () => {
+            reject(new DOMException('Aborted', 'AbortError'));
+          }, { once: true });
+        }),
+      }));
+
+      const result = apiClient.get('/api/contas', { timeout: 1000 })
+        .catch((error: unknown) => error);
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(await result).toBeInstanceOf(ApiError);
+      expect(await result).toMatchObject({ status: 401 });
+      expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
     }
   });
 
@@ -612,7 +674,15 @@ describe('apiClient', () => {
     expect(unauthorizedSpy).not.toHaveBeenCalled();
   });
 
-  it('não deve disparar handler de 401 para requisições cross-origin (externas)', async () => {
+  it.each([
+    'https://external-service.com/api/data',
+    '//external-service.com/api/data',
+    'HTTPS://external-service.com/api/data',
+    'https://app.example.test.evil.test/api/data',
+    'https://app.example.test@external-service.com/api/data',
+    'https://app.example.test:444/api/data',
+  ])('não deve invalidar a sessão em 401 para a URL externa %s', async (url) => {
+    vi.stubGlobal('window', { location: new URL('https://app.example.test/contas') });
     const unauthorizedSpy = vi.fn();
     setUnauthorizedHandler(unauthorizedSpy);
 
@@ -624,7 +694,7 @@ describe('apiClient', () => {
       text: vi.fn().mockResolvedValue(JSON.stringify({ message: 'External 401' })),
     } as unknown as Response);
 
-    await expect(apiClient.get('https://external-service.com/api/data')).rejects.toThrow('External 401');
+    await expect(apiClient.get(url)).rejects.toThrow('External 401');
     expect(unauthorizedSpy).not.toHaveBeenCalled();
   });
 

@@ -55,6 +55,16 @@ export interface RequestOptions extends Omit<RequestInit, 'body'> {
   skipUnauthorizedHandler?: boolean;
 }
 
+function isSameOrigin(url: string): boolean {
+  if (typeof window === 'undefined') return false;
+
+  try {
+    return new URL(url, window.location.href).origin === window.location.origin;
+  } catch {
+    return false;
+  }
+}
+
 function buildUrl(url: string, params?: Record<string, unknown> | URLSearchParams): string {
   if (!params) return url;
 
@@ -107,14 +117,12 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
     headers.set('Accept', 'application/json');
   }
 
-  const isRelativeOrSameOrigin =
-    (!url.startsWith('http://') && !url.startsWith('https://')) ||
-    (typeof window !== 'undefined' && url.startsWith(window.location.origin));
+  const isSameOriginRequest = isSameOrigin(url);
 
   // Auto-inject CSRF token for state-mutating HTTP methods
   const mutationMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
   if (mutationMethods.includes(upperMethod)) {
-    if (isRelativeOrSameOrigin) {
+    if (isSameOriginRequest) {
       const csrfToken = getCsrfToken();
       if (csrfToken && !headers.has('X-XSRF-TOKEN')) {
         headers.set('X-XSRF-TOKEN', csrfToken);
@@ -183,6 +191,19 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
     });
 
     if (!response.ok) {
+      if (
+        response.status === 401 &&
+        !options.skipUnauthorizedHandler &&
+        isSameOriginRequest &&
+        unauthorizedHandler
+      ) {
+        try {
+          unauthorizedHandler();
+        } catch {
+          // Evita que erros no handler impeçam o lançamento de ApiError
+        }
+      }
+
       let errorData: ApiErrorResponse | undefined = undefined;
       try {
         const text = await response.text();
@@ -232,19 +253,6 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
         errorMessage = `Erro na requisição (${response.status}${response.statusText ? ': ' + response.statusText : ''})`;
       }
 
-      if (
-        response.status === 401 &&
-        !options.skipUnauthorizedHandler &&
-        isRelativeOrSameOrigin &&
-        unauthorizedHandler
-      ) {
-        try {
-          unauthorizedHandler();
-        } catch {
-          // Evita que erros no handler impeçam o lançamento de ApiError
-        }
-      }
-
       throw new ApiError(errorMessage, response.status, errorData);
     }
 
@@ -268,7 +276,7 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
     const text = await response.text();
     return (text ? text : undefined) as unknown as T;
   } catch (error) {
-    if (isTimeoutAborted) {
+    if (isTimeoutAborted && !(error instanceof ApiError && error.status === 401)) {
       throw new ApiError(`Tempo limite da requisição excedido (${timeout}ms)`, 408);
     }
     if (error instanceof ApiError) {
