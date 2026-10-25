@@ -1,0 +1,237 @@
+{
+  "date": "2026-10-25",
+  "gitRevision": "c389e76e518d66099fef384448ec27b7d1800233",
+  "measurementSha256": "2b5ca159cd4154dd9f8ac8a2d105ede9eda86c566447d2302bbac14b84bdcbf8",
+  "archivedRunId": "f902fd6f-ce68-433f-b069-df164a36f10e",
+  "sourceHashesChecked": 74,
+  "sourceHashMismatches": [],
+  "measurementSeries": 32,
+  "publishedSamplesPerSeries": 11,
+  "warmupsPerSeries": 3,
+  "freshSessionsCheckedForAllSamples": true,
+  "sqlTraceCountsEqualPreparedStatements": true,
+  "publication": {
+    "canonicalArtifact": "measurement.json",
+    "sidecarExists": false,
+    "defaultDestination": "backend-api/target/7-5-investigation-evidence/measurement.json",
+    "explicitFlag": "-Dinvestigation.publish=true",
+    "atomicCommit": "one staged/validated JSON move; no post-commit I/O in publisher",
+    "contractTestsPassed": 6,
+    "preCommitFailurePreservesPreviousBytes": true
+  },
+  "executionState": {
+    "owner": "JUnit root ExtensionContext.Store",
+    "runIdPerRoot": true,
+    "incompleteCollectionFails": true,
+    "runFailureDiscardsSections": true,
+    "forkCount": 1,
+    "reuseForks": true
+  },
+  "regressionEvidence": {
+    "runId": "463fcb4c-3cb3-482c-894b-5436fb844697",
+    "sha256": "453b3bce4aa4c238d5d818cde2a1c59cdf3712ac5cce5534cb5be3731800861d",
+    "output": "backend-api/target/7-5-investigation-evidence/measurement.json",
+    "newRunIdConfirmed": true,
+    "sameSourceHashesAsArchive": true,
+    "archivedSha256Before": "2b5ca159cd4154dd9f8ac8a2d105ede9eda86c566447d2302bbac14b84bdcbf8",
+    "archivedSha256After": "2b5ca159cd4154dd9f8ac8a2d105ede9eda86c566447d2302bbac14b84bdcbf8",
+    "archiveUnchanged": true
+  },
+  "productionFilesChanged": [],
+  "jwtPatternsInPublishedArtifacts": 0,
+  "gitDiffCheck": "passed",
+  "focusedVerify": {
+    "command": "./mvnw.cmd verify -Pintegration-test -DforkCount=1 -DreuseForks=true \"-Dit.test=SecurityInvestigationIT,PerformanceInvestigationIT\" -Dinvestigation.publish=true",
+    "unitTests": 225,
+    "integrationTests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "result": "BUILD SUCCESS"
+  },
+  "backendFullVerify": {
+    "command": "./mvnw.cmd verify -Pintegration-test -DforkCount=1 -DreuseForks=true",
+    "unitTests": 225,
+    "integrationTests": 72,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "result": "BUILD SUCCESS"
+  },
+  "clientCleanupTests": {
+    "command": "npm test -- src/components/Header/Header.test.tsx",
+    "passed": 3,
+    "failed": 0,
+    "reusedPreviousResult": true,
+    "sourcesUnchanged": true
+  },
+  "review": {
+    "status": "complete",
+    "step": "step-04",
+    "independentLayersCompleted": 3,
+    "acceptedPatches": [
+      "RF-1",
+      "RF-2",
+      "RF-3",
+      "RF-4",
+      "RF-5",
+      "RF-6",
+      "RF-7",
+      "RF-8",
+      "RF-9"
+    ],
+    "allPatchesApplied": true,
+    "otherAcceptedOrDeferredFindings": [],
+    "principalConfirmed": true,
+    "principalConfirmationDate": "2026-10-25",
+    "principalChecks": [
+      "Nove patches conferidos no código e nas evidências",
+      "74 hashes das fontes atuais sem divergência",
+      "32 séries com dez amostras, medianas, sessões e SQL conferidos",
+      "225 unitários e 72 integrações confirmados nos relatórios XML",
+      "Intenção aprovada preservada; produção sem alterações",
+      "RunIds distintos e SHA arquivado preservado pela regressão"
+    ],
+    "triage": [
+      {
+        "id": "RF-1",
+        "category": "patch",
+        "severity": "high",
+        "status": "applied-and-confirmed"
+      },
+      {
+        "id": "RF-2",
+        "category": "patch",
+        "severity": "high",
+        "status": "applied-and-confirmed"
+      },
+      {
+        "id": "RF-3",
+        "category": "patch",
+        "severity": "high",
+        "status": "applied-and-confirmed"
+      },
+      {
+        "id": "RF-4",
+        "category": "patch",
+        "severity": "high",
+        "status": "applied-and-confirmed"
+      },
+      {
+        "id": "RF-5",
+        "category": "patch",
+        "severity": "medium",
+        "status": "applied-and-confirmed"
+      },
+      {
+        "id": "RF-6",
+        "category": "patch",
+        "severity": "medium",
+        "status": "applied-and-confirmed"
+      },
+      {
+        "id": "RF-7",
+        "category": "patch",
+        "severity": "medium",
+        "status": "applied-and-confirmed"
+      },
+      {
+        "id": "RF-8",
+        "category": "patch",
+        "severity": "medium",
+        "status": "applied-and-confirmed"
+      },
+      {
+        "id": "RF-9",
+        "category": "patch",
+        "severity": "medium",
+        "status": "applied-and-confirmed"
+      }
+    ]
+  },
+  "measurementLimits": {
+    "creation": "rolled back; no durable COMMIT or comparison to persisted creation",
+    "instrumentation": "SQL regex/maps included in timing/allocation; overhead not quantified"
+  },
+  "A10": "open; investigação não entrega a otimização histórica",
+  "sourceContentLF": {
+    "normalization": "CRLF to LF; original byte hashes remain in measurement.json",
+    "matchesGitIndex": true,
+    "sha256": {
+      "_bmad-output/specs/spec-epico-7/desempenho.md": "78a1070fa9723ad7206512a2665314613240de6e6a990baf1a2649a7822a6a14",
+      "_bmad-output/specs/spec-epico-7/rastreabilidade.md": "8d17e1bae23210278f2e3352781cd5dbccf27f2661d638a01500ca2beba5cc4e",
+      "_bmad-output/specs/spec-epico-7/seguranca.md": "a730c347140f9c45a32fe4a1b807872bad23043479a071f71b553365800f5be1",
+      "backend-api/pom.xml": "7bfeaf5b55b3f87bc3ba020d51df4aa861ed3b5aad1838881308d8e077061785",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/BackendApplication.java": "5f91124ef93c413a0a52b5e9c7d19a880b728b6ae5609ba232eab614c210146d",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java": "08e2fd26aa56cacef79bae65e3bfa89aa77ad36566a082341f1161b9b909795f",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/CategoriaController.java": "77ca72b1f8f91d941200cd0f48645d2f51dee3e594cf442319544938d27aa9c0",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/ConsolidacaoController.java": "7ad6e5fe3a780a9a6876eb04c5786c52a4e49e464f86d551b5eb90f1b0938b00",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/ContaController.java": "903d836e74483d6c59ebf33e3d87dcd416a3510c59334f752772f0e808b6fb82",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/DespesaFixaController.java": "06fc72d2ea16ea3ae44ece16dee67ff5df03c67d957b9a978e1ea61c2aa112a4",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/DespesaVariavelController.java": "2b59fee733e0c567b30bd047704e10416fe7dcef349bbfd7e3d802b5535909f8",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/ReceitaFixaController.java": "f6ade201da9c5420f6768acecf7eb93849ecb28ca984f1a0e8960b59495008da",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/ReceitaVariavelController.java": "a1a5c4797ddc6a23613313b730e4f88b43edd94d761351a430155f968bf5e90c",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/Categoria.java": "de0370190b99df3149ceb62163cdc2fcea11d90d2eae80ebe69420f03aef13fa",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/Conta.java": "16023082e9ec6c4bac5c00f146ce7d5e76b23d6bee592bd468f4b17cc2d6a410",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/DespesaFixa.java": "649d4d2356e4d63a23e92bef21c4552d8369de0af8e1bf8b9069f7068bf75849",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/DespesaVariavel.java": "694bee7f466524fd588ee33ed80741a4d7304b2dc0754efb8a4c3c750666516b",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/ReceitaFixa.java": "a0f6e87079ad304c09e0bb8ed9a5a3d1deae7c1a027b8b27f21e799a5d0fc0ec",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/ReceitaVariavel.java": "319fcafea5276e9984be197c100cc681c492d4302dd19eb1ac16f2bbbd2d86f7",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java": "04ea571ff1a3ed6b68001435d1e8772fdc1d64b51e0be78dbbee4ac960c1f389",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java": "8a14b84188994bf0c5f867d000fef1a16efc0c93da57b02d3533505975cecbb1",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/CategoriaRequestDTO.java": "f7e3e94352d717c9ad53f74fef7d7d40b9fe246e8b1138ce1a9861f7761eada1",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/CategoriaResponseDTO.java": "4d00e68b5b13bb172a449884f7c76292460a853c97a454604a8941db4d11d38a",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ConsolidacaoPorCategoriaDTO.java": "5ccb089da0f8e9cb9208b90e7a639f2db7a1788a065da708b4bf172b29a4be6a",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ConsolidacaoPorContaDTO.java": "d6f054bb9b4a7018abdb95fc54cecfd17accc8b98018b91a28557315f53d1231",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ContaRequestDTO.java": "5cb3cdee0c32ebfcb4cb001aa9f636b2f52e094a4acefb4daaae72fb368b6de2",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ContaResponseDTO.java": "2bb178eb25ef75b90da4f130cffb8177c52e0573cca927f4cf06b4b4ddd65bbc",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/DespesaFixaRequestDTO.java": "41cd9a5a8de0ef86fde35f59e86102a0b2fca4611c1a449460eccaf5e61a36b8",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/DespesaFixaResponseDTO.java": "89dbe27263025acbe167a14a6ad3380c563e25fbb9a3ec20642b65696b8cdfb3",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/DespesaVariavelRequestDTO.java": "544782dea5dd5b73f3bd11a951f0fd2565d5f3dbc838b92393498b50553e1ab9",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/DespesaVariavelResponseDTO.java": "81fdfb9f2b7b2dae72ae2c4c58b600075fdc4990cec350b55f4e6fdf55f0d472",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/IdReferenceDTO.java": "53492079a506a81391186fef284ee93a30f0266413a471434d6890f331d19e28",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ReceitaFixaRequestDTO.java": "2dcea768052d344882bfb1c5aa49757f28f87a6469a06682dd707f12f498dd17",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ReceitaFixaResponseDTO.java": "494121b1d4ccc6002768e6451297e0af5eb93c33e0ea70040841083d653f5e11",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ReceitaVariavelRequestDTO.java": "5c05da88574aaf6bf1fb771ae140f6885bcdc48fdd7836092d8f96cbfcc75a2a",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/ReceitaVariavelResponseDTO.java": "e1640262c8ad2737b9abe06bc65e34f026889fdd88f5e0e9231eaac4fda03ff6",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/dto/UserProfileResponseDTO.java": "6f11e083f96b24b4847af44c268cf6eb527fe1a6f80162605629ca8ce6403f29",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/exception/ApiErrorResponse.java": "1887d2a8e707a9a84bc5c23e2807f6b24dc849e09ddcaa9a720f2fc3c564020a",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/exception/GlobalExceptionHandler.java": "dd1707e91fe3715903ac5cd5675c7a08c69fdd3b444b726b836b5b55bfc8bace",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/exception/ResourceNotFoundException.java": "a5b262ca5a9287139fed1ee8c1d62cccf472702ecb9d1aa1300f7c856b381fe2",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/repository/CategoriaRepository.java": "77ac5eb6f3ba528672421cac561e2302ada6d84afc88329bbda88d02050b3397",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/repository/ContaRepository.java": "89dec885a2e6f15c1021d4413c6ec5a5ff0a429dad350c0e867498032322deba",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/repository/DespesaFixaRepository.java": "37342b715599933ad76855629fe1c840403d3e3ea74f542bb356227d8e58d563",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/repository/DespesaVariavelRepository.java": "56fedc9e967cbcfd2212f4761e33760c666b75acebaa01d8c661b618ffec7ac7",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/repository/ReceitaFixaRepository.java": "658ec89ac9de35c701f42ede59ab092b2434a15820348eabac2d5a308cd3703e",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/repository/ReceitaVariavelRepository.java": "6d5f7cdb1cd6603b6ff2069b4fb167c04b0875e50df6753cc238c85fc5f3aff2",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/repository/UsuarioRepository.java": "8c28c75981d9d1430734553cd95c705300aa1c0b624125d0eae42da02fbfe43f",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CsrfCookieFilter.java": "cf47bd68af4bdd07ea6e57f0846c01ba6ceeca017f8f71365d97a4dbc155ab73",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java": "fdaa7846a4621ced09745837cfe245d05f64abc79eeec0de53729fe898973592",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java": "b6135ee98b1de177dd1fff92bd3c4f1aca2805dfcd9143370d9ff4ae745a3a8a",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtUtil.java": "e178fab66c91c09ec4a8d626a9143347b6bf762b7d179361a212e795ada8159a",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginFailureHandler.java": "123198147e14a28c0c889775a5d2a228e525aac5402da2de06a31f0ff693dc48",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java": "7562683cd42a24b3946fb05b4c13a8611f69e2a2547906fe3479811b2bee4961",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java": "533ffb8453e0173c0d290d17ed44e95493c9bc9a65f7807983cd6fa61d53f054",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/TenantContext.java": "7b7644026fca376291874e6f9898677f059484092a30284564cfe52da8dc32ce",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/CategoriaService.java": "2205d958d963138683be246bef211f4c51fce99fb377af1e24f604a0e455d188",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java": "959ffa2a971e8fad8aefa491b42fdfd31e84ebd3753ef4ee0ae29e4a9a7f646e",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ContaService.java": "9245bfa130510b7c1fc459fd942a1e757c4e7fc70c7322a314885e2626546f3c",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaFixaService.java": "46671c29720ac9b29999fa75c570777db8beae97bcb8afa37b364ac025332ba7",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java": "e602543ac57e8efad677bff97beba2d578ab29e5c73363620e3c28a41f489059",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ReceitaFixaService.java": "40938d43493984bd8c2324a0ad6803f2ac1dba13fe4dc29366a56de59ed2fabc",
+      "backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ReceitaVariavelService.java": "04e0e693030e8982259383543a7c114d15c917c69ff00886bbd2632887b906a4",
+      "backend-api/src/main/resources/META-INF/additional-spring-configuration-metadata.json": "edb6e6ee6f60b36098bbe6831c222bedc38ceebe68195457ed946a0ca3d289c8",
+      "backend-api/src/main/resources/application.yaml": "0e7137f07ef14f02a835b5051f20d0999403668428632eb89609e5b460e011ce",
+      "backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql": "eaf32445c8bf3dfb3396001c9e1fa673ad3404ece1783c9851c04789561c178a",
+      "backend-api/src/main/resources/db/migration/V2__tenant_indexes_and_redundancy.sql": "f9636f5619ae955177569c0abb2ea52d3032fc888af19c24662f3757d3385523",
+      "backend-api/src/test/java/com/guilhermepagio/aureus/backend/AbstractIntegrationTest.java": "d3bdc89809f5eaff6d7ef89265bef3311a5caf95872dc1b7c808ae400983d154",
+      "backend-api/src/test/java/com/guilhermepagio/aureus/backend/investigation/InvestigationEvidence.java": "67ae7943449f0f960ca9bc31e54b2386de49f6c5b2f7324478ef94c54726cab5",
+      "backend-api/src/test/java/com/guilhermepagio/aureus/backend/investigation/InvestigationEvidenceTest.java": "ecd36cee338b568b5845f5e0f999653ef3c7aca78d9f4ce5c16256bb0255b51b",
+      "backend-api/src/test/java/com/guilhermepagio/aureus/backend/investigation/InvestigationSupport.java": "a3beeb3061a039aa3241812362c9d996d94205de2877e5e6fa3fd9624c31e2b9",
+      "backend-api/src/test/java/com/guilhermepagio/aureus/backend/investigation/PerformanceInvestigationIT.java": "a87d199b502421492cd26c3c10026a787d0095da7f472de9bfeff098869dfb2f",
+      "backend-api/src/test/java/com/guilhermepagio/aureus/backend/investigation/SecurityInvestigationIT.java": "a480df31c4ed6bf1ccb73875d23d6efd50515b24ed76ee4b914c611ca8b6ff93",
+      "frontend-web/src/components/Header/Header.test.tsx": "85c158ffaf995512cdf61c04df6cb3e8501429f70bf1b6c6539b2dd328b2bd3c",
+      "frontend-web/src/components/Header/Header.tsx": "0f8e3314a6a5e61583535c2147dbb7fc27b97a8f502840adefc922be15690e0a"
+    }
+  }
+}

@@ -31,7 +31,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: '2026-10-24'
+last_updated: '2026-10-25'
 project: projeto-aureus
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
@@ -82,7 +82,7 @@ development_status:
   7-2-isolamento-de-contexto-correlação-mdc-e-logs-estruturados-de: done
   7-3-tratamento-de-sessão-inválida-401-em-uso-e-limpeza-de-estado: done
   7-4-migração-flyway-v2-índices-de-tenant-obrigatórios-e-redundân: done
-  7-5-investigações-técnicas-de-segurança-revogação-jwt-e-ausência: backlog
+  7-5-investigações-técnicas-de-segurança-revogação-jwt-e-ausência: review
   epic-7-retrospective: optional
 action_items:
   - id: epic-4-retro-item-10-otimizar-agregação-de-transações-no-back
@@ -100,10 +100,23 @@ action_items:
     triaged_at: '2026-10-14'
     backlog_refs:
       - DW-139
-    next_step: Medir custo e validar equivalência do saldo histórico antes de 
-      escolher otimização.
+    next_step: Decidir implementação posterior com base na investigação 7.5 revisada,
+      comparando custo e equivalência do saldo histórico sob condições iguais.
     decision_reason: Consultar decisão vigente de D139; não é uma tarefa 
       independente.
+    data: '2026-10-25'
+    historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+    resultado: investigação; nenhuma otimização de produção implementada
+    evidencia: 7-5-evidencias-investigacoes.md e
+      7-5-investigation-evidence/measurement.json; três cargas PostgreSQL 16,
+      24 meses e saldo pré-grade comparados a oráculo independente em centavos;
+      revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes das fontes no JSON.
+    revisao: Três camadas e nove patches conferidos pelo agente principal em 2026-10-25;
+      225 unitários e 72 integrações aprovados; ver verification.json.
+    pendencias: Compromisso original de substituir agregação em memória por SQL
+      e índices não implementado. Manter A10 aberto até implementação verificada
+      ou decisão explícita de renegociação; não encerrar por relatório.
+    estado_do_registro: open
   - id: epic-5-retro-item-13-criar-migração-flyway-v2-para-limpeza-de
     epic: 5
     action: Criar migração Flyway V2 para limpeza de índice redundante em 

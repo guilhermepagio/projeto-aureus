@@ -261,7 +261,15 @@ triage_classification: Necessita esclarecimento ou validação adicional
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D007/D008
 verification: [_bmad-output/planning-artifacts/decisions/2026-08-13-autenticacao-v1.md:15](/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/planning-artifacts/decisions/2026-08-13-autenticacao-v1.md:15); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44).
-next_step: Avaliar necessidade e custo de invalidar JWT antes da expiração; não introduzir refresh token ou tabela de sessões sem decisão posterior.
+next_step: Com a investigação 7.5 revisada, decidir requisito/prazo de revogação individual; nenhuma implementação de revogação ou renovação foi autorizada.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; replay após logout demonstrado, sem correção de produção
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; SecurityInvestigationIT verifica logout com CSRF, replay 200, expiração 401 e pedido não entregue; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes das fontes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+pendencias: Decisão explícita de produto sobre janela residual e requisito de revogação; alternativas/custos comparados qualitativamente, sem renovação automática ou solução imposta.
+estado_do_registro: open
 
 ### DW-160: Validar isolamento quando o contexto de tenant está ausente
 
@@ -278,7 +286,15 @@ triage_classification: Necessita esclarecimento ou validação adicional
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D037/D038
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java:9](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java:9).
-next_step: Investigação aprovada, incluindo DW-38; confirmar isolamento sem contexto e bootstrap antes de decidir alteração.
+next_step: Com a evidência 7.5 revisada, definir política de ausência de tenant nos consumidores financeiros internos, preservando bootstrap/Usuario global; DW-38 segue consolidado, sem tarefa independente.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; fallback e sessões caracterizados sem alterar resolver/configuração
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; SecurityInvestigationIT cobre nulo/vazio/branco, ID/HQL/nativo/escrita, sessões existentes/novas, Flyway/JPA e OAuth sintético; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+pendencias: Escrita interna sem contexto recebe public; nenhuma leitura financeira de A demonstrada pelo fallback e HTTP anônimo permanece 401. Decidir o limite financeiro apropriado antes de trocar o fallback ou o ciclo de vida do resolver.
+estado_do_registro: open
 
 ## Investigações aprovadas — desempenho
 
@@ -296,7 +312,15 @@ triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D075/D088/D105
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:43](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:43); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ContaService.java:23](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ContaService.java:23); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/CategoriaService.java:23](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/CategoriaService.java:23).
-next_step: Investigação aprovada por Guilherme no grupo 5: medir volume, tamanho de resposta e latência para decidir paginação, preservando acesso completo dos seletores.
+next_step: Com a investigação 7.5 revisada, decidir futura paginação das movimentações conforme carga relevante; preservar acesso completo às contas/categorias dos seletores.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; seis listagens serializadas e cardinalidade dos seletores verificadas
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; PerformanceInvestigationIT mede 100/1000/10000 movimentos por família e 10/100/1000 referências por tenant, com bytes/tempo/SQL/alocação; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+pendencias: Decisão de implementação futura para movimentações volumosas; nenhum truncamento, paginação ou mudança de seletores implementado. Investigação verificada; registro aberto para decisão de encaminhamento, sem implementação autorizada.
+estado_do_registro: open
 
 ### DW-139: Medir e avaliar custo da consolidação sem perder saldo histórico
 
@@ -311,7 +335,15 @@ triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D162/A10; origens duplicadas: D142, D162, A10
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:74](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:74); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:262](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:262).
-next_step: Medir tempo, memória e volume de consultas; propor otimização apenas com custo relevante e equivalência dos saldos mensais/históricos.
+next_step: Com as medições 7.5 revisadas, deliberar implementação posterior de A10; comparar qualquer otimização com o oráculo financeiro e preservar saldo pré-grade.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; custos e equivalência financeira demonstrados, sem otimização implementada
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; consolidações por conta/categoria em três cargas, oráculo independente em centavos, 24 meses e histórico de 2021 preservados; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+pendencias: A10 permanece open: SQL agregado/índices do compromisso original não foram implementados. Necessária decisão de implementação e validação comparável, ou renegociação explícita de escopo; investigação não encerra o compromisso.
+estado_do_registro: open
 
 ### DW-147: Verificar se conversão de DTOs provoca consultas N+1
 
@@ -326,7 +358,15 @@ triage_classification: Necessita esclarecimento ou validação adicional
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:43](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:43).
-next_step: Investigação aprovada por Guilherme no grupo 5: contar SQL real nas listagens; DTOs de movimentação acessam descrição/observações de conta/categoria LAZY, não apenas IDs. N+1 ainda não medido.
+next_step: Com o N+1 da 7.5 revisado, escolher estratégia futura com medição comparável, preservando todos os campos do DTO e isolamento.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; N+1 real confirmado na leitura de descrição/observações LAZY
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; 10/100/1000 movimentos com pares compartilhados usam 3 SQL e pares distintos usam 21/201/2001; quatro famílias e DTOs completos verificados; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+pendencias: Aprovação e desenho de eventual otimização; JOIN FETCH, paginação, projeção ou batching não foram implementados. Investigação verificada; registro aberto para decisão de encaminhamento, sem implementação autorizada.
+estado_do_registro: open
 
 ### DW-153: Medir custo das consultas de validação de propriedade dos relacionamentos
 
@@ -343,7 +383,15 @@ triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:52](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:52).
-next_step: Investigação aprovada por Guilherme no grupo 5 com prioridade menor: medir custo da consulta de proprietário seguida da entidade, preservando checagem de tenant e contratos 403/404.
+next_step: Usar o custo absoluto/relativo revisado da 7.5; manter prioridade menor e preservar validação de titularidade/403/404 em eventual mudança futura.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; consulta de proprietário seguida de entidade medida separadamente e contra criação revertida
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; PerformanceInvestigationIT mede quatro SELECTs de validação para conta/categoria, criação revertida com cinco statements e razão de medianas, sem COMMIT durável; 403/404 sem mutação; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+pendencias: Decisão de eventual redução de consultas preservando checagem global do proprietário e isolamento; prioridade menor mantida. Investigação verificada; registro aberto para decisão de encaminhamento, sem implementação autorizada.
+estado_do_registro: open
 
 ### DW-155: Avaliar índices de FKs e de usuário em contas/categorias
 
