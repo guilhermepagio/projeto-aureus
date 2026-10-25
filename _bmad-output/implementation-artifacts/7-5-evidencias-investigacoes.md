@@ -155,3 +155,7 @@ Falhas de preparação corrigidas antes da coleta final: precedência da proprie
 ### Conferência pós-patches — 2026-10-25
 
 Os 6 testes de publicação/ciclo de vida passaram, incluindo falha pré-commit preservando os bytes anteriores. Foco autorizado: 225 unitários + 2 investigativos; regressão normal: 225 unitários + 72 integrações. Run arquivado `f902fd6f-ce68-433f-b069-df164a36f10e` e run de regressão `463fcb4c-3cb3-482c-894b-5436fb844697` são distintos; o SHA arquivado antes/depois da regressão é o mesmo: `2b5ca159cd4154dd9f8ac8a2d105ede9eda86c566447d2302bbac14b84bdcbf8`. As 74 fontes conferem em ambas as coletas. Não há sidecar; `verification.json` registra essa prova e os nove patches, com conferência final do agente principal concluída em 2026-10-25. Header não foi repetido: suas fontes permaneceram inalteradas e os 3 testes anteriores seguem como evidência.
+
+### Code review fracionado — 2026-10-25
+
+Revisão adicional de `e7738c9f2b24ea133fccd8149bcbf47049ec6021` em três grupos: coleta/publicação/integridade; segurança/tenant; medições/oráculo/rastreabilidade. As quatro camadas de cada grupo concluíram sem achados relevantes. Nenhum patch, decisão ou adiamento criado. Artefatos e séries conferidos sem repetir a suíte de integração; resultados existentes continuam vinculados às mesmas fontes. Ver `verification.json`, campo `codeReview`. Os seis DW e A10 permanecem abertos pelas decisões futuras registradas.

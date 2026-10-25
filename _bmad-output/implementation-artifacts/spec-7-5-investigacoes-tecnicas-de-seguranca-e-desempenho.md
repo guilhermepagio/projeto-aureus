@@ -105,6 +105,12 @@ Na raiz: `git diff --check`; conferir hashes, artefatos reproduzíveis e ausênc
 | RF-8 | Operação/razão renomeadas para criação revertida, explicitando ausência de COMMIT durável. | JSON e relatório; razão de execuções separadas preservada. |
 | RF-9 | Tempo/alocação incluem regex/mapas do SQL inspector, com overhead não quantificado declarado. | Limites do relatório e measurementBoundaries no JSON. |
 
+### Code review fracionado — 2026-10-25
+
+Revisão de `e7738c9f2b24ea133fccd8149bcbf47049ec6021` contra o baseline `c389e76e518d66099fef384448ec27b7d1800233`, em três grupos. Coleta/publicação/integridade, segurança/tenant e medições/oráculo/rastreabilidade passaram pelas quatro camadas de revisão, sem achados relevantes. Resultado: 0 decisões, 0 patches, 0 adiamentos e 0 descartes. As tentativas interrompidas por limite de uso foram refeitas e todas as camadas concluíram.
+
+Conferidos o SHA do JSON arquivado, 74 fontes, 32 séries e a coerência entre código, dados e relatório. A análise reutilizou as execuções aprovadas das mesmas fontes; nenhum teste foi reexecutado nesta revisão. Sprint atualizado para `done`; seis DW e A10 preservam os resíduos/decisões explicitados. Registro em [verification.json](7-5-investigation-evidence/verification.json).
+
 ## Suggested Review Order
 
 **Resultados e limites**

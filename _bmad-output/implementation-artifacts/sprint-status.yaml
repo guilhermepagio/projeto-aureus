@@ -82,7 +82,7 @@ development_status:
   7-2-isolamento-de-contexto-correlação-mdc-e-logs-estruturados-de: done
   7-3-tratamento-de-sessão-inválida-401-em-uso-e-limpeza-de-estado: done
   7-4-migração-flyway-v2-índices-de-tenant-obrigatórios-e-redundân: done
-  7-5-investigações-técnicas-de-segurança-revogação-jwt-e-ausência: review
+  7-5-investigações-técnicas-de-segurança-revogação-jwt-e-ausência: done
   epic-7-retrospective: optional
 action_items:
   - id: epic-4-retro-item-10-otimizar-agregação-de-transações-no-back
@@ -113,6 +113,7 @@ action_items:
       revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes das fontes no JSON.
     revisao: Três camadas e nove patches conferidos pelo agente principal em 2026-10-25;
       225 unitários e 72 integrações aprovados; ver verification.json.
+      Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
     pendencias: Compromisso original de substituir agregação em memória por SQL
       e índices não implementado. Manter A10 aberto até implementação verificada
       ou decisão explícita de renegociação; não encerrar por relatório.

@@ -233,5 +233,40 @@
       "frontend-web/src/components/Header/Header.test.tsx": "85c158ffaf995512cdf61c04df6cb3e8501429f70bf1b6c6539b2dd328b2bd3c",
       "frontend-web/src/components/Header/Header.tsx": "0f8e3314a6a5e61583535c2147dbb7fc27b97a8f502840adefc922be15690e0a"
     }
+  },
+  "codeReview": {
+    "status": "complete",
+    "date": "2026-10-25",
+    "completedAt": "2026-10-25T09:17:46.036780-03:00",
+    "reviewedCommit": "e7738c9f2b24ea133fccd8149bcbf47049ec6021",
+    "baselineCommit": "c389e76e518d66099fef384448ec27b7d1800233",
+    "scope": "Story 7.5, três grupos; somente achados concretos e relevantes",
+    "groups": [
+      {
+        "id": 1,
+        "scope": "Coleta, publicação e integridade das evidências",
+        "layersPassed": 4,
+        "findings": 0
+      },
+      {
+        "id": 2,
+        "scope": "Segurança e isolamento de tenant",
+        "layersPassed": 4,
+        "findings": 0
+      },
+      {
+        "id": 3,
+        "scope": "Medições, oráculo financeiro e rastreabilidade",
+        "layersPassed": 4,
+        "findings": 0
+      }
+    ],
+    "failedLayers": [],
+    "decisionNeeded": 0,
+    "patches": 0,
+    "deferred": 0,
+    "dismissed": 0,
+    "testsRerun": false,
+    "verification": "Análise de código, recomputação das séries e conferência dos artefatos; resultados de testes existentes reutilizados com fontes idênticas."
   }
 }

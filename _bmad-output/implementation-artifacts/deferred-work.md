@@ -267,7 +267,7 @@ data: 2026-10-25
 historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
 resultado: investigação; replay após logout demonstrado, sem correção de produção
 evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; SecurityInvestigationIT verifica logout com CSRF, replay 200, expiração 401 e pedido não entregue; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes das fontes no JSON.
-revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
 pendencias: Decisão explícita de produto sobre janela residual e requisito de revogação; alternativas/custos comparados qualitativamente, sem renovação automática ou solução imposta.
 estado_do_registro: open
 
@@ -292,7 +292,7 @@ data: 2026-10-25
 historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
 resultado: investigação; fallback e sessões caracterizados sem alterar resolver/configuração
 evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; SecurityInvestigationIT cobre nulo/vazio/branco, ID/HQL/nativo/escrita, sessões existentes/novas, Flyway/JPA e OAuth sintético; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
-revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
 pendencias: Escrita interna sem contexto recebe public; nenhuma leitura financeira de A demonstrada pelo fallback e HTTP anônimo permanece 401. Decidir o limite financeiro apropriado antes de trocar o fallback ou o ciclo de vida do resolver.
 estado_do_registro: open
 
@@ -318,7 +318,7 @@ data: 2026-10-25
 historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
 resultado: investigação; seis listagens serializadas e cardinalidade dos seletores verificadas
 evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; PerformanceInvestigationIT mede 100/1000/10000 movimentos por família e 10/100/1000 referências por tenant, com bytes/tempo/SQL/alocação; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
-revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
 pendencias: Decisão de implementação futura para movimentações volumosas; nenhum truncamento, paginação ou mudança de seletores implementado. Investigação verificada; registro aberto para decisão de encaminhamento, sem implementação autorizada.
 estado_do_registro: open
 
@@ -341,7 +341,7 @@ data: 2026-10-25
 historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
 resultado: investigação; custos e equivalência financeira demonstrados, sem otimização implementada
 evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; consolidações por conta/categoria em três cargas, oráculo independente em centavos, 24 meses e histórico de 2021 preservados; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
-revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
 pendencias: A10 permanece open: SQL agregado/índices do compromisso original não foram implementados. Necessária decisão de implementação e validação comparável, ou renegociação explícita de escopo; investigação não encerra o compromisso.
 estado_do_registro: open
 
@@ -364,7 +364,7 @@ data: 2026-10-25
 historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
 resultado: investigação; N+1 real confirmado na leitura de descrição/observações LAZY
 evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; 10/100/1000 movimentos com pares compartilhados usam 3 SQL e pares distintos usam 21/201/2001; quatro famílias e DTOs completos verificados; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
-revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
 pendencias: Aprovação e desenho de eventual otimização; JOIN FETCH, paginação, projeção ou batching não foram implementados. Investigação verificada; registro aberto para decisão de encaminhamento, sem implementação autorizada.
 estado_do_registro: open
 
@@ -389,7 +389,7 @@ data: 2026-10-25
 historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
 resultado: investigação; consulta de proprietário seguida de entidade medida separadamente e contra criação revertida
 evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; PerformanceInvestigationIT mede quatro SELECTs de validação para conta/categoria, criação revertida com cinco statements e razão de medianas, sem COMMIT durável; 403/404 sem mutação; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
-revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
 pendencias: Decisão de eventual redução de consultas preservando checagem global do proprietário e isolamento; prioridade menor mantida. Investigação verificada; registro aberto para decisão de encaminhamento, sem implementação autorizada.
 estado_do_registro: open
 
