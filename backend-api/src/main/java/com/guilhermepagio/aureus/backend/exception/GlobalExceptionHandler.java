@@ -37,6 +37,30 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    private String extractMethod(final HttpServletRequest request) {
+        if (request == null || request.getMethod() == null || request.getMethod().isBlank()) {
+            return "UNKNOWN";
+        }
+        return request.getMethod();
+    }
+
+    private String extractExceptionType(final Exception ex) {
+        if (ex == null) {
+            return "Exception";
+        }
+        final String simpleName = ex.getClass().getSimpleName();
+        if (simpleName.isBlank()) {
+            final Class<?> superclass = ex.getClass().getSuperclass();
+            return superclass != null ? superclass.getSimpleName() : "Exception";
+        }
+        final int proxyIdx = simpleName.indexOf('$');
+        if (proxyIdx == 0) {
+            final Class<?> superclass = ex.getClass().getSuperclass();
+            return superclass != null ? superclass.getSimpleName() : simpleName;
+        }
+        return proxyIdx > 0 ? simpleName.substring(0, proxyIdx) : simpleName;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpServletRequest request) {
         final Map<String, String> fieldErrors = new LinkedHashMap<>();
@@ -62,6 +86,8 @@ public class GlobalExceptionHandler {
         }
 
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Falha de validação de requisição: status={} method={} uri={} excecao={} regra=validacao_campos",
+                HttpStatus.BAD_REQUEST.value(), extractMethod(request), path, extractExceptionType(ex));
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
@@ -81,6 +107,8 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<ApiErrorResponse> handleTypeMismatchAndMissingParam(final Exception ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Parâmetro de requisição inválido ou ausente: status={} method={} uri={} excecao={} regra=parametro_invalido_ou_ausente",
+                HttpStatus.BAD_REQUEST.value(), extractMethod(request), path, extractExceptionType(ex));
         final String message;
         if (ex instanceof MethodArgumentTypeMismatchException mismatch) {
             message = String.format("O parâmetro '%s' possui formato ou tipo inválido.", mismatch.getName());
@@ -104,6 +132,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleConstraintViolation(final ConstraintViolationException ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Violação de restrição em parâmetros: status={} method={} uri={} excecao={} regra=violacao_restricao_parametros",
+                HttpStatus.BAD_REQUEST.value(), extractMethod(request), path, extractExceptionType(ex));
         final Map<String, String> fieldErrors = new LinkedHashMap<>();
         final List<ApiErrorResponse.ValidationErrorItem> errors = new ArrayList<>();
 
@@ -141,6 +171,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ApiErrorResponse> handleHandlerMethodValidation(final HandlerMethodValidationException ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Falha na validação de parâmetros do método: status={} method={} uri={} excecao={} regra=validacao_metodo",
+                HttpStatus.BAD_REQUEST.value(), extractMethod(request), path, extractExceptionType(ex));
         final Map<String, String> fieldErrors = new LinkedHashMap<>();
         final List<ApiErrorResponse.ValidationErrorItem> errors = new ArrayList<>();
 
@@ -174,8 +206,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(final DataIntegrityViolationException ex, final HttpServletRequest request) {
-        log.warn("Violação de integridade relacional: {}", ex.getMessage());
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Violação de integridade relacional: status={} method={} uri={} excecao={} regra=integridade_relacional",
+                HttpStatus.BAD_REQUEST.value(), extractMethod(request), path, extractExceptionType(ex));
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
@@ -191,6 +224,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleResourceNotFound(final ResourceNotFoundException ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.debug("Recurso não encontrado: status={} method={} uri={} excecao={} regra=recurso_nao_encontrado",
+                HttpStatus.NOT_FOUND.value(), extractMethod(request), path, extractExceptionType(ex));
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.NOT_FOUND.value(),
@@ -206,6 +241,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiErrorResponse> handleAccessDenied(final AccessDeniedException ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Acesso negado à operação: status={} method={} uri={} excecao={} regra=acesso_negado",
+                HttpStatus.FORBIDDEN.value(), extractMethod(request), path, extractExceptionType(ex));
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.FORBIDDEN.value(),
@@ -224,6 +261,8 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<ApiErrorResponse> handleIllegalArgument(final Exception ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Argumento de domínio ou formato inválido: status={} method={} uri={} excecao={} regra=argumento_invalido",
+                HttpStatus.BAD_REQUEST.value(), extractMethod(request), path, extractExceptionType(ex));
         final String message;
         if (ex instanceof DateTimeParseException) {
             message = "Formato de data inválido: " + ex.getMessage();
@@ -247,6 +286,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadable(final HttpMessageNotReadableException ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Corpo da requisição ilegível ou mal formatado: status={} method={} uri={} excecao={} regra=corpo_requisicao_invalido",
+                HttpStatus.BAD_REQUEST.value(), extractMethod(request), path, extractExceptionType(ex));
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.BAD_REQUEST.value(),
@@ -262,6 +303,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNoResourceFound(final NoResourceFoundException ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.debug("Rota ou recurso estático não encontrado: status={} method={} uri={} excecao={} regra=rota_nao_encontrada",
+                HttpStatus.NOT_FOUND.value(), extractMethod(request), path, extractExceptionType(ex));
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.NOT_FOUND.value(),
@@ -277,6 +320,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ApiErrorResponse> handleMethodNotSupported(final HttpRequestMethodNotSupportedException ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Método HTTP não suportado: status={} method={} uri={} excecao={} regra=metodo_nao_suportado",
+                HttpStatus.METHOD_NOT_ALLOWED.value(), extractMethod(request), path, extractExceptionType(ex));
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.METHOD_NOT_ALLOWED.value(),
@@ -296,6 +341,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ApiErrorResponse> handleMediaTypeNotSupported(final HttpMediaTypeNotSupportedException ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Tipo de mídia não suportado: status={} method={} uri={} excecao={} regra=midia_nao_suportada",
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), extractMethod(request), path, extractExceptionType(ex));
         final String mediaTypeInfo = ex.getContentType() != null ? ex.getContentType().toString() : (ex.getMessage() != null ? ex.getMessage() : "");
         final String message = !mediaTypeInfo.isBlank() ? "Tipo de mídia não suportado: " + mediaTypeInfo : "Tipo de mídia não suportado.";
         final ApiErrorResponse response = new ApiErrorResponse(
@@ -313,6 +360,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ResponseEntity<ApiErrorResponse> handleMediaTypeNotAcceptable(final HttpMediaTypeNotAcceptableException ex, final HttpServletRequest request) {
         final String path = request != null ? request.getRequestURI() : "";
+        log.warn("Tipo de mídia não aceitável: status={} method={} uri={} excecao={} regra=midia_nao_aceitavel",
+                HttpStatus.NOT_ACCEPTABLE.value(), extractMethod(request), path, extractExceptionType(ex));
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.NOT_ACCEPTABLE.value(),
@@ -327,8 +376,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGenericException(final Exception ex, final HttpServletRequest request) {
-        log.error("Erro interno inesperado no servidor: ", ex);
         final String path = request != null ? request.getRequestURI() : "";
+        log.error("Erro interno inesperado no servidor: status={} method={} uri={} excecao={} regra=erro_interno_inesperado",
+                HttpStatus.INTERNAL_SERVER_ERROR.value(), extractMethod(request), path, extractExceptionType(ex), ex);
         final ApiErrorResponse response = new ApiErrorResponse(
             Instant.now(),
             HttpStatus.INTERNAL_SERVER_ERROR.value(),

@@ -27,6 +27,14 @@ export class ApiError extends Error {
   }
 }
 
+export type UnauthorizedHandler = () => void;
+
+let unauthorizedHandler: UnauthorizedHandler | null = null;
+
+export function setUnauthorizedHandler(handler: UnauthorizedHandler | null): void {
+  unauthorizedHandler = handler;
+}
+
 export function getCsrfToken(): string | undefined {
   if (typeof document === 'undefined' || !document.cookie) {
     return undefined;
@@ -44,6 +52,17 @@ export interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: unknown;
   timeout?: number;
   params?: Record<string, unknown> | URLSearchParams;
+  skipUnauthorizedHandler?: boolean;
+}
+
+function isSameOrigin(url: string): boolean {
+  if (typeof window === 'undefined') return false;
+
+  try {
+    return new URL(url, window.location.href).origin === window.location.origin;
+  } catch {
+    return false;
+  }
 }
 
 function buildUrl(url: string, params?: Record<string, unknown> | URLSearchParams): string {
@@ -98,14 +117,12 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
     headers.set('Accept', 'application/json');
   }
 
+  const isSameOriginRequest = isSameOrigin(url);
+
   // Auto-inject CSRF token for state-mutating HTTP methods
   const mutationMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
   if (mutationMethods.includes(upperMethod)) {
-    const isRelativeOrSameOrigin =
-      (!url.startsWith('http://') && !url.startsWith('https://')) ||
-      (typeof window !== 'undefined' && url.startsWith(window.location.origin));
-
-    if (isRelativeOrSameOrigin) {
+    if (isSameOriginRequest) {
       const csrfToken = getCsrfToken();
       if (csrfToken && !headers.has('X-XSRF-TOKEN')) {
         headers.set('X-XSRF-TOKEN', csrfToken);
@@ -174,6 +191,19 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
     });
 
     if (!response.ok) {
+      if (
+        response.status === 401 &&
+        !options.skipUnauthorizedHandler &&
+        isSameOriginRequest &&
+        unauthorizedHandler
+      ) {
+        try {
+          unauthorizedHandler();
+        } catch {
+          // Evita que erros no handler impeçam o lançamento de ApiError
+        }
+      }
+
       let errorData: ApiErrorResponse | undefined = undefined;
       try {
         const text = await response.text();
@@ -246,7 +276,7 @@ export async function request<T = unknown>(url: string, options: RequestOptions 
     const text = await response.text();
     return (text ? text : undefined) as unknown as T;
   } catch (error) {
-    if (isTimeoutAborted) {
+    if (isTimeoutAborted && !(error instanceof ApiError && error.status === 401)) {
       throw new ApiError(`Tempo limite da requisição excedido (${timeout}ms)`, 408);
     }
     if (error instanceof ApiError) {
@@ -291,6 +321,7 @@ export const apiClient = Object.assign(
       request<T>(url, { ...options, method: 'DELETE' }),
     patch: <T = unknown>(url: string, body?: unknown, options?: RequestOptions) =>
       request<T>(url, { ...options, method: 'PATCH', body }),
+    setUnauthorizedHandler,
   }
 );
 

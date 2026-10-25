@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
     if (isLoggingOut) return;
     setIsLoggingOut(true);
     try {
-      await apiClient.post('/api/auth/logout');
+      await apiClient.post('/api/auth/logout', undefined, { skipUnauthorizedHandler: true });
     } catch {
       toast.error('Sessão encerrada localmente. (Erro de rede)');
     } finally {

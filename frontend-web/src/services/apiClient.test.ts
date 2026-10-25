@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { apiClient, ApiError, getCsrfToken } from './apiClient';
+import { apiClient, ApiError, getCsrfToken, setUnauthorizedHandler } from './apiClient';
 
 describe('apiClient', () => {
   const originalFetch = globalThis.fetch;
@@ -10,11 +10,14 @@ describe('apiClient', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     document.cookie = '';
+    setUnauthorizedHandler(null);
   });
 
   afterEach(() => {
     globalThis.fetch = originalFetch;
     document.cookie = '';
+    setUnauthorizedHandler(null);
+    vi.unstubAllGlobals();
   });
 
   it('deve realizar requisição GET com sucesso e retornar JSON parseado', async () => {
@@ -441,5 +444,273 @@ describe('apiClient', () => {
     } as unknown as Response);
 
     await expect(apiClient.get('/api/contas')).rejects.toThrow('Descrição é obrigatória');
+  });
+
+  it.each([
+    '/api/contas',
+    'https://app.example.test/api/contas',
+    'https://APP.EXAMPLE.TEST/api/contas',
+    'https://app.example.test:443/api/contas',
+  ])('deve invalidar a sessão em 401 para a URL local %s', async (url) => {
+    vi.stubGlobal('window', { location: new URL('https://app.example.test/contas') });
+    const unauthorizedSpy = vi.fn();
+    setUnauthorizedHandler(unauthorizedSpy);
+
+    const errorPayload = { message: 'Sessão expirada' };
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify(errorPayload)),
+    } as unknown as Response);
+
+    await expect(apiClient.get(url)).rejects.toMatchObject({
+      name: 'ApiError',
+      status: 401,
+      message: 'Sessão expirada',
+      data: errorPayload,
+    });
+    expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('deve invalidar a sessão antes de terminar a leitura do corpo de um 401', async () => {
+    const unauthorizedSpy = vi.fn();
+    setUnauthorizedHandler(unauthorizedSpy);
+
+    let resolveBody!: (body: string) => void;
+    const pendingBody = new Promise<string>((resolve) => {
+      resolveBody = resolve;
+    });
+    const readBody = vi.fn(() => pendingBody);
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      text: readBody,
+    } as unknown as Response);
+
+    const result = apiClient.get('/api/contas').catch((error: unknown) => error);
+    try {
+      await vi.waitFor(() => expect(readBody).toHaveBeenCalledTimes(1));
+      expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      resolveBody(JSON.stringify({ message: 'Sessão expirada' }));
+    }
+
+    expect(await result).toBeInstanceOf(ApiError);
+    expect(await result).toMatchObject({ status: 401, message: 'Sessão expirada' });
+    expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('deve preservar o status 401 se o timeout interromper a leitura do corpo', async () => {
+    vi.useFakeTimers();
+    try {
+      const unauthorizedSpy = vi.fn();
+      setUnauthorizedHandler(unauthorizedSpy);
+      globalThis.fetch = vi.fn().mockImplementation(async (_url: string, options: RequestInit) => ({
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        text: () => new Promise<string>((_resolve, reject) => {
+          options.signal?.addEventListener('abort', () => {
+            reject(new DOMException('Aborted', 'AbortError'));
+          }, { once: true });
+        }),
+      }));
+
+      const result = apiClient.get('/api/contas', { timeout: 1000 })
+        .catch((error: unknown) => error);
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(await result).toBeInstanceOf(ApiError);
+      expect(await result).toMatchObject({ status: 401 });
+      expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('não deve disparar handler de 401 quando backend responder com HTTP 403 (Forbidden)', async () => {
+    const unauthorizedSpy = vi.fn();
+    setUnauthorizedHandler(unauthorizedSpy);
+
+    const errorPayload = { message: 'Acesso negado ao recurso' };
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 403,
+      statusText: 'Forbidden',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify(errorPayload)),
+    } as unknown as Response);
+
+    await expect(apiClient.get('/api/contas/1')).rejects.toThrow('Acesso negado ao recurso');
+    expect(unauthorizedSpy).not.toHaveBeenCalled();
+
+    try {
+      await apiClient.get('/api/contas/1');
+    } catch (err) {
+      expect(err).toBeInstanceOf(ApiError);
+      expect((err as ApiError).status).toBe(403);
+    }
+  });
+
+  it('não deve disparar handler de 401 quando backend responder com HTTP 404 (Not Found)', async () => {
+    const unauthorizedSpy = vi.fn();
+    setUnauthorizedHandler(unauthorizedSpy);
+
+    const errorPayload = { message: 'Recurso inexistente' };
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: 'Not Found',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify(errorPayload)),
+    } as unknown as Response);
+
+    await expect(apiClient.get('/api/contas/999')).rejects.toThrow('Recurso inexistente');
+    expect(unauthorizedSpy).not.toHaveBeenCalled();
+
+    try {
+      await apiClient.get('/api/contas/999');
+    } catch (err) {
+      expect(err).toBeInstanceOf(ApiError);
+      expect((err as ApiError).status).toBe(404);
+    }
+  });
+
+  it('não deve disparar handler de 401 quando backend responder com HTTP 400 (Bad Request)', async () => {
+    const unauthorizedSpy = vi.fn();
+    setUnauthorizedHandler(unauthorizedSpy);
+
+    const errorPayload = { message: 'Dados inválidos' };
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      statusText: 'Bad Request',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify(errorPayload)),
+    } as unknown as Response);
+
+    await expect(apiClient.post('/api/contas', {})).rejects.toThrow('Dados inválidos');
+    expect(unauthorizedSpy).not.toHaveBeenCalled();
+
+    try {
+      await apiClient.post('/api/contas', {});
+    } catch (err) {
+      expect(err).toBeInstanceOf(ApiError);
+      expect((err as ApiError).status).toBe(400);
+    }
+  });
+
+  it('não deve disparar handler de 401 quando backend responder com HTTP 500 (Internal Server Error)', async () => {
+    const unauthorizedSpy = vi.fn();
+    setUnauthorizedHandler(unauthorizedSpy);
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
+      headers: new Headers({ 'content-type': 'text/plain' }),
+      text: vi.fn().mockResolvedValue('Erro interno do servidor'),
+    } as unknown as Response);
+
+    await expect(apiClient.get('/api/contas')).rejects.toThrow('Erro interno do servidor');
+    expect(unauthorizedSpy).not.toHaveBeenCalled();
+
+    try {
+      await apiClient.get('/api/contas');
+    } catch (err) {
+      expect(err).toBeInstanceOf(ApiError);
+      expect((err as ApiError).status).toBe(500);
+    }
+  });
+
+  it('não deve falhar se o handler de 401 estiver nulo ou desregistrado', async () => {
+    setUnauthorizedHandler(null);
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify({ message: 'Não autorizado' })),
+    } as unknown as Response);
+
+    await expect(apiClient.get('/api/contas')).rejects.toThrow('Não autorizado');
+  });
+
+  it('deve continuar lançando ApiError normalmente se o handler de 401 lançar exceção', async () => {
+    const throwingHandler = vi.fn().mockImplementation(() => {
+      throw new Error('Falha no callback');
+    });
+    setUnauthorizedHandler(throwingHandler);
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify({ message: 'Token expirado' })),
+    } as unknown as Response);
+
+    await expect(apiClient.get('/api/contas')).rejects.toThrow('Token expirado');
+    expect(throwingHandler).toHaveBeenCalledTimes(1);
+  });
+
+  it('não deve disparar handler de 401 quando skipUnauthorizedHandler for true', async () => {
+    const unauthorizedSpy = vi.fn();
+    setUnauthorizedHandler(unauthorizedSpy);
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify({ message: 'Não autorizado' })),
+    } as unknown as Response);
+
+    await expect(apiClient.get('/api/auth/me', { skipUnauthorizedHandler: true })).rejects.toThrow('Não autorizado');
+    expect(unauthorizedSpy).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    'https://external-service.com/api/data',
+    '//external-service.com/api/data',
+    'HTTPS://external-service.com/api/data',
+    'https://app.example.test.evil.test/api/data',
+    'https://app.example.test@external-service.com/api/data',
+    'https://app.example.test:444/api/data',
+  ])('não deve invalidar a sessão em 401 para a URL externa %s', async (url) => {
+    vi.stubGlobal('window', { location: new URL('https://app.example.test/contas') });
+    const unauthorizedSpy = vi.fn();
+    setUnauthorizedHandler(unauthorizedSpy);
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify({ message: 'External 401' })),
+    } as unknown as Response);
+
+    await expect(apiClient.get(url)).rejects.toThrow('External 401');
+    expect(unauthorizedSpy).not.toHaveBeenCalled();
+  });
+
+  it('deve registrar e disparar handler quando configurado via apiClient.setUnauthorizedHandler', async () => {
+    const unauthorizedSpy = vi.fn();
+    apiClient.setUnauthorizedHandler(unauthorizedSpy);
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: vi.fn().mockResolvedValue(JSON.stringify({ message: 'Sessão expirada' })),
+    } as unknown as Response);
+
+    await expect(apiClient.get('/api/contas')).rejects.toThrow('Sessão expirada');
+    expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
   });
 });

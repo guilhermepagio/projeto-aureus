@@ -224,6 +224,16 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .content(objectMapper.writeValueAsString(desp)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/despesas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        mockMvc.perform(get("/api/despesas-fixas")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
@@ -248,6 +258,16 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .content(objectMapper.writeValueAsString(desp)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/despesas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        mockMvc.perform(get("/api/despesas-fixas")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
@@ -272,6 +292,50 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .content(objectMapper.writeValueAsString(desp)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/despesas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        mockMvc.perform(get("/api/despesas-variaveis")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    @DisplayName("Criação de despesa variável vinculando categoria de outro tenant deve retornar 403 Forbidden")
+    void deveRetornar403AoCriarDespesaVariavelComCategoriaDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+
+        DespesaVariavelRequestDTO desp = new DespesaVariavelRequestDTO(
+                "Celular Cat", "Loja X", LocalDate.of(2026, 1, 1),
+                new BigDecimal("200.00"), 5, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catAId), "Obs"
+        );
+
+        mockMvc.perform(post("/api/despesas-variaveis")
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(desp)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/despesas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        mockMvc.perform(get("/api/despesas-variaveis")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
@@ -296,6 +360,83 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .content(objectMapper.writeValueAsString(rec)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/receitas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        mockMvc.perform(get("/api/receitas-fixas")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    @DisplayName("Criação de receita fixa vinculando categoria de outro tenant deve retornar 403 Forbidden")
+    void deveRetornar403AoCriarReceitaFixaComCategoriaDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+
+        ReceitaFixaRequestDTO rec = new ReceitaFixaRequestDTO(
+                "Salário Cat", new BigDecimal("3000.00"),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catAId),
+                "Obs", LocalDate.of(2026, 1, 1)
+        );
+
+        mockMvc.perform(post("/api/receitas-fixas")
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(rec)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/receitas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        mockMvc.perform(get("/api/receitas-fixas")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    @DisplayName("Criação de receita variável vinculando conta de outro tenant deve retornar 403 Forbidden")
+    void deveRetornar403AoCriarReceitaVariavelComContaDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaAId = criarConta(tenantA, "ContaA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
+
+        ReceitaVariavelRequestDTO rec = new ReceitaVariavelRequestDTO(
+                "Freela Conta", new BigDecimal("500.00"), 1, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaAId), new IdReferenceDTO(catBId), "Obs"
+        );
+
+        mockMvc.perform(post("/api/receitas-variaveis")
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(rec)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/receitas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        mockMvc.perform(get("/api/receitas-variaveis")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
@@ -319,6 +460,16 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .content(objectMapper.writeValueAsString(rec)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/receitas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        mockMvc.perform(get("/api/receitas-variaveis")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
@@ -331,7 +482,6 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
         Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
         Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
 
-        // B cria despesa legítima
         DespesaFixaRequestDTO despB = new DespesaFixaRequestDTO(
                 "Desp B", new BigDecimal("100.00"),
                 new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId),
@@ -346,11 +496,10 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .andReturn();
         Long despesaBId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
 
-        // B tenta alterar a despesa vinculando à Conta de A
         DespesaFixaRequestDTO despAlterada = new DespesaFixaRequestDTO(
-                "Desp B Alterada", new BigDecimal("100.00"),
+                "Desp B Alterada", new BigDecimal("950.00"),
                 new IdReferenceDTO(contaAId), new IdReferenceDTO(catBId),
-                "Obs", LocalDate.of(2026, 1, 1)
+                "Obs Alterada", LocalDate.of(2026, 1, 1)
         );
         mockMvc.perform(put("/api/despesas-fixas/" + despesaBId)
                 .cookie(authCookie(tenantB))
@@ -359,17 +508,287 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .content(objectMapper.writeValueAsString(despAlterada)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/despesas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Desp B"))
+                .andExpect(jsonPath("$[0].valor").value(100.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaBId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catBId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs"));
     }
 
     @Test
-    @DisplayName("Atualização e exclusão de Categoria de outro tenant deve retornar 404 Not Found")
-    void deveRetornar404AoAtualizarOuExcluirCategoriaDeOutroTenant() throws Exception {
+    @DisplayName("Atualização (PUT) de despesa fixa vinculando categoria de outro tenant deve retornar 403 Forbidden")
+    void deveRetornar403AoAtualizarDespesaFixaComCategoriaDeOutroTenant() throws Exception {
         String tenantA = novoTenant("tenant-a");
         String tenantB = novoTenant("tenant-b");
 
         Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
 
-        // B tenta atualizar categoria de A
+        DespesaFixaRequestDTO despB = new DespesaFixaRequestDTO(
+                "Desp B Original", new BigDecimal("100.00"),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId),
+                "Obs", LocalDate.of(2026, 1, 1)
+        );
+        MvcResult res = mockMvc.perform(post("/api/despesas-fixas")
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(despB)))
+                .andExpect(status().isOk())
+                .andReturn();
+        Long despesaBId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
+
+        DespesaFixaRequestDTO despAlterada = new DespesaFixaRequestDTO(
+                "Desp B Alterada Cat", new BigDecimal("950.00"),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catAId),
+                "Obs Alterada", LocalDate.of(2026, 1, 1)
+        );
+        mockMvc.perform(put("/api/despesas-fixas/" + despesaBId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(despAlterada)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/despesas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Desp B Original"))
+                .andExpect(jsonPath("$[0].valor").value(100.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaBId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catBId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs"));
+    }
+
+    @Test
+    @DisplayName("Atualização (PUT) de despesa variável vinculando conta ou categoria de outro tenant deve retornar 403 Forbidden")
+    void deveRetornar403AoAtualizarDespesaVariavelComContaOuCategoriaDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaAId = criarConta(tenantA, "ContaA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
+
+        DespesaVariavelRequestDTO despB = new DespesaVariavelRequestDTO(
+                "Desp Var B", "Loja B", LocalDate.of(2026, 1, 1),
+                new BigDecimal("200.00"), 3, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId), "Obs"
+        );
+        MvcResult res = mockMvc.perform(post("/api/despesas-variaveis")
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(despB)))
+                .andExpect(status().isOk())
+                .andReturn();
+        Long despesaVarBId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
+
+        DespesaVariavelRequestDTO alteracaoContaAlheia = new DespesaVariavelRequestDTO(
+                "Desp Var Alterada Conta", "Loja X", LocalDate.of(2026, 1, 1),
+                new BigDecimal("800.00"), 3, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaAId), new IdReferenceDTO(catBId), "Obs Alterada"
+        );
+        mockMvc.perform(put("/api/despesas-variaveis/" + despesaVarBId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(alteracaoContaAlheia)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/despesas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Desp Var B"))
+                .andExpect(jsonPath("$[0].localCompra").value("Loja B"))
+                .andExpect(jsonPath("$[0].valorParcela").value(200.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaBId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catBId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs"));
+
+        DespesaVariavelRequestDTO alteracaoCatAlheia = new DespesaVariavelRequestDTO(
+                "Desp Var Alterada Cat", "Loja X", LocalDate.of(2026, 1, 1),
+                new BigDecimal("800.00"), 3, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catAId), "Obs Alterada"
+        );
+        mockMvc.perform(put("/api/despesas-variaveis/" + despesaVarBId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(alteracaoCatAlheia)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/despesas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Desp Var B"))
+                .andExpect(jsonPath("$[0].localCompra").value("Loja B"))
+                .andExpect(jsonPath("$[0].valorParcela").value(200.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaBId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catBId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs"));
+    }
+
+    @Test
+    @DisplayName("Atualização (PUT) de receita fixa vinculando conta ou categoria de outro tenant deve retornar 403 Forbidden")
+    void deveRetornar403AoAtualizarReceitaFixaComContaOuCategoriaDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaAId = criarConta(tenantA, "ContaA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
+
+        ReceitaFixaRequestDTO recB = new ReceitaFixaRequestDTO(
+                "Rec Fixa B", new BigDecimal("3000.00"),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId),
+                "Obs", LocalDate.of(2026, 1, 1)
+        );
+        MvcResult res = mockMvc.perform(post("/api/receitas-fixas")
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(recB)))
+                .andExpect(status().isOk())
+                .andReturn();
+        Long receitaFixaBId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
+
+        ReceitaFixaRequestDTO alteracaoContaAlheia = new ReceitaFixaRequestDTO(
+                "Rec Fixa Alterada Conta", new BigDecimal("9000.00"),
+                new IdReferenceDTO(contaAId), new IdReferenceDTO(catBId),
+                "Obs Alterada", LocalDate.of(2026, 1, 1)
+        );
+        mockMvc.perform(put("/api/receitas-fixas/" + receitaFixaBId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(alteracaoContaAlheia)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/receitas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Rec Fixa B"))
+                .andExpect(jsonPath("$[0].valor").value(3000.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaBId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catBId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs"));
+
+        ReceitaFixaRequestDTO alteracaoCatAlheia = new ReceitaFixaRequestDTO(
+                "Rec Fixa Alterada Cat", new BigDecimal("9000.00"),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catAId),
+                "Obs Alterada", LocalDate.of(2026, 1, 1)
+        );
+        mockMvc.perform(put("/api/receitas-fixas/" + receitaFixaBId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(alteracaoCatAlheia)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/receitas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Rec Fixa B"))
+                .andExpect(jsonPath("$[0].valor").value(3000.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaBId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catBId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs"));
+    }
+
+    @Test
+    @DisplayName("Atualização (PUT) de receita variável vinculando conta ou categoria de outro tenant deve retornar 403 Forbidden")
+    void deveRetornar403AoAtualizarReceitaVariavelComContaOuCategoriaDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaAId = criarConta(tenantA, "ContaA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
+
+        ReceitaVariavelRequestDTO recB = new ReceitaVariavelRequestDTO(
+                "Rec Var B", new BigDecimal("500.00"), 2, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId), "Obs"
+        );
+        MvcResult res = mockMvc.perform(post("/api/receitas-variaveis")
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(recB)))
+                .andExpect(status().isOk())
+                .andReturn();
+        Long receitaVarBId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
+
+        ReceitaVariavelRequestDTO alteracaoContaAlheia = new ReceitaVariavelRequestDTO(
+                "Rec Var Alterada Conta", new BigDecimal("1500.00"), 2, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaAId), new IdReferenceDTO(catBId), "Obs Alterada"
+        );
+        mockMvc.perform(put("/api/receitas-variaveis/" + receitaVarBId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(alteracaoContaAlheia)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/receitas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Rec Var B"))
+                .andExpect(jsonPath("$[0].valorParcela").value(500.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaBId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catBId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs"));
+
+        ReceitaVariavelRequestDTO alteracaoCatAlheia = new ReceitaVariavelRequestDTO(
+                "Rec Var Alterada Cat", new BigDecimal("1500.00"), 2, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catAId), "Obs Alterada"
+        );
+        mockMvc.perform(put("/api/receitas-variaveis/" + receitaVarBId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(alteracaoCatAlheia)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString("Acesso negado")));
+
+        mockMvc.perform(get("/api/receitas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Rec Var B"))
+                .andExpect(jsonPath("$[0].valorParcela").value(500.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaBId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catBId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs"));
+    }
+
+    @Test
+    @DisplayName("Consulta, atualização e exclusão de Categoria de outro tenant deve ocultar na listagem e retornar 404 Not Found em mutações")
+    void deveRetornar404AoAtualizarOuExcluirCategoriaDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        String descCatA = "CatA-" + UUID.randomUUID().toString().substring(0, 8);
+        Long catAId = criarCategoria(tenantA, descCatA);
+
+        mockMvc.perform(get("/api/categorias")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].descricao", not(hasItem(descCatA))));
+
         CategoriaRequestDTO dtoAlteracao = new CategoriaRequestDTO("Invasor", "Hack");
         mockMvc.perform(put("/api/categorias/" + catAId)
                 .cookie(authCookie(tenantB))
@@ -378,15 +797,20 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .content(objectMapper.writeValueAsString(dtoAlteracao)))
                 .andExpect(status().isNotFound());
 
-        // B tenta excluir categoria de A
         mockMvc.perform(delete("/api/categorias/" + catAId)
                 .cookie(authCookie(tenantB))
                 .with(csrf()))
                 .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/api/categorias")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].descricao", hasItem(descCatA)))
+                .andExpect(jsonPath("$[*].descricao", not(hasItem("Invasor"))));
     }
 
     @Test
-    @DisplayName("Atualização e exclusão de Despesa Fixa de outro tenant deve retornar 404 Not Found")
+    @DisplayName("Atualização e exclusão de Despesa Fixa de outro tenant deve retornar 404 Not Found e manter registro intacto")
     void deveRetornar404AoAtualizarOuExcluirDespesaFixaDeOutroTenant() throws Exception {
         String tenantA = novoTenant("tenant-a");
         String tenantB = novoTenant("tenant-b");
@@ -396,7 +820,6 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
         Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
         Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
 
-        // A cria despesa legítima
         DespesaFixaRequestDTO despA = new DespesaFixaRequestDTO(
                 "Desp A", new BigDecimal("100.00"),
                 new IdReferenceDTO(contaAId), new IdReferenceDTO(catAId),
@@ -411,7 +834,11 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .andReturn();
         Long despesaAId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
 
-        // B tenta alterar a despesa de A -> 404 Not Found
+        mockMvc.perform(get("/api/despesas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
         DespesaFixaRequestDTO despAlterada = new DespesaFixaRequestDTO(
                 "Invasor Desp", new BigDecimal("999.00"),
                 new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId),
@@ -424,10 +851,189 @@ public class MultiTenancyIT extends AbstractIntegrationTest {
                 .content(objectMapper.writeValueAsString(despAlterada)))
                 .andExpect(status().isNotFound());
 
-        // B tenta excluir a despesa de A -> 404 Not Found
         mockMvc.perform(delete("/api/despesas-fixas/" + despesaAId)
                 .cookie(authCookie(tenantB))
                 .with(csrf()))
                 .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/api/despesas-fixas")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Desp A"))
+                .andExpect(jsonPath("$[0].valor").value(100.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaAId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catAId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs"));
+    }
+
+    @Test
+    @DisplayName("Acesso, atualização e exclusão de Despesa Variável de outro tenant deve ocultar na listagem, retornar 404 Not Found e manter registro intacto")
+    void deveRetornar404AoConsultarAtualizarOuExcluirDespesaVariavelDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaAId = criarConta(tenantA, "ContaA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
+
+        DespesaVariavelRequestDTO despA = new DespesaVariavelRequestDTO(
+                "Desp Var A", "Loja A", LocalDate.of(2026, 1, 1),
+                new BigDecimal("150.00"), 2, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaAId), new IdReferenceDTO(catAId), "Obs A"
+        );
+        MvcResult res = mockMvc.perform(post("/api/despesas-variaveis")
+                .cookie(authCookie(tenantA))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(despA)))
+                .andExpect(status().isOk())
+                .andReturn();
+        Long despesaVarAId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
+
+        mockMvc.perform(get("/api/despesas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        DespesaVariavelRequestDTO despAlterada = new DespesaVariavelRequestDTO(
+                "Invasor Var", "Loja Hack", LocalDate.of(2026, 1, 1),
+                new BigDecimal("999.00"), 2, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId), "Hack"
+        );
+        mockMvc.perform(put("/api/despesas-variaveis/" + despesaVarAId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(despAlterada)))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(delete("/api/despesas-variaveis/" + despesaVarAId)
+                .cookie(authCookie(tenantB))
+                .with(csrf()))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/api/despesas-variaveis")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Desp Var A"))
+                .andExpect(jsonPath("$[0].localCompra").value("Loja A"))
+                .andExpect(jsonPath("$[0].valorParcela").value(150.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaAId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catAId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs A"));
+    }
+
+    @Test
+    @DisplayName("Acesso, atualização e exclusão de Receita Fixa de outro tenant deve ocultar na listagem, retornar 404 Not Found e manter registro intacto")
+    void deveRetornar404AoConsultarAtualizarOuExcluirReceitaFixaDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaAId = criarConta(tenantA, "ContaA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
+
+        ReceitaFixaRequestDTO recA = new ReceitaFixaRequestDTO(
+                "Rec Fixa A", new BigDecimal("2500.00"),
+                new IdReferenceDTO(contaAId), new IdReferenceDTO(catAId),
+                "Obs A", LocalDate.of(2026, 1, 1)
+        );
+        MvcResult res = mockMvc.perform(post("/api/receitas-fixas")
+                .cookie(authCookie(tenantA))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(recA)))
+                .andExpect(status().isOk())
+                .andReturn();
+        Long receitaFixaAId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
+
+        mockMvc.perform(get("/api/receitas-fixas")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        ReceitaFixaRequestDTO recAlterada = new ReceitaFixaRequestDTO(
+                "Invasor Rec Fixa", new BigDecimal("9999.00"),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId),
+                "Hack", LocalDate.of(2026, 1, 1)
+        );
+        mockMvc.perform(put("/api/receitas-fixas/" + receitaFixaAId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(recAlterada)))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(delete("/api/receitas-fixas/" + receitaFixaAId)
+                .cookie(authCookie(tenantB))
+                .with(csrf()))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/api/receitas-fixas")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Rec Fixa A"))
+                .andExpect(jsonPath("$[0].valor").value(2500.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaAId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catAId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs A"));
+    }
+
+    @Test
+    @DisplayName("Acesso, atualização e exclusão de Receita Variável de outro tenant deve ocultar na listagem, retornar 404 Not Found e manter registro intacto")
+    void deveRetornar404AoConsultarAtualizarOuExcluirReceitaVariavelDeOutroTenant() throws Exception {
+        String tenantA = novoTenant("tenant-a");
+        String tenantB = novoTenant("tenant-b");
+
+        Long contaAId = criarConta(tenantA, "ContaA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catAId = criarCategoria(tenantA, "CatA-" + UUID.randomUUID().toString().substring(0, 8));
+        Long contaBId = criarConta(tenantB, "ContaB-" + UUID.randomUUID().toString().substring(0, 8));
+        Long catBId = criarCategoria(tenantB, "CatB-" + UUID.randomUUID().toString().substring(0, 8));
+
+        ReceitaVariavelRequestDTO recA = new ReceitaVariavelRequestDTO(
+                "Rec Var A", new BigDecimal("400.00"), 3, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaAId), new IdReferenceDTO(catAId), "Obs A"
+        );
+        MvcResult res = mockMvc.perform(post("/api/receitas-variaveis")
+                .cookie(authCookie(tenantA))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(recA)))
+                .andExpect(status().isOk())
+                .andReturn();
+        Long receitaVarAId = objectMapper.readTree(res.getResponse().getContentAsString()).get("id").asLong();
+
+        mockMvc.perform(get("/api/receitas-variaveis")
+                .cookie(authCookie(tenantB)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+        ReceitaVariavelRequestDTO recAlterada = new ReceitaVariavelRequestDTO(
+                "Invasor Rec Var", new BigDecimal("9999.00"), 3, LocalDate.of(2026, 1, 1),
+                new IdReferenceDTO(contaBId), new IdReferenceDTO(catBId), "Hack"
+        );
+        mockMvc.perform(put("/api/receitas-variaveis/" + receitaVarAId)
+                .cookie(authCookie(tenantB))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(recAlterada)))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(delete("/api/receitas-variaveis/" + receitaVarAId)
+                .cookie(authCookie(tenantB))
+                .with(csrf()))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/api/receitas-variaveis")
+                .cookie(authCookie(tenantA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].descricao").value("Rec Var A"))
+                .andExpect(jsonPath("$[0].valorParcela").value(400.00))
+                .andExpect(jsonPath("$[0].conta.id").value(contaAId))
+                .andExpect(jsonPath("$[0].categoria.id").value(catAId))
+                .andExpect(jsonPath("$[0].observacoes").value("Obs A"));
     }
 }
+

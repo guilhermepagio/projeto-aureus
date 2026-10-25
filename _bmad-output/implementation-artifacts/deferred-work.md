@@ -32,34 +32,50 @@ Os 15 action items A ficam em `sprint-status.yaml`, com vínculos para estes rep
 ### DW-13: Restringir fallback de autorização e definir política pública do Actuator
 
 origin: Registros iniciais sem seção; triage D013
-location: backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44
+location: backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:40
 source_spec: _bmad-output/implementation-artifacts/archive/epic-1/spec-1-4-encerrar-sessao.md
 severity: critical
 reason: Corrigir fallback permissivo e definir allowlist pública/Actuator. A autorização de rotas não API é aberta; não há prova de exposição de todos os endpoints Actuator em produção.
-status: open
-decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); implementação não iniciada; manter status open.
+status: done
+decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); implementação concluída e verificada em 2026-10-19 na Story 7.1.
 triage_id: D013
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44); [backend-api/pom.xml:147](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/pom.xml:147).
-next_step: Incluir no escopo aprovado após concluir a validação dos demais grupos; fechamento futuro exige testes/revisão e atualização rastreável do backlog e deferred-work.
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:40](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:40); [backend-api/src/main/resources/application.yaml:39](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/application.yaml:39); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:269](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:269).
+next_step: Nenhuma pendência; allowlist pública explícita, exposição restrita de /actuator/health (show-details: never) e fallback .anyRequest().denyAll() implementados e verificados.
+data: 2026-10-19
+historia: 7-1-hardening-de-autorizacao-cookies-de-sessao-e-matriz-residual
+resultado: implementação verificada
+evidencia: SecurityConfig.java, application.yaml e SecurityIT#allowlistPublicaEPoliticaActuatorDevemNegarRotasNaoAutorizadas (incluindo WebEndpointsSupplier e /error) executados via ./mvnw verify -Pintegration-test (BUILD SUCCESS, 205 testes unitários e 36 testes de integração verdes, diff auditado sobre baseline 6a83233024003de2d7823f927d92a9a1c071b432)
+revisao: Revisão adversarial em 4 camadas (blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor) em spec-7-1 concluída, 5 patches aplicados e aprovada contra SEG-01, SEG-02 e SEG-03 de seguranca.md
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-19
 
 ### DW-14: Verificar segurança do cookie de logout no backend
 
 origin: Registros iniciais sem seção; triage D014
-location: backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:29
+location: backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:42
 source_spec: _bmad-output/implementation-artifacts/archive/epic-1/spec-1-4-encerrar-sessao.md
 severity: medium
 reason: Manter somente testes de expiração e atributos do cookie de logout; testes de dados de perfil ficam descartados. Já há teste REST de status/Set-Cookie, faltam assertivas de segurança.
-status: open
-decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); implementação não iniciada; manter status open.
+status: done
+decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); verificação concluída em 2026-10-19 na Story 7.1.
 triage_id: D014
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D025/D022
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:29](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:29); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:87](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:87).
-next_step: Incluir no escopo aprovado após concluir a validação dos demais grupos; fechamento futuro exige testes/revisão e atualização rastreável do backlog e deferred-work.
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:42](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/controller/AuthController.java:42); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:209](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:209).
+next_step: Nenhuma pendência; atributos de expiração e segurança do cookie AUREUS_SESSION no logout (anônimo e autenticado) e na limpeza por token expirado/inválido verificados em HTTP e HTTPS.
+data: 2026-10-19
+historia: 7-1-hardening-de-autorizacao-cookies-de-sessao-e-matriz-residual
+resultado: verificação
+evidencia: SecurityIT#endpointsDeAuthDevemFuncionarCorretamente, SecurityIT#requisicaoComTokenExpiradoDeveRetornar401ELimparCookie e SecurityIT#requisicaoComTokenInvalidoDeveRetornar401ELimparCookie executados via ./mvnw verify -Pintegration-test (BUILD SUCCESS, 9 testes em SecurityIT verdes, diff auditado sobre baseline 6a83233024003de2d7823f927d92a9a1c071b432)
+revisao: Revisão adversarial em 4 camadas (blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor) em spec-7-1 concluída, 5 patches aplicados e aprovada contra SEG-05 e SEG-06 de seguranca.md
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-19
 
 ### DW-26: Verificar logout e limpeza de estado/cache privado no frontend
 
@@ -68,14 +84,22 @@ location: frontend-web/src/components/Header/Header.tsx:13
 source_spec: _bmad-output/implementation-artifacts/archive/epic-1/spec-1-4-correcao-botao-sair.md
 severity: medium
 reason: Manter somente logout, limpeza de authStore/QueryClient e comportamento de falha de rede. Imagem/avatar/estado visual ficam descartados. Evita regressão na remoção local de dados privados; não comprova revogação do JWT no servidor.
-status: open
-decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); implementação não iniciada; manter status open.
+status: done
+decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); verificação e testes automatizados concluídos em 2026-10-20 na Story 7.3, com patches de revisão validados em 2026-10-24.
 triage_id: D026
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D045/D046
-verification: [frontend-web/src/components/Header/Header.tsx:13](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/components/Header/Header.tsx:13); [frontend-web/src/App.test.tsx:59](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/App.test.tsx:59).
-next_step: Incluir no escopo aprovado após concluir a validação dos demais grupos; fechamento futuro exige testes/revisão e atualização rastreável do backlog e deferred-work.
+verification: [frontend-web/src/components/Header/Header.tsx:23](../../frontend-web/src/components/Header/Header.tsx#L23); [frontend-web/src/components/Header/Header.test.tsx:57](../../frontend-web/src/components/Header/Header.test.tsx#L57).
+next_step: Nenhuma pendência; logout com sucesso (200) e sob falha de rede verificado com limpeza integral dos caches de queries e mutações, logout do authStore, redirecionamento para /login, toast informativo em erro de rede e proteção contra cliques concorrentes. Limpeza local com falha de rede não prova exclusão do cookie HttpOnly nem revogação do JWT no servidor (SEG-09).
+data: 2026-10-24
+historia: 7-3-tratamento-de-sessao-invalida-401-em-uso-e-limpeza-de-estado
+resultado: verificação
+evidencia: Header.tsx e Header.test.tsx (3 testes dedicados a logout com sucesso, falha de rede com toast informativo e prevenção de cliques concorrentes; caches de queries e mutações privadas preenchidos e verificados vazios após logout) executados via npm test --prefix frontend-web (20 arquivos e 205 testes aprovados) e npm run build --prefix frontend-web (aprovado), na árvore de trabalho sobre 159e2e8 em 2026-10-24.
+revisao: Code review da Story 7.3 em quatro camadas, com 4 patches aplicados mediante autorização de Guilherme; cobertura do MutationCache adicionada e teste genérico de navegação removido. SEG-07 verificado; limpeza local sob falha de rede não comprova exclusão do cookie HttpOnly nem revogação do JWT no servidor (SEG-09).
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-24
 
 ### DW-35: Verificar população e limpeza do contexto de tenant e segurança
 
@@ -84,14 +108,22 @@ location: backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/J
 source_spec: _bmad-output/implementation-artifacts/archive/epic-1/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md
 severity: medium
 reason: Testar set/clear de TenantContext e SecurityContextHolder em sucesso, falha e reuso de thread. Protege isolamento; implementação de finally já existe, não se presume vazamento atual.
-status: open
-decision: 2026-10-14 Grupo 2 — Aprovado para planejamento; testar limpeza dos contextos em sucesso, erro e reuso de thread.
+status: done
+decision: 2026-10-14 Grupo 2 — Aprovado para planejamento; testar limpeza dos contextos em sucesso, erro e reuso de thread; verificação concluída em 2026-10-20 na Story 7.2.
 triage_id: D035
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java:57](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java:57); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:31](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:31).
-next_step: Aprovado para planejamento; testar limpeza dos contextos em sucesso, erro e reuso de thread.
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java:97](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/JwtAuthenticationFilter.java:97); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/ContextAndMdcLifecycleTest.java:112](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/ContextAndMdcLifecycleTest.java:112); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:416](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:416).
+next_step: Nenhuma pendência; população e limpeza de TenantContext, SecurityContextHolder e MDC (requestId, tenantId) em sucesso, token inválido/expirado, subject vazio, exceção na cadeia e reuso de thread verificadas.
+data: 2026-10-20
+historia: 7-2-isolamento-de-contexto-correlacao-mdc-e-logs-estruturados
+resultado: implementação verificada
+evidencia: JwtAuthenticationFilter.java, ContextAndMdcLifecycleTest (9 testes cobrindo população/limpeza de TenantContext, SecurityContextHolder e MDC em sucesso, token inválido/expirado, subject vazio, exceção e reuso da mesma thread, além de logs sem vazamento sensível) e SecurityIT (10 testes incluindo verificação com OutputCaptureExtension da emissão real do pattern de console com [req: e tenant:]) executados via ./mvnw test e ./mvnw verify -Pintegration-test (BUILD SUCCESS, 219 testes unitários e 37 testes de integração verdes, sobre baseline 00434e9978d132de880cb0874eaf9e5e77a3bf64)
+revisao: Revisão adversarial em 3 camadas (blind-hunter, edge-case-hunter, verification-gap) em spec-7-2 concluída, patches aplicados e aprovada contra SEG-10 de seguranca.md e OBS-01..05 de observabilidade.md
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-20
 
 ### DW-36: Verificar atributos de segurança e TTL do cookie no sucesso OAuth
 
@@ -100,14 +132,22 @@ location: backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/O
 source_spec: _bmad-output/implementation-artifacts/archive/epic-1/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md
 severity: medium
 reason: Testar emissão OAuth de cookie HttpOnly, SameSite, Secure condicionado ao transporte e TTL. Flags já existem; ganho é prevenir regressão de segurança, não corrigir vulnerabilidade comprovada.
-status: open
-decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); implementação não iniciada; manter status open.
+status: done
+decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 1 (acesso, cookies e logout); verificação concluída em 2026-10-19 na Story 7.1.
 triage_id: D036
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:31](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:31).
-next_step: Incluir no escopo aprovado após concluir a validação dos demais grupos; fechamento futuro exige testes/revisão e atualização rastreável do backlog e deferred-work.
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:345](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:345).
+next_step: Nenhuma pendência; atributos HttpOnly, Path=/, SameSite=Lax, Max-Age=86400 coerente com jwt.expiration e Secure condicionado ao transporte verificados em HTTP e HTTPS no OAuth2LoginSuccessHandler.
+data: 2026-10-19
+historia: 7-1-hardening-de-autorizacao-cookies-de-sessao-e-matriz-residual
+resultado: verificação
+evidencia: SecurityIT#oauth2LoginSuccessHandlerDeveEmitirCookieComAtributosDeSegurancaEmHttpEHttps executado via ./mvnw verify -Pintegration-test (BUILD SUCCESS, 9 testes em SecurityIT verdes, diff auditado sobre baseline 6a83233024003de2d7823f927d92a9a1c071b432)
+revisao: Revisão adversarial em 4 camadas (blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor) em spec-7-1 concluída, 5 patches aplicados e aprovada contra SEG-04 de seguranca.md
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-19
 
 ### DW-37: Verificar contrato do resolver de tenant
 
@@ -116,14 +156,22 @@ location: backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/C
 source_spec: _bmad-output/implementation-artifacts/archive/epic-1/spec-1-3-protecao-de-sessao-e-isolamento-de-dados.md
 severity: medium
 reason: Testar contrato do resolver com tenant preenchido/nulo/vazio; vincular à investigação D160. Não alterar fallback automaticamente nem duplicar integração cross-tenant existente.
-status: open
-decision: 2026-10-14 Grupo 2 — Aprovado para planejamento; testar o resolver junto à investigação DW-160.
+status: done
+decision: 2026-10-14 Grupo 2 — Aprovado para planejamento; testar o resolver junto à investigação DW-160; verificação do contrato vigente concluída em 2026-10-20 na Story 7.2.
 triage_id: D037
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —; origens duplicadas: D044
-verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:206](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:206).
-next_step: Aprovado para planejamento; testar o resolver junto à investigação DW-160.
+verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImplTest.java:11](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImplTest.java:11); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:206](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:206).
+next_step: Nenhuma pendência no contrato vigente do resolver (SEG-11); investigação sobre acesso sem contexto e bootstrap segue rastreada em DW-160 (Story 7.5).
+data: 2026-10-20
+historia: 7-2-isolamento-de-contexto-correlacao-mdc-e-logs-estruturados
+resultado: verificação
+evidencia: CurrentTenantIdentifierResolverImplTest (5 testes unitários cobrindo tenant preenchido, null, string vazia, espaços em branco e validateExistingCurrentSessions() == true) executado via ./mvnw test e ./mvnw verify -Pintegration-test (BUILD SUCCESS, 219 testes unitários e 37 testes de integração verdes, sobre baseline 00434e9978d132de880cb0874eaf9e5e77a3bf64)
+revisao: Revisão adversarial em 3 camadas (blind-hunter, edge-case-hunter, verification-gap) em spec-7-2 concluída contra SEG-11 de seguranca.md preservando integralmente o contrato vigente do resolver
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-20
 
 ### DW-60: Tratar 401 durante uso e limpar estado/cache privado
 
@@ -131,29 +179,45 @@ origin: Deferred from: code review of spec-1-2-autenticacao-via-google-oauth-2-0
 location: frontend-web/src/services/apiClient.ts:176
 severity: medium
 reason: Limpar estado/cache privado e tratar sessão expirada após 401 em chamadas durante uso. Reduz permanência de dados privados na UI; backend já bloqueia API, portanto não é correção de bypass de autorização.
-status: open
-decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 3; limpar estado/cache privado ao detectar 401 durante uso. Sem implementação.
+status: done
+decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 3; implementação e testes concluídos em 2026-10-20 na Story 7.3, com patches de revisão validados em 2026-10-24.
 triage_id: D060
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
-verification: [frontend-web/src/services/apiClient.ts:176](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/services/apiClient.ts:176); [frontend-web/src/App.tsx:22](/home/guilhermepagio/developer/workspace/projeto-aureus/frontend-web/src/App.tsx:22).
-next_step: Planejar tratamento central de sessão inválida com limpeza local e testes; não confundir com revogação no servidor.
+verification: [frontend-web/src/services/apiClient.ts:195](../../frontend-web/src/services/apiClient.ts#L195); [frontend-web/src/App.tsx:48](../../frontend-web/src/App.tsx#L48); [frontend-web/src/services/apiClient.test.ts:454](../../frontend-web/src/services/apiClient.test.ts#L454); [frontend-web/src/App.test.tsx:114](../../frontend-web/src/App.test.tsx#L114).
+next_step: Nenhuma pendência; 401 local invalida a sessão antes da leitura do corpo, limpa authStore e caches de queries/mutações e navega para /login. Comparação de origens resolvidas evita logout por destinos externos; timeout após headers 401 preserva ApiError 401; contratos 403/404/400/500 permanecem preservados. Limpeza local não prova revogação do JWT no servidor (SEG-09).
+data: 2026-10-24
+historia: 7-3-tratamento-de-sessao-invalida-401-em-uso-e-limpeza-de-estado
+resultado: implementação verificada
+evidencia: apiClient.test.ts (41 testes incluindo URLs locais normalizadas, 6 formatos externos, invalidação antes do corpo, preservação de 401 sob timeout, demais status e bypass), App.test.tsx (4 testes incluindo limpeza dos caches de queries/mutações após 401 e inicialização anônima) e Header.test.tsx (3 testes de logout) executados via npm test --prefix frontend-web (20 arquivos e 205 testes aprovados) e npm run build --prefix frontend-web (aprovado), na árvore de trabalho sobre 159e2e8 em 2026-10-24.
+revisao: Code review da Story 7.3 em quatro camadas, com 4 patches aplicados mediante autorização de Guilherme; origem, momento da invalidação e cobertura do MutationCache corrigidos e validados contra SEG-08. Limpeza no cliente não comprova exclusão do cookie HttpOnly nem revogação antecipada do JWT no servidor (SEG-09).
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-24
 
 ### DW-176: Definir e completar matriz específica de testes CSRF e vínculos cruzados
 
 origin: Deferred from: code review of spec-6-2-testes-de-integracao-rest-e-isolamento-multi-tenancy-backend.md (2026-10-05); triage D176
-location: backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/RestContractAndIntegrityIT.java:132
+location: backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:207
 severity: medium
 reason: Manter só matriz de segurança CSRF PUT/DELETE sem token e vínculos cruzados não exercitados. Expansão exaustiva de DTOs/validação genérica fica descartada.
-status: open
-decision: 2026-10-14 Grupo 2 — Aprovado para planejamento somente o recorte CSRF PUT/DELETE sem token e vínculos cruzados faltantes; excluir expansão genérica de DTOs.
+status: done
+decision: 2026-10-14 Grupo 2 — Aprovado para planejamento somente o recorte CSRF PUT/DELETE sem token e vínculos cruzados faltantes; excluir expansão genérica de DTOs. Verificação concluída em 2026-10-19 na Story 7.1.
 triage_id: D176
 triage_classification: Necessita esclarecimento ou validação adicional
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D122/D164
-verification: [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/RestContractAndIntegrityIT.java:132](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/RestContractAndIntegrityIT.java:132); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:31](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:31); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/RestContractAndIntegrityIT.java:89](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/RestContractAndIntegrityIT.java:89).
-next_step: Aprovado para planejamento somente o recorte CSRF PUT/DELETE sem token e vínculos cruzados faltantes; excluir expansão genérica de DTOs.
+verification: [backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:167](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/security/SecurityIT.java:167); [backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:207](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/MultiTenancyIT.java:207).
+next_step: Nenhuma pendência; matriz residual de PUT/DELETE sem CSRF (403 sem mutação), vínculos cruzados POST/PUT (403 sem mutação) e recursos alheios GET de listagem (ocultação por @TenantId) e PUT/DELETE /{id} (404 sem mutação) completa e verificada.
+data: 2026-10-19
+historia: 7-1-hardening-de-autorizacao-cookies-de-sessao-e-matriz-residual
+resultado: verificação
+evidencia: SecurityIT#requisicoesPutEDeleteSemCsrfDevemRetornar403EManterRegistroIntacto e MultiTenancyIT (22 testes cobrindo POST/PUT 403 e GET listagem / PUT/DELETE 404 nas entidades multi-tenant) executados via ./mvnw verify -Pintegration-test (BUILD SUCCESS, 36 testes de integração verdes, diff auditado sobre baseline 6a83233024003de2d7823f927d92a9a1c071b432)
+revisao: Revisão adversarial em 4 camadas (blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor) em spec-7-1 concluída, 5 patches aplicados e aprovada contra SEG-14, SEG-15 e SEG-16 de seguranca.md
+pendencias: nenhuma
+estado_do_registro: done
+data_da_resolucao: 2026-10-19
 
 ## Planejamento condicional — índices
 
@@ -165,14 +229,22 @@ source_spec: _bmad-output/implementation-artifacts/archive/epic-5/spec-5-2-trata
 source_spec_original: _bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md
 severity: medium
 reason: Conferir catálogo e remover índice secundário redundante de google_subject_id preservando UNIQUE. Reduz espaço/manutenção se ambos existirem como no DDL; nenhuma melhoria de leitura garantida.
-status: open
+status: done
 decision: 2026-10-14 Aprovado por Guilherme para planejamento no grupo 4, vinculado a A13; remoção condicionada à conferência do banco. Sem implementação.
 triage_id: D161
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: A13/D155
 verification: [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:4](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:4); [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74).
-next_step: Planejar conferência do catálogo e remoção somente do índice secundário redundante, preservando UNIQUE; nenhuma migração executada nesta etapa.
+next_step: Implementação condicional concluída; a execução normal do Flyway revalida o catálogo de cada alvo e preserva o secundário quando não comprova redundância.
+data: 2026-10-24
+historia: 7-4-migracao-flyway-v2-e-avaliacao-de-indices
+resultado: implementação condicional verificada e revisada em PostgreSQL descartável; UNIQUE preservada
+evidencia: 7-4-evidencias-indices.md e 7-4-index-evidence/measurement.json; V2 remove somente o secundário equivalente/independente após conferir pg_index/pg_constraint/pg_depend; UNIQUE, oito definições/validades de FKs e dados (inclusive quantidade_parcelas/data_fim) preservados após bootstrap JPA; ./mvnw.cmd verify -Pintegration-test aprovado (219 unitários, 70 integrações, incluindo 33 cenários IndexMigrationIT); base dc416175d794645372abf9331201868e76ab6a90 e SHA-256 das fontes registrados na coleta corrigida por digest.
+revisao: Revisão em três camadas (Blind Hunter, Edge Case Hunter e Verification Gap Reviewer), patches aplicados e conferência final pelo agente principal concluídos em 2026-10-24; ver Review Findings na spec 7.4 e verification.json. Fontes e hashes conferem com a execução final de 219 unitários e 70 integrações.
+pendencias: Nenhuma no recorte aprovado. Em alvo divergente, a condição local continua obrigatória; NOTICE de preservação exige inspeção específica e não declara remoção naquele alvo. Nenhum banco real foi acessado.
+estado_do_registro: done
+data_da_resolucao: 2026-10-24
 
 ## Investigações aprovadas — segurança
 
@@ -189,7 +261,15 @@ triage_classification: Necessita esclarecimento ou validação adicional
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D007/D008
 verification: [_bmad-output/planning-artifacts/decisions/2026-08-13-autenticacao-v1.md:15](/home/guilhermepagio/developer/workspace/projeto-aureus/_bmad-output/planning-artifacts/decisions/2026-08-13-autenticacao-v1.md:15); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/OAuth2LoginSuccessHandler.java:61); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44).
-next_step: Avaliar necessidade e custo de invalidar JWT antes da expiração; não introduzir refresh token ou tabela de sessões sem decisão posterior.
+next_step: Com a investigação 7.5 revisada, decidir requisito/prazo de revogação individual; nenhuma implementação de revogação ou renovação foi autorizada.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; replay após logout demonstrado, sem correção de produção
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; SecurityInvestigationIT verifica logout com CSRF, replay 200, expiração 401 e pedido não entregue; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes das fontes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
+pendencias: Decisão explícita de produto sobre janela residual e requisito de revogação; alternativas/custos comparados qualitativamente, sem renovação automática ou solução imposta.
+estado_do_registro: open
 
 ### DW-160: Validar isolamento quando o contexto de tenant está ausente
 
@@ -206,7 +286,15 @@ triage_classification: Necessita esclarecimento ou validação adicional
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D037/D038
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/CurrentTenantIdentifierResolverImpl.java:10); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/security/SecurityConfig.java:44); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java:9](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/TenantAwareEntity.java:9).
-next_step: Investigação aprovada, incluindo DW-38; confirmar isolamento sem contexto e bootstrap antes de decidir alteração.
+next_step: Com a evidência 7.5 revisada, definir política de ausência de tenant nos consumidores financeiros internos, preservando bootstrap/Usuario global; DW-38 segue consolidado, sem tarefa independente.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; fallback e sessões caracterizados sem alterar resolver/configuração
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; SecurityInvestigationIT cobre nulo/vazio/branco, ID/HQL/nativo/escrita, sessões existentes/novas, Flyway/JPA e OAuth sintético; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
+pendencias: Escrita interna sem contexto recebe public; nenhuma leitura financeira de A demonstrada pelo fallback e HTTP anônimo permanece 401. Decidir o limite financeiro apropriado antes de trocar o fallback ou o ciclo de vida do resolver.
+estado_do_registro: open
 
 ## Investigações aprovadas — desempenho
 
@@ -224,7 +312,15 @@ triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D075/D088/D105
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:43](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:43); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ContaService.java:23](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ContaService.java:23); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/CategoriaService.java:23](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/CategoriaService.java:23).
-next_step: Investigação aprovada por Guilherme no grupo 5: medir volume, tamanho de resposta e latência para decidir paginação, preservando acesso completo dos seletores.
+next_step: Com a investigação 7.5 revisada, decidir futura paginação das movimentações conforme carga relevante; preservar acesso completo às contas/categorias dos seletores.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; seis listagens serializadas e cardinalidade dos seletores verificadas
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; PerformanceInvestigationIT mede 100/1000/10000 movimentos por família e 10/100/1000 referências por tenant, com bytes/tempo/SQL/alocação; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
+pendencias: Decisão de implementação futura para movimentações volumosas; nenhum truncamento, paginação ou mudança de seletores implementado. Investigação verificada; registro aberto para decisão de encaminhamento, sem implementação autorizada.
+estado_do_registro: open
 
 ### DW-139: Medir e avaliar custo da consolidação sem perder saldo histórico
 
@@ -239,7 +335,15 @@ triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: D162/A10; origens duplicadas: D142, D162, A10
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:74](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:74); [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:262](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/ConsolidacaoService.java:262).
-next_step: Medir tempo, memória e volume de consultas; propor otimização apenas com custo relevante e equivalência dos saldos mensais/históricos.
+next_step: Com as medições 7.5 revisadas, deliberar implementação posterior de A10; comparar qualquer otimização com o oráculo financeiro e preservar saldo pré-grade.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; custos e equivalência financeira demonstrados, sem otimização implementada
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; consolidações por conta/categoria em três cargas, oráculo independente em centavos, 24 meses e histórico de 2021 preservados; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
+pendencias: A10 permanece open: SQL agregado/índices do compromisso original não foram implementados. Necessária decisão de implementação e validação comparável, ou renegociação explícita de escopo; investigação não encerra o compromisso.
+estado_do_registro: open
 
 ### DW-147: Verificar se conversão de DTOs provoca consultas N+1
 
@@ -254,7 +358,15 @@ triage_classification: Necessita esclarecimento ou validação adicional
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:43](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:43).
-next_step: Investigação aprovada por Guilherme no grupo 5: contar SQL real nas listagens; DTOs de movimentação acessam descrição/observações de conta/categoria LAZY, não apenas IDs. N+1 ainda não medido.
+next_step: Com o N+1 da 7.5 revisado, escolher estratégia futura com medição comparável, preservando todos os campos do DTO e isolamento.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; N+1 real confirmado na leitura de descrição/observações LAZY
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; 10/100/1000 movimentos com pares compartilhados usam 3 SQL e pares distintos usam 21/201/2001; quatro famílias e DTOs completos verificados; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
+pendencias: Aprovação e desenho de eventual otimização; JOIN FETCH, paginação, projeção ou batching não foram implementados. Investigação verificada; registro aberto para decisão de encaminhamento, sem implementação autorizada.
+estado_do_registro: open
 
 ### DW-153: Medir custo das consultas de validação de propriedade dos relacionamentos
 
@@ -271,7 +383,15 @@ triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: —
 verification: [backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:52](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/java/com/guilhermepagio/aureus/backend/service/DespesaVariavelService.java:52).
-next_step: Investigação aprovada por Guilherme no grupo 5 com prioridade menor: medir custo da consulta de proprietário seguida da entidade, preservando checagem de tenant e contratos 403/404.
+next_step: Usar o custo absoluto/relativo revisado da 7.5; manter prioridade menor e preservar validação de titularidade/403/404 em eventual mudança futura.
+
+data: 2026-10-25
+historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
+resultado: investigação; consulta de proprietário seguida de entidade medida separadamente e contra criação revertida
+evidencia: 7-5-evidencias-investigacoes.md e 7-5-investigation-evidence/measurement.json; PerformanceInvestigationIT mede quatro SELECTs de validação para conta/categoria, criação revertida com cinco statements e razão de medianas, sem COMMIT durável; 403/404 sem mutação; revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes no JSON.
+revisao: Três camadas de revisão concluídas em 2026-10-25; nove patches aplicados e conferidos pelo agente principal; 225 unitários e 72 integrações aprovados, 74 hashes válidos e JSON arquivado preservado na regressão. Limites e evidências no relatório 7.5 e verification.json. Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
+pendencias: Decisão de eventual redução de consultas preservando checagem global do proprietário e isolamento; prioridade menor mantida. Investigação verificada; registro aberto para decisão de encaminhamento, sem implementação autorizada.
+estado_do_registro: open
 
 ### DW-155: Avaliar índices de FKs e de usuário em contas/categorias
 
@@ -281,14 +401,22 @@ source_spec: _bmad-output/implementation-artifacts/archive/epic-5/spec-5-2-trata
 source_spec_original: _bmad-output/implementation-artifacts/spec-5-2-tratamento-global-erros-validacao-tenant-e-indices.md
 severity: medium
 reason: Validar planos/catálogo e volume para índices de FKs e usuario_id de contas/categorias. Benefício de busca/delete plausível, mas índices também custam escrita e espaço.
-status: open
+status: done
 decision: 2026-10-14 Investigação aprovada por Guilherme no grupo 4, vinculada a A13. Atualizado em 2026-10-19 por Guilherme: criação de índices para usuario_id em contas e categorias passa a ser implementação obrigatória na migração incremental Flyway V2 (nas 4 tabelas de movimentações usuario_id já lidera índices compostos na V1); avaliação das FKs (conta_id, categoria_id) e dos índices de data sem usuario_id permanece investigativa. Sem execução nesta etapa.
 triage_id: D155
 triage_classification: Pendente confirmado
 triage_report: _bmad-output/planning-artifacts/backlog-triage-2026-10-14.md
 related_records: A13/D161
 verification: [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:74); [backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:24](/home/guilhermepagio/developer/workspace/projeto-aureus/backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql:24).
-next_step: Planejar na migração Flyway V2 os índices obrigatórios idx_contas_usuario_id e idx_categorias_usuario_id; conferir catálogo, consultas e planos antes de decidir índices de FKs e limpeza de índices sem usuario_id.
+next_step: Recorte aprovado concluído; eventual adição de FKs depende do perfil real de exclusões e orçamento de escrita, mantidos no compromisso histórico A13. Preservar os temporais avaliados.
+data: 2026-10-24
+historia: 7-4-migracao-flyway-v2-e-avaliacao-de-indices
+resultado: índices obrigatórios implementados e investigação dos 12 candidatos concluída, verificada e revisada em PostgreSQL descartável
+evidencia: 7-4-evidencias-indices.md e 7-4-index-evidence/measurement.json (40 mil linhas por tabela, 100 tenants, cinco amostras por operação/estado, inventário próprio das oito FKs, EXPLAIN ANALYZE BUFFERS/WAL, leitura/escrita/espaço e DELETE com vínculos presentes/ausentes e rollback); coleta refeita por digest com UPDATE preservando titularidade e publicação atômica; V2 cria idx_contas_usuario_id e idx_categorias_usuario_id sem duplicar simples nas movimentações e recusa cobertura/collation inutilizável; ./mvnw.cmd verify -Pintegration-test aprovado (219 unitários e 70 integrações, 33 IndexMigrationIT); base dc416175d794645372abf9331201868e76ab6a90 e hashes registrados.
+revisao: Revisão em três camadas concluída; patches de cobertura/collation, integridade e coleta corrigidos e conferidos pelo agente principal em 2026-10-24; hashes atuais correspondem à coleta e aos 219 unitários/70 testes de integração aprovados. Ver Review Findings na spec 7.4 e verification.json.
+pendencias: Nenhuma no recorte misto de implementação e investigação aprovado. Recomendação dos oito candidatos de FK é condicional ao perfil real; sua adição não foi implementada. Esse compromisso histórico permanece aberto em A13. Quatro temporais preservados; investigação concluída não significa adição de FKs entregue.
+estado_do_registro: done
+data_da_resolucao: 2026-10-24
 
 ## Registros consolidados e descartados — histórico
 

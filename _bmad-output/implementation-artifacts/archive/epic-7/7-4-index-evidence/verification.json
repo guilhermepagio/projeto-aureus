@@ -1,0 +1,401 @@
+{
+  "data": "2026-10-24",
+  "revisao_base": "dc416175d794645372abf9331201868e76ab6a90",
+  "sha256_fontes": {
+    "backend-api/src/main/resources/db/migration/V1__create_performance_indexes.sql": "d3084565f56325b7b22faabb99bd8759dc14a1924203065647c03fa91c8d9369",
+    "backend-api/src/main/resources/db/migration/V2__tenant_indexes_and_redundancy.sql": "f9636f5619ae955177569c0abb2ea52d3032fc888af19c24662f3757d3385523",
+    "backend-api/src/main/java/com/guilhermepagio/aureus/backend/domain/Usuario.java": "1acf200d51d918e98b81779379fda260eb20e9f0902fc0d229f032a436a655b1",
+    "backend-api/src/test/java/com/guilhermepagio/aureus/backend/integration/IndexMigrationIT.java": "ccee04c7704415e5708823048c2d4948577fd3f45bac919099433be4b93e70df",
+    "backend-api/scripts/evaluate-indexes.py": "acfd1e099550b81828895cd5765518ecb0f4cc605349006b3fcd5f115348f086"
+  },
+  "sha256_medicao": "c0a4d86745db49228d5cca00ae4be874aaf36ae83d0827b4c146b3867e373efc",
+  "java": {
+    "java.vendor": "Eclipse Adoptium",
+    "java.runtime.version": "21.0.11+10-LTS"
+  },
+  "comando_focado": "./mvnw.cmd verify -Pintegration-test -Dit.test=IndexMigrationIT",
+  "focado": "BUILD SUCCESS: 219 unitários + 33 integrações",
+  "comando_completo": "./mvnw.cmd verify -Pintegration-test",
+  "completo": "BUILD SUCCESS: 219 unitários + 70 integrações",
+  "integracao": [
+    {
+      "suite": "com.guilhermepagio.aureus.backend.BackendApplicationIT",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "nome": "contextLoads",
+          "aprovado": true
+        }
+      ]
+    },
+    {
+      "suite": "com.guilhermepagio.aureus.backend.integration.IndexMigrationIT",
+      "tests": 33,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "nome": "indiceObrigatorioPreexistenteDiferenteImpedeFalsoSucessoERollbackPreservaV1",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[1]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[2]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[3]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[4]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[5]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[6]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[7]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[8]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[9]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[10]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[11]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[12]",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada(String, String, boolean)[13]",
+          "aprovado": true
+        },
+        {
+          "nome": "baseLimpaRecebeV2SemDuplicarIndicesEReaplicaSemPendencias",
+          "aprovado": true
+        },
+        {
+          "nome": "preservaIndiceComDependenciaDeExtensao",
+          "aprovado": true
+        },
+        {
+          "nome": "indiceObrigatorioInutilizavelImpedeUpgradeComRollback(String, String)[1]",
+          "aprovado": true
+        },
+        {
+          "nome": "indiceObrigatorioInutilizavelImpedeUpgradeComRollback(String, String)[2]",
+          "aprovado": true
+        },
+        {
+          "nome": "indiceObrigatorioInutilizavelImpedeUpgradeComRollback(String, String)[3]",
+          "aprovado": true
+        },
+        {
+          "nome": "indiceObrigatorioInutilizavelImpedeUpgradeComRollback(String, String)[4]",
+          "aprovado": true
+        },
+        {
+          "nome": "upgradePreservaHistoricoDadosEUniqueAposBootstrapJpa",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[1]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[2]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[3]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[4]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[5]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[6]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[7]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[8]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[9]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[10]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[11]",
+          "aprovado": true
+        },
+        {
+          "nome": "coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback(String, String)[12]",
+          "aprovado": true
+        }
+      ]
+    },
+    {
+      "suite": "com.guilhermepagio.aureus.backend.integration.MultiTenancyIT",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "nome": "deveRetornar403AoCriarReceitaVariavelComCategoriaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoCriarDespesaFixaComCategoriaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveListarApenasRecursosDoProprioTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar404AoAtualizarRecursoDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar404AoAtualizarOuExcluirCategoriaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar404AoConsultarRecursoDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoCriarReceitaFixaComContaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar404AoConsultarAtualizarOuExcluirReceitaFixaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar404AoConsultarAtualizarOuExcluirReceitaVariavelDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoCriarReceitaFixaComCategoriaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoAtualizarDespesaFixaComCategoriaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoAtualizarReceitaVariavelComContaOuCategoriaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoAtualizarDespesaVariavelComContaOuCategoriaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoAtualizarReceitaFixaComContaOuCategoriaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoAtualizarDespesaFixaComContaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoCriarDespesaVariavelComContaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar404AoAtualizarOuExcluirDespesaFixaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoCriarDespesaFixaComContaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar404AoConsultarAtualizarOuExcluirDespesaVariavelDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoCriarReceitaVariavelComContaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar403AoCriarDespesaVariavelComCategoriaDeOutroTenant",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar404AoExcluirRecursoDeOutroTenant",
+          "aprovado": true
+        }
+      ]
+    },
+    {
+      "suite": "com.guilhermepagio.aureus.backend.integration.RestContractAndIntegrityIT",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "nome": "deveRetornar405ParaMetodoNaoSuportado",
+          "aprovado": true
+        },
+        {
+          "nome": "deveValidarCamposDeDtoCom400",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar400AoExcluirContaOuCategoriaComVinculoAtivo",
+          "aprovado": true
+        },
+        {
+          "nome": "deveRetornar400ParaCorpoJsonMalFormatado",
+          "aprovado": true
+        }
+      ]
+    },
+    {
+      "suite": "com.guilhermepagio.aureus.backend.security.SecurityIT",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "nome": "requisicaoComTokenExpiradoDeveRetornar401ELimparCookie",
+          "aprovado": true
+        },
+        {
+          "nome": "oauth2LoginSuccessHandlerDeveEmitirCookieComAtributosDeSegurancaEmHttpEHttps",
+          "aprovado": true
+        },
+        {
+          "nome": "allowlistPublicaEPoliticaActuatorDevemNegarRotasNaoAutorizadas",
+          "aprovado": true
+        },
+        {
+          "nome": "requisicoesDevemEmitirLogFormatadoComReqETenantNoConsole(CapturedOutput)",
+          "aprovado": true
+        },
+        {
+          "nome": "endpointsDeAuthDevemFuncionarCorretamente",
+          "aprovado": true
+        },
+        {
+          "nome": "requisicaoMutanteSemCsrfDeveRetornar403",
+          "aprovado": true
+        },
+        {
+          "nome": "requisicaoComTokenValidoDeveRetornar200",
+          "aprovado": true
+        },
+        {
+          "nome": "requisicoesPutEDeleteSemCsrfDevemRetornar403EManterRegistroIntacto",
+          "aprovado": true
+        },
+        {
+          "nome": "requisicaoComTokenInvalidoDeveRetornar401ELimparCookie",
+          "aprovado": true
+        },
+        {
+          "nome": "requisicaoSemCookieDeveRetornar401",
+          "aprovado": true
+        }
+      ]
+    }
+  ],
+  "unitarios_total": 219,
+  "contratos_da_coleta": {
+    "falha_inicial_preserva_publicado_byte_a_byte": true,
+    "provisorio_limpo_apos_falha": true,
+    "sqlstates_rejeitados": [
+      "00000",
+      "23505",
+      null
+    ],
+    "sqlstate_aceito": "23503",
+    "fks_oito_definicoes_preservadas": true,
+    "validacao_update_titularidade": [
+      {
+        "tabela": "despesas_fixas",
+        "linhas": 1000,
+        "vinculos_invalidos": 0
+      },
+      {
+        "tabela": "receitas_fixas",
+        "linhas": 1000,
+        "vinculos_invalidos": 0
+      },
+      {
+        "tabela": "despesas_variaveis",
+        "linhas": 1000,
+        "vinculos_invalidos": 0
+      },
+      {
+        "tabela": "receitas_variaveis",
+        "linhas": 1000,
+        "vinculos_invalidos": 0
+      }
+    ]
+  },
+  "matriz": {
+    "base_limpa_e_v1": "baseLimpaRecebeV2SemDuplicarIndicesEReaplicaSemPendencias; upgradePreservaHistoricoDadosEUniqueAposBootstrapJpa",
+    "redundancia_confirmada": "baseLimpaRecebeV2SemDuplicarIndicesEReaplicaSemPendencias; upgradePreservaHistoricoDadosEUniqueAposBootstrapJpa",
+    "redundancia_nao_confirmada": "preservaQuandoPrecondicaoDeRedundanciaNaoForComprovada (13 casos); preservaIndiceComDependenciaDeExtensao",
+    "cobertura_inutilizavel_rollback": "indiceObrigatorioInutilizavelImpedeUpgradeComRollback (4 casos); coberturaInutilizavelDeMovimentacaoImpedeUpgradeComRollback (12 casos)"
+  },
+  "revisao_independente": "concluída em 2026-10-24: três camadas, patches aplicados e conferidos pelo agente principal; fontes e evidências finais consistentes",
+  "revisao": {
+    "data": "2026-10-24",
+    "camadas": [
+      "Blind Hunter",
+      "Edge Case Hunter",
+      "Verification Gap Reviewer"
+    ],
+    "apontamentos_corrigidos": 11,
+    "conferencia_dos_patches": "agente principal",
+    "registro": "spec-7-4-migracao-flyway-v2-e-avaliacao-de-indices.md#review-findings",
+    "pendencias_de_implementacao": [],
+    "a13": "open: adição histórica de índices de FK condicionada ao perfil real"
+  }
+}

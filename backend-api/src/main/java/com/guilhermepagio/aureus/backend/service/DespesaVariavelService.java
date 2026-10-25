@@ -3,6 +3,8 @@ package com.guilhermepagio.aureus.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DespesaVariavelService {
+
+    private static final Logger log = LoggerFactory.getLogger(DespesaVariavelService.class);
 
     private final DespesaVariavelRepository despesaVariavelRepository;
     private final ContaRepository contaRepository;
@@ -57,6 +61,8 @@ public class DespesaVariavelService {
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
         final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
+            log.warn("Rejeição de titularidade: entidade=DespesaVariavel operacao=VALIDAR_CONTA contaId={} motivo=tenant_incompativel",
+                    contaId);
             throw new AccessDeniedException("Acesso negado: a conta informada não pertence ao usuário autenticado");
         }
         return contaRepository.findById(contaId)
@@ -71,6 +77,8 @@ public class DespesaVariavelService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + categoriaId));
         final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
+            log.warn("Rejeição de titularidade: entidade=DespesaVariavel operacao=VALIDAR_CATEGORIA categoriaId={} motivo=tenant_incompativel",
+                    categoriaId);
             throw new AccessDeniedException("Acesso negado: a categoria informada não pertence ao usuário autenticado");
         }
         return categoriaRepository.findById(categoriaId)
@@ -95,6 +103,8 @@ public class DespesaVariavelService {
         despesa.setObservacoes(dto.observacoes());
 
         final DespesaVariavel salva = despesaVariavelRepository.saveAndFlush(despesa);
+        log.info("Operação financeira concluída: entidade=DespesaVariavel operacao=CRIAR id={} contaId={} categoriaId={}",
+                salva.getId(), conta.getId(), categoria.getId());
         return DespesaVariavelResponseDTO.fromEntity(salva);
     }
 
@@ -118,6 +128,8 @@ public class DespesaVariavelService {
         existente.setObservacoes(dto.observacoes());
 
         final DespesaVariavel salva = despesaVariavelRepository.saveAndFlush(existente);
+        log.info("Operação financeira concluída: entidade=DespesaVariavel operacao=ATUALIZAR id={} contaId={} categoriaId={}",
+                salva.getId(), conta.getId(), categoria.getId());
         return DespesaVariavelResponseDTO.fromEntity(salva);
     }
 
@@ -128,6 +140,7 @@ public class DespesaVariavelService {
         }
         despesaVariavelRepository.deleteById(id);
         despesaVariavelRepository.flush();
+        log.info("Operação financeira concluída: entidade=DespesaVariavel operacao=EXCLUIR id={}", id);
         return true;
     }
 }

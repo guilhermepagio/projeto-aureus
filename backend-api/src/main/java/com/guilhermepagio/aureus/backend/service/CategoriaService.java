@@ -3,6 +3,8 @@ package com.guilhermepagio.aureus.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CategoriaService {
+
+    private static final Logger log = LoggerFactory.getLogger(CategoriaService.class);
 
     private final CategoriaRepository categoriaRepository;
 
@@ -38,6 +42,7 @@ public class CategoriaService {
         categoria.setDescricao(dto.descricao());
         categoria.setObservacoes(dto.observacoes());
         final Categoria salva = categoriaRepository.save(categoria);
+        log.info("Operação de cadastro concluída: entidade=Categoria operacao=CRIAR id={}", salva.getId());
         return CategoriaResponseDTO.fromEntity(salva);
     }
 
@@ -48,6 +53,7 @@ public class CategoriaService {
         categoria.setDescricao(dto.descricao());
         categoria.setObservacoes(dto.observacoes());
         final Categoria salva = categoriaRepository.save(categoria);
+        log.info("Operação de cadastro concluída: entidade=Categoria operacao=ATUALIZAR id={}", salva.getId());
         return CategoriaResponseDTO.fromEntity(salva);
     }
 
@@ -58,6 +64,7 @@ public class CategoriaService {
         }
         categoriaRepository.deleteById(id);
         categoriaRepository.flush();
+        log.info("Operação de cadastro concluída: entidade=Categoria operacao=EXCLUIR id={}", id);
         return true;
     }
 }

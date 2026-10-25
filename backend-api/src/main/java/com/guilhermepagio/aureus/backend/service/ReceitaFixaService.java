@@ -3,6 +3,8 @@ package com.guilhermepagio.aureus.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ReceitaFixaService {
+
+    private static final Logger log = LoggerFactory.getLogger(ReceitaFixaService.class);
 
     private final ReceitaFixaRepository receitaFixaRepository;
     private final ContaRepository contaRepository;
@@ -48,6 +52,8 @@ public class ReceitaFixaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada: " + contaId));
         final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
+            log.warn("Rejeição de titularidade: entidade=ReceitaFixa operacao=VALIDAR_CONTA contaId={} motivo=tenant_incompativel",
+                    contaId);
             throw new AccessDeniedException("Acesso negado: a conta informada não pertence ao usuário autenticado");
         }
         return contaRepository.findById(contaId)
@@ -62,6 +68,8 @@ public class ReceitaFixaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + categoriaId));
         final String currentTenant = TenantContext.getTenantId();
         if (currentTenant == null || !ownerUsuarioId.equals(currentTenant)) {
+            log.warn("Rejeição de titularidade: entidade=ReceitaFixa operacao=VALIDAR_CATEGORIA categoriaId={} motivo=tenant_incompativel",
+                    categoriaId);
             throw new AccessDeniedException("Acesso negado: a categoria informada não pertence ao usuário autenticado");
         }
         return categoriaRepository.findById(categoriaId)
@@ -82,6 +90,8 @@ public class ReceitaFixaService {
         receita.setDataInicio(dto.dataInicio());
 
         final ReceitaFixa salva = receitaFixaRepository.saveAndFlush(receita);
+        log.info("Operação financeira concluída: entidade=ReceitaFixa operacao=CRIAR id={} contaId={} categoriaId={}",
+                salva.getId(), conta.getId(), categoria.getId());
         return ReceitaFixaResponseDTO.fromEntity(salva);
     }
 
@@ -101,6 +111,8 @@ public class ReceitaFixaService {
         existente.setDataInicio(dto.dataInicio());
 
         final ReceitaFixa salva = receitaFixaRepository.saveAndFlush(existente);
+        log.info("Operação financeira concluída: entidade=ReceitaFixa operacao=ATUALIZAR id={} contaId={} categoriaId={}",
+                salva.getId(), conta.getId(), categoria.getId());
         return ReceitaFixaResponseDTO.fromEntity(salva);
     }
 
@@ -111,6 +123,7 @@ public class ReceitaFixaService {
         }
         receitaFixaRepository.deleteById(id);
         receitaFixaRepository.flush();
+        log.info("Operação financeira concluída: entidade=ReceitaFixa operacao=EXCLUIR id={}", id);
         return true;
     }
 }
