@@ -171,16 +171,14 @@ action_items:
       valor conhecido), com teste de partida"
     owner: "Desenvolvedor Backend"
     status: done
-    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
-      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+    ref: _bmad-output/implementation-artifacts/archive/epic-7/epic-7-retro-2026-10-25.md
   - id: "epic-7-retro-item-4-fazer-oauth2loginfailurehandler-usar-app"
     epic: 7
     action: "Fazer OAuth2LoginFailureHandler usar app.frontend.url como o handler
       de sucesso e testar o redirect (depende de decisao de escopo)"
     owner: "Desenvolvedor Backend"
     status: done
-    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
-      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+    ref: _bmad-output/implementation-artifacts/archive/epic-7/epic-7-retro-2026-10-25.md
   - id: "epic-7-retro-item-5-decidir-destino-de-a10-e-do-residuo-de-a"
     epic: 7
     action: "Decidir destino de A10 e do residuo de A13 com gatilho explicito: implementar
@@ -188,16 +186,14 @@ action_items:
       compromisso"
     owner: "Guilherme / Arquiteto"
     status: open
-    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
-      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+    ref: _bmad-output/implementation-artifacts/archive/epic-7/epic-7-retro-2026-10-25.md
   - id: "epic-7-retro-item-6-reconciliar-rastreabilidade-do-epico-7-e"
     epic: 7
     action: "Reconciliar rastreabilidade do epico 7: epic-7 done, backlog_triage.active_deferred_counts
       e execution_status, tabela Resumo do deferred-work e linha 5 de 7-4-evidencias-indices.md"
     owner: "Guilherme / Scrum Master"
     status: open
-    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
-      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+    ref: _bmad-output/implementation-artifacts/archive/epic-7/epic-7-retro-2026-10-25.md
   - id: "epic-7-retro-item-7-provar-por-teste-se-rejeicoes-csrf-403-e"
     epic: 7
     action: "Provar por teste se rejeicoes CSRF 403 e falhas OAuth saem sem requestId
@@ -205,16 +201,14 @@ action_items:
       essas rejeicoes"
     owner: "Desenvolvedor Backend"
     status: open
-    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
-      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+    ref: _bmad-output/implementation-artifacts/archive/epic-7/epic-7-retro-2026-10-25.md
   - id: "epic-7-retro-item-8-separar-performanceinvestigationit-e-sec"
     epic: 7
     action: "Separar PerformanceInvestigationIT e SecurityInvestigationIT do verify
       -Pintegration-test padrao (perfil ou tag investigation); 155 s de 207 s"
     owner: "Desenvolvedor Backend / DevOps"
     status: done
-    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
-      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+    ref: _bmad-output/implementation-artifacts/archive/epic-7/epic-7-retro-2026-10-25.md
   - id: "epic-7-retro-item-9-registrar-nas-specs-investigativas-regra"
     epic: 7
     action: "Registrar nas specs investigativas regra de parada para loops de revisao
@@ -222,8 +216,7 @@ action_items:
       dados reais antes do deploy"
     owner: "Guilherme / Arquiteto"
     status: open
-    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
-      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+    ref: _bmad-output/implementation-artifacts/archive/epic-7/epic-7-retro-2026-10-25.md
 action_items_history:
   - id: epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave
     epic: 1
