@@ -23,6 +23,8 @@
 		<lombok.version>1.18.36</lombok.version>
 		<tomcat.version>11.0.26</tomcat.version>
 		<skipITs>true</skipITs>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<dependencies>
@@ -171,7 +173,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<jvm>${java.home}/bin/java</jvm>
-					<argLine>-XX:+EnableDynamicAgentLoading -Dnet.bytebuddy.experimental=true</argLine>
+					<argLine>-XX:+EnableDynamicAgentLoading -Dnet.bytebuddy.experimental=true -Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8</argLine>
 					<includes>
 						<include>**/Test*.java</include>
 						<include>**/*Test.java</include>
@@ -188,7 +190,7 @@
 				<configuration>
 					<jvm>${java.home}/bin/java</jvm>
 					<skipITs>${skipITs}</skipITs>
-					<argLine>-XX:+EnableDynamicAgentLoading -Dnet.bytebuddy.experimental=true</argLine>
+					<argLine>-XX:+EnableDynamicAgentLoading -Dnet.bytebuddy.experimental=true -Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8</argLine>
 					<includes>
 						<include>**/*IT.java</include>
 					</includes>
