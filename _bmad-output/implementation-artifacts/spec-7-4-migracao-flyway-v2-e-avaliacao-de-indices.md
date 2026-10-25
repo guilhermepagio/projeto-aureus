@@ -72,6 +72,8 @@ Na raiz: `git diff --check` — sem erros; comparar V1 com `baseline_commit` —
 
 ## Review Findings
 
+Revisão independente de 2026-10-24 sobre `dc416175d794645372abf9331201868e76ab6a90..abd222226a12d5c0a0567a0c9bddc542fa14281a`: Blind Hunter, Edge Case Hunter, Verification Gap Reviewer e Acceptance Auditor concluídos, sem achados relevantes, patches ou adiamentos. Conferência final da migração, do alinhamento JPA, dos testes e das evidências dos 12 candidatos consistente com os critérios de aceite. As medições publicadas foram auditadas, sem nova coleta. Nova execução de `./mvnw.cmd verify -Pintegration-test`, com JDK 21 e PostgreSQL descartável: BUILD SUCCESS em 58,566 s; 219 unitários e 70 integrações (33 `IndexMigrationIT`), zero falhas, erros ou skips. V1 idêntica ao baseline; `git diff --check` aprovado. Story concluída; A13 permanece aberto pelo recorte residual de índices de FK.
+
 Revisão de 2026-10-24 sobre o baseline `dc416175d794645372abf9331201868e76ab6a90` e as alterações locais desta entrega. Blind Hunter, Edge Case Hunter e Verification Gap Reviewer concluíram suas análises; 11 apontamentos acionáveis foram corrigidos, sem adiamentos ou decisões de escopo pendentes nesta história.
 
 - [x] Exigir collation compatível nos índices de tenant e cobertura válida dos quatro compostos existentes; impedir sucesso da V2 em catálogo divergente.

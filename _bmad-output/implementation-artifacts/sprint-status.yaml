@@ -81,7 +81,7 @@ development_status:
   7-1-hardening-de-autorização-cookies-de-sessão-e-matriz-residual: done
   7-2-isolamento-de-contexto-correlação-mdc-e-logs-estruturados-de: done
   7-3-tratamento-de-sessão-inválida-401-em-uso-e-limpeza-de-estado: done
-  7-4-migração-flyway-v2-índices-de-tenant-obrigatórios-e-redundân: review
+  7-4-migração-flyway-v2-índices-de-tenant-obrigatórios-e-redundân: done
   7-5-investigações-técnicas-de-segurança-revogação-jwt-e-ausência: backlog
   epic-7-retrospective: optional
 action_items:
