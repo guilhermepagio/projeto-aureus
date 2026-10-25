@@ -105,8 +105,8 @@ DW-155 e DW-161 encerrados após a revisão do recorte aprovado. A13 permanece a
 - Comparar custos dos oito candidatos de FK e registrar a recomendação condicional.
   [7-4-evidencias-indices.md:40](7-4-evidencias-indices.md#L40)
 
-- Reproduzir por digest e publicar evidência somente após sucesso completo.
-  [evaluate-indexes.py:92](../../backend-api/scripts/evaluate-indexes.py#L92)
+- Consultar o procedimento histórico da coleta e o registro de remoção do coletor.
+  [7-4-evidencias-indices.md:7](7-4-evidencias-indices.md#L7)
 
 - Registrar a conclusão da implementação condicional e a preservação de UNIQUE.
   [deferred-work.md:224](deferred-work.md#L224)

@@ -4,17 +4,13 @@ Data: 2026-10-24. Escopo: CAP-8, PERF-01–03 e PERF-07–11; DW-155, DW-161 e A
 
 Revisão-base: `dc416175d794645372abf9331201868e76ab6a90`, com as alterações locais desta implementação. Os SHA-256 do script, V1 e V2 medidos constam de `sha256_fontes` no [registro da coleta](7-4-index-evidence/measurement.json). Os patches das três camadas de revisão foram aplicados e verificados; a conferência final pelo agente principal está pendente. Este relatório não a substitui.
 
-## Ambiente e procedimento reproduzível
+## Ambiente e procedimento histórico da coleta
 
 PostgreSQL 16.15, imagem `postgres:16-alpine`, digest `sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea`; Linux Alpine x86_64 sobre Docker Desktop 29.8.2, host Windows. `shared_buffers=128MB`, `work_mem=4MB`, `random_page_cost=4`, `effective_cache_size=4GB`, `jit=on`. Testes com Eclipse Adoptium, `java.runtime.version=21.0.11+10-LTS`, Spring Boot 4.1.1 e Hibernate 7.4.5.Final; fornecedor e versão confirmados nos XMLs Failsafe.
 
-Na raiz do repositório:
+O coletor `backend-api/scripts/evaluate-indexes.py` foi removido em 2026-10-25 por solicitação de Guilherme. Seu código permanece no histórico Git, no commit `abd222226a12d5c0a0567a0c9bddc542fa14281a`. Os JSONs e seus hashes foram preservados como evidência da coleta já realizada; as referências ao coletor nesses registros são históricas.
 
-```powershell
-uv run --no-cache backend-api/scripts/evaluate-indexes.py --image 'postgres@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea'
-```
-
-O [script](../../backend-api/scripts/evaluate-indexes.py) inicia exclusivamente um contêiner novo com nome aleatório, sem volumes nem URL de banco externo, aplica V1, carrega dados sintéticos, cria os dois índices obrigatórios, altera um candidato por vez e restaura-o antes do próximo. Ao final aplica V2 em transação e remove o contêiner em `finally`. `--image` controla tanto o Docker run quanto a coleta de metadados; `imagem_referencia` registra o argumento efetivo. Não houve acesso a banco com dados reais.
+Na coleta original, o script iniciava exclusivamente um contêiner novo com nome aleatório, sem volumes nem URL de banco externo, aplicava V1, carregava dados sintéticos, criava os dois índices obrigatórios, alterava um candidato por vez e restaurava-o antes do próximo. Ao final aplicava V2 em transação e removia o contêiner em `finally`. `--image` controlava tanto o Docker run quanto a coleta de metadados; `imagem_referencia` registra o argumento efetivo. Não houve acesso a banco com dados reais.
 
 A coleta publicada é preservada durante toda a reprodução. Protocolo e progresso são gravados em um arquivo privado `measurement.json.<aleatório>.pending`, no mesmo diretório, e somente um resultado completo é publicado por substituição atômica. O provisório é removido ao falhar. Uma execução com imagem deliberadamente inválida confirmou que a coleta publicada permaneceu byte a byte idêntica; uma reprodução com falha inicial não apaga a evidência anterior.
 
