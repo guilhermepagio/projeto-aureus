@@ -35,9 +35,16 @@ public abstract class AbstractIntegrationTest {
 
     @DynamicPropertySource
     static void configureProperties(final DynamicPropertyRegistry registry) {
+        registry.add("DB_URL", postgres::getJdbcUrl);
+        registry.add("DB_USER", postgres::getUsername);
+        registry.add("DB_PASS", postgres::getPassword);
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
+        registry.add("GOOGLE_CLIENT_ID", () -> "fake-google-client-id");
+        registry.add("GOOGLE_CLIENT_SECRET", () -> "fake-google-client-secret");
+        registry.add("JWT_SECRET", () -> "8f8a8473822a4d70b33b006a6b82b9937b8b4abcf35e408dbb0a1d4a04791e84");
+        registry.add("FRONTEND_URL", () -> "http://localhost:5173");
     }
 
     protected final MockMvc mockMvc;

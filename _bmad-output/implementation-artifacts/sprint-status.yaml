@@ -31,7 +31,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 08-17-2026 18:28
-last_updated: '2026-10-25'
+last_updated: '10-25-2026 14:08'
 project: projeto-aureus
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
@@ -77,13 +77,13 @@ development_status:
   6-4-infraestrutura-de-validação-contínua-local-e-documentação-ca: done
   epic-6-retrospective: done
 
-  epic-7: in-progress
+  epic-7: done
   7-1-hardening-de-autorização-cookies-de-sessão-e-matriz-residual: done
   7-2-isolamento-de-contexto-correlação-mdc-e-logs-estruturados-de: done
   7-3-tratamento-de-sessão-inválida-401-em-uso-e-limpeza-de-estado: done
   7-4-migração-flyway-v2-índices-de-tenant-obrigatórios-e-redundân: done
   7-5-investigações-técnicas-de-segurança-revogação-jwt-e-ausência: done
-  epic-7-retrospective: optional
+  epic-7-retrospective: done
 action_items:
   - id: epic-4-retro-item-10-otimizar-agregação-de-transações-no-back
     epic: 4
@@ -100,21 +100,25 @@ action_items:
     triaged_at: '2026-10-14'
     backlog_refs:
       - DW-139
-    next_step: Decidir implementação posterior com base na investigação 7.5 revisada,
-      comparando custo e equivalência do saldo histórico sob condições iguais.
+    next_step: Decidir implementação posterior com base na investigação 7.5 
+      revisada, comparando custo e equivalência do saldo histórico sob condições
+      iguais.
     decision_reason: Consultar decisão vigente de D139; não é uma tarefa 
       independente.
     data: '2026-10-25'
     historia: 7-5-investigacoes-tecnicas-de-seguranca-e-desempenho
     resultado: investigação; nenhuma otimização de produção implementada
-    evidencia: 7-5-evidencias-investigacoes.md e
-      7-5-investigation-evidence/measurement.json; três cargas PostgreSQL 16,
-      24 meses e saldo pré-grade comparados a oráculo independente em centavos;
-      revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes das fontes no JSON.
-    revisao: Três camadas e nove patches conferidos pelo agente principal em 2026-10-25;
-      225 unitários e 72 integrações aprovados; ver verification.json.
-      Code review adicional de 2026-10-25 sobre e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, quatro camadas por grupo, sem achados relevantes.
-    pendencias: Compromisso original de substituir agregação em memória por SQL
+    evidencia: 7-5-evidencias-investigacoes.md e 
+      7-5-investigation-evidence/measurement.json; três cargas PostgreSQL 16, 24
+      meses e saldo pré-grade comparados a oráculo independente em centavos; 
+      revisão c389e76e518d66099fef384448ec27b7d1800233 e hashes das fontes no 
+      JSON.
+    revisao: Três camadas e nove patches conferidos pelo agente principal em 
+      2026-10-25; 225 unitários e 72 integrações aprovados; ver 
+      verification.json. Code review adicional de 2026-10-25 sobre 
+      e7738c9f2b24ea133fccd8149bcbf47049ec6021, fracionado em três grupos, 
+      quatro camadas por grupo, sem achados relevantes.
+    pendencias: Compromisso original de substituir agregação em memória por SQL 
       e índices não implementado. Manter A10 aberto até implementação verificada
       ou decisão explícita de renegociação; não encerrar por relatório.
     estado_do_registro: open
@@ -123,7 +127,7 @@ action_items:
     action: Criar migração Flyway V2 para limpeza de índice redundante em 
       usuarios e adição de índices em FKs de movimentações
     owner: Arquiteto / DBA
-    status: open
+    status: in-progress
     ref: 
       _bmad-output/implementation-artifacts/archive/epic-5/epic-5-retro-2026-10-03.md
     status_at_triage: open
@@ -135,30 +139,91 @@ action_items:
     backlog_refs:
       - DW-155
       - DW-161
-    next_step: Obter frequência/volume real de exclusões e orçamento de escrita
-      antes de eventual adição de índices de FK; preservar o compromisso histórico
-      enquanto esse recorte não for resolvido ou houver decisão explícita de escopo.
+    next_step: Obter frequência/volume real de exclusões e orçamento de escrita 
+      antes de eventual adição de índices de FK; preservar o compromisso 
+      histórico enquanto esse recorte não for resolvido ou houver decisão 
+      explícita de escopo.
     decision_reason: 'Migração incremental V2 entregará os índices obrigatórios de
       usuario_id em contas/categorias e as decisões validadas de D155/D161; não criar
       V2 na etapa de planejamento.'
     data: '2026-10-24'
     historia: 7-4-migracao-flyway-v2-e-avaliacao-de-indices
-    resultado: implementação verificada e investigação revisada no descartável;
+    resultado: implementação verificada e investigação revisada no descartável; 
       adição histórica de FKs não implementada
-    evidencia: 7-4-evidencias-indices.md e 7-4-index-evidence/measurement.json;
-      12 candidatos com catálogo, planos e custos; verify -Pintegration-test
-      aprovado com 219 unitários e 70 integrações (33 IndexMigrationIT), base
+    evidencia: 7-4-evidencias-indices.md e 7-4-index-evidence/measurement.json; 
+      12 candidatos com catálogo, planos e custos; verify -Pintegration-test 
+      aprovado com 219 unitários e 70 integrações (33 IndexMigrationIT), base 
       dc416175d794645372abf9331201868e76ab6a90 e hashes das fontes na coleta.
-    revisao: Três camadas concluídas e patches conferidos pelo agente principal
+    revisao: Três camadas concluídas e patches conferidos pelo agente principal 
       em 2026-10-24; fontes/hashes correspondem aos testes e à coleta corrigida.
-      Ver Review Findings na spec 7.4 e verification.json. Inventário das oito
-      FKs preservado e UPDATE sem vínculos cruzados; reprodução por digest e
+      Ver Review Findings na spec 7.4 e verification.json. Inventário das oito 
+      FKs preservado e UPDATE sem vínculos cruzados; reprodução por digest e 
       publicação atômica verificadas.
     pendencias: Oito índices de FK permanecem ausentes até confirmação do perfil
-      real que justifique sua manutenção. Quatro
-      temporais preservados; condição de redundância revalidada no próprio alvo.
-      Não encerrar a obrigação de adição de FKs por relatório ou presunção.
+      real que justifique sua manutenção. Quatro temporais preservados; condição
+      de redundância revalidada no próprio alvo. Não encerrar a obrigação de 
+      adição de FKs por relatório ou presunção.
     estado_do_registro: open
+  - id: "epic-7-retro-item-3-eliminar-o-segredo-jwt-padrao-remover-de"
+    epic: 7
+    action: "Eliminar o segredo JWT padrao: remover default de jwt.secret fora de
+      dev/teste ou validar no construtor de JwtUtil (tamanho minimo e rejeicao do
+      valor conhecido), com teste de partida"
+    owner: "Desenvolvedor Backend"
+    status: done
+    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
+      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+  - id: "epic-7-retro-item-4-fazer-oauth2loginfailurehandler-usar-app"
+    epic: 7
+    action: "Fazer OAuth2LoginFailureHandler usar app.frontend.url como o handler
+      de sucesso e testar o redirect (depende de decisao de escopo)"
+    owner: "Desenvolvedor Backend"
+    status: done
+    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
+      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+  - id: "epic-7-retro-item-5-decidir-destino-de-a10-e-do-residuo-de-a"
+    epic: 7
+    action: "Decidir destino de A10 e do residuo de A13 com gatilho explicito: implementar
+      (N+1 21/201/2001 SQL, listagens ~1,5 s a 10.000 por familia) ou renegociar o
+      compromisso"
+    owner: "Guilherme / Arquiteto"
+    status: open
+    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
+      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+  - id: "epic-7-retro-item-6-reconciliar-rastreabilidade-do-epico-7-e"
+    epic: 7
+    action: "Reconciliar rastreabilidade do epico 7: epic-7 done, backlog_triage.active_deferred_counts
+      e execution_status, tabela Resumo do deferred-work e linha 5 de 7-4-evidencias-indices.md"
+    owner: "Guilherme / Scrum Master"
+    status: open
+    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
+      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+  - id: "epic-7-retro-item-7-provar-por-teste-se-rejeicoes-csrf-403-e"
+    epic: 7
+    action: "Provar por teste se rejeicoes CSRF 403 e falhas OAuth saem sem requestId
+      e sem log; se confirmado, mover o MDC para filtro anterior ao CsrfFilter e registrar
+      essas rejeicoes"
+    owner: "Desenvolvedor Backend"
+    status: open
+    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
+      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+  - id: "epic-7-retro-item-8-separar-performanceinvestigationit-e-sec"
+    epic: 7
+    action: "Separar PerformanceInvestigationIT e SecurityInvestigationIT do verify
+      -Pintegration-test padrao (perfil ou tag investigation); 155 s de 207 s"
+    owner: "Desenvolvedor Backend / DevOps"
+    status: done
+    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
+      implementation-artifacts\\epic-7-retro-2026-10-25.md"
+  - id: "epic-7-retro-item-9-registrar-nas-specs-investigativas-regra"
+    epic: 7
+    action: "Registrar nas specs investigativas regra de parada para loops de revisao
+      e limite do ferramental de evidencia; registrar V2 como a ensaiar em base com
+      dados reais antes do deploy"
+    owner: "Guilherme / Arquiteto"
+    status: open
+    ref: "C:\\Users\\GuilhermePagio\\Documents\\GitHub\\projeto-aureus\\_bmad-output\\\
+      implementation-artifacts\\epic-7-retro-2026-10-25.md"
 action_items_history:
   - id: epic-1-retro-item-1-corrigir-ordem-das-abas-na-barra-de-nave
     epic: 1

@@ -95,7 +95,11 @@ class IndexMigrationIT {
                         "--spring.datasource.password=" + POSTGRES.getPassword(),
                         "--spring.flyway.schemas=" + schema,
                         "--spring.flyway.default-schema=" + schema,
-                        "--spring.jpa.hibernate.ddl-auto=update")) {
+                        "--spring.jpa.hibernate.ddl-auto=update",
+                        "--jwt.secret=8f8a8473822a4d70b33b006a6b82b9937b8b4abcf35e408dbb0a1d4a04791e84",
+                        "--app.frontend.url=http://localhost:5173",
+                        "--spring.security.oauth2.client.registration.google.client-id=fake-client-id",
+                        "--spring.security.oauth2.client.registration.google.client-secret=fake-client-secret")) {
             assertThat(context.getBean(Flyway.class).info().pending()).isEmpty();
             verificarCatalogoTenant();
             assertThat(indiceExiste("idx_usuarios_google_subject_id")).isFalse();
